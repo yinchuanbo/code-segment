@@ -48,6 +48,27 @@ fs.readdir(mdDir, (err, files) => {
         }
         data = data.replace(/---[\s\S]*?---/, "");
         const htmlContent = marked.parse(data);
+        let filename = htmlFile.substring(htmlFile.lastIndexOf("\\") + 1);
+        let pageNum = filename.split(".");
+        pageNum = Number(pageNum[0]);
+        let preLink = "";
+        let nextLink = "";
+        if (pageNum === 1) {
+          preLink = "style='opacity: 0.5;pointer-events: none'";
+          nextLink = `onclick="location.href='/02.html'"`;
+        } else if (pageNum === files.length) {
+          let curNum = pageNum - 1;
+          curNum = curNum < 10 ? "0" + curNum : curNum;
+          preLink = `onclick="location.href='/${curNum}.html'"`;
+          nextLink = "style='opacity: 0.5;pointer-events: none;'";
+        } else {
+          let curNum1 = pageNum - 1;
+          let curNum2 = pageNum + 1;
+          curNum1 = curNum1 < 10 ? "0" + curNum1 : curNum1;
+          curNum2 = curNum2 < 10 ? "0" + curNum2 : curNum2;
+          preLink = `onclick="location.href='/${curNum1}.html'"`;
+          nextLink = `onclick="location.href='/${curNum2}.html'"`;
+        }
         const details = `<!DOCTYPE html>
             <html lang="en">
               <head>
@@ -64,13 +85,16 @@ fs.readdir(mdDir, (err, files) => {
                     <p>${getTime(date)} · YinHao</p>
                   </div>
                   ${htmlContent}
+                  <div class="nav">
+                    <div class="nav-prev" ${preLink}>PREV</div>
+                    <div class="nav-next" ${nextLink}>NEXT</div>
+                  </div>
                 </div>
               <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
               <script>hljs.highlightAll();</script>
               </body>
             </html>
             `;
-        let filename = htmlFile.substring(htmlFile.lastIndexOf("\\") + 1);
         itemHtml += `<li><a href="/${filename}">${title}</a></li>`;
         fs.writeFileSync(htmlFile, details);
         console.log(`${file} compiled successfully to ${htmlFile}`);

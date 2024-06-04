@@ -219,3 +219,31 @@ blockquote::before {
 pre code.hljs {
   font-style: italic;
 }
+
+.nav {
+  position: fixed;
+  bottom: 20px;
+  right: calc((100% - 1000px) / 2 - 70px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-prev,
+.nav-next {
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  border-radius: 100%;
+  line-height: 50px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nav-prev:active,
+.nav-next:active {
+  opacity: 0.8;
+}
