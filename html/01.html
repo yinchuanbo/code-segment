@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Document</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>js 中类型检测</h2>
+                    <p>2024-06-03 21:52:01 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">function typeOf(obj) {
+  var _toString = Object.prototype.toString; // 引用 Object 的原型方法 toString()
+  var _type = {
+    undefined: &quot;undefined&quot;,
+    number: &quot;number&quot;,
+    boolean: &quot;boolean&quot;,
+    string: &quot;string&quot;,
+    &quot;[object Function]&quot;: &quot;function&quot;,
+    &quot;[object RegExp]&quot;: &quot;regexp&quot;,
+    &quot;[object Array]&quot;: &quot;array&quot;,
+    &quot;[object Date]&quot;: &quot;date&quot;,
+    &quot;[object Error]&quot;: &quot;error&quot;,
+    // ... 这里可以继续扩展
+  };
+  return (
+    _type[typeof obj] || _type[_toString.call(obj)] || (obj ? &quot;object&quot; : &quot;null&quot;)
+  );
+}
+
+// 使用
+var _abs = Math.abs;
+console.log(typeOf(_abs)); // &quot;function&quot;
+</code></pre>
+
+                </div>
+              <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+              <script>hljs.highlightAll();</script>
+              </body>
+            </html>
+            

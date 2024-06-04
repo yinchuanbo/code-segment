@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Document</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>css 选中最后几个元素</h2>
+                    <p>2024-06-03 21:59:42 · YinHao</p>
+                  </div>
+                  <pre><code class="language-css">/* 前三个 */
+li:nth-child(-n + 3) {
+  text-decoration: underline;
+}
+
+/* 选中 2-5 的列表项 */
+li:nth-child(n + 2):nth-child(-n + 5) {
+  color: #2563eb;
+}
+
+/* 倒数两个 */
+li:nth-last-child(-n + 2) {
+  text-decoration-line: line-through;
+}
+</code></pre>
+
+                </div>
+              <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+              <script>hljs.highlightAll();</script>
+              </body>
+            </html>
+            

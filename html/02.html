@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Document</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>检测元素之外的点击</h2>
+                    <p>2024-06-03 21:54:59 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">document.addEventListener(&quot;click&quot;, function (evt) {
+  // isClickedOutside 为 true 如果点击的元素在 ele 之外
+  const isClickedOutside = !ele.contains(evt.target);
+});
+</code></pre>
+
+                </div>
+              <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+              <script>hljs.highlightAll();</script>
+              </body>
+            </html>
+            

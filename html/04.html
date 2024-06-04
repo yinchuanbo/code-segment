@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Document</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>将 URL 参数转化为对象</h2>
+                    <p>2024-06-03 21:57:35 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">const getUrlParams = (query) =&gt;
+  Array.from(new URLSearchParams(query)).reduce(
+    (p, [k, v]) =&gt;
+      Object.assign({}, p, {
+        [k]: p[k] ? (Array.isArray(p[k]) ? p[k] : [p[k]]).concat(v) : v,
+      }),
+    {}
+  );
+
+// 获取 query 参数
+getUrlParams(location.query);
+// { a: [&#39;1&#39;, &#39;4&#39;], b: &#39;2&#39;, c: &#39;3&#39; }
+getUrlParams(&quot;?a=1&amp;b=2&amp;c=3&amp;a=4&quot;);
+// 获取 hash 参数
+getUrlParams(location.hash.split(&quot;?&quot;)[1]);
+</code></pre>
+
+                </div>
+              <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+              <script>hljs.highlightAll();</script>
+              </body>
+            </html>
+            

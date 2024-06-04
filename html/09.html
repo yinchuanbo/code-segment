@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Document</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>生成 uuid 的代码片段</h2>
+                    <p>2024-06-03 22:05:14 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">const uuid = (a) =&gt;
+  a
+    ? (a ^ ((Math.random() * 16) &gt;&gt; (a / 4))).toString(16)
+    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
+</code></pre>
+
+                </div>
+              <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+              <script>hljs.highlightAll();</script>
+              </body>
+            </html>
+            
