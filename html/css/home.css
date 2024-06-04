@@ -14,7 +14,7 @@ body {
 }
 
 body {
-  background-color: #f3f3f3;
+  background-color: #131313;
   color: #444;
 }
 
@@ -40,13 +40,13 @@ body {
   height: 80px;
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #e5e5e5;
-  background-color: #fff;
+  border-bottom: 1px solid #313131;
+  background-color: #181818;
   /* font-weight: 600; */
 }
 
 a {
-  color: #444;
+  color: #fff;
   text-decoration: none;
   display: block;
   width: 100%;
@@ -58,7 +58,7 @@ a {
 }
 
 a:hover {
-  background-color: #f4f4f4;
+  background-color: #222;
 }
 
 /* .container ul li:nth-child(4n - 2) {
@@ -73,9 +73,5 @@ a:hover {
 .container ul li:nth-child(4n-3),
 .container ul li:nth-child(4n-2),
 .container ul li:nth-child(4n-1) {
-  border-right: 1px solid #e5e5e5;
+  border-right: 1px solid #313131;
 }
-
-/* .container ul li:hover {
-  background-color: #222;
-} */

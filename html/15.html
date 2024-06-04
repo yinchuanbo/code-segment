@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>进入和退出全屏</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>进入和退出全屏</h2>
+                    <p>2024-06-04 21:01:02 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">// 进入全屏
+function fullScreen() {
+  let el = document.documentElement;
+  let rfs =
+    el.requestFullScreen ||
+    el.webkitRequestFullScreen ||
+    el.mozRequestFullScreen ||
+    el.msRequestFullScreen;
+  //typeof rfs != &quot;undefined&quot; &amp;&amp; rfs
+  if (rfs) {
+    rfs.call(el);
+  } else if (typeof window.ActiveXObject !== &quot;undefined&quot;) {
+    let wscript = new ActiveXObject(&quot;WScript.Shell&quot;);
+    if (wscript != null) {
+      wscript.SendKeys(&quot;{F11}&quot;);
+    }
+  }
+}
+// 退出全屏
+function exitScreen() {
+  let el = document;
+  let cfs =
+    el.cancelFullScreen ||
+    el.webkitCancelFullScreen ||
+    el.mozCancelFullScreen ||
+    el.exitFullScreen;
+  //typeof cfs != &quot;undefined&quot; &amp;&amp; cfs
+  if (cfs) {
+    cfs.call(el);
+  } else if (typeof window.ActiveXObject !== &quot;undefined&quot;) {
+    let wscript = new ActiveXObject(&quot;WScript.Shell&quot;);
+    if (wscript != null) {
+      wscript.SendKeys(&quot;{F11}&quot;);
+    }
+  }
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/14.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/16.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

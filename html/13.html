@@ -3,25 +3,37 @@
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>生成 uuid 的代码片段</title>
+                <title>判断当前设备是 Andoird 还是 iOS</title>
                 <link rel="stylesheet" href="./css/prism-okaidia.min.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
                 <div class="container">
                   <div class="container-header">
-                    <h2>生成 uuid 的代码片段</h2>
-                    <p>2024-06-03 22:05:14 · YinHao</p>
+                    <h2>判断当前设备是 Andoird 还是 iOS</h2>
+                    <p>2024-06-04 20:59:58 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const uuid = (a) =&gt;
-  a
-    ? (a ^ ((Math.random() * 16) &gt;&gt; (a / 4))).toString(16)
-    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
+                  <pre><code class="language-js">function getOSType() {
+  let u = navigator.userAgent,
+    app = navigator.appVersion;
+  let isAndroid = u.indexOf(&quot;Android&quot;) &gt; -1 || u.indexOf(&quot;Linux&quot;) &gt; -1;
+  let isIOS = !!u.match(/\(i[^]+( U)? CPU.+Mac OS X/);
+
+  if (isIOS) {
+    return 0;
+  } else if (isAndroid) {
+    return 1;
+  } else {
+    return 2;
+  }
+}
+
+getOSType(); // 0
 </code></pre>
 
                   <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/08.html'">PREV</div>
-                    <div class="nav-next" onclick="location.href='/10.html'">NEXT</div>
+                    <div class="nav-prev" onclick="location.href='/12.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/14.html'">NEXT</div>
                   </div>
                   <div class="home" onclick="location.href='/'">HOME</div>
                 </div>

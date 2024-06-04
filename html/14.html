@@ -3,25 +3,28 @@
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>生成 uuid 的代码片段</title>
+                <title>格式化货币</title>
                 <link rel="stylesheet" href="./css/prism-okaidia.min.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
                 <div class="container">
                   <div class="container-header">
-                    <h2>生成 uuid 的代码片段</h2>
-                    <p>2024-06-03 22:05:14 · YinHao</p>
+                    <h2>格式化货币</h2>
+                    <p>2024-06-04 21:00:27 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const uuid = (a) =&gt;
-  a
-    ? (a ^ ((Math.random() * 16) &gt;&gt; (a / 4))).toString(16)
-    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
+                  <pre><code class="language-js">const formatMoney = (money) =&gt; {
+  return money.toLocaleString();
+};
+
+formatMoney(123456789); // &#39;123,456,789&#39;
+formatMoney(123456789.123); // &#39;123,456,789.123&#39;
+formatMoney(123); // &#39;123&#39;
 </code></pre>
 
                   <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/08.html'">PREV</div>
-                    <div class="nav-next" onclick="location.href='/10.html'">NEXT</div>
+                    <div class="nav-prev" onclick="location.href='/13.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/15.html'">NEXT</div>
                   </div>
                   <div class="home" onclick="location.href='/'">HOME</div>
                 </div>

@@ -74,8 +74,8 @@ fs.readdir(mdDir, (err, files) => {
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>Document</title>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+                <title>${title}</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
@@ -89,9 +89,10 @@ fs.readdir(mdDir, (err, files) => {
                     <div class="nav-prev" ${preLink}>PREV</div>
                     <div class="nav-next" ${nextLink}>NEXT</div>
                   </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
                 </div>
-              <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
-              <script>hljs.highlightAll();</script>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
               </body>
             </html>
             `;
@@ -109,7 +110,7 @@ fs.readdir(mdDir, (err, files) => {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Document</title>
+          <title>code segment 有用的代码片段</title>
           <link rel="stylesheet" type="text/css" href="./css/home.css" />
         </head>
         <body>

@@ -3,25 +3,29 @@
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>生成 uuid 的代码片段</title>
+                <title>将内容复制到剪贴板</title>
                 <link rel="stylesheet" href="./css/prism-okaidia.min.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
                 <div class="container">
                   <div class="container-header">
-                    <h2>生成 uuid 的代码片段</h2>
-                    <p>2024-06-03 22:05:14 · YinHao</p>
+                    <h2>将内容复制到剪贴板</h2>
+                    <p>2024-06-04 21:01:42 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const uuid = (a) =&gt;
-  a
-    ? (a ^ ((Math.random() * 16) &gt;&gt; (a / 4))).toString(16)
-    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
+                  <pre><code class="language-js">const copyToClipboard = (content) =&gt; {
+  const textarea = document.createElement(&quot;textarea&quot;);
+  textarea.value = content;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand(&quot;Copy&quot;);
+  textarea.remove();
+};
 </code></pre>
 
                   <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/08.html'">PREV</div>
-                    <div class="nav-next" onclick="location.href='/10.html'">NEXT</div>
+                    <div class="nav-prev" onclick="location.href='/15.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/17.html'">NEXT</div>
                   </div>
                   <div class="home" onclick="location.href='/'">HOME</div>
                 </div>

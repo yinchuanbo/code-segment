@@ -3,25 +3,27 @@
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>生成 uuid 的代码片段</title>
+                <title>获取当前页面滚动距离</title>
                 <link rel="stylesheet" href="./css/prism-okaidia.min.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
                 <div class="container">
                   <div class="container-header">
-                    <h2>生成 uuid 的代码片段</h2>
-                    <p>2024-06-03 22:05:14 · YinHao</p>
+                    <h2>获取当前页面滚动距离</h2>
+                    <p>2024-06-04 20:59:34 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const uuid = (a) =&gt;
-  a
-    ? (a ^ ((Math.random() * 16) &gt;&gt; (a / 4))).toString(16)
-    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
+                  <pre><code class="language-js">const getScrollPosition = (el = window) =&gt; ({
+  x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
+  y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop,
+});
+
+getScrollPosition(); // { x: 0, y: 215 }
 </code></pre>
 
                   <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/08.html'">PREV</div>
-                    <div class="nav-next" onclick="location.href='/10.html'">NEXT</div>
+                    <div class="nav-prev" onclick="location.href='/11.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/13.html'">NEXT</div>
                   </div>
                   <div class="home" onclick="location.href='/'">HOME</div>
                 </div>
