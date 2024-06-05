@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>页面加载流程分析技巧</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>页面加载流程分析技巧</h2>
+                    <p>2024-06-05 21:37:33 · YinHao</p>
+                  </div>
+                  <h2>分析</h2>
+<p>浏览器在开始渲染网页内容前，大致会经过以下步骤：</p>
+<ol>
+<li><p>载入 HTML</p>
+</li>
+<li><p>开始解析 HTML</p>
+</li>
+<li><p>载入或解析其他文件</p>
+</li>
+<li><p>继续解析 HTML，重复以上步骤</p>
+</li>
+<li><p>所有文件解析完毕，开始渲染页面</p>
+</li>
+</ol>
+<p>例如：</p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;link rel=&quot;stylesheel&quot; href=&quot;style.css&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div&gt;Hello, World!&lt;/div&gt;
+    &lt;script src=&quot;index.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>浏览器在下载完 HTML 后，将会开始解析，步骤如下：</p>
+<ol>
+<li><p>解析 HTML 至第 3 行时，开始加载 style.css，解析完成前不进行渲染。</p>
+</li>
+<li><p>解析 HTML 至第 7 行时，开始加载 index.js，程序代码执行完毕前，暂停解析 HTML。</p>
+</li>
+<li><p>若先下载完 style.css，则开始解析 style.css；若先下载完 index.js，则需等待 style.css 解析完毕后，才能执行程序代码。</p>
+</li>
+<li><p>解析 HTML 完成，开始渲染页面。</p>
+</li>
+</ol>
+<blockquote>
+<p>可以注意到在解析 HTML 的过程中，可能由于某些原因被 “阻塞” 而延后了渲染页面的时机，因此造成了阻塞的原因即为分析的重点。</p>
+</blockquote>
+<h3>阻塞</h3>
+<p>解析 HTML 的过程中，会有许多需要加载的文件，例如 JavaScript、CSS、图片等，其中某些文件可能会造成阻塞，让浏览器无法开始渲染。阻塞分为 “阻塞渲染” 和 “阻塞解析” 两种。</p>
+<ol>
+<li>阻塞渲染</li>
+</ol>
+<p>浏览器需要 HTML 和 CSS 才能绘制出完整的页面，若解析完 HTML 马上显示页面，等到解析完 CSS 又显示另一版页面，用户就会看到屏幕一闪而过，几乎无法阅读其中的文字，接着再变为加入 CSS 的正常页面，这种现象被称为 <code>Flash of Unstyled Content(FOUC)</code>。</p>
+<p>为了避免 FOUC 影响用户体验，浏览器在解析完 CSS 前不会进行渲染，CSS 文件越大、下载时间越久，越会延迟浏览器开始渲染页面的时间。</p>
+<ol start="2">
+<li>阻塞解析</li>
+</ol>
+<p>为了让页面的交互性更强，现在的网页几乎少不了 JavaScript，但因为执行 JavaScript 需占用主线程，且能够修改 DOM 结构，因此遇到 JavaScript 时，浏览器会将主线程的控制权从解析 HTML 交给 JavaScript 引擎，执行完毕后再继续解析 HTML。</p>
+<p>但别忘了 JavaScript 能够修改样式表单，所以浏览器会等在此之前加载的 CSS 都解析完毕后，才开始执行 JavaScript，相当于让 CSS 也加入阻塞解析的行列，这也是为什么常常看到 <code>&lt;script&gt;</code> 被放在 HTML 的最下方，以避免阻塞。</p>
+<h3>避免阻塞</h3>
+<p>避免阻塞渲染的方式有很多，主要有以下几点:</p>
+<p>(1) 降低文件大小</p>
+<p>用压缩、Tree shaking、Code splitting 等方式降低阻塞资源的大小，以加快下载和解析速度。</p>
+<p>(2) 内嵌阻塞资源</p>
+<p>将 CSS 直接嵌入 HTML 中，如此一来，无须等待下载完 HTML 并解析至 <code>&lt;link&gt;</code> 才开始加载 CSS。</p>
+<blockquote>
+<p>通常只会将渲染初始网页所需的部分嵌入 HTML 中，渲染页面后再加载完整的资源，借此减少 HTML 的下载时间。</p>
+</blockquote>
+<p>(3) 加入属性</p>
+<p>如果 JavaScript 的运行和 HTML、CSS 无直接关系，可以为 <code>&lt;script&gt;</code> 加上 defer 或 async 属性以避免阻塞解析。</p>
+<ul>
+<li><p>defer: 下载时不阻塞解析，等解析完 HTML 后才执行。</p>
+</li>
+<li><p>async: 下载时不阻塞解析，但下载完时立即执行，仍可能会阻塞解析。</p>
+</li>
+</ul>
+<p>或者为 <code>&lt;link&gt;</code> 加上 media 属性，当页面的 media 状态与属性相符时才阻塞渲染，例如：</p>
+<pre><code class="language-html">&lt;link rel=&quot;stylesheel&quot; href=&quot;print.css&quot; media=&quot;print&quot; /&gt;
+</code></pre>
+<p>(4) 提早、并行下载</p>
+<p>尽可能让渲染初始网页所需的文件越早开始下载越好，因为下载通常是花费时间最长的。</p>
+<pre><code class="language-html">&lt;link rel=&quot;stylesheel&quot; href=&quot;print.css&quot; media=&quot;print&quot; /&gt;
+</code></pre>
+<h2>实例</h2>
+<p>请确保执行以下前置操作：</p>
+<ol>
+<li><p>以无痕模式打开范例网站</p>
+</li>
+<li><p>打开 <code>DevTools</code> 中的 <code>Network</code> 面板</p>
+</li>
+<li><p>勾选 <code>Capture screenshots</code> 来逐帧截图</p>
+</li>
+<li><p>单击 <code>No throttling</code>，并将流量限制调整为 <code>Slow 3G</code></p>
+</li>
+<li><p>勾选 <code>Disable cache</code> 以关闭缓存</p>
+</li>
+</ol>
+<p><strong>避免阻塞渲染</strong></p>
+<pre><code class="language-html">&lt;link
+  rel=&quot;preload&quot;
+  href=&quot;xxx&quot;
+  as=&quot;style&quot;
+  onload=&quot;this.onload=null;this.rel=&#39;stylesheet&#39;&quot;
+/&gt;
+</code></pre>
+<p><strong>避免阻塞解析</strong></p>
+<ul>
+<li>加上 async 属性来避免阻塞解析，此时 index.js 会在下载完成时立即执行。</li>
+</ul>
+<pre><code class="language-html">&lt;script src=&quot;index.js&quot; async&gt;&lt;/script&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/42.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
