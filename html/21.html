@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>浏览器保存密码后自动填充问题</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>浏览器保存密码后自动填充问题</h2>
+                    <p>2024-06-05 15:40:32 · YinHao</p>
+                  </div>
+                  <p>版本中只使用一个 <code>hidden-input</code> 不生效了，尝试在加一个 <code>hidden-input</code> 就可以了:</p>
+<pre><code class="language-html">&lt;!--在页面中如果没有type=password的input，那么使用这种方法100%有效--&gt;
+&lt;div class=&quot;hidden-input&quot;&gt;&lt;input type=&quot;text&quot; class=&quot;form-control&quot; /&gt;&lt;/div&gt;
+&lt;div class=&quot;hidden-input&quot;&gt;&lt;input type=&quot;password&quot; class=&quot;form-control&quot; /&gt;&lt;/div&gt;
+&lt;input
+  type=&quot;text&quot;
+  autocomplete=&quot;off&quot;
+  class=&quot;form-control bg-transparent&quot;
+  placeholder=&quot;提现地址&quot;
+/&gt;
+</code></pre>
+<pre><code class="language-css">.hidden-input {
+  position: relative;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+/*让input看不见，而不是直接display: none，如果直接display: none，则不生效*/
+.hidden-input .form-control {
+  position: absolute;
+  left: -1000px;
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/20.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/22.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

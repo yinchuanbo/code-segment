@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Web Storage</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Web Storage</h2>
+                    <p>2024-06-05 15:59:14 · YinHao</p>
+                  </div>
+                  <h3>遍历</h3>
+<pre><code class="language-js">var storage = window.localStorage;
+for(var i = 0, len = storage.length; i++) {
+    var key = storage.key(i);
+    var value = storage.getItem(key);
+    console.log(key + &quot;=&quot; + value);
+}
+</code></pre>
+<h3>监测事件</h3>
+<p>web storage 定义 storage 事件，当键值改变或者调用 <code>clear()</code> 方法的时候，将触发 <code>storage</code> 事件。</p>
+<pre><code class="language-js">window.addEventListener(&quot;storage&quot;, handle_storage, false);
+
+function handle_storage(e) {
+  var logged =
+    &quot;key:&quot; +
+    e.key +
+    &quot;,newValue:&quot; +
+    e.newValue +
+    &quot;,oldValue:&quot; +
+    e.oldValue +
+    &quot;,url:&quot; +
+    e.url +
+    &quot;,storageArea:&quot; +
+    e.storageArea;
+  console.log(logged);
+}
+</code></pre>
+<p><strong>storage 事件对象属性</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>key</td>
+<td>String</td>
+<td>键的名称</td>
+</tr>
+<tr>
+<td>oldValue</td>
+<td>Any</td>
+<td>以前的值，如果是新添加的项目，则为 null</td>
+</tr>
+<tr>
+<td>newValue</td>
+<td>Any</td>
+<td>新的值，如果是新添加的项目，则为 null</td>
+</tr>
+<tr>
+<td>url/uri</td>
+<td>String</td>
+<td>引发更改的方法所在页面地址</td>
+</tr>
+</tbody></table>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/27.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/29.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

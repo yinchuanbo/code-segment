@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>视频录制，音频实时更新且视频画面固定唯一</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>视频录制，音频实时更新且视频画面固定唯一</h2>
+                    <p>2024-06-05 15:44:02 · YinHao</p>
+                  </div>
+                  <pre><code class="language-html">&lt;button id=&quot;startButton&quot;&gt;开始&lt;/button&gt; &lt;audio src=&quot;&quot; id=&quot;audio&quot;&gt;&lt;/audio&gt;
+</code></pre>
+<pre><code class="language-js">const startButton = document.getElementById(&quot;startButton&quot;);
+const stopButton = document.getElementById(&quot;stopButton&quot;);
+const imageElement = document.getElementById(&quot;image&quot;);
+const audioElement = document.getElementById(&quot;audio&quot;);
+
+startButton.onclick = async () =&gt; {
+  const canvasElement = document.createElement(&quot;canvas&quot;);
+  document.body.appendChild(canvasElement);
+  const canvasContext = canvasElement.getContext(&quot;2d&quot;);
+  document.body.appendChild(canvasElement);
+
+  let mediaRecorder;
+  let recordedChunks = [];
+
+  const audioStream = await navigator.mediaDevices.getUserMedia({
+    audio: true,
+  });
+  audioElement.srcObject = audioStream;
+  canvasElement.width = 500;
+  canvasElement.height = 500;
+  const startRecording = () =&gt; {
+    recordedChunks = [];
+    const canvasStream = canvasElement.captureStream();
+    const mergedStream = new MediaStream([
+      ...audioStream.getTracks(),
+      ...canvasStream.getTracks(),
+    ]);
+    mediaRecorder = new MediaRecorder(mergedStream);
+    mediaRecorder.ondataavailable = (event) =&gt; {
+      recordedChunks.push(event.data);
+    };
+    mediaRecorder.onstop = () =&gt; {
+      const blob = new Blob(recordedChunks, { type: &quot;video/webm&quot; });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement(&quot;a&quot;);
+      a.href = url;
+      a.download = &quot;mirrored_video.webm&quot;; // 下载的文件名可以根据需要修改
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    };
+    mediaRecorder.start();
+  };
+  const stopRecording = () =&gt; {
+    mediaRecorder.stop();
+  };
+  const img = new Image();
+  const createC = () =&gt; {
+    const cornerRadius = 30;
+
+    // 保存当前绘图状态
+    canvasContext.save();
+
+    // 创建一个圆角矩形的路径
+    canvasContext.beginPath();
+    canvasContext.moveTo(cornerRadius, 0);
+    canvasContext.arcTo(
+      canvasElement.width,
+      0,
+      canvasElement.width,
+      canvasElement.height,
+      cornerRadius
+    );
+    canvasContext.arcTo(
+      canvasElement.width,
+      canvasElement.height,
+      0,
+      canvasElement.height,
+      cornerRadius
+    );
+    canvasContext.arcTo(0, canvasElement.height, 0, 0, cornerRadius);
+    canvasContext.arcTo(0, 0, canvasElement.width, 0, cornerRadius);
+    canvasContext.closePath();
+
+    // 剪切出圆角矩形的区域
+    canvasContext.clip();
+
+    // 绘制图像
+    canvasContext.drawImage(
+      img,
+      0,
+      0,
+      canvasElement.width,
+      canvasElement.height
+    );
+
+    // 恢复之前保存的绘图状态
+    canvasContext.restore();
+  };
+
+  img.onload = function () {
+    createC();
+    startRecording();
+  };
+  img.src = &quot;./01.png&quot;;
+  const stopButton = document.createElement(&quot;button&quot;);
+  stopButton.textContent = &quot;停止录制&quot;;
+  stopButton.onclick = stopRecording;
+  document.body.appendChild(stopButton);
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/22.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/24.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

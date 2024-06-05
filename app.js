@@ -28,6 +28,7 @@ fs.readdir(mdDir, (err, files) => {
     console.error(err);
     return;
   }
+  files = files.reverse()
   files.forEach((file) => {
     if (file.endsWith(".md")) {
       const mdFile = path.resolve(mdDir, file);

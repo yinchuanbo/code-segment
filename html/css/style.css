@@ -111,7 +111,7 @@ ol > li {
 }
 
 ol > li::marker {
-  color: #444;
+  color: #f92672;
   float: left;
   font-weight: 600;
 }
@@ -131,7 +131,7 @@ ul > li::before {
   left: 0;
   width: 7px;
   height: 7px;
-  background-color: #444;
+  background-color: #f92672;
   border-radius: 100%;
 }
 
@@ -141,7 +141,7 @@ p {
 }
 
 p code {
-  color: #444;
+  color: #f92672;
   font-style: italic;
 }
 
@@ -157,9 +157,7 @@ table {
 td,
 tr,
 th {
-  font-size: var(--font-size) !important;
-  font-family: var(--nor-ff);
-  border: 1px solid #e5e5e5;
+  border: 1px solid #313131;
   padding: 8px 10px;
   border-right: 0;
   border-bottom: 0;
@@ -179,7 +177,7 @@ table tbody tr td:nth-child(1) {
 }
 
 blockquote {
-  background-color: #131313;
+  background-color: rgba(0, 0, 0, 0.4);
   padding: 20px 0;
   margin-bottom: 20px;
   padding-left: 20px;
@@ -200,16 +198,16 @@ blockquote::before {
   left: 0;
   width: 5px;
   height: 100%;
-  background-color: #444;
+  background-color: #f92672;
 }
 
-.token.constant,
+/* .token.constant,
 .token.deleted,
 .token.property,
 .token.symbol,
 .token.tag {
   color: #444;
-}
+} */
 
 .container-header {
   border-bottom: 1px solid #313131;

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>页面关闭时如何成功发送 API 请求</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>页面关闭时如何成功发送 API 请求</h2>
+                    <p>2024-06-05 15:46:29 · YinHao</p>
+                  </div>
+                  <h2>浏览器事件监听</h2>
+<p>在浏览器中，我们可以使用 <code>beforeunload</code> 事件来监听窗口关闭前的事件。</p>
+<p>但是，这个事件并不总是可靠的，因为它可能会被浏览器弹出拦截器阻止。</p>
+<p>因此，还需要考虑使用 <code>visibilitychange</code> 事件，它在页面从可见变为隐藏时触发，这包括了页面关闭和刷新的情况。</p>
+<pre><code class="language-js">window.addEventListener(&quot;beforeunload&quot;, (event) =&gt; {
+  // 在这里执行 api 请求
+});
+document.addEventListener(&quot;visibilitychange&quot;, () =&gt; {
+  if (document.visibilityState == &quot;hidden&quot;) {
+    // 页面不可见，执行 api
+  }
+});
+</code></pre>
+<h2>发送 API 请求的方法</h2>
+<p>有几种方法可以在页面关闭时发送 API 请求，包括传统的 <code>XMLHttpRequest</code>、<code>fetch</code> API 以及 <code>Navigator.sendBeacon</code> 方法。</p>
+<h3>- XMLHttpRequest</h3>
+<p>XMLHttpRequest 是最早的 API 请求方法，但它在页面关闭时可能会被<strong>取消</strong></p>
+<pre><code class="language-js">const xhr = new XMLHttpRequest();
+xhr.open(&quot;POST&quot;, &quot;/api/data&quot;, true);
+xhr.send(JSON.stringify(data));
+</code></pre>
+<h3>- Fetch 使用 keepalive</h3>
+<p>fetch API 提供了一个 <code>keepalive</code> 选项，即使页面关闭了，请求也会继续执行。</p>
+<pre><code class="language-js">fetch(&quot;/api/data&quot;, {
+  method: &quot;POST&quot;,
+  body: JSON.stringify(data),
+  keepalive: true,
+});
+</code></pre>
+<h3>- Navigator.sendBeacon</h3>
+<p>Navigator.sendBeacon 是一个现代的、轻量级的方法，它允许在不阻塞页面卸载的情况下发送数据。</p>
+<pre><code class="language-js">navigator.sendBeacon(&quot;/api/data&quot;, JSON.stringify(data));
+</code></pre>
+<ol>
+<li><p>通过 <code>HTTP POST</code> 请求方式 <strong>异步</strong> 发送数据，同时不会延迟页面的卸载或影响下一导航的站入性能。</p>
+</li>
+<li><p>支持跨域，但不支持自定义 <strong>headers</strong> 请求头，这意味着：如果用户信息 <strong>Access-Token</strong> 是作为请求头信息传递，需要后台接口支持 <strong>url querystring</strong> 参数传递解析。</p>
+</li>
+<li><p>考虑其兼容性。</p>
+</li>
+</ol>
+<h2>最佳实践</h2>
+<p>在选择发送 API 请求的方法时，我们需要考虑兼容性、数据大小和服务器响应，<code>Navigator.sendBeacon</code> 方法是一个不错的选择，但是需要注意的是，它不支持自定义请求头，且数据大小有限制。fetch API 的 keepalive 选项也是一个可靠的选择，但同样需要注意数据大小的限制。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/25.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/27.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

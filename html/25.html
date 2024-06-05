@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>根据已有视频生成指定样式视频</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>根据已有视频生成指定样式视频</h2>
+                    <p>2024-06-05 15:45:12 · YinHao</p>
+                  </div>
+                  <blockquote>
+<p>根据已有视频生成指定样式视频，如对视频进行翻转、圆角等。</p>
+</blockquote>
+<pre><code class="language-html">&lt;button type=&quot;button&quot; id=&quot;playVideo&quot;&gt;播放&lt;/button&gt;
+</code></pre>
+<pre><code class="language-js">const playVideo = document.getElementById(&quot;playVideo&quot;);
+const video = document.createElement(&quot;video&quot;);
+video.src = &quot;./mov_bbb.mp4&quot;;
+// video.crossOrigin = &quot;anonymous&quot;; // 解决跨域问题
+
+playVideo.onclick = () =&gt; {
+  video.onloadedmetadata = async function () {
+    const canvas = document.createElement(&quot;canvas&quot;);
+    const ctx = canvas.getContext(&quot;2d&quot;);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const cornerRadius = 30;
+    // 应用水平翻转
+    ctx.scale(-1, 1);
+    ctx.translate(-canvas.width, 0); // 翻转后调整绘制位置
+    ctx.beginPath();
+    ctx.moveTo(cornerRadius, 0);
+    ctx.arcTo(canvas.width, 0, canvas.width, canvas.height, cornerRadius);
+    ctx.arcTo(canvas.width, canvas.height, 0, canvas.height, cornerRadius);
+    ctx.arcTo(0, canvas.height, 0, 0, cornerRadius);
+    ctx.arcTo(0, 0, canvas.width, 0, cornerRadius);
+    ctx.closePath();
+    ctx.clip();
+    const stream = canvas.captureStream();
+    const mediaRecorder = new MediaRecorder(stream);
+    const frames = [];
+    mediaRecorder.ondataavailable = async function (e) {
+      frames.push(e.data);
+      console.log(&quot;frames&quot;, frames);
+    };
+    mediaRecorder.onstop = async function () {
+      const blob = new Blob(frames, { type: &quot;video/mp4&quot; });
+      const url = URL.createObjectURL(blob);
+      console.log(&quot;url&quot;, url);
+    };
+    mediaRecorder.start();
+    video.play();
+    while (video.currentTime &lt; video.duration) {
+      await new Promise((resolve) =&gt;
+        setTimeout(resolve, 16 / video.playbackRate)
+      );
+      ctx.drawImage(video, 0, 0);
+      mediaRecorder.requestData();
+    }
+    mediaRecorder.stop();
+  };
+  video.load();
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/24.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/26.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

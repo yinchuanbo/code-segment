@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>js 实现 insertAfter 方法</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>js 实现 insertAfter 方法</h2>
+                    <p>2024-06-05 16:15:52 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">function insertAfter(target, bullet) {
+  target.nextSibling
+    ? target.parentNode.insertBefore(bullet, target.nextSibling)
+    : target.parentNode.appendChild(bullet);
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/32.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/34.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

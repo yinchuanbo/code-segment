@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>window.open 弹窗被阻止解决方案</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>window.open 弹窗被阻止解决方案</h2>
+                    <p>2024-06-05 15:43:02 · YinHao</p>
+                  </div>
+                  <pre><code class="language-html">&lt;button type=&quot;button&quot; id=&quot;btn&quot;&gt;CLICK&lt;/button&gt;
+</code></pre>
+<pre><code class="language-js">function windowOpen(callback = function () {}) {
+  let winRef = window.open(&quot;&quot;, &quot;_blank&quot;);
+  if (typeof callback === &quot;function&quot;) {
+    callback?.(winRef);
+  }
+}
+
+btn.onclick = function () {
+  windowOpen((winRef) =&gt; {
+    // 处理其他逻辑
+    // ...
+    winRef.location.href = &quot;https://www.baidu.com/&quot;;
+  });
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/21.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/23.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
