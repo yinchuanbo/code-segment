@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>JS 复制粘贴兼容处理</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>JS 复制粘贴兼容处理</h2>
+                    <p>2024-06-05 09:55:45 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">const copyText = async (val) =&gt; {
+  try {
+    if (navigator.clipboard &amp;&amp; navigator.permissions) {
+      await navigator.clipboard.writeText(val);
+      return; // 如果成功，直接返回
+    }
+    // 降级方案
+    const textArea = document.createElement(&quot;textarea&quot;);
+    textArea.val = val;
+    textArea.style.width = 0;
+    textArea.style.position = &quot;fixed&quot;;
+    textArea.style.left = &quot;-999px&quot;;
+    textArea.style.top = &quot;10px&quot;;
+    textArea.setAttribute(&quot;readonly&quot;, &quot;readonly&quot;);
+    document.body.appendChild(textArea);
+    textArea.select();
+    // 尝试执行赋值操作
+    const success = document.execCommand(&quot;copy&quot;);
+    if (!success) {
+      throw new Error(&quot;无法复制文本&quot;);
+    }
+    // 清理
+    document.body.removeChild(textArea);
+  } catch (err) {
+    console.log(&quot;复制失败:&quot;, err);
+  }
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/17.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/19.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
