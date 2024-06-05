@@ -227,7 +227,7 @@ blockquote::before {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
-  font-style: italic;
+  /* font-style: italic; */
 }
 
 pre code.hljs {
@@ -276,4 +276,10 @@ pre code.hljs {
 .nav-prev:active,
 .nav-next:active {
   opacity: 0.8;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
 }

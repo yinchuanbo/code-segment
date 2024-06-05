@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>will-change</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>will-change</h2>
+                    <p>2024-06-05 20:13:07 · YinHao</p>
+                  </div>
+                  <h2>一、什么是 will-change？</h2>
+<p><code>will-change</code>是一个 CSS 属性，它可以告诉浏览器某个元素将要发生的变化。通过明确指定这些变化，浏览器可以事先分配和优化相应的资源，从而提升渲染的性能。</p>
+<h2>二、will-change 的使用方法</h2>
+<p>要使用<code>will-change</code>，只需将它应用于你要进行性能优化的元素上。</p>
+<pre><code class="language-css">.element {
+  will-change: transform;
+}
+</code></pre>
+<p>在上述示例中，我们告诉浏览器，该元素即将发生变换（<code>transform</code>），以便浏览器在渲染时提前分配所需的资源。</p>
+<p>值得注意的是，因为<code>will-change</code>是为了性能优化而设计的，滥用它可能会带来负面影响。只在需要优化的元素上使用<code>will-change</code>，避免对所有元素都进行指定。</p>
+<h2>三、will-change 的原理</h2>
+<p>要理解<code>will-change</code>的原理，我们需要了解浏览器渲染流程的基本概念。</p>
+<h3>1. 渲染流程简介</h3>
+<p>浏览器在渲染网页时，会经历一系列的步骤，如样式计算、布局、绘制和合成。为了提高性能，浏览器会尽量避免进行不必要的计算和操作。</p>
+<h3>2. will-change 的作用</h3>
+<p><code>will-change</code>的作用就是告诉浏览器某个元素将要发生的变化，从而使浏览器在渲染过程中提前分配和优化相应的资源。</p>
+<p>例如，当我们设置了<code>will-change: transform</code>时，浏览器会为该元素创建一个独立的图层，将这个图层标记为“即将变换”。这样，在进行布局和绘制时，浏览器就可以更高效地处理这个元素，而无需重新计算整个渲染树。</p>
+<p>加入 will-change 后，通过观察复合层，如图下</p>
+<p><img src="./imgs/35/01.jpg" alt=""></p>
+<p>加入 will-change 后，元素会被提升到单独的复合层，动画（重绘、重排）的操作只会在单独复合层上进行，减少了原来的页面层重绘和重排的行为 注：每一个元素单独加入 will-change 都会单独创建一个复合层，如果给大量的元素加上 will-change 就会创建大量的复合层，反而会影响性能</p>
+<h3>3. <code>will-change</code>的优化效果</h3>
+<p>使用<code>will-change</code>可以带来以下优化效果：</p>
+<ul>
+<li>减少渲染阻塞：浏览器可以提前分配和优化资源，减少渲染阻塞时间，提高页面的响应速度。</li>
+<li>减少重绘和重排：浏览器可以更好地管理渲染过程，避免不必要的重绘和重排，从而提高渲染性能。</li>
+<li>硬件加速：某些浏览器对<code>will-change</code>属性会进行硬件加速，进一步提升性能。</li>
+</ul>
+<h3>4. <code>will-change</code>使用的时机</h3>
+<p>在很多关于 will-change 的描述，都能够看到类似下面的一段话</p>
+<p>在实际更改的元素上将 will-change 设置为您将实际更改的属性。并在他们停止时将其删除。- Tab Atkins Jr.（规范编辑者）</p>
+<p>至于为什么？大部分的描述都是因为 will-change 会消耗浏览器 GPU 资源</p>
+<p>当元素有 will-change 时，将元素提升到它们自己的“GPU 层”的浏览器。但有太多元素声明时，浏览器将忽略声明，以避免耗尽 GPU 内存</p>
+<p>所以对于 will-change 的使用应该控制时机</p>
+<p><img src="./imgs/35/02.jpg" alt=""></p>
+<p>在适当的时机移除 will-change 就是减少浏览器的复合层，避免过度使用 will-change 带来性能问题</p>
+<h2>四、iphone 上使用 will-change 会导致图片模糊、文字模糊问题</h2>
+<p>在 iphone 上可以看到如果给元素加上 will-change，可能出现模糊现象，分析一下问题</p>
+<ul>
+<li><p>加入 will-change，元素会提升到复合层，提升到复合层后，浏览器做了什么事？</p>
+</li>
+<li><p>安卓不会而 iphone 会，iphone 上使用的是 safari 浏览器</p>
+</li>
+</ul>
+<p>解：</p>
+<ol>
+<li><p>will-change 加入后，元素提升到复合层，浏览器其实会进行  <strong>光栅化</strong></p>
+</li>
+<li><p>至于为什么 safari 浏览器在元素提升到复合层后，进行光栅化会导致模糊问题，在我们翻阅了各家浏览器内核论坛后，找到一些资料  groups.google.com/a/chromium</p>
+</li>
+</ol>
+<p><img src="./imgs/35/03.jpg" alt=""></p>
+<p>大概的内容就是：</p>
+<p>在 2016 年之前，不止 safari，谷歌浏览器也是存在模糊的问题，原因是提升复合层后，光栅化的时候，设备比例的变化，导致绘制 图像 的过程变模糊，谷歌是在 2016 年解决的这个问题，所以现在看来我们会在 iphone 上发现模糊问题，在安卓机上并不会</p>
+<p>iphone 上模糊的问题，可以通过在执行完重排重绘后在适当的时机移除 will-change（让元素回到原来的页面层，不在单独一个复合层）就可以解决</p>
+<h2>五、什么操作会将元素提升到复合层</h2>
+<p>在 CSS 中，以下属性可以将元素提升到复合层:</p>
+<ol>
+<li><code>will-change</code>  属性：通过使用  <code>will-change</code>  属性，告诉浏览器该元素即将发生某种变化，浏览器可以提前将其提升到复合层以进行优化。</li>
+<li><code>transform</code>  属性：当使用 3D 或 2D 变换时，浏览器会自动将  <code>transform</code>  属性应用的元素提升到复合层。常见的变换函数如  <code>translate()</code>, <code>rotate()</code>, <code>scale()</code>  等。</li>
+<li><code>backface-visibility</code>  属性：当使用  <code>backface-visibility: hidden</code>  来隐藏元素的背面时，浏览器会将该元素提升到复合层。</li>
+</ol>
+<p>需要注意的是，将元素提升到复合层也会增加内存的占用和渲染的复杂性，因此不应滥用。只有当元素需要频繁改变或有复杂的动画效果时，才建议将其提升到复合层。</p>
+<h2>六、结论</h2>
+<p><code>will-change</code>是一种强大的性能优化工具，在现代网页设计中发挥着重要作用。通过明确指定元素将要发生的变化，浏览器可以提前分配和优化相应的 .</p>
+<p>使用上也有需要注意的点：</p>
+<p>1. 不要给大量的元素添加 will-change，这会导致创建大量的复合层</p>
+<p>2. 注意使用的时机，在需要进行重绘/重排行为的时候，才考虑加上 will-change，使用完后需要再适当的时机移除，释放浏览器资源</p>
+<p>3. 是否真的需要 will-change，如果页面在性能方面没什么问题，没有必要放个 will-change 来换取那微乎其微的收益，如果收益客观，可加，如果加与不加，差别不大，没必要</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/34.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
