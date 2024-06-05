@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>21 条 CSS 高级技巧</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>21 条 CSS 高级技巧</h2>
+                    <p>2024-06-05 20:41:05 · YinHao</p>
+                  </div>
+                  <h3>使用 CSS 复位</h3>
+<p>CSS 复位可以在不同的浏览器上保持一致的样式风格。您可以使用 CSS reset 库<a href="http://necolas.github.io/normalize.css/">Normalize</a>等，也可以使用一个更简化的复位方法：</p>
+<pre><code class="language-css">* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+</code></pre>
+<p>现在元素的 margin 和 padding 已为 0，<code>box-sizing</code>可以管理您的 CSS 盒模型布局。 <a href="http://codepen.io/AllThingsSmitty/pen/kkrkLL">演示</a> 注意：如果你遵循接下来继承 <code>box-sizing</code>讲解的这个技巧, 你不需要在以上代码中添加 <code>box-sizing</code> 属性。</p>
+<h3>继承 <code>box-sizing</code></h3>
+<p>从 <code>html</code> 元素继承 <code>box-sizing</code> ：</p>
+<pre><code class="language-css">html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+</code></pre>
+<p>如此在插件或其它组件里改变 <code>box-sizing</code> 变得简单。</p>
+<h3>使用 <code>:not()</code> 选择器来决定表单是否显示边框</h3>
+<p>先为元素添加边框</p>
+<pre><code class="language-css">/* 添加边框 */
+.nav li {
+  border-right: 1px solid #666;
+}
+</code></pre>
+<p>为最后一个元素去除边框</p>
+<pre><code class="language-css">/* 去掉边框 */
+.nav li:last-child {
+  border-right: none;
+}
+</code></pre>
+<p>不过不要这么做，使用 <code>:not()</code> 伪类来达到同样的效果：</p>
+<pre><code class="language-css">.nav li:not(:last-child) {
+  border-right: 1px solid #666;
+}
+</code></pre>
+<p>当然，你也可以使用 <code>.nav li + li</code> 或者 <code>.nav li:first-child ~ li</code> ，但是 <code>:not()</code> 更加清晰，具有可读性。 <a href="http://codepen.io/AllThingsSmitty/pen/LkymvO">演示</a></p>
+<h3>为 <code>body</code> 元素添加行高</h3>
+<p>不必为每一个 <code>&lt;p&gt;</code>，<code>&lt;h*&gt;</code> 元素逐一添加 <code>line-height</code>，直接添加到 <code>body</code> 元素：</p>
+<pre><code class="language-css">body {
+  line-height: 1.5;
+}
+</code></pre>
+<p>文本元素可以很容易地继承 <code>body</code> 的样式。 <a href="http://codepen.io/AllThingsSmitty/pen/VjbdYd">演示</a></p>
+<h3>垂直居中任何元素</h3>
+<p>不！这绝不是黑魔法，真的可以垂直居中任何元素：</p>
+<pre><code class="language-css">html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+}
+</code></pre>
+<p>这还不够？垂直方向，水平方向？任何元素，任何时间，任何地点？CSS-Tricks <a href="https://css-tricks.com/centering-css-complete-guide/">有篇好文</a> 讲到了各种居中的技巧。 <strong>注意：</strong> IE11 对 flexbox 的支持<a href="https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items">有点 bug</a>。 <a href="http://codepen.io/AllThingsSmitty/pen/GqmGqZ">演示</a></p>
+<h3>逗号分隔列表</h3>
+<p>使列表的每项都由逗号分隔：</p>
+<pre><code class="language-css">ul &gt; li:not(:last-child)::after {
+  content: &quot;,&quot;;
+}
+</code></pre>
+<p>因最后一项不加逗号，可以使用 <code>:not()</code> 伪类。 **注意：**这一技巧对于无障碍，特别是屏幕阅读器而言并不理想。而且复制粘贴并不会带走 CSS 生成的内容,需要注意。</p>
+<h3>使用负的 <code>nth-child</code> 来选择元素</h3>
+<p>使用负的 <code>nth-child</code> 可以选择 1 至 n 个元素。</p>
+<pre><code class="language-css">li {
+  display: none;
+}
+
+/* 选择第 1 至第 3 个元素并显示出来 */
+li:nth-child(-n + 3) {
+  display: block;
+}
+</code></pre>
+<p>或许你已经掌握了如何使用 <code>:not()</code>这个技巧，试下这个：</p>
+<pre><code class="language-css">/* 选择第 1 至第 3 个元素并显示出来 */
+li:not(:nth-child(-n + 3)) {
+  display: none;
+}
+</code></pre>
+<p>如此简单！ <a href="http://codepen.io/AllThingsSmitty/pen/WxjKZp">演示</a></p>
+<h3>使用 SVG 图标</h3>
+<p>没有理由不使用 SVG 图标：</p>
+<pre><code class="language-css">.logo {
+  background: url(&quot;logo.svg&quot;);
+}
+</code></pre>
+<p>SVG 在所有分辨率下都可以良好缩放，并且支持所有 IE9 以后的浏览器，丢掉你的 .png, .jpg, 或 .gif-jif-whatev 文件吧。 <strong>注意：</strong> 针对仅有图标的按钮，如果 SVG 没有加载成功的话，以下样式对无障碍有所帮助：</p>
+<pre><code class="language-css">.no-svg .icon-only:after {
+  content: attr(aria-label);
+}
+</code></pre>
+<h3>使用 “形似猫头鹰” 的选择器</h3>
+<p>这个名字可能比较陌生，不过通用选择器 (<code>*</code>) 和 相邻兄弟选择器 (<code>+</code>) 一起使用，效果非凡：</p>
+<pre><code class="language-css">* + * {
+  margin-top: 1.5em;
+}
+</code></pre>
+<p>在此示例中，文档流中的所有的相邻兄弟元素将都将设置 <code>margin-top: 1.5em</code> 的样式。 更多 “形似猫头鹰” 的选择器，可参考 <em>A List Apart</em> 上面 <a href="http://alistapart.com/article/axiomatic-css-and-lobotomized-owls">Heydon Pickering 的文章</a> <a href="http://codepen.io/AllThingsSmitty/pen/grRvWq">演示</a></p>
+<h3>使用 <code>max-height</code> 来建立纯 CSS 的滑块</h3>
+<p><code>max-height</code> 与 overflow hidden 一起来建立纯 CSS 的滑块：</p>
+<pre><code class="language-css">.slider {
+  max-height: 200px;
+  overflow-y: hidden;
+  width: 300px;
+}
+
+.slider:hover {
+  max-height: 600px;
+  overflow-y: scroll;
+}
+</code></pre>
+<p>鼠标移入滑块元素时增大它的 <code>max-height</code> 值，便可以显示溢出部分。</p>
+<h3>创造格子等宽的表格</h3>
+<p><code>table-layout: fixed</code> 可以让每个格子保持等宽：</p>
+<pre><code class="language-css">.calendar {
+  table-layout: fixed;
+}
+</code></pre>
+<p>无痛的 table 布局。 <a href="http://codepen.io/AllThingsSmitty/pen/jALALm">演示</a></p>
+<h3>利用 Flexbox 去除多余的外边距</h3>
+<p>与其使用 <code>nth-</code>， <code>first-</code>， 和 <code>last-child</code> 去除列之间多余的间隙，不如使用 flexbox 的 <code>space-between</code> 属性：</p>
+<pre><code class="language-css">.list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.list .person {
+  flex-basis: 23%;
+}
+</code></pre>
+<p>列之间的间隙总是均匀相等。</p>
+<h3>利用属性选择器来选择空链接</h3>
+<p>当 <code>&lt;a&gt;</code> 元素没有文本内容，但有 <code>href</code> 属性的时候，显示它的 <code>href</code> 属性：</p>
+<pre><code class="language-css">a[href^=&quot;http&quot;]:empty::before {
+  content: attr(href);
+}
+</code></pre>
+<p>相当简便。 <a href="http://codepen.io/AllThingsSmitty/pen/zBzXRx">演示</a></p>
+<h3>给 “默认” 链接定义样式</h3>
+<p>给 “默认” 链接定义样式：</p>
+<pre><code class="language-css">a[href]:not([class]) {
+  color: #008000;
+  text-decoration: underline;
+}
+</code></pre>
+<p>通过 CMS 系统插入的链接，通常没有 <code>class</code> 属性，以上样式可以甄别它们，而且不会影响其它样式。</p>
+<h3>一致垂直节奏</h3>
+<p>通用选择器 (<code>*</code>) 跟元素一起使用，可以保持一致的垂直节奏：</p>
+<pre><code class="language-css">.intro &gt; * {
+  margin-bottom: 1.25rem;
+}
+</code></pre>
+<p>一致的垂直节奏可以提供视觉美感，增强内容的可读性。</p>
+<h3>固定比例盒子</h3>
+<p>要创建具有固定比例的一个盒子，所有你需要做的就是给 div 设置一个 padding：</p>
+<pre><code class="language-css">.container {
+  height: 0;
+  padding-bottom: 20%;
+  position: relative;
+}
+
+.container div {
+  border: 2px dashed #ddd;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+</code></pre>
+<p>使用 20％的 padding-bottom 使得框等于其宽度的 20％的高度。与视口宽度无关，子元素的 div 将保持其宽高比（100％/ 20％= 5:1）。 <a href="http://codepen.io/AllThingsSmitty/pen/jALZvE">演示</a></p>
+<h3>为破碎图象定义样式</h3>
+<p>只要一点 CSS 就可以美化破碎的图象：</p>
+<pre><code class="language-css">img {
+  display: block;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  height: auto;
+  line-height: 2;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+</code></pre>
+<p>以添加伪元素的法则来显示用户信息和 URL 的引用：</p>
+<pre><code class="language-css">img:before {
+  content: &quot;We&#39;re sorry, the image below is broken :(&quot;;
+  display: block;
+  margin-bottom: 10px;
+}
+
+img:after {
+  content: &quot;(url: &quot; attr(src) &quot;)&quot;;
+  display: block;
+  font-size: 12px;
+}
+</code></pre>
+<p>了解更多关于这类样式的技巧 <a href="https://github.com/ireade/">Ire Aderinokun</a>的 <a href="http://bitsofco.de/styling-broken-images/">原帖</a>.</p>
+<h3>用 <code>rem</code> 来调整全局大小；用 <code>em</code> 来调整局部大小</h3>
+<p>在根元素设置基本字体大小后 (<code>html { font-size: 100%; }</code>), 使用 <code>em</code> 设置文本元素的字体大小:</p>
+<pre><code class="language-css">h2 {
+  font-size: 2em;
+}
+
+p {
+  font-size: 1em;
+}
+</code></pre>
+<p>然后设置模块的字体大小为 <code>rem</code>:</p>
+<pre><code class="language-css">article {
+  font-size: 1.25rem;
+}
+
+aside .module {
+  font-size: 0.9rem;
+}
+</code></pre>
+<p>现在，每个模块变得独立，更容易、灵活的样式便于维护。</p>
+<h3>隐藏没有静音、自动播放的影片</h3>
+<p>这是一个自定义用户样式表的不错的技巧。避免在加载页面时自动播放。如果没有静音，则不显示视频：</p>
+<pre><code class="language-css">video[autoplay]:not([muted]) {
+  display: none;
+}
+</code></pre>
+<p>再次，我们利用了 <code>:not()</code> 的优点。</p>
+<h3>使用选择器<code>:root</code>来控制字体弹性</h3>
+<p>在响应式布局中，字体大小应需要根据不同的视口进行调整。你可以计算字体大小根据视口高度的字体大小和宽度，这时需要用到<code>:root</code>:</p>
+<pre><code class="language-css">:root {
+  font-size: calc(1vw + 1vh + 0.5vmin);
+}
+</code></pre>
+<p>现在，您可以使用 <code>root em</code></p>
+<pre><code class="language-css">body {
+  font: 1rem/1.6 sans-serif;
+}
+</code></pre>
+<p><a href="http://codepen.io/AllThingsSmitty/pen/XKgOkR">演示</a></p>
+<h3>为更好的移动体验，为表单元素设置字体大小</h3>
+<p>当触发<code>&lt;select&gt;</code>的下拉列表时，为了避免表单元素在移动浏览器（IOS Safari 等等）上的缩放，加上<code>font-size</code>：</p>
+<pre><code class="language-css">input[type=&quot;text&quot;],
+input[type=&quot;number&quot;],
+select,
+textarea {
+  font-size: 16px;
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/37.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/39.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

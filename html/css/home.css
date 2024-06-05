@@ -37,7 +37,7 @@ body {
   cursor: pointer;
   transition: all 0.5s;
   transition: transform 0.3s, box-shadow 0.3s;
-  height: 80px;
+  height: 70px;
   display: flex;
   justify-content: center;
   border-bottom: 1px solid #313131;
@@ -53,7 +53,7 @@ a {
   height: 100%;
   display: block;
   text-align: center;
-  line-height: 80px;
+  line-height: 70px;
   font-size: 16px;
 }
 

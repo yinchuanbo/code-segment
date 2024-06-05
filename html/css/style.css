@@ -42,6 +42,7 @@ body {
   border: 1px solid #313131;
   /* background-color: #181818; */
   min-height: calc(100vh - 40px);
+  border-radius: 32px;
 }
 
 pre[class*="language-"] {
@@ -234,7 +235,8 @@ pre code.hljs {
   font-style: italic;
 }
 
-.nav, .home {
+.nav,
+.home {
   position: fixed;
   bottom: 20px;
   right: calc((100% - 1000px) / 2 - 70px);
@@ -282,4 +284,9 @@ img {
   max-width: 100%;
   display: block;
   margin: 0 auto;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
 }
