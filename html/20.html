@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>纯前端实现录屏并保存视频到本地</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>纯前端实现录屏并保存视频到本地</h2>
+                    <p>2024-06-05 15:04:01 · YinHao</p>
+                  </div>
+                  <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;button&gt;共享屏幕&lt;/button&gt;
+    &lt;script&gt;
+      const button = document.querySelector(&quot;button&quot;);
+      button.addEventListener(&quot;click&quot;, async () =&gt; {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+        });
+
+        const mime = MediaRecorder.isTypeSupported(&quot;video/webm;codecs=h264&quot;)
+          ? &quot;video/webm;codecs=h264&quot;
+          : &quot;video/webm&quot;;
+
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: mime });
+
+        const chunks = [];
+        mediaRecorder.addEventListener(&quot;dataavailable&quot;, function (e) {
+          chunks.push(e.data);
+        });
+
+        mediaRecorder.addEventListener(&quot;stop&quot;, () =&gt; {
+          const blob = new Blob(chunks, { type: chunks[0].type });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement(&quot;a&quot;);
+          a.href = url;
+          a.download = &quot;video.webm&quot;;
+          a.click();
+        });
+        mediaRecorder.start();
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/19.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
