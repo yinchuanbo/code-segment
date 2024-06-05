@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>10 种 js 快乐写法</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>10 种 js 快乐写法</h2>
+                    <p>2024-06-05 20:28:15 · YinHao</p>
+                  </div>
+                  <h3>数组去重</h3>
+<ol>
+<li>方式一</li>
+</ol>
+<pre><code class="language-js">const arr = [
+  &quot;justin1go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+];
+const uniqueArr = Array.from(new Set(arr));
+// const uniqueArr = [...new Set(arr)];
+</code></pre>
+<ol start="2">
+<li>方式二</li>
+</ol>
+<pre><code class="language-js">const arr = [
+  &quot;justin1go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+];
+const uniqueArr = [];
+arr.forEach((item) =&gt; {
+  // 或者!uniqueArr.includes(item)
+  if (uniqueArr.indexOf(item) === -1) {
+    uniqueArr.push(item);
+  }
+});
+</code></pre>
+<pre><code class="language-js">const arr = [
+  &quot;justin1go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+];
+const uniqueArr = arr.filter((item, index) =&gt; {
+  return arr.indexOf(item, 0) === index;
+});
+</code></pre>
+<pre><code class="language-js">const arr = [
+  &quot;justin1go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin2go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+  &quot;justin3go&quot;,
+];
+const uniqueArr = arr.reduce(
+  (prev, cur) =&gt; (prev.includes(cur) ? prev : [...prev, cur]),
+  []
+);
+</code></pre>
+<h3>数组最后一个元素</h3>
+<pre><code class="language-js">const arr = [&quot;justin1go&quot;, &quot;justin2go&quot;, &quot;justin3go&quot;];
+console.log(arr.at(-1)); // 倒数第一个值
+console.log(arr.at(-2)); // 倒数第二个值
+console.log(arr.at(0)); // 正数第一个
+console.log(arr.at(1)); // 正数第二个
+</code></pre>
+<h3>数组和对象的相互转换</h3>
+<pre><code class="language-js">const entryified = [
+  [&quot;key1&quot;, &quot;justin1go&quot;],
+  [&quot;key2&quot;, &quot;justin2go&quot;],
+  [&quot;key3&quot;, &quot;justin3go&quot;],
+];
+const originalObject = Object.fromEntries(entryified);
+console.log(originalObject);
+</code></pre>
+<h3>交换两个值</h3>
+<pre><code class="language-js">let a = 1;
+let b = 2;
+[a, b] = [b, a];
+</code></pre>
+<pre><code class="language-js">const arr = [&quot;justin1go&quot;, &quot;justin2go&quot;, &quot;justin3go&quot;];
+[arr[0], arr[2]] = [arr[2], arr[0]];
+</code></pre>
+<h3>位运算</h3>
+<ul>
+<li>使用 &amp; 运算符判断一个数的奇偶</li>
+</ul>
+<pre><code class="language-js">// 偶数 &amp; 1 = 0
+// 奇数 &amp; 1 = 1
+console.log(2 &amp; 1); // 0
+console.log(3 &amp; 1); // 1
+</code></pre>
+<ul>
+<li>使用 <code>~、&gt;&gt;、&lt;&lt;、&gt;&gt;&gt;、|</code> 来取整</li>
+</ul>
+<pre><code class="language-js">console.log(~~6.83); // 6
+console.log(6.83 &gt;&gt; 0); // 6
+console.log(6.83 &lt;&lt; 0); // 6
+console.log(6.83 | 0); // 6
+// &gt;&gt;&gt;不可对负数取整
+console.log(6.83 &gt;&gt;&gt; 0); // 6
+</code></pre>
+<ul>
+<li>使用 <code>^</code> 来完成值交换</li>
+</ul>
+<pre><code class="language-js">var a = 5;
+var b = 8;
+a ^= b;
+b ^= a;
+a ^= b;
+console.log(a); // 8
+console.log(b); // 5
+</code></pre>
+<ul>
+<li>使用 <code>&amp;、&gt;&gt;、|</code> 来完成 rgb 值和 16 进制颜色值之间的转换</li>
+</ul>
+<pre><code class="language-js">/**
+ * 16进制颜色值转RGB
+ * @param  {String} hex 16进制颜色字符串
+ * @return {String}     RGB颜色字符串
+ */
+function hexToRGB(hex) {
+  var hexx = hex.replace(&quot;#&quot;, &quot;0x&quot;);
+  var r = hexx &gt;&gt; 16;
+  var g = (hexx &gt;&gt; 8) &amp; 0xff;
+  var b = hexx &amp; 0xff;
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/**
+ * RGB颜色转16进制颜色
+ * @param  {String} rgb RGB进制颜色字符串
+ * @return {String}     16进制颜色字符串
+ */
+function RGBToHex(rgb) {
+  var rgbArr = rgb.split(/[^\d]+/);
+  var color = (rgbArr[1] &lt;&lt; 16) | (rgbArr[2] &lt;&lt; 8) | rgbArr[3];
+  return &quot;#&quot; + color.toString(16);
+}
+// -------------------------------------------------
+hexToRGB(&quot;#ffffff&quot;); // &#39;rgb(255,255,255)&#39;
+RGBToHex(&quot;rgb(255,255,255)&quot;); // &#39;#ffffff&#39;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/35.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            

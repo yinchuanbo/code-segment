@@ -111,7 +111,7 @@ ol > li {
 }
 
 ol > li::marker {
-  color: #f92672;
+  color: #ff0000;
   float: left;
   font-weight: 600;
 }
@@ -131,7 +131,7 @@ ul > li::before {
   left: 0;
   width: 7px;
   height: 7px;
-  background-color: #f92672;
+  background-color: #ff0000;
   border-radius: 100%;
 }
 
@@ -141,7 +141,7 @@ p {
 }
 
 p code {
-  color: #f92672;
+  color: #ff0000;
   font-style: italic;
 }
 
@@ -198,7 +198,7 @@ blockquote::before {
   left: 0;
   width: 5px;
   height: 100%;
-  background-color: #f92672;
+  background-color: #ff0000;
 }
 
 /* .token.constant,
