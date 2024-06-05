@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>NodeJS 操作分支</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>NodeJS 操作分支</h2>
+                    <p>2024-06-05 21:17:38 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">const { execSync } = require(&quot;child_process&quot;);
+const path = require(&quot;path&quot;);
+
+const projectPath = &quot;./code-segment&quot;;
+
+try {
+  const uncommittedFiles = execSync(`git -C ${projectPath} status --porcelain`)
+    .toString()
+    .trim();
+  if (uncommittedFiles) {
+    throw new Error(&quot;存在未提交的文件，请先提交所有更改后再执行操作&quot;);
+  }
+  console.log(&quot;所有文件已提交到 commit&quot;);
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
+
+try {
+  const result = execSync(`cd ${projectPath} &amp;&amp; git pull --rebase`);
+  console.log(result.toString());
+} catch (error) {
+  console.error(`exec error: ${error}`);
+}
+
+const branchName = execSync(
+  &quot;git -C &quot; + projectPath + &quot; rev-parse --abbrev-ref HEAD&quot;
+)
+  .toString()
+  .trim();
+const remoteBranch = `origin/${branchName}`;
+const localBranch = branchName;
+
+const localCommit = execSync(
+  &quot;git -C &quot; + projectPath + &quot; rev-parse &quot; + localBranch
+)
+  .toString()
+  .trim();
+const remoteCommit = execSync(
+  &quot;git -C &quot; + projectPath + &quot; rev-parse &quot; + remoteBranch
+)
+  .toString()
+  .trim();
+
+if (localCommit === remoteCommit) {
+  console.log(`本地分支 ${branchName} 与远程分支的最新 commit 一致`);
+} else {
+  console.log(`本地分支 ${branchName} 与远程分支的最新 commit 不一致`);
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/40.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
