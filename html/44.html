@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>web worker 和 Blob</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>web worker 和 Blob</h2>
+                    <p>2024-06-06 22:25:29 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">const handleImport = (ev: Event) =&gt; {
+  const file = (ev.target as HTMLInputElement).files![0];
+  const worker = new Worker(
+    URL.createObjectURL(
+      new Blob([
+        `
+        importScripts(&#39;https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.4/xlsx.full.min.js&#39;);
+        onmessage = function(e) {
+          const fileData = e.data;
+          const workbook = XLSX.read(fileData, { type: &#39;array&#39; });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          postMessage(data);
+        };
+        `,
+      ]),
+    ),
+  );
+
+  // 使用FileReader读取文件内容
+  const reader = new FileReader();
+
+  reader.onload = function (e: any) {
+    const data = new Uint8Array(e.target.result);
+    worker.postMessage(data);
+  };
+
+  // 读取文件
+  reader.readAsArrayBuffer(file);
+
+  // 监听Web Worker返回的消息
+  worker.onmessage = function (e) {
+    console.log(&#39;解析完成&#39;, e.data);
+    worker.terminate(); // 当任务完成后，终止Web Worker
+  };
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/43.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+              </body>
+            </html>
+            
