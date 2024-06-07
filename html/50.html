@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>写 H5 页面真的要了解 meta 标签</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>写 H5 页面真的要了解 meta 标签</h2>
+                    <p>2024-06-07 18:51:18 · YinHao</p>
+                  </div>
+                  <h2>前言</h2>
+<p>事情的起因是这样的，由于 小 A 需要负责开发一个 H5 移动端的项目，需要分别在 微信环境和企微环境中去使用，于是小 A 使用 Vite + Vue3 来进行开发，然后测试提出如下问题。</p>
+<h2>软键盘弹出，视图放大</h2>
+<p>IOS 系统 中在 <strong>微信环境</strong> 和 <strong>企微环境</strong> 中表现一致，具体如下：</p>
+<p><img src="./imgs/50/01.gif" alt=""></p>
+<h2>软键盘弹出，视图发生偏移</h2>
+<ol>
+<li>IOS、Android 系统 — 微信环境（正常）</li>
+</ol>
+<p><img src="./imgs/50/02.gif" alt=""></p>
+<ol start="2">
+<li>IOS 系统 — 企微环境（异常）</li>
+</ol>
+<p>注意观察，底部 Tab 和手机底部小黑条的相对位置发生变化，即页面发生了偏移，导致原本设置的全屏 loading 也出现无法覆盖页面的情况，具体如下：</p>
+<p><img src="./imgs/50/03.gif" alt=""></p>
+<p>出现上述问题后，小 A 就开始一顿排查和尝试修改，但最终一下午过去还是没能解决，他说之前写的 H5 移动端项目也没出问题呀，后来询问得知之前的项目是别人搭好了后他再负责具体实现的！</p>
+<p>实际上这些问题都可以通过设置 <code>&lt;meta&gt;</code> 标签属性值来解决，但由于他对 <code>&lt;meta&gt;</code> 不是很熟悉，所以根本没有往 <code>&lt;meta&gt;</code> 这方面考虑，导致花费了大量的时间。</p>
+<h2>使用 <code>&lt;meta name=&quot;viewport&quot;&gt;</code> 解决问题</h2>
+<h2>解决视图放大问题</h2>
+<p><strong>点击输入框，视图为什么会放大？</strong></p>
+<p>原因是在 iOS 设备中的浏览器（微信内置浏览器、手机浏览器）当用户点击输入框并聚焦后，会自动放大页面以适应输入框的大小，本意是为了提高用户体验，确保输入框在焦点状态下可以完整地显示在屏幕上。</p>
+<blockquote>
+<p>值得注意的是，这个自动放大的行为是 IOS 设备上的表现，也就是说在 Android 设备上当输入框聚焦时是不会被自动放大的。</p>
+</blockquote>
+<p>但这种自动放大的行为在使用响应式设计和弹性布局的 Web 应用中可能会导致页面布局错乱，因为页面元素的尺寸和位置可能发生改变，导致视图表现异常。</p>
+<p>调整 <code>&lt;meta name=&quot;viewport&quot; /&gt;</code></p>
+<p>实际上可以直接查看项目中对应的 index.html 文件，不难发现其中只有简单的 <code>&lt;meta&gt;</code> 内容：</p>
+<p><img src="./imgs/50/01.webp" alt=""></p>
+<p>很明显默认和视口参数相关内容为：</p>
+<ul>
+<li>默认视图宽度 为 设备宽度</li>
+<li>默认缩放比为 1</li>
+</ul>
+<p>此时，只需要将 <code>&lt;meta name=&quot;viewport&quot; /&gt;</code> 设置为如下方式即可解决问题，而这也是大多数项目（PC 端、移动端）需要设置的内容：</p>
+<ul>
+<li>默认视图宽度 为 设备宽度</li>
+<li>默认缩放比为 1</li>
+<li>最大、最小缩放比为 1</li>
+<li>不允许用户手动缩放</li>
+</ul>
+<pre><code class="language-html">&lt;meta
+  name=&quot;viewport&quot;
+  content=&quot;width=device-width,initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no&quot;
+/&gt;
+</code></pre>
+<h2>解决视图上移问题</h2>
+<p>正如前面所示，视图发生偏移只在 IOS 系统中的企微环境出现，这就表明了微信 webview 渲染和企微 webview 渲染还是存在差异。</p>
+<p><strong>viewport-fit — iOS11 新增特性</strong></p>
+<p><code>viewport-fit</code> 是为了适配 iPhoneX 对现有 <code>&lt;meta name=&quot;viewport&quot; /&gt;</code> 标签的一个扩展，用于设置网页在可视窗口的布局方式，具有三个属性值：</p>
+<ul>
+<li>auto: 默认值，跟 contain 表现一致</li>
+<li>contain: 可视窗口完全包含网页内容</li>
+<li>cover: 网页内容完全覆盖可视窗口</li>
+</ul>
+<p>既然看起来企微 webview 中视图高度没法覆盖，那我们就可以通过 <code>&lt;meta name=&quot;viewport&quot; /&gt;</code> 设置网页在可视区域的布局方式将视图内容，新增 <code>viweport-fit: cover</code> 使得页面内容完全覆盖整个窗口，即可解决问题：</p>
+<pre><code class="language-html">&lt;meta
+  name=&quot;viewport&quot;
+  content=&quot;width=device-width,initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover&quot;
+/&gt;
+</code></pre>
+<h2>meta 标签的属性</h2>
+<h2>常见属性</h2>
+<h3>name</h3>
+<p>name 和 content 属性一起配合使用，以键值对的方式给文档提供元数据，其中 name 作为元数据的键，content 作为元数据的值。</p>
+<ol>
+<li><p>name=&quot;author&quot;</p>
+<ul>
+<li>用来表示网页的作者的名字，例如某个组织或者机构，例如 <code>&lt;meta name=&quot;author&quot; content=&quot;aaa@mail.abc.com&quot;&gt;</code></li>
+</ul>
+</li>
+<li><p>name=&quot;description&quot;</p>
+<ul>
+<li>一段简短而精确的、对页面内容的描述</li>
+</ul>
+</li>
+<li><p>name=&quot;keywords&quot;</p>
+<ul>
+<li>与页面内容相关的关键词，使用逗号分隔，便于某些搜索引擎在遇到这些关键字时对文档进行分类</li>
+</ul>
+</li>
+<li><p>name=&quot;viewport&quot;</p>
+<ul>
+<li>来控制视口的大小和形状</li>
+</ul>
+</li>
+<li><p>name=&quot;robots&quot;</p>
+<ul>
+<li><p>all：搜索引擎将索引此网页，并继续通过此网页的链接索引文件将被检索</p>
+</li>
+<li><p>none：搜索引擎将忽略此网页</p>
+</li>
+<li><p>index：搜索引擎索引此网页</p>
+</li>
+<li><p>follow：搜索引擎继续通过此网页的链接索引搜索其它的网页</p>
+</li>
+<li><p>表示爬虫对此页面的处理行为或应当遵守的规则，是用来做搜索引擎抓取的</p>
+</li>
+<li><p>可设置 <code>&lt;meta name=&quot;robots&quot; content=&quot;all | none | index | follow&quot;&gt;</code></p>
+</li>
+<li><p>示例：<code>&lt;meta name=&quot;robots&quot; content=&quot;index, follow&quot;&gt;</code></p>
+</li>
+</ul>
+</li>
+<li><p>name=&quot;renderer&quot;</p>
+<ul>
+<li><p>用来指定支持双核浏览器要采用哪种的渲染方式，如 360 浏览器</p>
+</li>
+<li><p><code>&lt;meta name=&quot;renderer&quot; content=&quot;webkit&quot;&gt;</code> 默认 webkit 内核</p>
+</li>
+<li><p><code>&lt;meta name=&quot;renderer&quot; content=&quot;ie-comp&quot;&gt;</code> 默认 IE 兼容模式</p>
+</li>
+<li><p><code>&lt;meta name=&quot;renderer&quot; content=&quot;ie-stand&quot;&gt;</code> 默认 IE 标准模式</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3>http-equiv</h3>
+<p>通过该属性可以设置特定 HTTP 标头内容，例如（非全部）：</p>
+<ul>
+<li><p><code>http-equiv=&quot;X-UA-Compatible&quot;</code></p>
+<ul>
+<li>一般用来是做 IE 浏览器适配的，如以下告诉 IE 浏览器使用最高版本来渲染页面</li>
+<li><code>&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge, chrome=1&quot;&gt;</code></li>
+</ul>
+</li>
+<li><p><code>http-equiv=&quot;Content-Type&quot;</code></p>
+<ul>
+<li>用于声明 MIME 类型和文档的字符编码</li>
+<li><code>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html;charset=utf-8&quot;&gt;</code></li>
+</ul>
+</li>
+<li><p><code>http-equiv=&quot;x-dns-prefetch-control&quot;</code></p>
+<ul>
+<li>HTML 页面中的 <code>&lt;a&gt;</code> 标签会自动启用 DNS 提前解析来提升网站性能，但是在使用 https 协议的网站中失效，可通过设置以下方式进行打开</li>
+<li><code>&lt;meta http-equiv=&quot;x-dns-prefetch-control&quot; content=&quot;on&quot;&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h3>content</h3>
+<p>此属性包含 <code>http-equiv</code> 或 name 属性的值，具体取决于所使用的值。</p>
+<h3>charset</h3>
+<p>用于声明了文档的字符编码，值得注意的是：</p>
+<ul>
+<li><p>若使用这个属性，那么它的值只能是字符串 &quot;utf-8&quot; （不区分 ASCII 大小写），因为 UTF-8 是 HTML5 文档的唯一有效编码</p>
+</li>
+<li><p>声明字符编码的 <code>&lt;meta&gt;</code> 元素必须完全位于文档的前 1024 个字节内</p>
+</li>
+</ul>
+<h2>meta 扩展</h2>
+<h3>清除缓存</h3>
+<p>在单页面应用 (Single Page Application, SPA) 中，对应的 html 文件是不需要被缓存的，只需要对 html 文件中的 CSS、JavaScript 等资源进行缓存（得益于现代构建工具的特性，可以直接使用强缓存），那么此时我们就可以通过设置 <code>&lt;meta http-equiv&gt;</code> 来实现 html 文件清除缓存功能，如下：</p>
+<pre><code class="language-html">&lt;meta http-equiv=&quot;Expires&quot; content=&quot;0&quot; /&gt;
+&lt;meta http-equiv=&quot;Pragma&quot; content=&quot;no-cache&quot; /&gt;
+&lt;meta http-equiv=&quot;Cache-control&quot; content=&quot;no-cache&quot; /&gt;
+&lt;meta http-equiv=&quot;Cache&quot; content=&quot;no-cache&quot; /&gt;
+</code></pre>
+<p>这样的方式有利于在发布新版本后，避免通过手动清除浏览器缓存，如果不清除缓存就会加载旧版本的资源。</p>
+<h3>禁止翻译</h3>
+<p>通常项目中可能会存在国际化的需求，这就意味着用户可以手动选择当前的语言环境，但除此之外，通过浏览器本身也会存在对应的翻译插件。</p>
+<p>问题点在于，如果用户先使用浏览器翻译插件默认翻译文档内容，又切换了项目中的国际化功能，那么此时就导致文档中的内容出现翻译不准确。</p>
+<p>而这个问题是亲身经历过的，只记得当时用户在 Chrome 浏览器中反馈翻译不准确甚至出现意料之外字符的问题时，也是花费了一番功夫才确定是用户使用浏览器翻译插件的问题，针对 Chrome 浏览器在访问我们自己的项目时可以让其不进行自动翻译，可进行如下设置：</p>
+<pre><code class="language-html">&lt;meta name=&quot;google&quot; content=&quot;notranslate&quot; /&gt;
+</code></pre>
+<h3>自定义元数据</h3>
+<p>除了使用 <code>&lt;meta&gt;</code> 标签本身提供特定元数据内容之外，我们其实也可以自定义元数据，只不过这个元数据不会被当前文档所识别并被应用，例如：</p>
+<pre><code class="language-html">&lt;meta data-n-head=&quot;ssr&quot; name=&quot;theme-color&quot; content=&quot;#ffffff&quot; /&gt;
+&lt;meta data-n-head=&quot;ssr&quot; name=&quot;msapplication-TileColor&quot; content=&quot;#da532c&quot; /&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/49.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/51.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

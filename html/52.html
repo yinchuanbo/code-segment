@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>如何使用 JavaScript 阻止屏幕进入睡眠状态</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>如何使用 JavaScript 阻止屏幕进入睡眠状态</h2>
+                    <p>2024-06-07 18:59:21 · YinHao</p>
+                  </div>
+                  <h2>前言</h2>
+<p>在移动设备上，屏幕常亮是一个常见的需求，尤其是在使用 Web 应用时。为了满足这一需求，开发者可以使用 JavaScript 中的 Wake Lock API 来阻止屏幕进入睡眠状态。本文将详细介绍如何使用这一 API，并讨论其在不同浏览器上的兼容性情况。</p>
+<h2>检查 Wake Lock 功能的支持情况</h2>
+<p>在使用 Wake Lock API 之前，我们需要确认当前浏览器是否支持这一功能。可以通过以下代码进行检查：</p>
+<pre><code class="language-js">const isWakeLockSupported = &quot;wakeLock&quot; in navigator;
+</code></pre>
+<p>如果 isWakeLockSupported 为 true，则表示当前浏览器支持 Wake Lock 功能。</p>
+<h2>浏览器兼容性</h2>
+<p>Wake Lock API 的兼容性因浏览器和操作系统而异。截至目前，以下是主流浏览器对 Wake Lock API 的支持情况：</p>
+<ul>
+<li>Chrome: 从 Chrome 85 版本开始支持 Wake Lock API。</li>
+<li>Firefox: 支持 Wake Lock API，但可能需要在设置中启用相应的功能。</li>
+<li>Safari: 截至目前，Safari 尚未支持 Wake Lock API。不过，可以使用第三方库如 NoSleep.js 作为替代方案。</li>
+<li>Edge: 作为基于 Chromium 的浏览器，Edge 的兼容性与 Chrome 类似。</li>
+<li>Opera: 同样基于 Chromium，支持情况与 Chrome 相似。</li>
+</ul>
+<h2>请求屏幕保持唤醒状态</h2>
+<p>要请求屏幕保持唤醒状态，可以使用 navigator.wakeLock.request 方法。这个方法是基于 Promise 的，因此需要在异步函数中调用。</p>
+<pre><code class="language-js">let wakeLock = null;
+const requestScreenWakeLock = async () =&gt; {
+  try {
+    wakeLock = await navigator.wakeLock.request(&quot;screen&quot;);
+    console.log(&quot;屏幕保持唤醒状态成功！&quot;);
+  } catch (err) {
+    console.error(`错误：${err.name}, 消息：${err.message}`);
+  }
+};
+requestScreenWakeLock();
+</code></pre>
+<h2>释放屏幕唤醒锁</h2>
+<p>当不再需要保持屏幕唤醒状态时，应该释放唤醒锁。可以使用 wakeLock.release 方法来实现：</p>
+<pre><code class="language-js">if (wakeLock) {
+  wakeLock.release().then(() =&gt; {
+    wakeLock = null;
+    console.log(&quot;屏幕唤醒锁已释放&quot;);
+  });
+}
+</code></pre>
+<h2>监听唤醒锁的释放</h2>
+<p>如果因为某些原因（如用户切换到其他窗口或标签页）导致唤醒锁被释放，可以通过添加事件监听器来监听这一事件：</p>
+<pre><code class="language-js">if (wakeLock) {
+  wakeLock.addEventListener(&quot;release&quot;, () =&gt; {
+    console.log(&quot;屏幕唤醒锁已被释放&quot;);
+  });
+}
+</code></pre>
+<h2>根据文档可见性重新获取唤醒锁</h2>
+<p>在某些情况下，当文档的可见性发生变化时（例如用户切换回当前标签页），可能需要重新获取唤醒锁。可以通过监听 visibilitychange 事件来实现：</p>
+<pre><code class="language-js">document.addEventListener(&quot;visibilitychange&quot;, async () =&gt; {
+  if (document.visibilityState === &quot;visible&quot; &amp;&amp; !wakeLock) {
+    await requestScreenWakeLock();
+  }
+});
+</code></pre>
+<h2>结论</h2>
+<p>通过以上步骤，开发者可以使用 JavaScript 中的 Wake Lock API 来保持屏幕常亮，从而提升用户体验。需要注意的是，这一 API 在不同的浏览器和平台上的支持情况可能不同，因此在实际使用时需要进行充分的测试和兼容性处理。同时，开发者应当注意合理使用这一 API，避免对用户的设备电池寿命造成不必要的影响。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/51.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/53.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
