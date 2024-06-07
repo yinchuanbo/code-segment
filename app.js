@@ -94,6 +94,7 @@ fs.readdir(mdDir, (err, files) => {
                 </div>
                 <script src="./js/prism.min.js"></script>
                 <script src="./js/prism-javascript.min.js"></script>
+                <script src="./js/script.js"></script>
               </body>
             </html>
             `;

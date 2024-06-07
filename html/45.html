@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Git Worktree 让你无需切换分支</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Git Worktree 让你无需切换分支</h2>
+                    <p>2024-06-07 18:32:01 · YinHao</p>
+                  </div>
+                  <p>我们假设一个场景：</p>
+<p>你正在某个分支中处理一个名为 “feature” 的功能，突然之间需要在主分支（master）中修复一个关键性 bug。</p>
+<p>如果没有使用 <code>git worktree</code>，那么必须如下：</p>
+<ul>
+<li><p>在功能分支（feature）中存储或提交更改</p>
+</li>
+<li><p>切换到主分支（master），在主分支中修复错误，提交修复</p>
+</li>
+<li><p>切换回功能分支，然后取消存储或检出更改</p>
+</li>
+</ul>
+<p><strong>特别是如果需要多次来回切换，这就显得很麻烦了。</strong></p>
+<p>但是，如果使用了 <code>git worktree</code>，那么整个操作的流程就会变得更加简单，</p>
+<p><strong>你可以直接拥有 feature 和 master 两个分支的单独工作目录，并且可以分别在不同目录之间完成开发工作，不再需要进行来回切换。</strong></p>
+<h3>使用 git worktree 完成修复工作</h3>
+<p>假设你目前 <code>feature</code> 分支上，正在处理项目的开发工作，突然间，需要在主分支上修复一个错误；</p>
+<p>那么此时可以使用以下命令为主分支创建一个 <strong>新的工作数（worktree）</strong></p>
+<pre><code class="language-sh">git worktree add ../bugfix master
+</code></pre>
+<p>该命令在当前存储库的相对路径 <code>../bugfix</code> 处创建一个新目录，并在该目录中签出主分支。现在，你可以转到 bugfix 目录并修复 bug:</p>
+<pre><code class="language-sh">cd ../bugfix
+</code></pre>
+<p>你在这里进行的 <strong>任何更改都将在主分支上进行，并不会影响其他分支</strong>。一旦完成了 bug 修复，则可以直接提交你的更改：</p>
+<pre><code class="language-sh">git commit -am &quot;修复 bug&quot;
+</code></pre>
+<p>现在，可以返回到原工作目录并继续在原分支（feature）上完成之前的工作：</p>
+<pre><code class="language-bash">cd ../featrue
+</code></pre>
+<h3>git worktree 带来的其他好处</h3>
+<ol>
+<li><p>代码审查：如果你正在审查多个分支的代码，可以在单独的 worktree 中检出每个分支。这样可以快速的在它们之间切换，而无需每次都执行检出的操作。</p>
+</li>
+<li><p>持续集成/部署：如果你有一个需要同时处理同一个存储库的多个分支的 CI/CD，git worktree 可以让每个分支都在自己的 worktree 中，避免冲突。</p>
+</li>
+<li><p>长时间运行的任务：如果你有一项长时间运行的任务，你希望在一个分支上运行该任务的同时继续在另一个分支上工作，可以在一个目录中运行任务另一个目录中工作。</p>
+</li>
+</ol>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/44.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/46.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

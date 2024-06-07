@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>git cherry-pick</title>
+                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>git cherry-pick</h2>
+                    <p>2024-06-07 18:35:16 · YinHao</p>
+                  </div>
+                  <blockquote>
+<p>应用场景对于多分支的代码库，将代码从一个分支转移到另一个分支是常见需求。这时分两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（git merge）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。</p>
+</blockquote>
+<h2>基本用法</h2>
+<p><code>git cherry-pick</code> 命令的作用，就是将指定的提交（<code>commit</code>）应用于其他分支。</p>
+<pre><code class="language-sh">git cherry-pick &lt;commitHash&gt;
+</code></pre>
+<p>上面命令就会将指定的提交 commitHash，应用于当前分支。这会在当前分支产生一个新的提交，当然它们的哈希值会不一样。</p>
+<p>举例来说，代码仓库有 master 和 feature 两个分支。</p>
+<pre><code class="language-sh">a - b - c - d   Master
+         \
+           e - f - g Feature
+</code></pre>
+<p>现在将提交 f 应用到 master 分支。</p>
+<pre><code class="language-sh"># 切换到 master 分支
+$ git checkout master
+# Cherry pick 操作
+$ git cherry-pick f
+</code></pre>
+<p>上面的操作完成以后，代码库就变成了下面的样子。</p>
+<pre><code class="language-sh">a - b - c - d - f   Master
+         \
+           e - f - g Feature
+</code></pre>
+<p><code>git cherry-pick</code> 命令的参数，不一定是提交的哈希值，分支名也是可以的，表示转移该分支的最新提交。</p>
+<pre><code class="language-sh">$ git cherry-pick feature
+# 上面代码表示将feature分支的最近一次提交，转移到当前分支。
+</code></pre>
+<h2>转移多个提交</h2>
+<p>Cherry pick 支持一次转移多个提交。</p>
+<pre><code class="language-sh">git cherry-pick &lt;HashA&gt; &lt;HashB&gt;
+</code></pre>
+<p>上面的命令将 A 和 B 两个提交应用到当前分支。这会在当前分支生成两个对应的新提交。</p>
+<p>如果想要转移一系列的连续提交，可以使用下面的简便语法。</p>
+<pre><code class="language-sh">git cherry-pick A..B
+</code></pre>
+<p>上面的命令可以转移从 A 到 B 的所有提交。它们必须按照正确的顺序放置：提交 A 必须早于提交 B，否则命令将失败，但不会报错。</p>
+<p>注意，使用上面的命令，提交 A 将不会包含在 Cherry pick 中。如果要包含提交 A，可以使用下面的语法。</p>
+<pre><code class="language-sh">git cherry-pick A^..B
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/45.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/47.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/prism-javascript.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
