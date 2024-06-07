@@ -144,6 +144,7 @@ p {
 p code {
   color: #ff0000;
   font-style: italic;
+  margin: 0 5px;
 }
 
 table {
@@ -292,7 +293,6 @@ a {
   color: #fff;
 }
 
-
 .img__preview {
   position: fixed;
   top: 0;
@@ -334,10 +334,25 @@ a {
   text-align: center;
   font-size: 16px;
   transition: 0.5s;
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 #imgClose:hover {
   opacity: 0.6;
   transition: 0.5s;
+}
+
+div.code-toolbar > .toolbar {
+  right: 10px;
+}
+
+div.code-toolbar > .toolbar .toolbar-item + .toolbar-item {
+  margin-left: 10px;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  border-radius: 0;
+  padding-bottom: 2px;
 }

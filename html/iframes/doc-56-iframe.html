@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: "Montserrat", sans-serif; }
+
+html {
+  font-size: 62.5%; }
+
+body {
+  box-sizing: border-box;
+  font-size: 1.6rem;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  min-height: 100vh; }
+
+.carousel {
+  position: relative; }
+
+.carousel__item {
+  position: relative;
+  height: 35rem;
+  width: 25rem;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5);
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.1);
+  z-index: 0;
+  transition: all 0.2s linear; }
+
+.carousel__item img {
+  width: 100%;
+  min-height: 100%;
+  object-fit: cover; }
+
+.carousel__item--main {
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 2;
+  cursor: pointer; }
+
+.carousel__item--left {
+  transform: translate(-110%, -50%) scale(0.9);
+  z-index: 1; }
+
+.carousel__item--right {
+  transform: translate(10%, -50%) scale(0.9);
+  z-index: 1; }
+
+.carousel__item--left img,
+.carousel__item--right img {
+  filter: grayscale(80%); }
+
+.carousel__item--right:hover {
+  transform: translate(10%, -50%) scale(1.2);
+  z-index: 3;
+  cursor: pointer; }
+
+.carousel__item--left:hover {
+  transform: translate(-110%, -50%) scale(1.2);
+  z-index: 3;
+  cursor: pointer; }
+
+.carousel__item--main:hover {
+  transform: translate(-50%, -50%) scale(1.2); }
+
+.carousel__item:hover > .carousel__text {
+  opacity: 1; }
+
+.carousel__item:hover img {
+  filter: grayscale(0%); }
+
+.carousel__text {
+  position: absolute;
+  bottom: 0;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.2s;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2rem 1rem;
+  color: #fff; }
+
+.carousel__btns {
+  position: absolute;
+  transform: translate(-50%, 22rem);
+  display: flex;
+  gap: 2rem; }
+
+.carousel__btn {
+  background-color: transparent;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  color: #fff;
+  cursor: pointer; }
+
+.carousel__btn svg {
+  height: 1.8rem;
+  width: 1.8rem; }
+
+.carousel__btn:hover {
+  color: #aaa; }
+</style>
+              </head>
+              <body>
+                <div class="carousel">
+  <div class="carousel__item carousel__item--left">
+    <img
+      src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="dog"
+    />
+    <div class="carousel__text">
+      <h3>Cute Puppy</h3>
+      <p>Isn't it cute?!</p>
+    </div>
+  </div>
+  <div class="carousel__item carousel__item--main">
+    <img
+      src="https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=3362&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="dog"
+    />
+    <div class="carousel__text">
+      <h3>Cute Puppy</h3>
+      <p>Isn't it cute?!</p>
+    </div>
+  </div>
+  <div class="carousel__item carousel__item--right">
+    <img
+      src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?q=80&w=2568&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="dog"
+    />
+    <div class="carousel__text">
+      <h3>Cute Puppy</h3>
+      <p>Isn't it cute?!</p>
+    </div>
+  </div>
+  <div class="carousel__item">
+    <img
+      src="https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?q=80&w=3024&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="dog"
+    />
+    <div class="carousel__text">
+      <h3>Cute Puppy</h3>
+      <p>Isn't it cute?!</p>
+    </div>
+  </div>
+  <div class="carousel__item">
+    <img
+      src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="dog"
+    />
+    <div class="carousel__text">
+      <h3>Cute Puppy</h3>
+      <p>Isn't it cute?!</p>
+    </div>
+  </div>
+  <div class="carousel__item">
+    <img
+      src="https://images.unsplash.com/photo-1510771463146-e89e6e86560e?q=80&w=1362&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="dog"
+    />
+    <div class="carousel__text">
+      <h3>Cute Puppy</h3>
+      <p>Isn't it cute?!</p>
+    </div>
+  </div>
+  <div class="carousel__btns">
+    <button class="carousel__btn" id="leftBtn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="m15 4l2 2l-6 6l6 6l-2 2l-8-8z"
+        />
+      </svg>
+    </button>
+    <button class="carousel__btn" id="rightBtn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">"use strict";
+
+const carouselItems = document.querySelectorAll(".carousel__item");
+console.log(carouselItems);
+let currentItem = document.querySelector(".carousel__item--main");
+const leftBtn = document.querySelector("#leftBtn");
+const rightBtn = document.querySelector("#rightBtn");
+
+rightBtn.addEventListener("click", function () {
+  currentItem = document.querySelector(".carousel__item--right");
+  const leftItem = document.querySelector(".carousel__item--main");
+  carouselItems.forEach((item, i) => {
+    item.classList = "carousel__item";
+  });
+  currentItem.classList.add("carousel__item--main");
+  leftItem.classList.add("carousel__item--left");
+  const currentId = Array.from(carouselItems).indexOf(currentItem);
+  const rightItem =
+    currentId === carouselItems.length - 1
+      ? carouselItems[0]
+      : carouselItems[currentId + 1];
+  rightItem.classList.add("carousel__item--right");
+});
+
+leftBtn.addEventListener("click", function () {
+  currentItem = document.querySelector(".carousel__item--left");
+  const rightItem = document.querySelector(".carousel__item--main");
+  carouselItems.forEach((item, i) => {
+    item.classList = "carousel__item";
+  });
+  currentItem.classList.add("carousel__item--main");
+  rightItem.classList.add("carousel__item--right");
+  const currentId = Array.from(carouselItems).indexOf(currentItem);
+  const leftItem =
+    currentId === 0
+      ? carouselItems[carouselItems.length - 1]
+      : carouselItems[currentId - 1];
+  leftItem.classList.add("carousel__item--left");
+});
+</script>
+              </body>
+            </html>
+            

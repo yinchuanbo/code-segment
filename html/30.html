@@ -1,35 +1,42 @@
 <!DOCTYPE html>
-            <html lang="en">
-              <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>Tensorflow 进行人脸检测</title>
-                <link rel="stylesheet" href="./css/prism-okaidia.min.css">
-                <link rel="stylesheet" type="text/css" href="./css/style.css" />
-              </head>
-              <body>
-                <div class="container">
-                  <div class="container-header">
-                    <h2>Tensorflow 进行人脸检测</h2>
-                    <p>2024-06-05 16:09:22 · YinHao</p>
-                  </div>
-                  <pre><code class="language-html">&lt;label&gt;
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tensorflow 进行人脸检测</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      data-name="vs/editor/editor.main"
+      href="./css/editor.main.css"
+    />
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;label&gt;
   &lt;p&gt;Tensorflow 点击进行人脸检测&lt;/p&gt;
-  &lt;input type=&quot;file&quot; id=&quot;fileInput&quot; accept=&quot;image/*&quot; /&gt;
+  &lt;input type=&#34;file&#34; id=&#34;fileInput&#34; accept=&#34;image/*&#34; /&gt;
 &lt;/label&gt;
 &lt;img
-  id=&quot;image&quot;
-  src=&quot;&quot;
-  alt=&quot;Uploaded Image&quot;
-  style=&quot;max-width: 300px; display: none&quot;
+  id=&#34;image&#34;
+  src=&#34;&#34;
+  alt=&#34;Uploaded Image&#34;
+  style=&#34;max-width: 300px; display: none&#34;
 /&gt;
-&lt;div id=&quot;result&quot;&gt;&lt;/div&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/npm/@mediapipe/face_detection&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection&quot;&gt;&lt;/script&gt;
-</code></pre>
-<pre><code class="language-css">* {
+&lt;div id=&#34;result&#34;&gt;&lt;/div&gt;
+&lt;script src=&#34;https://cdn.jsdelivr.net/npm/@mediapipe/face_detection&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection&#34;&gt;&lt;/script&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">* {
   padding: 0;
   margin: 0;
 }
@@ -61,13 +68,12 @@ label:hover {
 #result {
   margin-top: 20px;
   color: #fff;
-}
-</code></pre>
-<pre><code class="language-js">const fileInput = document.getElementById(&quot;fileInput&quot;);
-const imageElement = document.getElementById(&quot;image&quot;);
-const resultElement = document.getElementById(&quot;result&quot;);
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">const fileInput = document.getElementById(&#34;fileInput&#34;);
+const imageElement = document.getElementById(&#34;image&#34;);
+const resultElement = document.getElementById(&#34;result&#34;);
 
-fileInput.addEventListener(&quot;change&quot;, async function () {
+fileInput.addEventListener(&#34;change&#34;, async function () {
   const file = fileInput.files[0];
   if (file) {
     const reader = new FileReader();
@@ -76,38 +82,62 @@ fileInput.addEventListener(&quot;change&quot;, async function () {
       image.src = reader.result;
       image.onload = async function () {
         imageElement.src = reader.result;
-        imageElement.style.display = &quot;block&quot;;
+        imageElement.style.display = &#34;block&#34;;
         // ....
         const model = faceDetection.SupportedModels.MediaPipeFaceDetector;
         const detectorConfig = {
-          runtime: &quot;mediapipe&quot;,
+          runtime: &#34;mediapipe&#34;,
           solutionPath:
-            &quot;https://cdn.jsdelivr.net/npm/@mediapipe/face_detection&quot;,
+            &#34;https://cdn.jsdelivr.net/npm/@mediapipe/face_detection&#34;,
         };
         detector = await faceDetection.createDetector(model, detectorConfig);
         const estimationConfig = {
           flipHorizontal: false,
         };
         const faces = await detector.estimateFaces(image, estimationConfig);
-        console.log(&quot;faces&quot;, faces);
+        console.log(&#34;faces&#34;, faces);
         resultElement.textContent = `检测到人脸数量：${faces.length}`;
         // ....
       };
     };
     reader.readAsDataURL(file);
   }
-});
-</code></pre>
-
-                  <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/29.html'">PREV</div>
-                    <div class="nav-next" onclick="location.href='/31.html'">NEXT</div>
-                  </div>
-                  <div class="home" onclick="location.href='/'">HOME</div>
-                </div>
-                <script src="./js/prism.min.js"></script>
-                <script src="./js/prism-javascript.min.js"></script>
-                <script src="./js/script.js"></script>
-              </body>
-            </html>
-            
+});</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-30-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

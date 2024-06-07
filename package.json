@@ -12,5 +12,9 @@
   "dependencies": {
     "live-server": "^1.2.2",
     "marked": "^12.0.2"
+  },
+  "devDependencies": {
+    "ejs": "^3.1.10",
+    "node-sass": "^9.0.0"
   }
 }

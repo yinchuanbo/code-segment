@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>轮播效果</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      data-name="vs/editor/editor.main"
+      href="./css/editor.main.css"
+    />
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;div class=&#34;carousel&#34;&gt;
+  &lt;div class=&#34;carousel__item carousel__item--left&#34;&gt;
+    &lt;img
+      src=&#34;https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?q=80&amp;w=3388&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&#34;
+      alt=&#34;dog&#34;
+    /&gt;
+    &lt;div class=&#34;carousel__text&#34;&gt;
+      &lt;h3&gt;Cute Puppy&lt;/h3&gt;
+      &lt;p&gt;Isn&#39;t it cute?!&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;carousel__item carousel__item--main&#34;&gt;
+    &lt;img
+      src=&#34;https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&amp;w=3362&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&#34;
+      alt=&#34;dog&#34;
+    /&gt;
+    &lt;div class=&#34;carousel__text&#34;&gt;
+      &lt;h3&gt;Cute Puppy&lt;/h3&gt;
+      &lt;p&gt;Isn&#39;t it cute?!&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;carousel__item carousel__item--right&#34;&gt;
+    &lt;img
+      src=&#34;https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?q=80&amp;w=2568&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&#34;
+      alt=&#34;dog&#34;
+    /&gt;
+    &lt;div class=&#34;carousel__text&#34;&gt;
+      &lt;h3&gt;Cute Puppy&lt;/h3&gt;
+      &lt;p&gt;Isn&#39;t it cute?!&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;carousel__item&#34;&gt;
+    &lt;img
+      src=&#34;https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?q=80&amp;w=3024&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&#34;
+      alt=&#34;dog&#34;
+    /&gt;
+    &lt;div class=&#34;carousel__text&#34;&gt;
+      &lt;h3&gt;Cute Puppy&lt;/h3&gt;
+      &lt;p&gt;Isn&#39;t it cute?!&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;carousel__item&#34;&gt;
+    &lt;img
+      src=&#34;https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?q=80&amp;w=3387&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&#34;
+      alt=&#34;dog&#34;
+    /&gt;
+    &lt;div class=&#34;carousel__text&#34;&gt;
+      &lt;h3&gt;Cute Puppy&lt;/h3&gt;
+      &lt;p&gt;Isn&#39;t it cute?!&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;carousel__item&#34;&gt;
+    &lt;img
+      src=&#34;https://images.unsplash.com/photo-1510771463146-e89e6e86560e?q=80&amp;w=1362&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&#34;
+      alt=&#34;dog&#34;
+    /&gt;
+    &lt;div class=&#34;carousel__text&#34;&gt;
+      &lt;h3&gt;Cute Puppy&lt;/h3&gt;
+      &lt;p&gt;Isn&#39;t it cute?!&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;carousel__btns&#34;&gt;
+    &lt;button class=&#34;carousel__btn&#34; id=&#34;leftBtn&#34;&gt;
+      &lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+        &lt;path
+          fill=&#34;currentColor&#34;
+          fill-rule=&#34;evenodd&#34;
+          d=&#34;m15 4l2 2l-6 6l6 6l-2 2l-8-8z&#34;
+        /&gt;
+      &lt;/svg&gt;
+    &lt;/button&gt;
+    &lt;button class=&#34;carousel__btn&#34; id=&#34;rightBtn&#34;&gt;
+      &lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+        &lt;path
+          fill=&#34;currentColor&#34;
+          fill-rule=&#34;evenodd&#34;
+          d=&#34;m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z&#34;
+        /&gt;
+      &lt;/svg&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: &#34;Montserrat&#34;, sans-serif;
+}
+html {
+  font-size: 62.5%;
+}
+body {
+  box-sizing: border-box;
+  font-size: 1.6rem;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.carousel {
+  position: relative;
+}
+.carousel__item {
+  position: relative;
+  height: 35rem;
+  width: 25rem;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5);
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.1);
+  z-index: 0;
+  transition: all 0.2s linear;
+}
+.carousel__item img {
+  width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+.carousel__item--main {
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.carousel__item--left {
+  transform: translate(-110%, -50%) scale(0.9);
+  z-index: 1;
+}
+.carousel__item--right {
+  transform: translate(10%, -50%) scale(0.9);
+  z-index: 1;
+}
+.carousel__item--left img,
+.carousel__item--right img {
+  filter: grayscale(80%);
+}
+
+.carousel__item--right:hover {
+  transform: translate(10%, -50%) scale(1.2);
+  z-index: 3;
+  cursor: pointer;
+}
+.carousel__item--left:hover {
+  transform: translate(-110%, -50%) scale(1.2);
+  z-index: 3;
+  cursor: pointer;
+}
+.carousel__item--main:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.carousel__item:hover &gt; .carousel__text {
+  opacity: 1;
+}
+.carousel__item:hover img {
+  filter: grayscale(0%);
+}
+
+.carousel__text {
+  position: absolute;
+  bottom: 0;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.2s;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2rem 1rem;
+  color: #fff;
+}
+
+.carousel__btns {
+  position: absolute;
+  transform: translate(-50%, 22rem);
+  display: flex;
+  gap: 2rem;
+}
+.carousel__btn {
+  background-color: transparent;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  color: #fff;
+  cursor: pointer;
+}
+.carousel__btn svg {
+  height: 1.8rem;
+  width: 1.8rem;
+}
+.carousel__btn:hover {
+  color: #aaa;
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">&#34;use strict&#34;;
+
+const carouselItems = document.querySelectorAll(&#34;.carousel__item&#34;);
+console.log(carouselItems);
+let currentItem = document.querySelector(&#34;.carousel__item--main&#34;);
+const leftBtn = document.querySelector(&#34;#leftBtn&#34;);
+const rightBtn = document.querySelector(&#34;#rightBtn&#34;);
+
+rightBtn.addEventListener(&#34;click&#34;, function () {
+  currentItem = document.querySelector(&#34;.carousel__item--right&#34;);
+  const leftItem = document.querySelector(&#34;.carousel__item--main&#34;);
+  carouselItems.forEach((item, i) =&gt; {
+    item.classList = &#34;carousel__item&#34;;
+  });
+  currentItem.classList.add(&#34;carousel__item--main&#34;);
+  leftItem.classList.add(&#34;carousel__item--left&#34;);
+  const currentId = Array.from(carouselItems).indexOf(currentItem);
+  const rightItem =
+    currentId === carouselItems.length - 1
+      ? carouselItems[0]
+      : carouselItems[currentId + 1];
+  rightItem.classList.add(&#34;carousel__item--right&#34;);
+});
+
+leftBtn.addEventListener(&#34;click&#34;, function () {
+  currentItem = document.querySelector(&#34;.carousel__item--left&#34;);
+  const rightItem = document.querySelector(&#34;.carousel__item--main&#34;);
+  carouselItems.forEach((item, i) =&gt; {
+    item.classList = &#34;carousel__item&#34;;
+  });
+  currentItem.classList.add(&#34;carousel__item--main&#34;);
+  rightItem.classList.add(&#34;carousel__item--right&#34;);
+  const currentId = Array.from(carouselItems).indexOf(currentItem);
+  const leftItem =
+    currentId === 0
+      ? carouselItems[carouselItems.length - 1]
+      : carouselItems[currentId - 1];
+  leftItem.classList.add(&#34;carousel__item--left&#34;);
+});</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-56-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

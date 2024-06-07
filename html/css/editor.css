@@ -1,0 +1,127 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  /* background-color: #f2f2f2; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #f2f2f2; */
+  box-sizing: content-box;
+}
+
+.editor-home {
+  width: 100%;
+  height: 100%;
+  /* border-radius: 20px; */
+  display: flex;
+  overflow: hidden;
+  /* border: 10px solid #fff; */
+}
+
+.editor-home_code {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* #preview {
+  background-color: #f2f2f2;
+} */
+
+/* .editor-home_iframe,
+.editor-home_code {
+  width: 50%;
+  height: 100%;
+  position: relative;
+} */
+/* 
+.editor-home_iframe::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 10px);
+  top: 0;
+  left: 0;
+  border: 5px solid #1e1e1e;
+  border-right: 0;
+} */
+
+.home_content__item {
+  display: none;
+  height: 100%;
+}
+
+.home_tabs__item.active {
+  background-color: #ff0000;
+  /* border-top-right-radius: 10px;
+  border-top-left-radius: 10px; */
+}
+
+.home_tabs__item.active,
+.home_content__item.active {
+  display: block;
+}
+
+.editor-home_tabs {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  background-color: rgb(41, 41, 41);
+  /* padding-left: 5px; */
+}
+
+.home_tabs__item {
+  padding: 0 15px;
+  height: 50px;
+  line-height: 50px;
+  cursor: pointer;
+  color: #fff;
+  /* margin-top: 5px; */
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.editor-home_contents {
+  background-color: rgb(30, 30, 30);
+  height: calc(100% - 40px);
+}
+
+iframe {
+  outline: none;
+  border: 0;
+}
+
+.home_tabs__item:nth-child(1) svg {
+  color: rgb(231, 77, 77) !important;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.home_tabs__item:nth-child(2) svg {
+  color: rgb(6, 147, 255) !important;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.home_tabs__item:nth-child(3) svg {
+  color: rgb(6, 147, 255) !important;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin-right: 3px;
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">* {
+  padding: 0;
+  margin: 0; }
+
+html,
+body {
+  height: 100%; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; }
+
+input {
+  display: none; }
+
+label {
+  margin-bottom: 20px;
+  background-color: aquamarine;
+  padding: 20px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s; }
+
+label:hover {
+  background-color: antiquewhite;
+  transition: 0.5s; }
+
+#result {
+  margin-top: 20px;
+  color: #fff; }
+</style>
+              </head>
+              <body>
+                <label>
+  <p>Tensorflow 点击进行脸部关键点检测</p>
+  <input type="file" id="fileInput" accept="image/*" />
+</label>
+<img
+  id="image"
+  src=""
+  alt="Uploaded Image"
+  style="max-width: 300px; display: none"
+/>
+<div id="result"></div>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">const fileInput = document.getElementById("fileInput");
+const imageElement = document.getElementById("image");
+const resultElement = document.getElementById("result");
+
+fileInput.addEventListener("change", async function () {
+  const file = fileInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = async function () {
+      const image = new Image();
+      image.src = reader.result;
+      image.onload = async function () {
+        imageElement.src = reader.result;
+        imageElement.style.display = "block";
+        // ....
+        const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+        const detectorConfig = {
+          runtime: "mediapipe", // or 'tfjs'
+          solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh",
+        };
+        const detector = await faceLandmarksDetection.createDetector(
+          model,
+          detectorConfig
+        );
+        const faces = await detector.estimateFaces(image);
+        if (faces?.length) {
+          resultElement.textContent = `检测人脸数据：${faces?.length}`;
+        } else {
+          resultElement.textContent = `未检测人脸数据`;
+        }
+        // ....
+      };
+    };
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+              </body>
+            </html>
+            
