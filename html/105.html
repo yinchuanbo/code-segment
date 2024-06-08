@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>购物车小球斜抛动画</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      data-name="vs/editor/editor.main"
+      href="./css/editor.main.css"
+    />
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;div id=&#34;d1&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;d2&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;d3&#34;&gt;&lt;/div&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">#d1,
+#d2,
+#d3 {
+  width: 100px;
+  height: 100px;
+}
+#d1 {
+  background: lightsalmon;
+  position: fixed;
+  top: 10%;
+  left: 20%;
+}
+#d2 {
+  background: lightblue;
+  position: fixed;
+  top: 65%;
+  left: 20%;
+}
+#d3 {
+  background: red;
+  position: fixed;
+  top: 40%;
+  left: 55%;
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">class MoveBall {
+  constructor({ startDom, endDom }) {
+    this.startXy = MoveBall.getCenterCoordinates(startDom);
+    this.endXy = MoveBall.getCenterCoordinates(endDom);
+    this.verticalDom = MoveBall.cerateVerticalDom(startDom);
+    this.horizontalDom = MoveBall.createHorizontalDom();
+    this.verticalDom.appendChild(this.horizontalDom);
+  }
+  static ballW = 30;
+  static ballH = 30;
+  static getCenterCoordinates(domElement) {
+    const rect = domElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    return { x: centerX, y: centerY };
+  }
+  static cerateVerticalDom(startDom) {
+    const startXy = MoveBall.getCenterCoordinates(startDom);
+    const verticalDom = document.createElement(&#34;div&#34;);
+    verticalDom.style.position = &#34;fixed&#34;;
+    verticalDom.style.top = `${startXy.y - MoveBall.ballH / 2}px`;
+    verticalDom.style.left = `${startXy.x - MoveBall.ballW / 2}px`;
+    verticalDom.style.zIndex = &#34;999&#34;;
+    return verticalDom;
+  }
+  static createHorizontalDom() {
+    const horizontalDom = document.createElement(&#34;div&#34;);
+    horizontalDom.style.width = `${MoveBall.ballW}px`;
+    horizontalDom.style.height = `${MoveBall.ballH}px`;
+    horizontalDom.style.borderRadius = &#34;50%&#34;;
+    horizontalDom.style.background = &#34;lightgreen&#34;;
+    return horizontalDom;
+  }
+  getOffsetXy() {
+    return {
+      x: this.endXy.x - this.startXy.x,
+      y: this.endXy.y - this.startXy.y,
+    };
+  }
+  freeThrow() {
+    document.body.appendChild(this.verticalDom);
+    let verticalEasing =
+      this.startXy.y &lt; this.endXy.y
+        ? &#34;cubic-bezier(.44,-1.43,1,1)&#34;
+        : &#34;cubic-bezier(0,0,.76,1.92)&#34;;
+    let verticalAnimate = this.verticalDom.animate(
+      [{ transform: `translate3d(0, ${this.getOffsetXy().y}px, 0)` }],
+      {
+        easing: verticalEasing,
+        duration: 800,
+        iterations: 1,
+      }
+    );
+    this.horizontalDom.animate(
+      [{ transform: `translate3d(${this.getOffsetXy().x}px, 0, 0)` }],
+      {
+        easing: &#34;linear&#34;,
+        duration: 800,
+        iterations: 1,
+      }
+    );
+    verticalAnimate.onfinish = () =&gt; {
+      this.verticalDom.remove();
+    };
+  }
+}
+
+const d1 = document.getElementById(&#34;d1&#34;);
+const d2 = document.getElementById(&#34;d2&#34;);
+const d3 = document.getElementById(&#34;d3&#34;);
+d1.onclick = function (e) {
+  let moveball = new MoveBall({
+    startDom: d1,
+    endDom: d3,
+  });
+  moveball.freeThrow();
+};
+d2.onclick = function (e) {
+  let moveball = new MoveBall({
+    startDom: d2,
+    endDom: d3,
+  });
+  moveball.freeThrow();
+};</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-105-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>
