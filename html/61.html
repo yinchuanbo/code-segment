@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>高精度实现定时器</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>高精度实现定时器</h2>
+                    <p>2024-06-08 11:22:20 · YinHao</p>
+                  </div>
+                  <ul>
+<li>setTimeout 高精度实现</li>
+</ul>
+<pre><code class="language-js">function preciseTimeout(callback, delay) {
+  const start = Date.now();
+
+  function loop() {
+    const now = Date.now();
+    const elapsed = now - start;
+
+    if (elapsed &gt;= delay) {
+      callback();
+    } else {
+      requestAnimationFrame(loop);
+    }
+  }
+
+  requestAnimationFrame(loop);
+}
+
+// 使用示例
+preciseTimeout(() =&gt; {
+  console.log(&quot;This is a precise timeout callback&quot;);
+}, 1000); // 1秒
+</code></pre>
+<ul>
+<li>setInterval 高精度实现</li>
+</ul>
+<pre><code class="language-js">function preciseSetInterval(callback, interval) {
+  let expected = performance.now() + interval;
+  function step() {
+    const drift = performance.now() - expected;
+    if (drift &gt;= 0) {
+      callback();
+      expected += interval;
+    }
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// 使用示例
+preciseSetInterval(() =&gt; {
+  console.log(&quot;This runs every 2 seconds with higher precision&quot;);
+}, 2000);
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/60.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/62.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

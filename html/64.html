@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>快速了解 CSS 表单尺寸属性 field-sizing</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>快速了解 CSS 表单尺寸属性 field-sizing</h2>
+                    <p>2024-06-08 11:51:55 · YinHao</p>
+                  </div>
+                  <p>最近 Chrome 123 又推出了一个新的 CSS 属性：field-sizing。有了它，可以轻松实现输入框尺寸自动跟随输入内容的效果</p>
+<h2>一、快速了解 field-sizing</h2>
+<p>field-sizing 表示“场地”尺寸，在这里指的是表单输入框的尺寸，语法很简单，可以取两个值，如下</p>
+<pre><code class="language-css">field-sizing: fixed | content
+</code></pre>
+<p>其中，fixed 表示固定大小，也就是目前浏览器的默认行为，输入框必须要给定一个具体的尺寸</p>
+<p>而 content 表示输入框的尺寸完全由输入内容决定。</p>
+<p>举个例子，下面是一个文本域</p>
+<pre><code class="language-html">&lt;textarea&gt;&lt;/textarea&gt;
+</code></pre>
+<p>默认表现是这样的</p>
+<p><img src="./imgs/64/01.gif" alt=""></p>
+<p>可以看到，按回车时，出现了滚动条，这个大家应该再熟悉不过了</p>
+<p>这时，如果添加以下属性</p>
+<pre><code class="language-css">textarea {
+  field-sizing: content;
+}
+</code></pre>
+<p>结果...变成了这样</p>
+<p><img src="./imgs/64/02.png" alt=""></p>
+<p>因为这时没有内容，所以也就没有了尺寸，所以一般还需要手动加个尺寸</p>
+<pre><code class="language-css">textarea{
+  field-sizing: content;
+  width： 200px;
+}
+</code></pre>
+<p>现在宽度固定了，高度仍然有内容决定</p>
+<p><img src="./imgs/64/03.gif" alt=""></p>
+<p>这样就实现了一个回车自动增加高度的输入框了，是不是很方便？</p>
+<p>还可以设置最小尺寸，这样就更符实际规需求了</p>
+<pre><code class="language-css">textarea{
+  field-sizing: content;
+  width： 200px;
+  min-height: 40px;
+}
+</code></pre>
+<p>效果如下</p>
+<p><img src="./imgs/64/05.gif" alt=""></p>
+<h2>二、其他输入元素</h2>
+<p>除了前面的文本域 textarea，input 也比较实用，比如要实现一个宽度自适应内容的输入框</p>
+<pre><code class="language-css">input {
+  min-width: 100px;
+  field-sizing: content;
+}
+</code></pre>
+<p>效果如下</p>
+<p><img src="./imgs/64/06.gif" alt=""></p>
+<p>另外，select 元素也是支持的</p>
+<pre><code class="language-html">&lt;select&gt;
+  &lt;option&gt;HTML&lt;/option&gt;
+  &lt;option&gt;CSS&lt;/option&gt;
+  &lt;option&gt;JavaScript&lt;/option&gt;
+  &lt;option&gt;这是一个很长很长的选项&lt;/option&gt;
+&lt;/select&gt;
+</code></pre>
+<p>默认情况下，select 元素的宽度是由最长的那一项决定的</p>
+<p><img src="./imgs/64/07.gif" alt=""></p>
+<p>这样在比较短的选项在选中时就比较突兀，现在我们设置自适应内容尺寸</p>
+<pre><code class="language-css">select {
+  field-sizing: content;
+}
+</code></pre>
+<p>比上面要好很多了</p>
+<p><img src="./imgs/64/08.gif" alt=""></p>
+<h2>三、相比可编辑 div 的好处</h2>
+<p>在以往，我们通常是通过给 div 设置可编辑属性，来实现内容自适应</p>
+<pre><code class="language-html">&lt;div contenteditable=&quot;true&quot;&gt;&lt;/div&gt;
+</code></pre>
+<p><strong>虽然也能实现，但是有很多表单特性就丢失了:</strong></p>
+<ul>
+<li><p>onchange 事件缺失，由于只是普通的 div，所以无法监听 change 事件</p>
+</li>
+<li><p>value 属性缺失，也就是无法通过 div.value 读取或者设置输入内容</p>
+</li>
+<li><p>minLength、maxLength 属性缺失，无法直接设置最大最小长度</p>
+</li>
+<li><p>表单提交信息缺失，无法通过默认的 new Form(表单)来获取表单内容</p>
+</li>
+<li><p>在 vue、react 这些框架中也无法直接双向绑定等等</p>
+</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/63.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/65.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

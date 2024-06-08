@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>当网页资源加载失败时，怎么处理</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>当网页资源加载失败时，怎么处理</h2>
+                    <p>2024-06-08 11:53:26 · YinHao</p>
+                  </div>
+                  <h2>资源加载失败的影响</h2>
+<ol>
+<li><p>用户体验受损：资源加载失败最直接的影响就是用户体验。页面样式错乱、图片无法显示、视频无法播放，以及关键功能无法使用，都会给用户带来困扰和不满。特别是在移动设备或网络状况不佳的情况下，资源加载失败的概率更高，对用户体验的损害也更为严重。</p>
+</li>
+<li><p>页面功能受限：前端资源通常包括 JavaScript 脚本、CSS 样式表、图片、字体等，这些资源对于页面的正常运行至关重要。如果某个关键资源加载失败，可能会导致页面功能受限或完全失效。例如，JavaScript 脚本加载失败可能导致页面交互功能无法正常工作，CSS 样式表加载失败可能导致页面布局混乱。</p>
+</li>
+<li><p>性能下降：资源加载失败还可能影响页面的整体性能。浏览器在加载资源时会消耗一定的时间和带宽，如果资源加载失败，浏览器可能会尝试重新加载或触发其他回退机制，这都会增加额外的开销和延迟。长时间的加载和重试可能导致页面响应变慢，甚至引发浏览器崩溃等问题。</p>
+</li>
+<li><p>安全性风险：在某些情况下，资源加载失败还可能带来安全性风险。例如，如果加载的脚本文件被篡改或注入恶意代码，那么即使加载失败，也可能导致用户设备被攻击或数据泄露。因此，在前端开发中，确保资源的安全性和完整性也是非常重要的。</p>
+</li>
+</ol>
+<h2>前端资源加载失败的解决方案</h2>
+<h3>图片加载失败</h3>
+<p><strong>解决方案：</strong></p>
+<ol>
+<li>使用备用图片</li>
+</ol>
+<p>在 <code>&lt;img&gt;</code> 标签中设置一个备用图片地址，在原始图片加载失败时显示备用图片。</p>
+<pre><code class="language-html">&lt;img src=&quot;original-image.jpg&quot; onerror=&quot;this.src=&#39;backup-image.jpg&#39;&quot; /&gt;
+</code></pre>
+<ol start="2">
+<li>图片加载状态监测</li>
+</ol>
+<p>通过 JavaScript，可以监测图片的加载状态，如果加载失败，则执行相应的处理逻辑。</p>
+<pre><code class="language-js">var img = new Image();
+img.onload = function () {
+  // 图片加载成功后的操作
+};
+img.onerror = function () {
+  // 图片加载失败后的操作
+  this.src = &quot;backup-image.jpg&quot;; // 加载备用图片
+};
+img.src = &quot;original-image.jpg&quot;;
+</code></pre>
+<ol start="3">
+<li>CSS 背景图片备用方案</li>
+</ol>
+<p>在 CSS 中使用背景图片时，也可以通过设置多个背景图片来实现备用图片的显示。</p>
+<pre><code class="language-css">.element {
+  background-image: url(&quot;original-image.jpg&quot;), url(&quot;backup-image.jpg&quot;);
+}
+</code></pre>
+<ol start="4">
+<li>图片加载失败通知</li>
+</ol>
+<p>当图片加载失败时，还可以向用户展示一些通知，比如替代文本或者特定的 UI 元素，以便用户得知图片未能正确加载。</p>
+<pre><code class="language-html">&lt;img src=&quot;image.jpg&quot; alt=&quot;Image Description&quot; /&gt;
+&lt;p&gt;如果图片无法加载，将显示此消息。&lt;/p&gt;
+</code></pre>
+<h3>CSS 文件加载失败</h3>
+<p><strong>解决方案：</strong></p>
+<ol>
+<li>使用备用 CSS 链接</li>
+</ol>
+<p>在 <code>&lt;link&gt;</code> 标签中设置备用的 CSS 链接，在原始 CSS 加载失败时加载备用的 CSS 文件。</p>
+<pre><code class="language-html">&lt;link
+  rel=&quot;stylesheet&quot;
+  href=&quot;styles.css&quot;
+  onerror=&quot;this.href=&#39;backup-styles.css&#39;&quot;
+/&gt;
+</code></pre>
+<ol start="2">
+<li>CSS 加载状态监测</li>
+</ol>
+<p>通过 JavaScript，可以监测 CSS 文件的加载状态，如果加载失败，则执行相应的处理逻辑。</p>
+<pre><code class="language-js">var link = document.createElement(&quot;link&quot;);
+link.rel = &quot;stylesheet&quot;;
+link.href = &quot;styles.css&quot;;
+link.onerror = function () {
+  // CSS加载失败后的操作
+  this.href = &quot;backup-styles.css&quot;; // 加载备用CSS文件
+};
+document.head.appendChild(link);
+</code></pre>
+<ol start="3">
+<li>页面结构优雅降级</li>
+</ol>
+<p>可以考虑在 CSS 加载失败时对页面结构进行降级，确保页面内容仍能够正常显示。</p>
+<pre><code class="language-html">&lt;!-- 在&lt;head&gt;中内联备用CSS代码 --&gt;
+&lt;style&gt;
+  /* 备用样式 */
+&lt;/style&gt;
+</code></pre>
+<h3>JS 资源加载失败的解决方案</h3>
+<p><strong>解决方案：</strong></p>
+<ol>
+<li>使用 CDN 备份：</li>
+</ol>
+<p>使用 CDN 备份可以在主 CDN 出现故障或资源加载失败时，提供备用的资源加载路径。</p>
+<p>以下是如何使用备用 CDN 链接来解决 lazy.js 加载失败的问题：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;title&gt;Lazy Load Example&lt;/title&gt;
+    &lt;script&gt;
+      window.onload = function () {
+        var mainCDN =
+          &quot;https://cdnjs.cloudflare.com/ajax/libs/lazy/1.7.1/lazy.min.js&quot;;
+        var backupCDN = &quot;https://unpkg.com/lazy@1.7.1/dist/lazy.min.js&quot;;
+        // 尝试加载主CDN
+        var script = document.createElement(&quot;script&quot;);
+        script.src = mainCDN;
+        script.async = true;
+        script.onload = function () {
+          console.log(&quot;lazy.js loaded successfully from main CDN.&quot;);
+        };
+        script.onerror = function () {
+          console.error(
+            &quot;Failed to load lazy.js from main CDN, falling back to backup.&quot;
+          );
+          // 加载失败，切换到备用CDN
+          script.src = backupCDN;
+        };
+        document.head.appendChild(script);
+      };
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- 页面内容 --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>注意：</p>
+<ul>
+<li><p>使用 SRI（Subresource Integrity）：这可以确保即使从 CDN 加载资源，其内容也是完整且未被篡改的。</p>
+</li>
+<li><p>缓存策略：合理配置缓存策略，以减少对 CDN 的依赖并提高加载速度。</p>
+</li>
+</ul>
+<ol start="2">
+<li>延迟加载和异步加载：</li>
+</ol>
+<p>使用延迟加载或异步加载脚本可以避免因某个 JavaScript 文件加载失败而阻塞整个页面加载过程。例如，在页面底部添加如下代码：</p>
+<pre><code class="language-html">&lt;script&gt;
+  function downloadJSAtOnload() {
+    var element = document.createElement(&quot;script&quot;);
+    element.src = &quot;deferred-script.js&quot;;
+    document.body.appendChild(element);
+  }
+  if (window.addEventListener) {
+    window.addEventListener(&quot;load&quot;, downloadJSAtOnload, false);
+  } else if (window.attachEvent) {
+    window.attachEvent(&quot;onload&quot;, downloadJSAtOnload);
+  } else {
+    window.onload = downloadJSAtOnload;
+  }
+&lt;/script&gt;
+</code></pre>
+<ol start="3">
+<li>捕获并处理错误：</li>
+</ol>
+<p>使用 window.onerror 全局事件来捕获 JavaScript 错误，然后根据需要执行相应的错误处理逻辑，比如记录到日志中或者展示用户友好的错误信息。</p>
+<ol start="4">
+<li>加载重试</li>
+</ol>
+<p>4.1. 监听加载失败事件</p>
+<p>在 HTML 中，为 <code>&lt;script&gt;</code> 标签添加 onerror 事件监听器：</p>
+<pre><code class="language-html">&lt;script
+  src=&quot;course-player.js&quot;
+  onerror=&quot;retryLoadScript(&#39;course-player.js&#39;, 3)&quot;
+&gt;&lt;/script&gt;
+</code></pre>
+<p>4.2. 重试加载函数</p>
+<pre><code class="language-js">let retryCount = 0;
+const maxRetries = 3; // 最大重试次数
+const retryInterval = 2000; // 每次重试间隔2秒
+
+function retryLoadScript(scriptSrc, retriesLeft) {
+  if (retriesLeft &lt;= 0) {
+    // 达到最大重试次数，显示错误或回退方案
+    console.error(&quot;Failed to load script after multiple retries:&quot;, scriptSrc);
+    // 可以在这里添加回退逻辑，比如显示一个错误消息给用户
+    return;
+  }
+
+  // 清除之前的script标签（如果有的话）
+  const existingScript = document.querySelector(`script[src=&quot;${scriptSrc}&quot;]`);
+  if (existingScript) {
+    existingScript.remove();
+  }
+
+  // 创建新的script标签并设置src属性
+  const script = document.createElement(&quot;script&quot;);
+  script.src = scriptSrc;
+  script.async = true; // 异步加载
+
+  // 监听新的加载失败事件
+  script.onerror = function () {
+    retryCount++;
+    console.log(`Retrying to load script ${scriptSrc}, attempt ${retryCount}`);
+    setTimeout(function () {
+      retryLoadScript(scriptSrc, retriesLeft - 1); // 递归调用，重试次数减一
+    }, retryInterval);
+  };
+
+  // 监听加载成功事件（可选）
+  script.onload = function () {
+    console.log(&quot;Script loaded successfully:&quot;, scriptSrc);
+  };
+
+  // 将新的script标签添加到DOM中
+  document.head.appendChild(script);
+}
+</code></pre>
+<p>4.3. 在页面中使用回退逻辑</p>
+<p>如果重试加载仍然失败，可以在 retryLoadScript 函数中实现一些回退逻辑。例如，可以显示一个错误消息给用户，或者提供一个备用的加载机制。</p>
+<h2>注意：</h2>
+<ul>
+<li><p>确保不要过度重试，以免给服务器造成不必要的负担。</p>
+</li>
+<li><p>根据项目的实际情况调整重试次数和间隔。</p>
+</li>
+<li><p>对于非关键资源，可以考虑使用更轻量级的错误处理策略，比如简单地记录日志并忽略错误。</p>
+</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/64.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

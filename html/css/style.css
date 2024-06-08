@@ -5,7 +5,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Fira Code";
+  font-family: "hack";
 }
 
 html,
@@ -62,7 +62,7 @@ pre[class*="language-"] {
 code[class*="language-"],
 pre[class*="language-"] {
   font-size: 16px;
-  font-family: "Fira Code";
+  font-family: "hack";
   line-height: 2;
 }
 
