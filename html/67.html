@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>如何让 cookie 有 session 的特性</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>如何让 cookie 有 session 的特性</h2>
+                    <p>2024-06-08 12:08:38 · YinHao</p>
+                  </div>
+                  <p>可以将 cookie 的过期时间设置为会话 cookie，这样它将在浏览器会话结束时自动过期。在设置 cookie 时，不设置过期时间参数即可实现这一点。例如，在 JavaScript 中：</p>
+<pre><code class="language-js">document.cookie = &quot;cookieName=cookieValue; path=/&quot;;
+</code></pre>
+<p>要判断 cookie 是否过期，您可以通过检查 cookie 的过期时间来实现。在 JavaScript 中，您可以使用以下代码来获取特定 cookie 的过期时间并进行比较：</p>
+<pre><code class="language-js">function getCookieExpirationDate(cookieName) {
+  var cookies = document.cookie.split(&quot;;&quot;);
+  for (var i = 0; i &lt; cookies.length; i++) {
+    var cookie = cookies[i].trim();
+    if (cookie.indexOf(cookieName + &quot;=&quot;) === 0) {
+      var cookieValue = cookie.substring(cookieName.length + 1);
+      return new Date(cookieValue);
+    }
+  }
+  return null;
+}
+
+function isCookieExpired(cookieName) {
+  var expirationDate = getCookieExpirationDate(cookieName);
+  if (expirationDate === null) {
+    return true; // Cookie not found
+  } else {
+    var currentDate = new Date();
+    return currentDate &gt; expirationDate;
+  }
+}
+
+// Example usage
+var cookieName = &quot;cookieName&quot;;
+if (isCookieExpired(cookieName)) {
+  console.log(cookieName + &quot; has expired.&quot;);
+} else {
+  console.log(cookieName + &quot; has not expired.&quot;);
+}
+</code></pre>
+<p>cookie 删除：</p>
+<pre><code class="language-js">function deleteCookie(cookieName) {
+  document.cookie =
+    cookieName + &quot;=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;&quot;;
+}
+var cookieName = &quot;cookieName&quot;;
+deleteCookie(cookieName);
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/66.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/68.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

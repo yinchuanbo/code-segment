@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>实现页面刷新后不定位到之前的滚动位置</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>实现页面刷新后不定位到之前的滚动位置</h2>
+                    <p>2024-06-08 12:05:13 · YinHao</p>
+                  </div>
+                  <p>使用很简单，在页面的任意位置执行下面几行 JS 代码就可以了：</p>
+<pre><code class="language-js">if (history.scrollRestoration) {
+  history.scrollRestoration = &quot;manual&quot;;
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/65.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/67.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
