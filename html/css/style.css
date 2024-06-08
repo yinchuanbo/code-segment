@@ -112,7 +112,7 @@ ol > li {
 }
 
 ol > li::marker {
-  color: #f92672;
+  color: #ff0000;
   float: left;
   font-weight: 600;
 }
@@ -132,7 +132,7 @@ ul > li::before {
   left: 0;
   width: 7px;
   height: 7px;
-  background-color: #f92672;
+  background-color: #ff0000;
   border-radius: 100%;
 }
 
@@ -142,7 +142,7 @@ p {
 }
 
 p code {
-  color: #f92672;
+  color: #ff0000;
   font-style: italic;
   margin: 0 5px;
 }
@@ -200,7 +200,7 @@ blockquote::before {
   left: 0;
   width: 5px;
   height: 100%;
-  background-color: #f92672;
+  background-color: #ff0000;
 }
 
 /* .token.constant,
@@ -220,6 +220,7 @@ blockquote::before {
 .container-header h2 {
   margin-bottom: 5px;
   color: #fff;
+  font-size: 25px;
 }
 
 .container-header p {
@@ -290,7 +291,7 @@ img {
 
 a {
   /* text-decoration: none; */
-  color: skyblue;
+  color: #40a9ff;
 }
 
 .img__preview {
@@ -355,4 +356,12 @@ div.code-toolbar > .toolbar > .toolbar-item > button,
 div.code-toolbar > .toolbar > .toolbar-item > span {
   border-radius: 0;
   padding-bottom: 2px;
+}
+
+.token.constant,
+.token.deleted,
+.token.property,
+.token.symbol,
+.token.tag {
+  color: #ff0000;
 }
