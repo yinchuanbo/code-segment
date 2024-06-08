@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>官网特效 - 轮播效果</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      data-name="vs/editor/editor.main"
+      href="./css/editor.main.css"
+    />
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;div class=&#34;swiper-container&#34;&gt;
+  &lt;div class=&#34;swiper-wrapper&#34;&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=502&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 1&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=401&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 2&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=201&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 3&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=504&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 4&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=404&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 5&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=406&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 6&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;product&#34;&gt;
+        &lt;img
+          class=&#34;photograph&#34;
+          src=&#34;https://unsplash.it/g/430/431?image=407&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;h2 class=&#34;product__name&#34;&gt;Lorem ipsum 7&lt;/h2&gt;
+      &lt;!-- &lt;p class=&#34;product__description&#34;&gt;lorem ipsum dol&lt;/p&gt; --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;swiper-pagination&#34;&gt;&lt;/div&gt;
+  &lt;div class=&#34;swiper-button-prev&#34;&gt;&lt;/div&gt;
+  &lt;div class=&#34;swiper-button-next&#34;&gt;&lt;/div&gt;
+&lt;/div&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">@import url(&#34;https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap&#34;);
+
+@function pxToVw($px) {
+  @return ($px / 750) * 100vw;
+}
+body {
+  position: relative;
+}
+.swiper-container {
+  max-width: 1088px;
+  overflow: hidden;
+  margin: 0 auto;
+  .swiper-button-next,
+  .swiper-button-prev {
+    top: 50%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    width: 33px;
+    height: 33px;
+    border-radius: 100%;
+    border: 2px solid #fff;
+    color: #fff;
+    --swiper-navigation-size: 16px;
+    &amp;::after {
+      font-weight: 600;
+    }
+  }
+  .swiper-button-next {
+    right: calc((100% - 1088px) / 2 - 100px);
+  }
+  .swiper-button-prev {
+    left: calc((100% - 1088px) / 2 - 100px + 37px);
+  }
+  .swiper-slide {
+    height: 340px;
+    background-color: #fff;
+    .product {
+      width: 100%;
+      height: 195px;
+    }
+    .product__name {
+      font-family: &#34;Poppins&#34;;
+    }
+    .photograph {
+      width: 100%;
+      height: 195px;
+      object-fit: cover;
+    }
+  }
+}
+@media (min-width: 1200px) {
+  .swiper-container {
+    .swiper-slide {
+      cursor: pointer;
+      .product__name {
+        color: #000000;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 25px;
+      }
+    }
+  }
+}
+@media (max-width: 1199px) {
+  .swiper-container {
+    .swiper-slide {
+      width: pxToVw(502) !important;
+      height: pxToVw(510);
+      .product__name {
+        color: #000000;
+        font-size: pxToVw(32);
+        font-weight: 300;
+        line-height: pxToVw(55);
+      }
+      .product,
+      .photograph {
+        height: pxToVw(256);
+      }
+      &amp; + .swiper-slide {
+        margin-left: pxToVw(30) !important;
+      }
+    }
+  }
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">const isMobileDevice = function () {
+  const userAgent = navigator.userAgent;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    userAgent
+  );
+};
+
+let swiper;
+
+let swiperObj = {
+  autoplay: {
+    delay: 8000,
+    disableOnInteraction: false,
+  },
+  speed: 1200,
+  navigation: {
+    nextEl: &#34;.swiper-button-next&#34;,
+    prevEl: &#34;.swiper-button-prev&#34;,
+  },
+};
+
+function initSwiper() {
+  if (isMobileDevice()) {
+    swiper = new Swiper(&#34;.swiper-container&#34;, {
+      roundLengths: true,
+      initialSlide: 1,
+      speed: 600,
+      slidesPerView: &#34;auto&#34;,
+      centeredSlides: true,
+      followFinger: false,
+      ...swiperObj,
+    });
+  } else {
+    swiper = new Swiper(&#34;.swiper-container&#34;, {
+      slidesPerView: 4,
+      spaceBetween: 16,
+      ...swiperObj,
+    });
+  }
+}
+
+initSwiper();
+
+window.addEventListener(&#34;resize&#34;, function () {
+  if (swiper) {
+    swiper.destroy();
+  }
+  initSwiper();
+});</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-103-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>
