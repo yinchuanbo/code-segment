@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>SCSS</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>SCSS</h2>
+                    <p>2024-06-08 13:26:56 · YinHao</p>
+                  </div>
+                  <h3>继承</h3>
+<p><code>@extend</code> 在使用的选择器中插入被继承的选择器样式。</p>
+<pre><code class="language-scss">.icon {
+  color: red;
+}
+.error-icon {
+  @extend .icon;
+}
+.success-icon {
+  @extend .icon;
+}
+</code></pre>
+<p>转化后：</p>
+<pre><code class="language-css">.icon,
+.error-icon,
+.success-icon {
+  color: red;
+}
+</code></pre>
+<h3>混入（Mixin）</h3>
+<p><code>@mixin</code> 定义可重复使用的样式片段，使用 <code>@include</code>，可以将定义的 <code>Mixin</code> 导入。</p>
+<pre><code class="language-scss">@mixin icon-style {
+  color: red;
+}
+.error-icon {
+  @include icon-style;
+}
+.success-icon {
+  @include icon-style;
+}
+</code></pre>
+<p>转化后：</p>
+<pre><code class="language-scss">.error-icon {
+  color: red;
+}
+.success-icon {
+  color: red;
+}
+</code></pre>
+<p>在一个<code>混入</code>中也可以引入其他<code>混入</code>。</p>
+<pre><code class="language-scss">@mixin special-icon {
+  @include icon-style;
+  @include special-style;
+}
+</code></pre>
+<p>在<code>混入</code>中传递变量</p>
+<pre><code class="language-scss">@mixin icon($bg-color: grey) {
+  background-color: $bg-color;
+}
+.success-icon {
+  @include icon(green);
+}
+.error-icon {
+  @include icon(red);
+}
+</code></pre>
+<h3>占位符</h3>
+<p><code>%placeholder</code> 使用表现上是一个类选择器，但是不会在编译之后的 css 文件中输出。</p>
+<pre><code class="language-scss">%icon {
+  color: red;
+}
+.success-icon {
+  @extend %icon;
+}
+.error-icon {
+  @extend %icon;
+}
+</code></pre>
+<h3>选择</h3>
+<p>使用 <code>@if</code>、<code>@else if</code>、<code>@else</code>，控制声明的样式块或选择器。</p>
+<pre><code class="language-scss">@mixin border-color($color, $dir) {
+  @if $dir == up {
+    border-bottom-color: $color;
+  } @else if $dir == right {
+    border-left-color: $color;
+  } @else if $dir == down {
+    border-top-color: $color;
+  } @else if $dir == left {
+    border-right-color: $color;
+  } @else {
+    @error &quot;unknown direction #{$dir}&quot;;
+  }
+}
+.test {
+  @include border-color(red, up);
+}
+.test-01 {
+  @include border-color(green, down);
+}
+</code></pre>
+<h3>循环</h3>
+<p>使用 <code>@for</code> 关键字，进行循环操作</p>
+<p><code>@for</code> 有以下两种使用方式：</p>
+<pre><code class="language-scss">// 方式一
+@for $i from 1 through 3 {
+  .item-a-#{$i} {
+    width: $i * 2px;
+  }
+}
+// 方式二
+@for $i from 1 to 3 {
+  .item-b-#{$i} {
+    width: $i * 2px;
+  }
+}
+
+// 编译结果如下，从中可以看出区别
+.item-a-1 {
+  width: 2px;
+}
+.item-a-2 {
+  width: 4px;
+}
+.item-a-3 {
+  width: 6px;
+}
+.item-b-1 {
+  width: 2px;
+}
+.item-b-2 {
+  width: 4px;
+}
+</code></pre>
+<p>使用 <code>@while</code> 关键字也可以实现循环，但是平时很少使用</p>
+<pre><code class="language-scss">$i: 6;
+@while $i &gt; 0 {
+  .item-#{$i} {
+    width: 2em * $i;
+  }
+  $i: $i - 2;
+}
+// 编译结果如下：
+.item-6 {
+  width: 12em;
+}
+.item-4 {
+  width: 8em;
+}
+.item-2 {
+  width: 4em;
+}
+</code></pre>
+<h3>遍历</h3>
+<p>使用 <code>@each</code> 关键字对列表进行遍历操作，使用方式如下：</p>
+<pre><code class="language-scss">@each $animal in puma, sea-slug, egret, salamander {
+  .#{$animal}-icon {
+    background-image: url(&quot;/images/#{$animal}.png&quot;);
+  }
+}
+
+@each $animal, $color, $cursor in (puma, black, default), (
+    sea-slug,
+    blue,
+    pointer
+  ), (egret, white, move)
+{
+  .#{$animal}-icon {
+    background-image: url(&quot;/images/#{$animal}.png&quot;);
+    border: 2px solid $color;
+    cursor: $cursor;
+  }
+}
+</code></pre>
+<h3>scss 内置方法</h3>
+<pre><code class="language-scss">// rgba 颜色方法封装
+rgba(#800, .2); // 颜色 #800 再加上 .2 的透明度
+// 提高亮度
+lighten(#800, 20%);
+// 降低亮度
+darken(#800, 20%);
+</code></pre>
+<h3>函数</h3>
+<ul>
+<li><p><code>percentage($value)</code>: 将不带单位的数转换为百分比值。</p>
+</li>
+<li><p><code>round($value)</code>: 将数值四舍五入，转换成一个最接近的整数。</p>
+</li>
+<li><p><code>ceil($value)</code>: 向上取整。</p>
+</li>
+<li><p><code>floor($value)</code>: 向下取整。</p>
+</li>
+<li><p><code>abs($value)</code>: 取数的绝对值。</p>
+</li>
+<li><p><code>min($numbers...)</code>: 找出几个数值之间的最小值。</p>
+</li>
+<li><p><code>max($numbers...)</code>: 找出几个数值之间的最大值。</p>
+</li>
+<li><p><code>random()</code>: 获取随机数。</p>
+</li>
+</ul>
+<h3>自定义函数</h3>
+<pre><code class="language-scss">@function double($n) {
+  @return $n * 2;
+}
+#sidebar {
+  width: doublie(5px);
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/69.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/71.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

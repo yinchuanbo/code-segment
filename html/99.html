@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>资源优先级</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>资源优先级</h2>
+                    <p>2024-06-08 14:20:00 · YinHao</p>
+                  </div>
+                  <h3>优先级</h3>
+<p>浏览器基于自身的启发式算法，会对资源的重要性进行判断来划分优先级，通常从低到高为：<code>Lowest、Low、High、Highest</code>。</p>
+<p>比如，在 <code>&lt;head&gt;</code> 标签中，CSS 文件通常具有最高的优先级 <code>Highest</code>，其次是 <code>&lt;script&gt;</code> 标签所请求的脚本文件，但当 <code>&lt;script&gt;</code> 标签带有 <code>defer</code> 或 <code>async</code> 的异步属性时，其优先级又会降为 <code>Low</code>。我们呢通过浏览器的控制台可以看到浏览器对资源进行的优先级划分。</p>
+<p><img src="./imgs/99/01.jpg" alt=""></p>
+<h3>预加载</h3>
+<p>使用 <code>&lt;link rel=&quot;preload&quot;&gt;</code> 标签告诉浏览器当前所指定的资源，应该拥有更高的优先级，例如：</p>
+<pre><code class="language-html">&lt;link rel=&quot;preload&quot; as=&quot;script&quot; href=&quot;important.js&quot; /&gt;
+&lt;link rel=&quot;preload&quot; as=&quot;style&quot; href=&quot;critical.css&quot; /&gt;
+</code></pre>
+<p>这里通过 as 属性告诉浏览器所要加载的资源类型，</p>
+<p>要注意：<code>&lt;link rel=&quot;preload&quot;&gt;</code> 会强制浏览器进行预加载，它与其他资源的提示不同，浏览器对此是必须执行而非可选的。</p>
+<p>如果预加载指定的资源在 3s 内未被当前页面使用，则浏览器会在开发者工具的控制台中进行警告提示，<strong>该警告务必要处理</strong>。</p>
+<p><strong>解下来看两个使用实例：字体的使用和关键路径渲染</strong></p>
+<blockquote>
+<p>通常字体文件都位于页面加载的若干个 CSS 文件的末尾，但考虑为了减少用户等待文本内容的加载时间，以及避免系统字体与偏好字体发生冲突，就必须提前获取字体，</p>
+</blockquote>
+<pre><code class="language-html">&lt;link
+  rel=&quot;preload&quot;
+  as=&quot;font&quot;
+  crossorigin=&quot;crossorigin&quot;
+  type=&quot;font/woff2&quot;
+  href=&quot;myfont.woff2&quot;
+/&gt;
+</code></pre>
+<p><strong>[注]</strong>：这里的 <strong>crossorigin</strong> 属性非常重要，如果缺失该属性，浏览器不会对指定的字体进行预加载。</p>
+<p>前面讲过页面渲染生命周期时，提到过关键渲染路径，其中涉及首次渲染之前必须加载的资源（比如 CSS 和 JavaScript 等），这些资源对首屏页面渲染来说是非常重要的。以前通常建议的做法是把这些资源内联到 HTML 中，但对服务端渲染或对页面而言，这样做很容易导致带宽浪费，</p>
+<p>所以使用 <code>&lt;link rel=&quot;preload&quot;&gt;</code> 对单个文件进行预加载，除了能很快的请求资源，还能尽量利用缓存，</p>
+<p>其唯一的缺点是可能会在浏览器和服务器之间发生额外的往返请求，因为浏览器需要加载解析 HTML 后，才会知道后续资源请求情况，其解决方式可以利用 <strong>HTTP2</strong> 的推送。</p>
+<h3>预连接</h3>
+<p>通常在速度较慢的网络环境中建立连接会非常耗时，如果建立安全连接将更加耗时。</p>
+<p>其原因是整个过程中会涉及 DNS 查询、重定向和与目标服务器之间建立连接的多次握手，所以若是能提前完成上述这些功能，则会给用户带来更加流畅的浏览器体验。同时，由于建立连接的大部分时间消耗是等待而非数据交换，这样也能有效优化带宽的使用情况。</p>
+<p>解决方案是所谓的<strong>预连接</strong>：</p>
+<pre><code class="language-html">&lt;link rel=&quot;preconnect&quot; as=&quot;style&quot; href=&quot;https://example.com&quot; /&gt;
+</code></pre>
+<p>通过 <code>&lt;link rel=&quot;preconnect&quot;&gt;</code> 标签指令，告知浏览器当前页面将与站点建立连接，希望能尽快的启动该过程，</p>
+<p>虽然这么做的成本较低，但会消耗宝贵的 CPU 时间，特别是在建立 HTTPS 安全连接时。如果建立好连接后的 10s 内，未能及时使用连接，那么浏览器关闭该连接，之前为建立连接所消耗的资源相当于白费了。</p>
+<p>另外，还有一种与预连接相关的类型 <code>&lt;link rel=&quot;dns-prefetch&quot;&gt;</code>，也就是常说的 DNS 预解析，它仅用来处理 DNS 查询，由于受到浏览器的广泛支持，且缩短了 DNS 的查询时间的效果显著，所以使用场景十分普遍</p>
+<pre><code class="language-html">&lt;link rel=&quot;dns-prefetch&quot; href=&quot;//example.com&quot; /&gt;
+</code></pre>
+<h3>预提取</h3>
+<p>利用机会让某些非关键操作能够更早发生。</p>
+<p>这个过程的实现方式是根据用户已经发生的行为判断其接下来的预期行为，告知浏览器稍后可能需要的某些资源。</p>
+<p>也就是当页面加载完成后，且在带宽可用的情况下，这些资源将以 <code>Lowest</code> 的优先级进行提起。</p>
+<p>显而易见，预提取最适合的场景是为用户下一步可能进行的操作做好必要的准备，如在电商品平台的搜索框中查询某商品，可预提取查询结果列表中的首个商品详情页，或者使用搜索查询时，预提取查询结构的分页内容的下一页：</p>
+<pre><code class="language-html">&lt;link rel=&quot;prefetch&quot; href=&quot;page-2.html&quot; /&gt;
+</code></pre>
+<p>需要注意的是，预提取不能递归使用，比如在搜索查询的首页 <code>page-1.html</code> 时，可以预提取当前页面的下一页 <code>page-2.html</code> 的 HTML 内容，但对其中所包含的任何额外资源不会提前下载，除非有额外明确指定的预提取。</p>
+<p>另外，预提取不会降低现有资源的优先级，比如在如下 HTML 中：</p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;link ref=&quot;prefetch&quot; href=&quot;style.css&quot; /&gt;
+    &lt;link ref=&quot;stylesheel&quot; href=&quot;style.css&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>可能你会觉得对 style.css 的预提取声明，会降低接下来的 <code>&lt;link ref=&quot;stylesheel&quot; href=&quot;style.css&quot; /&gt;</code> 的优先级，但其真实情况是，该文件会被提取两次，第二次可能会使用缓存。</p>
+<p><img src="./imgs/99/02.jpg" alt=""></p>
+<p>显然两次提取对用户体验来说非常糟糕，因为这样不但需要等待阻塞渲染的 css，而且如果第二次提取没有命中缓存，必然会产生带宽的浪费。所以应该充分考虑。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/98.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/100.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

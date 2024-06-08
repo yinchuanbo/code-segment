@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Console Utilities API</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Console Utilities API</h2>
+                    <p>2024-06-08 13:57:08 · YinHao</p>
+                  </div>
+                  <h2>monitorEvents</h2>
+<p>执行 monitorEvents 来监听并打印出元素触发的事件，也可以传入数组来一次性监听多种事件，例如：</p>
+<pre><code class="language-js">monitorEvents(window, &quot;click&quot;);
+monitorEvents(window, [&quot;mousedown&quot;, &quot;mouseup&quot;]);
+</code></pre>
+<p><img src="./imgs/87/1.png" alt=""></p>
+<p>除了能监听特定事件外，还能监听事件类别，例如 <code>monitorEvents(window, &#39;touch&#39;)</code> 来监听所有 touch 类别的事件。</p>
+<p>若要停止监听，则执行 <code>unmonitorEvents(元素, 事件)</code>。</p>
+<h2>getEventListeners</h2>
+<p>执行 <code>getEventListeners(元素)</code> 以打印出所有注册在元素上的事件监听器。</p>
+<p><code>$0</code> 元素原本并无注册任何事件监听器，执行 <code>monitorEvents($0, &#39;click&#39;)</code> 后，可以看到已注册所有 touch 类别的事件监听器，</p>
+<p><img src="./imgs/87/2.png" alt=""></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/86.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/88.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

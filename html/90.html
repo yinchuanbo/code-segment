@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>内存占用量</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>内存占用量</h2>
+                    <p>2024-06-08 14:01:39 · YinHao</p>
+                  </div>
+                  <p>“网页性能” 除了受到 JavaScript 执行和浏览器绘制页面的时间影响之外，还与内存的占用量有关系，且内存的占用量造成的性能问题通常对用户的影响非常明显。</p>
+<p>网页性能随着使用时间拉长变得越来越差就是典型的例子，其原因是 JavaScript 使用垃圾回收机制来管理内存，但是垃圾回收时在主线程上进行的，会占用其他任务的时间，当内存占用量过多时，会让垃圾回收的执行效率上升，进而影响网页性能。</p>
+<h3>垃圾回收</h3>
+<p>“垃圾回收” 可以简单理解为每次新建对象、DOM 时，浏览器都会分配内存空间去存储这些对象，然而，当执行垃圾回收时，只要没有任何方式可以存取到某个对象，该对象所占用的内存就会被释放。</p>
+<p><strong>范例如下：</strong></p>
+<pre><code class="language-js">let a = {}; // 分配内存来存储 A 对象
+let b = {}; // 分配内存来存储 B 对象
+let c = a;
+a = undefined;
+b = undefined;
+</code></pre>
+<p>此时由于已经没有任何方式可以存取 B 对象，浏览器执行垃圾回收时，该对象占用的内存空间会被释放，而 a 虽然被修改为 undefined，A 对象还是能够通过 c 来存取的，因此无法释放。</p>
+<h3>常见原因</h3>
+<p>内存占用量问题通常是因为程序代码的写法而造成浏览器无法释放内存，随着时间内存的使用量不断累计最终影响性能，这也被称为 <strong>内存泄漏</strong>。</p>
+<ol>
+<li>全局变量</li>
+</ol>
+<p>全局变量在任何时候都能存取，因为会让该内存空间永远无法释放，除了尽可能减少全局变量外，还需要注意使用到的情况，不过在严格模式下基本可以避免这个问题。</p>
+<pre><code class="language-js">function foo() {
+  this.bar = &quot;bar&quot;;
+  baz = &quot;baz&quot;; // 意外存取到外部或全部变量
+}
+foo();
+</code></pre>
+<ol start="2">
+<li>未清除的 Callback</li>
+</ol>
+<p>先不考虑 Callback 函数本身用到的内存，如果 Callback 内存取了外部的变量，在清除 Callback 之前，该变量用到的内存空间都无法释放，下面举例：</p>
+<ul>
+<li><p>定时器：setTimeout、setInterval</p>
+</li>
+<li><p>事件监听器：尤其是注册在 window、document、body 上的事件监听器</p>
+</li>
+<li><p>Observer(观察者)：MutationObserver、IntersectionObserver</p>
+</li>
+</ul>
+<p>在 window 上以匿名函数注册事件监听器而无法清除，机会导致 data 永远无法被释放。</p>
+<pre><code class="language-js">const data = [&quot;foo&quot;, &quot;bar&quot;];
+window.addEventListener(&quot;click&quot;, () =&gt; {
+  console.log(data); // 存取 data，永远无法被释放
+});
+</code></pre>
+<ol start="3">
+<li>存储 DOM 的变量</li>
+</ol>
+<p>用 JavaScript 创建元素再插入 DOM 中是常见的做法，该元素拥有两种存取方式（两种方式都无法存取元素时，元素才会被释放）</p>
+<ul>
+<li><p>JavaScript 变量</p>
+</li>
+<li><p>遍历 DOM</p>
+</li>
+</ul>
+<p>举一个相对不直观的例子，以下程序代码看似可以释放 parent 元素，但依然可以通过 child 变量存取 parent 元素，导致 parent 元素无法被释放。</p>
+<pre><code class="language-js">const child = document.createElement(&quot;div&quot;);
+let parent = document.querySelector(&quot;#parent&quot;);
+parent.append(child);
+// 从页面中删除 parent 元素，并将 undefined 赋值给变量
+parent.remove();
+parent = undefined;
+console.log(child.parentElement); // #parent
+</code></pre>
+<ol start="4">
+<li>闭包</li>
+</ol>
+<p>在使用闭包时，需注意是否涵盖了不需要的变量，当闭包的返回值可以存取闭包内的变量时，会导致变量无法被释放。</p>
+<pre><code class="language-js">function foo() {
+  const data = [1, 2, 3];
+  return () =&gt; {
+    console.log(data);
+  };
+}
+const logData = foo(); // 把内存空间分配给 data
+logoData(); // 打印出 [1,2,3]，此函数被释放之前，都无法释放 data
+</code></pre>
+<h3>征兆</h3>
+<p>当内存用量出现问题时，会导致垃圾回收的执行频率上升，进而影响网页性能，因此，出现以下现象时需要有所警觉。</p>
+<ul>
+<li><p>性能逐渐变差：网页随着使用时间增加让性能变得越来越差，通常是内存泄漏的前兆。</p>
+</li>
+<li><p>整体网页性能都不如预期：大部分操作都会造成画面延迟，可能是垃圾回收过于频繁，除了内存占用量过多之外，设备内存空间过小也容易出现这种问题。</p>
+</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/89.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/91.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

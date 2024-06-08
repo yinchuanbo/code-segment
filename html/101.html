@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>加载注意事项</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>加载注意事项</h2>
+                    <p>2024-06-08 14:25:12 · YinHao</p>
+                  </div>
+                  <h3>首屏加载</h3>
+<p>对于首屏上的内容就不应当进行延迟加载，而应该使用正常的加载方式。</p>
+<p>此外，若将首屏视窗边界线作为延迟加载触发的阈值，其实并非最贱的性能考虑，更理想的做法是，在延迟加载的媒体资源到达首屏边界之前设置一个缓冲区，以便媒体资源在进入视窗之前就开始进行加载。</p>
+<p>代码如下：</p>
+<pre><code class="language-js">const lazyImageObserver = new IntersectionObserver(
+  (entries, onserver) =&gt; {
+    // ....
+  },
+  {
+    rootMargin: &quot;0 0 256px 0&quot;,
+  }
+);
+</code></pre>
+<h3>资源占位</h3>
+<p>当延迟加载的媒体资源未渲染出来之前，应当在页面中使用相同尺寸的占位图，如果不使用占位图，图像延迟显示出来后，尺寸更改可能会使页面布局出现移位。</p>
+<p>这种现象不仅会对用户体验带来困惑，更严重的还会触发浏览器成本高昂的回流机制，进而增加系统资源开销，造成卡顿。</p>
+<p>而用来占位的图像解决方案也有多种，十分简单的方式是使用一个与目标媒体资源长度相同的纯色占位符，或者之前使用的 Base64 图片，当然也可以采用 LQIP 或 SQIP 等方法。</p>
+<h3>内容加载失败</h3>
+<p>在进行延迟加载过程中，可能会因为某种原因造成媒体资源加载失败，进而导致错误的情况。</p>
+<p>例如，图片资源可能采用以下方式进行规避：</p>
+<pre><code class="language-js">const newImage = new Image();
+newImage.src = &quot;photo.png&quot;;
+newImage.onerror = (err) =&gt; {
+  // 当发生故障时处理措施
+  /*
+    处理措施：
+      01 可将使用的图片占位图替换为按钮，让用户单击以尝试重新加载所需的媒体资源。
+      02 或者在占位符区域显示错误的提示信息。
+  */
+};
+newImage.onload = () =&gt; {
+  // 加载成功的回调
+};
+</code></pre>
+<h3>图像解码延迟</h3>
+<p>我们知道渐进式的 JPEG 会先呈现一个低像素的图像版本，随后会慢慢呈现出原图的样貌。这是因为图像从被浏览器请求获取，再到最终完整呈现在屏幕上，需要经历一个解码的过程。</p>
+<p>图片的尺寸越大，所需的解码时间就越长。</p>
+<p>如果在 js 中请求加载较大的图像文件，并把它直接放入 DOM 结构中，那么将有可能占用浏览器的主进程，进而导致解码期间用户界面出现短暂的无响应。</p>
+<p>为了减少此类卡顿现象，可以采用 <strong>decode</strong> 方法进行异步图像解码后，再将其插入到 <strong>DOM</strong> 结构中。</p>
+<p><strong>兼容处理</strong></p>
+<pre><code class="language-html">&lt;button id=&quot;load-image&quot;&gt;加载图像&lt;/button&gt;
+&lt;div id=&quot;image-container&quot;&gt;&lt;/div&gt;
+</code></pre>
+<pre><code class="language-js">document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; {
+  const loadButton = document.getElementById(&quot;load-image&quot;);
+  const imageContainer = document.getElementById(&quot;image-container&quot;);
+  const newImage = new Image();
+  newImage.src = &quot;https://xx.cdn/very-big-photo.jpg&quot;;
+  loadButton.addEventListener(&quot;click&quot;, function () {
+    if (&quot;decode&quot; in newImage) {
+      // 异步解码方式
+      newImage.decode().then(function () {
+        imageContainer.appendChild(newImage);
+      });
+    } else {
+      // 正常图像加载方式
+      imageContainer.appendChild(newImage);
+    }
+  });
+});
+</code></pre>
+<p><strong>[注]</strong>：如果网站所包含的大部分图像尺寸都很小，那么使用这种方式的帮助并不会很大，同时还会增加代码的复杂度。但是可以肯定的是，这么做会减少延迟加载大型图像文件所带来的卡顿。</p>
+<h3>JavaScript 是否可用</h3>
+<p>通常情况下，我们会假定 Javascript 始终可用，但在一些异常不可用的情况下，应当做好适配，不能始终在延迟加载的图像位置上展示占位符。可以考虑使用 <code>&lt;noscript&gt;</code> 标记，在 Javascript 不可用的时候提供图像的真实展示。</p>
+<pre><code class="language-html">&lt;img
+  class=&quot;lazy&quot;
+  src=&quot;placeholder-image.jpg&quot;
+  data-src=&quot;image-to-lazy-load.jpg&quot;
+  alt=&quot;&quot;
+/&gt;
+&lt;!-- 当 js 不可用的时候，展示真实图片 --&gt;
+&lt;noscript&gt;
+  &lt;img src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;&quot; /&gt;
+&lt;/noscript&gt;
+</code></pre>
+<p>如果上述代码同时存在，当 Javascript 不可用时，页面会同时展示图像占位符和 <code>&lt;noscript&gt;</code> 中包含的图像，为此我们可以给 <code>&lt;html&gt;</code> 标签添加一个 <code>no-js</code> 类：</p>
+<pre><code class="language-html">&lt;html class=&quot;no-js&quot;&gt;&lt;/html&gt;
+</code></pre>
+<p>在由 <code>&lt;link&gt;</code> 标签请求 CSS 文件之前，在 <code>&lt;head&gt;</code> 标签结构中放置一段内联脚本，当 Javascript 可用时，用于移出 <code>no-js</code> 类：</p>
+<pre><code class="language-html">&lt;script&gt;
+  document.documentElement.classList.remobe(&quot;no-js&quot;);
+&lt;/script&gt;
+</code></pre>
+<p>添加 css 样式：</p>
+<pre><code class="language-css">.no-js .lazy {
+  display: none;
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/100.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/102.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

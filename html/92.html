@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS 功能特性</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>CSS 功能特性</h2>
+                    <p>2024-06-08 14:04:58 · YinHao</p>
+                  </div>
+                  <h3>01 clamp()</h3>
+<blockquote>
+<p>clamp() 函数的作用是把一个值限制在一个上限和下限之间，当这个值超过最小值和最大值的范围时，在最小值和最大值之间选择一个值使用。它接收三个参数：最小值、首选值、最大值。</p>
+</blockquote>
+<pre><code class="language-css">.box {
+  width: clamp(220px, 55%, 300px);
+}
+h1 {
+  letter-spacing: 2px;
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+}
+</code></pre>
+<h3>02 smooth</h3>
+<blockquote>
+<p>平滑滚动。</p>
+</blockquote>
+<pre><code class="language-html">&lt;div class=&quot;top&quot;&gt;
+  &lt;a href=&quot;#bottom&quot;&gt;TOP&lt;/a&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bottom&quot; id=&quot;bottom&quot;&gt;BOTTOM&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">html {
+  scroll-behavior: smooth;
+}
+.top,
+.bottom {
+  height: 100vh;
+}
+</code></pre>
+<h3>03 scroll snap</h3>
+<blockquote>
+<p>允许开发者在用户完成滚动后将视窗锁定在特定的元素或位置；设置了在有滚动容器的情形下吸附至吸附点的严格程度。</p>
+</blockquote>
+<p><strong>语法：</strong></p>
+<pre><code class="language-sh">#不吸附
+scroll-snap-type: none;
+
+#表示吸附轴的关键字
+scroll-snap-type: x;
+scroll-snap-type: y;
+scroll-snap-type: block;
+scroll-snap-type: inline;
+scroll-snap-type: both;
+
+#表示吸附程度的可选关键字
+#mandatory 或 proximity
+scroll-snap-type: x mandatory;
+scroll-snap-type: y proximity;
+scroll-snap-type: both mandatory;
+
+#全局值
+scroll-snap-type: inherit;
+scroll-snap-type: initial;
+scroll-snap-type: revert;
+scroll-snap-type: revert-layer;
+scroll-snap-type: unset;
+</code></pre>
+<pre><code class="language-html">&lt;div class=&quot;holster&quot;&gt;
+  &lt;div class=&quot;container x mandatory-scroll-snapping&quot; dir=&quot;ltr&quot;&gt;
+    &lt;div&gt;x 轴强制、从左往右&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container x proximity-scroll-snapping&quot; dir=&quot;ltr&quot;&gt;
+    &lt;div&gt;x 轴靠近、从左往右&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container y mandatory-scroll-snapping&quot; dir=&quot;ltr&quot;&gt;
+    &lt;div&gt;y 轴强制、从左往右&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container y proximity-scroll-snapping&quot; dir=&quot;ltr&quot;&gt;
+    &lt;div&gt;y 轴靠近、从左往右&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container x mandatory-scroll-snapping&quot; dir=&quot;rtl&quot;&gt;
+    &lt;div&gt;x 轴强制、从右往左&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container x proximity-scroll-snapping&quot; dir=&quot;rtl&quot;&gt;
+    &lt;div&gt;x 轴靠近、从右往左&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container y mandatory-scroll-snapping&quot; dir=&quot;rtl&quot;&gt;
+    &lt;div&gt;y 轴强制、从右往左&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;container y proximity-scroll-snapping&quot; dir=&quot;rtl&quot;&gt;
+    &lt;div&gt;y 轴靠近、从右往左&lt;/div&gt;
+    &lt;div&gt;2&lt;/div&gt;
+    &lt;div&gt;3&lt;/div&gt;
+    &lt;div&gt;4&lt;/div&gt;
+    &lt;div&gt;5&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">/* 滚动吸附 */
+.x.mandatory-scroll-snapping {
+  scroll-snap-type: x mandatory;
+}
+.y.mandatory-scroll-snapping {
+  scroll-snap-type: y mandatory;
+}
+.x.proximity-scroll-snapping {
+  scroll-snap-type: x proximity;
+}
+.y.proximity-scroll-snapping {
+  scroll-snap-type: y proximity;
+}
+
+.container &gt; div {
+  text-align: center;
+  scroll-snap-align: center;
+  flex: none;
+}
+</code></pre>
+<h3>04 inset</h3>
+<blockquote>
+<p>属性 inset 为简写属性，对应于 top、right、bottom 和 left 属性。其与 margin 简写属性具有相同的多值语法。</p>
+</blockquote>
+<p><strong>语法：</strong></p>
+<pre><code class="language-sh">#长度值
+inset: 10px; #应用于所有边
+inset: 4px 8px; #上下 | 左右
+inset: 5px 15px 10px; #上 | 左右 | 下
+inset: 2.4em 3em 3em 3em; #上 | 右 | 下 | 左
+
+#包含块的宽度（左或右）或高度（上或下）的百分比
+inset: 10% 5% 5% 5%;
+
+#关键词值
+inset: auto;
+
+#全局值
+inset: inherit;
+inset: initial;
+inset: revert;
+inset: revert-layer;
+inset: unset;
+</code></pre>
+<h3>05 inline、block</h3>
+<p><strong>padding-inline</strong></p>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>定义了元素的逻辑行首和行末内边距，并根据元素的书写模式、行内方向和文本朝向对应至实体内边距。</p>
+</blockquote>
+<pre><code class="language-css">.box {
+  padding-inline: 5% 10%;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/06.png" alt=""></p>
+<pre><code class="language-css">.box {
+  padding-inline: 15px 40px;
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<p><img src="./imgs/92/07.png" alt=""></p>
+<pre><code class="language-css">.box {
+  padding-inline: 5% 20%;
+  writing-mode: horizontal-tb;
+  direction: rtl;
+}
+</code></pre>
+<p><img src="./imgs/92/08.png" alt=""></p>
+<ul>
+<li><p>属性构成</p>
+<ul>
+<li>padding-inline-end</li>
+<li>padding-inline-start</li>
+</ul>
+</li>
+<li><p>语法</p>
+</li>
+</ul>
+<pre><code class="language-sh">#&lt;length&gt; 值
+padding-inline: 10px 20px; #绝对长度
+padding-inline: 1em 2em; #相对于文本尺寸
+padding-inline: 10px; #同时设置行首和行末值
+
+#&lt;percentage&gt; 值
+padding-inline: 5% 2%; #相对于最近包含区块的宽度
+
+#全局值
+padding-inline: inherit;
+padding-inline: initial;
+padding-inline: revert;
+padding-inline: revert-layer;
+padding-inline: unset;
+</code></pre>
+<p><code>padding-inline</code> 属性可用一个或两个值指定。若给一值，则此值同时用于 <code>padding-inline-start</code> 和 <code>padding-inline-end</code>。若给两值，则第一个用于 <code>padding-inline-start</code> 而第二个用于 <code>padding-inline-end</code>。</p>
+<ul>
+<li>为竖排文本设置行向内边距</li>
+</ul>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;p class=&quot;exampleText&quot;&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">div {
+  background-color: yellow;
+  width: 120px;
+  height: 120px;
+}
+.exampleText {
+  writing-mode: vertical-rl;
+  padding-inline: 20px 40px;
+  background-color: #c8c800;
+}
+</code></pre>
+<p><img src="./imgs/92/09.png" alt=""></p>
+<p><strong>padding-block</strong></p>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>定义了元素的逻辑块首和块末内边距，并根据元素的书写模式、行内方向和文本朝向对应至实体内边距。</p>
+</blockquote>
+<pre><code class="language-css">.box {
+  padding-block: 10px 20px;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/10.png" alt=""></p>
+<pre><code class="language-css">.box {
+  padding-block: 20px 40px;
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<p><img src="./imgs/92/11.png" alt=""></p>
+<pre><code class="language-css">.box {
+  padding-block: 5% 10%;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/12.png" alt=""></p>
+<pre><code class="language-css">.box {
+  padding-block: 2em 4em;
+  writing-mode: vertical-lr;
+}
+</code></pre>
+<p><img src="./imgs/92/13.png" alt=""></p>
+<ul>
+<li><p>属性构成</p>
+<ul>
+<li>padding-block-end</li>
+<li>padding-block-start</li>
+</ul>
+</li>
+<li><p>语法</p>
+</li>
+</ul>
+<pre><code class="language-sh"># &lt;length&gt; 值
+padding-block: 10px 20px; # 绝对长度
+padding-block: 1em 2em; # 相对于文本尺寸
+padding-block: 10px; # 同时设置块首和块末值
+
+# &lt;percentage&gt; 值
+padding-block: 5% 2%; # 相对于最近包含区块的宽度
+
+# 全局值
+padding-block: inherit;
+padding-block: initial;
+padding-block: revert;
+padding-block: revert-layer;
+padding-block: unset;
+</code></pre>
+<p><code>padding-block</code> 属性可用一个或两个值指定。若给一值，则此值同时用于 <code>padding-block-start</code> 和 <code>padding-block-end</code>。若给两值，则第一个用于 <code>padding-block-start</code> 而第二个用于 <code>padding-block-end</code>。</p>
+<ul>
+<li>为竖排文本设置块向内边距</li>
+</ul>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;p class=&quot;exampleText&quot;&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">div {
+  background-color: yellow;
+  width: 120px;
+  height: 120px;
+}
+
+.exampleText {
+  writing-mode: vertical-rl;
+  padding-block: 20px 40px;
+  background-color: #c8c800;
+}
+</code></pre>
+<p><img src="./imgs/92/14.png" alt=""></p>
+<p><strong>margin-inline</strong></p>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>定义了元素的逻辑行首和行末外边距，并根据元素的书写模式、行内方向和文本朝向对应至实体外边距。</p>
+</blockquote>
+<pre><code class="language-css">.box {
+  margin-inline: 5% 10%;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/15.png" alt=""></p>
+<pre><code class="language-css">.box {
+  margin-inline: 10px 40px;
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<p><img src="./imgs/92/16.png" alt=""></p>
+<pre><code class="language-css">.box {
+  margin-inline: 5% 10%;
+  writing-mode: horizontal-tb;
+  direction: rtl;
+}
+</code></pre>
+<p><img src="./imgs/92/17.png" alt=""></p>
+<ul>
+<li><p>属性构成</p>
+<ul>
+<li>margin-inline-start</li>
+<li>margin-inline-end</li>
+</ul>
+</li>
+<li><p>语法</p>
+</li>
+</ul>
+<pre><code class="language-sh">#&lt;length&gt; 值
+margin-inline: 10px 20px; #绝对长度
+margin-inline: 1em 2em; #相对于文本尺寸
+margin-inline: 5% 2%; #相对于最近区块容器的宽度
+margin-inline: 10px; #同时设置行首和行末值
+
+#关键词值
+margin-inline: auto;
+
+#全局值
+margin-inline: inherit;
+margin-inline: initial;
+margin-inline: revert;
+margin-inline: revert-layer;
+margin-inline: unset;
+</code></pre>
+<p>根据 <code>writing-mode</code>、<code>direction</code> 和 <code>text-orientation</code> 所定义的值，此属性对应于 <code>margin-top</code> 和 <code>margin-bottom</code>，或者 <code>margin-right</code> 和 <code>margin-left</code> 属性。</p>
+<p><code>margin-inline</code> 属性可用一个或两个值指定。</p>
+<ul>
+<li><p>用一个值指定时，行首和行末应用同样的外边距。</p>
+</li>
+<li><p>用两个值指定时，第一个外边距应用于行首，第二个应用于行末。</p>
+</li>
+<li><p>设置行首和行末外边距</p>
+</li>
+</ul>
+<pre><code class="language-css">div {
+  background-color: yellow;
+  width: 120px;
+  height: auto;
+  border: 1px solid green;
+}
+
+p {
+  margin: 0;
+  margin-inline: 20px 40px;
+  background-color: tan;
+}
+
+.verticalExample {
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;p&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;verticalExample&quot;&gt;
+  &lt;p&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<p><img src="./imgs/92/18.png" alt=""></p>
+<p><strong>margin-block</strong></p>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>定义了元素的逻辑块首和块末外边距，并根据元素的书写模式、行内方向和文本朝向对应至实体外边距。</p>
+</blockquote>
+<pre><code class="language-css">.box {
+  margin-block: 10px 20px;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/19.png" alt=""></p>
+<pre><code class="language-css">.box {
+  margin-block: 20px 40px;
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<p><img src="./imgs/92/20.png" alt=""></p>
+<pre><code class="language-css">.box {
+  margin-block: 5% 20%;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/21.png" alt=""></p>
+<pre><code class="language-css">.box {
+  margin-block: 1rem auto;
+  writing-mode: vertical-lr;
+}
+</code></pre>
+<p><img src="./imgs/92/22.png" alt=""></p>
+<ul>
+<li><p>属性构成</p>
+<ul>
+<li>margin-block-start</li>
+<li>margin-block-end</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-sh">#&lt;length&gt; 值
+margin-block: 10px 20px; #绝对长度
+margin-block: 1em 2em; #相对于文本尺寸
+margin-block: 5% 2%; #相对于最近区块容器的宽度
+margin-block: 10px; #同时设置块首和块末值
+
+#关键词值
+margin-block: auto;
+
+#全局值
+margin-block: inherit;
+margin-block: initial;
+margin-block: revert;
+margin-block: revert-layer;
+margin-block: unset;
+</code></pre>
+<p>根据 writing-mode、direction 和 text-orientation 所定义的值，此属性对应于 margin-top 和 margin-bottom，或者 margin-right 和 margin-left 属性。</p>
+<p><code>margin-block</code> 属性可用一个或两个值指定。</p>
+<ol>
+<li>用<strong>一个</strong>值指定时，<strong>块首和块末</strong>应用同样的外边距。</li>
+<li>用<strong>两个</strong>值指定时，第一个外边距应用于<strong>块首</strong>，第二个应用于<strong>块末</strong>。</li>
+</ol>
+<ul>
+<li>设置块首和块末外边距</li>
+</ul>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;p&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;verticalExample&quot;&gt;
+  &lt;p&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">div {
+  background-color: yellow;
+  width: 120px;
+  height: auto;
+  border: 1px solid green;
+}
+
+p {
+  margin: 0;
+  margin-block: 20px 40px;
+  background-color: tan;
+}
+
+.verticalExample {
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<p><img src="./imgs/92/23.png" alt=""></p>
+<p><strong>border-inline</strong></p>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>用于在样式表中的某处同时设置逻辑行向边框的各属性值。</p>
+</blockquote>
+<pre><code class="language-css">.box {
+  border-inline: solid;
+  writing-mode: horizontal-tb;
+}
+</code></pre>
+<p><img src="./imgs/92/24.png" alt=""></p>
+<pre><code class="language-css">.box {
+  border-inline: dashed red;
+  writing-mode: vertical-rl;
+}
+</code></pre>
+<p><img src="./imgs/92/25.png" alt=""></p>
+<pre><code class="language-css">.box {
+  border-inline: 1rem solid;
+  writing-mode: horizontal-tb;
+  direction: rtl;
+}
+</code></pre>
+<p><img src="./imgs/92/26.png" alt=""></p>
+<p><code>border-inline</code> 所对应的实体边框取决于元素的书写模式、行内方向和文本朝向。根据 <code>writing-mode</code>、<code>direction</code> 和 <code>text-orientation</code> 所定义的值，此属性对应于 <code>border-top</code> 和 <code>border-bottom</code>，或者 <code>border-right</code> 和 <code>border-left</code> 属性。</p>
+<p>另一方向的边框可用 <code>border-block</code> 设置，此属性会设置 <code>border-block-start</code> 和 <code>border-block-end</code>。</p>
+<ul>
+<li>语法</li>
+</ul>
+<pre><code class="language-sh">border-inline: 1px;
+border-inline: 2px dotted;
+border-inline: medium dashed blue;
+
+# 全局值
+border-inline: inherit;
+border-inline: initial;
+border-inline: revert;
+border-inline: revert-layer;
+border-inline: unset;
+</code></pre>
+<ul>
+<li>竖排文本的边框</li>
+</ul>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;p class=&quot;exampleText&quot;&gt;示例文本&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">div {
+  background-color: yellow;
+  width: 120px;
+  height: 120px;
+}
+.exampleText {
+  writing-mode: vertical-rl;
+  border-inline: 5px dashed blue;
+}
+</code></pre>
+<p><img src="./imgs/92/27.png" alt=""></p>
+<h3>06 min()、max()</h3>
+<ol>
+<li>min()</li>
+</ol>
+<pre><code class="language-sh">width: min(1vw, 4em, 80px);
+</code></pre>
+<p>在上面的例子中，宽度最多是 80px。如果视口的宽度小于 800px，或者一个 em 的宽度小于 20px，则会更窄。换句话说，最大宽度是 80px，</p>
+<p><strong>示例</strong></p>
+<p><code>min()</code> 让我们在设置图像的最大宽度时更简单。在下面这个例子中，在小型设备上宽度拉伸为 window 的一半，但在大型设备上，不超过 300px，不使用媒体查询：</p>
+<pre><code class="language-css">.logo {
+  width: min(50vw, 300px);
+}
+</code></pre>
+<pre><code class="language-html">&lt;img
+  src=&quot;https://developer.mozilla.org/static./imgs/92b-docs-sprite.svg&quot;
+  alt=&quot;MDN Web Docs&quot;
+  class=&quot;logo&quot;
+/&gt;
+</code></pre>
+<p>在这个例子中，除非视口比 600px 更窄，否则 logo 的宽会被设置为 300px，到时候，它会随着视口的缩小而缩小，而且总是视口宽度的 50%。</p>
+<p><strong>给 label 和 input 设置最大值</strong></p>
+<p>CSS 方法的另一个用途时设置响应式组件（form）的最大尺寸：让 label 和 input 的宽度随着组件的缩小而缩小。</p>
+<pre><code class="language-html">&lt;form&gt;
+  &lt;label&gt;Type something:&lt;/label&gt;
+  &lt;input type=&quot;text&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+<pre><code class="language-css">input,
+label {
+  padding: 2px;
+  box-sizing: border-box;
+  display: inline-block;
+  width: min(40%, 400px);
+  background-color: pink;
+}
+
+form {
+  margin: 4px;
+  border: 1px solid black;
+  padding: 4px;
+}
+</code></pre>
+<p>这里，form 的 margin，border，padding 总是它父元素的宽度的 100%。我们声明 input 和 label 的宽度比 form 的 40% 还小或者 400px 宽，只要取决于哪一个最小。换句话说，input 和 label 的最大宽度就是 400px，最窄就是 form 的 40%。因此看起来会显得很小。</p>
+<p><img src="./imgs/92/05.png" alt=""></p>
+<p><strong>无障碍问题</strong></p>
+<p>当 min() 用于控制文本大小时，要保证文本足够大以便于阅读。建议把 min() 方法嵌入到 max() 中， relative length unit 这样就可以便于阅读，比如：</p>
+<pre><code class="language-css">small {
+  font-size: max(min(0.5vw, 0.5em), 1rem);
+}
+</code></pre>
+<p>这用于保证最小值是 1rem，这样在页面缩放时文本也会缩放。</p>
+<ol start="2">
+<li>max()</li>
+</ol>
+<pre><code class="language-sh">width: max(10vw, 4em, 80px);
+</code></pre>
+<p>在上面这个例子中，宽度最小会是 80px，除非视图宽度大于 800px 或者是一个 em 比 20px 宽。简单来说，最小宽度是 80px。你也可以认为 max() 的值提供了一个属性最小可能的值。</p>
+<p><strong>为字体设定一个最小字号</strong></p>
+<pre><code class="language-css">h1 {
+  font-size: 2rem;
+}
+h1.responsive {
+  font-size: max(4vw, 2em, 2rem);
+}
+</code></pre>
+<p><strong>无障碍</strong></p>
+<pre><code class="language-css">small {
+  font-size: max(min(0.5vw, 0.5em), 1rem);
+}
+</code></pre>
+<h3>07 line-clamp</h3>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>属性可以把块容器中的内容限制为指定的行数。</p>
+</blockquote>
+<p>它只有在 display 属性设置成 <code>-webkit-box</code> 或者 <code>-webkit-inline-box</code> 并且 <code>box-orient</code> 属性设置成 <code>vertical</code> 时才有效果。</p>
+<p>在大部分情况下，也需要设置 overflow 属性为 hidden，否则，里面的内容不会被裁减，并且在内容显示为指定行数后还会显示省略号。</p>
+<p>当应用于锚（anchor）元素时，截断可以发生在文本中间，而不必在末尾。</p>
+<p><strong>语法</strong></p>
+<pre><code class="language-sh">#关键词值
+-webkit-line-clamp: none;
+
+#整数值
+-webkit-line-clamp: 3;
+-webkit-line-clamp: 10;
+
+#全局值
+-webkit-line-clamp: inherit;
+-webkit-line-clamp: initial;
+-webkit-line-clamp: revert;
+-webkit-line-clamp: revert-layer;
+-webkit-line-clamp: unset;
+</code></pre>
+<p><strong>截断段落</strong></p>
+<pre><code class="language-html">&lt;p&gt;
+  在此示例中，&lt;code&gt;-webkit-line-clamp&lt;/code&gt; 属性设置为
+  &lt;code&gt;2&lt;/code&gt;，即文本在超过两行后将被截断。文本截断处将显示省略号。
+&lt;/p&gt;
+</code></pre>
+<pre><code class="language-css">p {
+  width: 300px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+</code></pre>
+<p><img src="./imgs/92/04.png" alt=""></p>
+<h3>08 :has()</h3>
+<ul>
+<li>火狐浏览器不支持</li>
+</ul>
+<pre><code class="language-css">/* 当 h1 元素后面紧跟着一个兄弟元素 p 时，会应用以下样式 */
+h1:has(+ p) {
+  margin-bottom: 0;
+}
+</code></pre>
+<p><strong>与兄弟组合器一起使用</strong></p>
+<ul>
+<li>以下示例中的 :has() 样式声明会调整 H1 标题后面的间距，如果它们后面紧跟着 H2 标题。</li>
+</ul>
+<pre><code class="language-html">&lt;section&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Morning Times&lt;/h1&gt;
+    &lt;p&gt;
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    &lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Morning Times&lt;/h1&gt;
+    &lt;h2&gt;Delivering you news every morning&lt;/h2&gt;
+    &lt;p&gt;
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    &lt;/p&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">h1,
+h2 {
+  margin: 0 0 1rem 0;
+}
+h1:has(+ h2) {
+  margin: 0 0 0.25rem 0;
+}
+</code></pre>
+<p><img src="./imgs/92/02.png" alt=""></p>
+<p><strong>与 :is() 伪类一起使用</strong></p>
+<ul>
+<li>这个示例建立在前一个示例之上，展示了如何用 :has() 选择多个元素。</li>
+</ul>
+<pre><code class="language-html">&lt;section&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Morning Times&lt;/h1&gt;
+    &lt;h2&gt;Delivering you news every morning&lt;/h2&gt;
+    &lt;p&gt;
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    &lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Morning Times&lt;/h1&gt;
+    &lt;h2&gt;Delivering you news every morning&lt;/h2&gt;
+    &lt;h3&gt;8:00 am&lt;/h3&gt;
+    &lt;p&gt;
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    &lt;/p&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">h1,
+h2,
+h3 {
+  margin: 0 0 1rem 0;
+}
+:is(h1, h2, h3):has(+ :is(h2, h3, h4)) {
+  margin: 0 0 0.25rem 0;
+}
+</code></pre>
+<p><img src="./imgs/92/03.png" alt=""></p>
+<p>这个选择器也可以写作：</p>
+<pre><code class="language-css">:is(h1, h2, h3):has(+ h2, + h3, + h4) {
+  margin: 0 0 0.25rem 0;
+}
+</code></pre>
+<h3>09 :is</h3>
+<ul>
+<li>兼容性良好</li>
+</ul>
+<blockquote>
+<p>以选择器列表作为参数，并选择该列表中任意一个选择器可以选择的元素；这对于以更紧凑的形式编写大型选择器非常有用。</p>
+</blockquote>
+<p><strong>尝试一下：</strong></p>
+<pre><code class="language-html">&lt;ol&gt;
+  &lt;li&gt;Saturn&lt;/li&gt;
+  &lt;li&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Mimas&lt;/li&gt;
+      &lt;li&gt;Enceladus&lt;/li&gt;
+      &lt;li&gt;
+        &lt;ol&gt;
+          &lt;li&gt;Voyager&lt;/li&gt;
+          &lt;li&gt;Cassini&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Tethys&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Uranus&lt;/li&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;Titania&lt;/li&gt;
+      &lt;li&gt;Oberon&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+<pre><code class="language-css">ol {
+  list-style-type: upper-alpha;
+  color: darkblue;
+}
+
+/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+:is(ol, ul, menu:unsupported) :is(ol, ul) {
+  color: green;
+}
+
+:is(ol, ul) :is(ol, ul) ol {
+  list-style-type: lower-greek;
+  color: chocolate;
+}
+</code></pre>
+<p><img src="./imgs/92/01.png" alt=""></p>
+<p>在 CSS 中，当使用选择器列表时，如果任何一个选择器无效，则整个列表将被视为无效。使用 :is() 或 :where() 时，如果一个选择器无法解析，整个选择器列表不会被视为无效，而是会忽略不正确或不支持的选择器，并使用其他的选择器。</p>
+<pre><code class="language-css">/* 即使在不支持 :unsupported 的浏览器中，仍将正确解析 :valid */
+:is(:valid, :unsupported) {
+  /* … */
+}
+</code></pre>
+<pre><code class="language-css">/* 在不支持 :unsupported 浏览器中即使它们支持 :valid，仍将忽略。 */
+:valid,
+:unsupported {
+  /* … */
+}
+</code></pre>
+<p><strong>简化列表选择器</strong></p>
+<p><code>:is()</code> 伪类可以大大简化你的 CSS 选择器。例如，考虑以下 CSS：</p>
+<pre><code class="language-css">/* 三层或更深的无序列表使用方形符号。 */
+ol ol ul,
+ol ul ul,
+ol menu ul,
+ol dir ul,
+ol ol menu,
+ol ul menu,
+ol menu menu,
+ol dir menu,
+ol ol dir,
+ol ul dir,
+ol menu dir,
+ol dir dir,
+ul ol ul,
+ul ul ul,
+ul menu ul,
+ul dir ul,
+ul ol menu,
+ul ul menu,
+ul menu menu,
+ul dir menu,
+ul ol dir,
+ul ul dir,
+ul menu dir,
+ul dir dir,
+menu ol ul,
+menu ul ul,
+menu menu ul,
+menu dir ul,
+menu ol menu,
+menu ul menu,
+menu menu menu,
+menu dir menu,
+menu ol dir,
+menu ul dir,
+menu menu dir,
+menu dir dir,
+dir ol ul,
+dir ul ul,
+dir menu ul,
+dir dir ul,
+dir ol menu,
+dir ul menu,
+dir menu menu,
+dir dir menu,
+dir ol dir,
+dir ul dir,
+dir menu dir,
+dir dir dir {
+  list-style-type: square;
+}
+</code></pre>
+<p>你可以将其替换为：</p>
+<pre><code class="language-css">/* 三层或更深的无序列表使用方形符号。 */
+:is(ol, ul, menu, dir) :is(ol, ul, menu, dir) :is(ul, menu, dir) {
+  list-style-type: square;
+}
+</code></pre>
+<p><strong>简化段落选择器</strong></p>
+<p><code>:is()</code> 伪类在处理段落和标题时特别有用。由于 <code>&lt;section&gt;</code>、<code>&lt;article&gt;</code>、<code>&lt;aside&gt;</code> 和 <code>&lt;nav&gt;</code> 通常嵌套在一起，如果没有 <code>:is()</code>，将它们设置为相互匹配很棘手。</p>
+<p>例如，没有 :is()，在不同的深度对所有 h1 元素进行样式化可能是非常复杂的：</p>
+<pre><code class="language-css">/* 0 级 */
+h1 {
+  font-size: 30px;
+}
+
+/* 1 级 */
+section h1,
+article h1,
+aside h1,
+nav h1 {
+  font-size: 25px;
+}
+
+/* 2 级 */
+section section h1,
+section article h1,
+section aside h1,
+section nav h1,
+article section h1,
+article article h1,
+article aside h1,
+article nav h1,
+aside section h1,
+aside article h1,
+aside aside h1,
+aside nav h1,
+nav section h1,
+nav article h1,
+nav aside h1,
+nav nav h1 {
+  font-size: 20px;
+}
+
+/* 3 级 */
+/* 想都别想！ */
+</code></pre>
+<p>然而，使用 <code>:is()</code> 将容易的多：</p>
+<pre><code class="language-css">/* 0 级 */
+h1 {
+  font-size: 30px;
+}
+/* 1 级 */
+:is(section, article, aside, nav) h1 {
+  font-size: 25px;
+}
+/* 2 级 */
+:is(section, article, aside, nav) :is(section, article, aside, nav) h1 {
+  font-size: 20px;
+}
+/* 3 级 */
+:is(section, article, aside, nav)
+  :is(section, article, aside, nav)
+  :is(section, article, aside, nav)
+  h1 {
+  font-size: 15px;
+}
+</code></pre>
+<p><strong>:is() 不能选择伪元素</strong></p>
+<pre><code class="language-css">/* 错误写法 */
+some-element:is(::before, ::after) {
+  display: block;
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/91.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/93.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

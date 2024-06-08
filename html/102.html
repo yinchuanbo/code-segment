@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>原生的延迟加载支持</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>原生的延迟加载支持</h2>
+                    <p>2024-06-08 14:31:27 · YinHao</p>
+                  </div>
+                  <p>从 Chrome 75 版本开始，已经可以通过 <code>&lt;img&gt;</code> 和 <code>&lt;iframe&gt;</code> 标签的 loading 属性原生支持延迟加载了，loading 属性包含以下三种取值：</p>
+<ol>
+<li><p>lazy: 进行延迟加载</p>
+</li>
+<li><p>eager: 立即加载</p>
+</li>
+<li><p>auto: 浏览器自行决定是否进行延迟加载</p>
+</li>
+</ol>
+<p>若不指定任何属性，loading 默认取值 auto，</p>
+<pre><code class="language-html">&lt;!-- 当用户滚动屏幕视窗到该图像元素时，才进行加载 --&gt;
+&lt;img src=&quot;photo.jpg&quot; loading=&quot;lazy&quot; alt=&quot;&quot; /&gt;
+&lt;!-- 立刻加载图像元素 --&gt;
+&lt;img src=&quot;photo.jpg&quot; loading=&quot;eager&quot; alt=&quot;&quot; /&gt;
+&lt;!-- 浏览器决定是否进行延迟加载 --&gt;
+&lt;img src=&quot;photo.jpg&quot; loading=&quot;auto&quot; alt=&quot;&quot; /&gt;
+&lt;!-- 亦可延迟加载 picture 中的图像 --&gt;
+&lt;picture&gt;
+  &lt;source media=&quot;(min-width: 750px)&quot; srcset=&quot;phone.jpg 1x, phone-hd.jpg 2x&quot; /&gt;
+  &lt;source srcset=&quot;small.jpg 1x, small- hd.jpg 2x&quot; /&gt;
+  &lt;img src=&quot;default.jpg&quot; loading=&quot;lazy&quot; /&gt;
+&lt;/picture&gt;
+&lt;!-- 当用户滚动屏幕视窗到该 iframe 时的延迟加载 --&gt;
+&lt;iframe src=&quot;video.html&quot; loading=&quot;lazy&quot;&gt;&lt;/iframe&gt;
+</code></pre>
+<p>【注意】触发机制都是当目标图片文件经页面滚动出现在屏幕视窗中时，触发对图片资源的请求，但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
+<p>如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离，就开始请求加载图像或 iframe 中的内容，这样能很好的缩短用户的等待加载时长。</p>
+<p><strong>兼容处理</strong></p>
+<pre><code class="language-js">if (&quot;loading&quot; in HTMLImageElement.prototype) {
+  // 浏览器支持 loading=&#39;lazy&#39; 的延迟加载方式
+} else {
+  // 获取其他 js 库来实现延迟加载
+}
+</code></pre>
+<pre><code class="language-html">&lt;img data-src=&quot;photo.jpg&quot; loading=&quot;lazy&quot; class=&quot;lazyload&quot; alt=&quot;&quot; /&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/101.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

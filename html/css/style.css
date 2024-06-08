@@ -112,7 +112,7 @@ ol > li {
 }
 
 ol > li::marker {
-  color: #ff0000;
+  color: #f92672;
   float: left;
   font-weight: 600;
 }
@@ -132,7 +132,7 @@ ul > li::before {
   left: 0;
   width: 7px;
   height: 7px;
-  background-color: #ff0000;
+  background-color: #f92672;
   border-radius: 100%;
 }
 
@@ -142,7 +142,7 @@ p {
 }
 
 p code {
-  color: #ff0000;
+  color: #f92672;
   font-style: italic;
   margin: 0 5px;
 }
@@ -200,7 +200,7 @@ blockquote::before {
   left: 0;
   width: 5px;
   height: 100%;
-  background-color: #ff0000;
+  background-color: #f92672;
 }
 
 /* .token.constant,
@@ -289,8 +289,8 @@ img {
 }
 
 a {
-  text-decoration: none;
-  color: #fff;
+  /* text-decoration: none; */
+  color: skyblue;
 }
 
 .img__preview {

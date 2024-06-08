@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>构建优化</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>构建优化</h2>
+                    <p>2024-06-08 14:16:33 · YinHao</p>
+                  </div>
+                  <h3>压缩与合并</h3>
+<p><strong>资源压缩和合并的优点:</strong></p>
+<ul>
+<li><p>减少 http 的请求数量</p>
+</li>
+<li><p>减少 http 请求的资源大小</p>
+</li>
+</ul>
+<ol>
+<li>HTML 压缩</li>
+</ol>
+<p><strong>HTML 压缩的三种方式：</strong></p>
+<ul>
+<li><p>在线网站提供 HTML 压缩服务</p>
+</li>
+<li><p>基于 nodejs 的工具：html-minifier</p>
+</li>
+</ul>
+<pre><code class="language-js">const fs = require(&quot;fs&quot;);
+const { minify } = require(&quot;html-minifier&quot;);
+fs.readFile(&quot;./test.html&quot;, &quot;utf8&quot;, (err, data) =&gt; {
+  if (err) throw err;
+  fs.writeFile(
+    &quot;./test_mini.html&quot;,
+    minify(
+      data,
+      {
+        removeComments: true, // 去掉注释
+        collapseWhitespace: true, // 去除空格
+        minifyJS: true, // 压缩 HTML 中的 JavaScript
+        minifyCSS: true, // 压缩 HTML 中的 css
+      },
+      () =&gt; console.log(&quot;success&quot;)
+    )
+  );
+});
+</code></pre>
+<ul>
+<li>服务端模板引擎的渲染压缩</li>
+</ul>
+<ol start="2">
+<li>CSS 压缩</li>
+</ol>
+<p>CSS 代码也能进行压缩，而且很有必要去压缩。</p>
+<p>也可以用 html-minifier 针对 HTML 中的 CSS 进行压缩。</p>
+<p>还可以使用 clean-css 进行 CSS 压缩。</p>
+<pre><code class="language-js">const CleanCSS = require(&quot;clean-css&quot;);
+const input = &quot;a { font-weight: bold }&quot;;
+const options = {
+  // 配置项
+};
+// 压缩并输出结果
+const output = new CleanCSS(options).minify(input);
+</code></pre>
+<ol start="3">
+<li>JavaScript 压缩和混淆</li>
+</ol>
+<p><strong>代码语义缩减和优化</strong></p>
+<p>通过对 JavaScript 的压缩可以将一些变量的长度进行缩短，比如说原本一个很长的变量名经过压缩后，可以用很短的像 a、b 来代替，这样能进一步有效的压缩 JavaScript 的代码量，同样还可以针对一些重复代码进行优化，比如去除重复的变量赋值，将一些无效的代码进行缩减与合并的优化。</p>
+<pre><code class="language-js">let a = 1;
+// 又进行了多余的赋值操作
+a = 2;
+// 经过优化后，仅保留 let a = 2 的赋值
+</code></pre>
+<p><strong>代码混淆保护</strong></p>
+<p>混淆变量与方法的命名。</p>
+<p>对于公司而言，HTML 压缩可有可无，但是 CSS 与 JavaScript 压缩确是必要进行的。</p>
+<p><strong>如何压缩</strong></p>
+<p>JavaScript 压缩处理也有类似的第三方库可供使用：uglifyJS2，</p>
+<pre><code class="language-js">const UglifyJS = require(&quot;uglify-js&quot;);
+const jsCode = &quot;function add(first, second) { return first + second }&quot;;
+const options = {
+  // 配置项
+};
+const result = UglifyJS.minify(code, options);
+</code></pre>
+<h3>使用 webpack 进行前端构建</h3>
+<ol>
+<li>模块打包工具</li>
+</ol>
+<p>随着前端功能越来越复杂，显然不可能将所有 JavaScript 代码都写在一个文件里，因为这样不仅可读性差而且也不具有维护性，所以需要将一些功能相对独立的模块拆出来，写在单独的文件中，而原本的 index.js 仅作为整个系统的入口文件，负责引入其他模块。</p>
+<pre><code class="language-js">// index.js
+import Main from &quot;./main.js&quot;;
+import SubModule from &quot;./sub-module.js&quot;;
+// 执行入口程序
+new Main();
+</code></pre>
+<p><strong>模块定义方式：</strong></p>
+<pre><code class="language-js">function Main() {
+  //...
+}
+export default Main;
+</code></pre>
+<ol start="2">
+<li>安装建议</li>
+</ol>
+<p>推荐的做法是局部安装，然后在使用时通过 <strong>npx</strong> 的方式，调用项目内部的 webpack 进行打包构建。</p>
+<ol start="3">
+<li>配置文件</li>
+</ol>
+<p>该配置文件需要定义在 webpack 打包构建的根目录下，其文件名为 <code>webpack.config.js</code>，</p>
+<pre><code class="language-js">const path = require(&quot;path&quot;);
+module.exports = {
+  entry: {
+    main: &quot;./src/index.js&quot;,
+  },
+  output: {
+    filename: &quot;bundle.js&quot;,
+    path: path.resolve(__dirname, &quot;dist&quot;),
+  },
+};
+</code></pre>
+<h3>webpack 的优化性能</h3>
+<p><strong>webpack 的优化瓶颈主要体现在两方面：</strong></p>
+<ul>
+<li><p>打包构建过程太浪费时间</p>
+</li>
+<li><p>打包结果体积太大</p>
+</li>
+</ul>
+<p>对大部分前端项目来说，每次的修改调试都有可能需要全部或部分的代码进行打包构建，可想而知如果这个过程十分耗时，将会非常影响前端工程师的开发效率，</p>
+<p>并且如果打包结果过大，必然也让 HTTP 的单次请求花费过长时间。</p>
+<ol>
+<li>尽量与时俱进</li>
+</ol>
+<p>项目中尽可能使用最新稳定版本的 <code>webpack、nodejs、npm或yarn</code> 能有效地提升打包构建的效率。</p>
+<ol start="2">
+<li>减少 Loader 的执行</li>
+</ol>
+<p>根据具体情况使用 include 或 exclude，在尽可能少的模块上执行 Loader，webpack 配置如下：</p>
+<pre><code class="language-js">const path = require(&quot;path&quot;);
+module.exports = {
+  entry: {
+    main: &quot;./src/index.js&quot;,
+  },
+  module: {
+    rules: [
+      // 对 js 文件的打包规则
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: &quot;babel-loader&quot;,
+          },
+        ],
+      },
+      {
+        // 对于图片文件的打包规则
+        test: /\.(jpg|png|gif)$/,
+        use: {
+          loader: &quot;url-loader&quot;,
+          options: {
+            name: &quot;[name]_[hash].[text]&quot;,
+            outputPath: &quot;images/&quot;,
+            limit: 10240,
+          },
+        },
+      },
+    ],
+  },
+  output: {
+    filename: &quot;bundle.js&quot;,
+    path: path.resolve(__dirname, &quot;dist&quot;),
+  },
+};
+</code></pre>
+<p>对于图片文件则没有必要通过 include 或 exclude 来降低 loader 的执行频率，因为无论哪里引入的图片，最后打包都需要通过 url-loader 对其进行处理，所以 include 或 exclude 的语法并不适用所有 loader 类型，而根据具体的情况而定。</p>
+<p>使用 include 或 exclude 可以帮助我们规避对庞大的第三方库文件的处理，但仅通过限定文件处理范围所带来的性能提升其实是有限的。</p>
+<p>此外，如果开启缓存将构建结果缓存在文件系统中，则可让 babel-loader 的工作效率得到成倍的增加，处理方式也很简单，只需为 loader 增加相应的参数即可。</p>
+<pre><code class="language-sh">loader: &quot;babel-loader?cacheDirectory=true&quot;
+</code></pre>
+<ol start="3">
+<li>确保插件的精简和可靠</li>
+</ol>
+<p>通常我们会根据前端代码的执行环境是线上环境还是开发环境来规定不同的 webpack 配置内容，</p>
+<p>比如线上环境中，我们希望打包的代码尺寸尽可能小，用户加载的速度尽可能快，所以需要对代码进行压缩，下面的配置项声明使用 OptimizeCSSAssetsPlugin 插件来压缩 CSS 资源文件。</p>
+<p>如果在开发环境下，由于不需要考虑代码对用户的加载速度，并且压缩了反而会降低代码的可读性，增加开发成本，所以在开发环境下不用引入代码的压缩插件。</p>
+<pre><code class="language-js">module.exports = {
+  entry: {},
+  module: {},
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin({})],
+  },
+  output: {},
+};
+</code></pre>
+<p>建议使用官方推荐的插件。</p>
+<ol start="4">
+<li>合理配置 resolve 参数</li>
+</ol>
+<p>配置 resolve 参数可以带来很多便利，比如：</p>
+<ul>
+<li><p>使用 extensions 省略引入 Js 文件的后缀名</p>
+</li>
+<li><p>使用 alias 减少书写所引入模块的多目录层级</p>
+</li>
+<li><p>…</p>
+</li>
+</ul>
+<pre><code class="language-js">module.exports = {
+  resolve: {
+    extensions: [&quot;js&quot;, &quot;jsx&quot;, &quot;ts&quot;],
+    alias: {
+      cpn: path.resolve(__dirname, &quot;src/component&quot;),
+    },
+  },
+};
+</code></pre>
+<ol start="5">
+<li>使用 Dllplugin</li>
+</ol>
+<p>前端项目中经常会用到庞大的第三方库，</p>
+<p>而每当发生修改需要重新进行打包时，webpack 会默认去分析所有引用的第三方库，最后将其打包进我们的项目代码中。</p>
+<p>通常，第三方组件包的代码是稳定的，不更换所引用的版本其代码是不会发生修改，所以这里给出一个优化的思路。</p>
+<p>我们仅需要在<code>第一次</code>打包时去分析这些第三方库，只有当依赖自身发生版本变化时才会重新进行打包。</p>
+<p>这便会用到 <strong>Dllplugin</strong></p>
+<p>该插件会把第三方库单独打包到一个文件中，作为一个单纯的依赖库，它不会和我们的项目代码一起参与重新打包，只有当依赖自身发生版本变化时才会重新进行打包。</p>
+<p>使用 <strong>Dllplugin</strong> 处理文件的过程可分为两步:</p>
+<ul>
+<li><p>首先基于动态链接库专属的配置文件打包 dll 库文件</p>
+</li>
+<li><p>然后再基于 webpack 的构建文件打包项目代码</p>
+</li>
+</ul>
+<p><strong>实例：</strong></p>
+<pre><code class="language-jsx">import React, { Component } from &quot;react&quot;;
+import ReactDom from &quot;react-dom&quot;;
+import _ from &quot;lodash&quot;;
+class App extends Component {
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;div&gt;{_.join([&quot;hello&quot;, &quot;world&quot;], &quot; &quot;)}&lt;/div&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre>
+<p>这里引入三个 React 项目经常会遇到的第三方库 <code>react、react-dom、lodash</code>，如果我们不进行任何处理，每当修改该文件后进行重新打包，则会引起 webpack 去分析它们，若打包次数频繁，显然会浪费许多时间。</p>
+<p>接下来进行优化，具体分为两步：</p>
+<ul>
+<li><p>首先将所依赖的第三方库打包成 <code>dll</code> 文件</p>
+</li>
+<li><p>然后检查第三方库的版本是否在其后的迭代中发生了变化，若无变化就都使用之前的打包结果</p>
+</li>
+</ul>
+<p><strong>这里可以为第三方库创建单独的配置文件：</strong></p>
+<pre><code class="language-js">// 可定义文件名为 webpack.dll.js 区别于主配置文件
+module.exports = {
+  mode: &quot;production&quot;,
+  enrty: {
+    // 所引用的第三方包
+    vendors: [&quot;react&quot;, &quot;react-dom&quot;, &quot;lodash&quot;],
+  },
+  output: {
+    filename: &quot;[name].dll.js&quot;, // 输出文件名，即为 vendors.dll.js
+    path: path.resolve(__dirname, &quot;../dll&quot;), // 打包后的输出路径
+    library: &quot;[name]&quot;, // 第三方包导出的全局变量名
+  },
+  // 分析并输出第三方包的映射关系
+  plugins: [
+    new webpack.DllPlugin({
+      name: &quot;[name]&quot;, // 所要分析的包名
+      // 映射关系输出地址
+      path: path.resolve(__dirname, &quot;../dll/[name].manifest.json&quot;),
+    }),
+  ],
+};
+</code></pre>
+<p>该配置文件中将 react、react-dom、lodash 三个包的包名存储在数组中，并赋值给 vendors，其含义是经过打包后，这三个包归于一个名为 vendors 的包。</p>
+<p>output 中声明了该包的文件名及输出路径，library 字段表示该第三方包对外暴露的引用名，即在其他地方可以使用该字段引用包中的内容。</p>
+<p>最后使用 webpack 中的 DllPlugin 插件对该包中的映射关系进行分析，并将结果输出到指定路径下的 json 文件。</p>
+<p>然后我们需要在 webpack 主配置文件中，声明对上述打包好的第三方包的使用规则：</p>
+<pre><code class="language-js">// 此为 webpack 主配置文件，
+module.exports = {
+  plugins: [
+    // 引入打包的第三方包
+    new AddAssetHtmlWebpackPlugin({
+      filepath: path.resolve(__dirname, &quot;../dll/vendors.dll.js&quot;),
+    }),
+    // 引入第三方包的映射关系
+    new webpack.DllReferencePlugin({
+      manifest: path.resolve(__dirname, &quot;../dll/vendors.manifest.json&quot;),
+    }),
+  ],
+};
+</code></pre>
+<p>这样配置的意思是首先引入第三方包的打包结果路径，其次引入第三方包的映射关系，</p>
+<p>当发生重新打包构建时，webpack 会首先查看引用的第三方包是否包含在已建立的映射关系文件 vendors.manifest.json 中，若存在便通过所声明的全局变量 vendors 去使用，若不存在便去 node_modules 中获取所需的模块，动态的进行打包操作。</p>
+<p>上述方式虽然能够降低重复打包构建的时间，但将项目中的所有第三方包都打包进一个文件中，势必会导致其体积过大。</p>
+<p>所以在实际项目中，我们也应根据各个第三方包的大小进行拆分，</p>
+<pre><code class="language-js">// webpack.dll.js
+module.exports = {
+  entry: {
+    vendors: [&quot;lodash&quot;],
+    react: [&quot;react&quot;, &quot;react-dom&quot;],
+  },
+};
+</code></pre>
+<p>如此执行，webpack 构建后会生成 4 个文件：<code>vendors.dll.js | vendors.manifest.json</code>、<code>react.dll.js | react.manifest.json</code></p>
+<p>同时对应的主配置的文件也需要进行相应的修改，</p>
+<pre><code class="language-js">const plugins = [];
+// 读取 /dll 路径下的所有打包文件
+const files = fs.readdirSync(path.resolve(__dirname, &quot;../dll&quot;));
+// 使用循环方式引入相应的代码文件和映射文件
+files.forEach((file) =&gt; {
+  // 通过正则过滤目标文件
+  if (/.*\.dll.js/.test(file)) {
+    plugins.push(
+      new AddAssetHtmlWebpackPlugin({
+        filepath: path.resolve(__dirname, &quot;../dll&quot;, file),
+      })
+    );
+  }
+  if (/.*\.manifest.json/.test(file)) {
+    plugins.push(
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(__dirname, &quot;../dll&quot;, file),
+      })
+    );
+  }
+});
+module.exports = {
+  plugins,
+};
+</code></pre>
+<ol start="6">
+<li>将单线程转化为多线程</li>
+</ol>
+<p>webpack 是单进程的，就算有多个任务同时存在的，它们只能一个一个排队依次进行，这是 nodejs 的限制。</p>
+<p>但大多数 CPU 已经都是多核的，我们可以使用 happypack 充分释放 CPU 在多核并发方面的优势，帮助我们把打包构建任务分解为多个子任务并发执行，这将大大提高打包的效率，</p>
+<pre><code class="language-js">// 引入 happypack
+const Happypack = require(&quot;happypack&quot;);
+// 创建进程池
+const happyThreadPool = Happypack.ThreadPool({
+  size: os.cpus().length,
+});
+module.exports = {
+  modules: {
+    rules: [
+      //...
+      {
+        test: /\.js$/,
+        loader: &quot;happypack/loader?id=happyBabel&quot;,
+      },
+    ],
+  },
+  plugins: [
+    new Happypack({
+      id: &quot;happyBabel&quot;,
+      threadPool: happyThreadPool, // 指定线程池
+      loader: [&quot;babel-loader?cacheDirectory&quot;],
+    }),
+  ],
+};
+</code></pre>
+<ol start="7">
+<li>压缩打包结果的体积</li>
+</ol>
+<p><strong>删除冗余代码</strong></p>
+<p>使用 <strong>Tree-shaking</strong>，它能根据 import、export 的模块导入导出语法，</p>
+<p>在构建编译过程中分析每个模块是否被真实使用，对于没有用到的代码，会在最后的打包结果中删除。</p>
+<p>容易看出 <strong>Tree-shaking</strong> 对处理模块级的代码冗余比价擅长，但对更细粒度的代码冗余，比如 console 语句，注释等，可能就需要在 CSS 和 JavaScript 压缩过程中进行处理了，</p>
+<p>常用的方式是通过 <code>uglifyjs-webpack-plugin</code> 来实现，具体配置方式如下:</p>
+<pre><code class="language-js">const UglifyJsPlugin = require(&quot;uglifyjs-webpack-plugin&quot;);
+module.exports = {
+  plugins: [
+    new UglifyJsPlugin({
+      cache: true, // 开启缓存
+      parallel: true, // 允许并发执行
+      compress: {
+        drop_console: true, // 删除代码中所有的 console 语句
+        reduce_vars: true, // 把代码中使用多次的静态值定义成变量
+      },
+      output: {
+        comment: false, // 删除代码中的所有注释
+        beautify: false, // 删除多余空格，让最后输出的代码尽量紧凑
+      },
+    }),
+  ],
+};
+</code></pre>
+<p><strong>代码拆分按需加载</strong></p>
+<p>如果不进行代码拆分按需加载，则也会降低首屏性能体验。</p>
+<p>项目源代码也需要拆分，可以根据路由来划分打包文件，当访问到不同路由时再触发相应回调请求打包文件，对于 webpack 的打包输出的配置如下:</p>
+<pre><code class="language-js">module.exports = {
+  output: {
+    path: path.join(__dirname, &quot;/../dist&quot;),
+    filename: &quot;app.js&quot;,
+    publicPath: defaultSettings.publicPath,
+    chunkFilename: &quot;[name].[chunkhash:5].chunk.js&quot;,
+  },
+};
+</code></pre>
+<p>以 React 项目为例，在配置路由时还需要添加如下内容:</p>
+<pre><code class="language-js">const getComponent = (location, callback) =&gt; {
+  require.ensure(
+    [],
+    (require) =&gt; callback(null, require(&quot;../pages/MyComponent&quot;).defualt),
+    &quot;mine&quot;
+  );
+};
+//...
+&lt;Route path=&quot;/mine&quot; getComponent={getComponent}&gt;
+</code></pre>
+<p>此处的关键方法就是 require.ensure 这个异步方法，webpack 会将我们这里定义的组件单独打包成一个文件，仅当路由跳转到 mine 时，才会触发回调去获取 MyComponent 组件的内容。</p>
+<p><strong>可视化分析</strong></p>
+<ul>
+<li>webpack-bundle-analyzer</li>
+</ul>
+<p><img src="./imgs/97/03.png" alt=""></p>
+<p>该工具使用起来也很方便:</p>
+<pre><code class="language-js">const BundleAnalyzerPlugin =
+  require(&quot;webpack-bundle-analyzer&quot;).BundleAnalyzerPlugin;
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: &quot;server&quot;,
+      analyzerHost: &quot;127.0.0.1&quot;,
+      analyzerPort: 8888,
+      reportFilename: &quot;report.html&quot;,
+      openAnalyzer: true,
+      generateStatsFile: false,
+      statsOptions: null,
+      logLevel: &quot;info&quot;,
+    }),
+  ],
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/96.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/98.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

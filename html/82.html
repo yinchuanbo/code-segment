@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>如何及时发现网页的隐形错误</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>如何及时发现网页的隐形错误</h2>
+                    <p>2024-06-08 13:47:58 · YinHao</p>
+                  </div>
+                  <p>想要进行异常监控之前，肯定先要了解有哪些异常才能进行监控。</p>
+<h2>异常的类型</h2>
+<p>一般来说，浏览器端的异常分为两种类型：</p>
+<ul>
+<li><strong>JavaScript 错误</strong>，一般都是来自代码的原因。</li>
+<li><strong>静态资源错误</strong>，一般都是来着资源加载的原因</li>
+</ul>
+<p>而这里面我们又有各自的差异</p>
+<h3>JavaScript 错误</h3>
+<p>先来说说 JavaScript 的错误类型，ECMA-262 定义了 7 种错误类型，说明如下：</p>
+<ul>
+<li><code>EvalError</code> ：eval() 函数的相关的错误</li>
+<li><code>RangeError</code> ：使用了超出了 JavaScript 的限制或范围的值。</li>
+<li><code>ReferenceError</code>： 引用了未定义的变量或对象</li>
+<li><code>TypeError</code>： 类型错误</li>
+<li><code>URIError</code>： URI 操作错误</li>
+<li><code>SyntaxError</code>： 语法错误 (这个错误 WebIDL 中故意省略，保留给 ES 解析器使用)</li>
+<li><code>Error</code>： 普通异常，通常与 throw 语句和 try/catch 语句一起使用，利用属性 name 可以声明或了解异常的类型，利用 message 属性可以设置和读取异常的详细信息。</li>
+</ul>
+<p>如果想更详细了解可以看<a href="https://juejin.cn/post/7280794176831258678" title="https://juejin.cn/post/7280794176831258678">详细错误罗列</a>这篇文章</p>
+<h3>静态资源错误</h3>
+<ul>
+<li>通过 XMLHttpRequest、Fetch() 的方式来请求的 http 资源时。</li>
+<li>利用 <code>&lt;img&gt; 、&lt;script&gt;、&lt;video&gt;、&lt;audio&gt;、&lt;iframe&gt;</code> 等标签加载的资源。</li>
+<li>通过创建实例的方式，例如 <code>new Image()</code> 等代码来实现初始化。</li>
+</ul>
+<p>那既然我们已经知道了我们的网站在客户端运行时可能会出现这些异常。那我们要如何进行捕获错误信息呢？</p>
+<h2>捕捉错误</h2>
+<p>我们常见的几种捕捉方法有</p>
+<ul>
+<li><code>try-catch</code> (ES 提供基本的错误捕获语法)</li>
+<li><code>window.onerror</code> = cb (DOM0)</li>
+<li><code>window.addEventListener(&#39;error&#39;, cb, true)</code> (DOM2)</li>
+<li><code>window.addEventListener(&quot;unhandledrejection&quot;, cb)</code>(DOM4)</li>
+<li><code>Promise.then().catch(cb)</code></li>
+<li><code>封装XMLHttpRequest&amp;fetch</code> | 覆写请求接口对象</li>
+</ul>
+<p>可能我们之前只用过<code>try-catch</code>这种方法，其他的之前都没见过，没关系下面我们来逐个讲解。</p>
+<h3>try-catch</h3>
+<blockquote>
+<p>try-catch 我们经常能看见，通过给代码块进行 try-catch 进行包装后，当代码块发生出错时 catch 将能捕捉到错误的信息，页面也将可以继续执行。</p>
+</blockquote>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>简单易用，可以捕获同步代码的错误。</li>
+<li>可以返回较完整的错误堆栈信息。</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>缺点是无法捕获异步异常</li>
+<li>无法捕捉跨域异常</li>
+<li>需要手动放置，代码冗余</li>
+</ul>
+<p>捕捉同步代码</p>
+<pre><code class="language-js">// 同步异常的捕获
+function foo() {
+  doSomething();
+}
+
+try {
+  foo();
+} catch (e) {
+  console.log(e);
+  // 可以打印出完整的错误堆栈信息
+}
+</code></pre>
+<p>无法捕捉异步代码示例</p>
+<pre><code class="language-js">// 异步异常的捕获
+function asyncFunc() {
+  setTimeout(() =&gt; {
+    throw new Error(&quot;这是一个异步代码中的错误&quot;);
+  }, 1000);
+}
+
+try {
+  asyncFunc();
+} catch (e) {
+  // 获取不到任何信息！
+}
+</code></pre>
+<h2>window.onerror</h2>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>可以捕获同步和异步的异常</li>
+<li>可以获取到错误的详细信息</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>受到同源策略的限制，只能捕获当前域名下的错误</li>
+<li>无法捕获语法错误和网络异常的错误</li>
+<li>无法阻止异常继续传播，捕获到错误后，无法处理异常。</li>
+</ul>
+<p>代码示例：</p>
+<pre><code class="language-js">window.onerror = function (message, source, line, column, error) {
+  // 输出错误信息
+  console.log(&quot;错误信息：&quot; + message);
+  console.log(&quot;错误来源：&quot; + source);
+  console.log(&quot;错误行号：&quot; + line);
+  console.log(&quot;错误列号：&quot; + column);
+
+  // 如果有错误对象，输出错误堆栈
+  if (error) {
+    console.log(&quot;错误堆栈：&quot; + error.stack);
+  }
+};
+</code></pre>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><p><code>window.onerror</code> 可以帮助我们捕获意料之外的错误，而 try-catch 则是用于在可预见的情况下监控特定的错误。将它们结合使用可以使错误处理更加高效。</p>
+</li>
+<li><p>只有当 <code>window.onerror</code> 函数返回 true 时，异常才不会继续向上抛出。否则，即使我们知道异常发生了，控制台仍然会显示 <code>&quot;Uncaught Error: xxxxx&quot;</code>。</p>
+</li>
+<li><p>对于全局捕获事件 <code>window.onerror</code>，最好将其放置在所有 JavaScript 脚本之前。因为无法保证我们编写的代码是否会出错，如果将其放置在后面，一旦发生错误，onerror 将无法捕获到异常。</p>
+</li>
+<li><p><code>window.onerror</code> 只能同时订阅一个错误处理函数。如果在代码中多次设置 <code>window.onerror</code>，后面的设置会覆盖前面的设置。</p>
+</li>
+</ul>
+<h2>window.addEventListener（error、unhandledrejection）</h2>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>可以捕获全局范围内发生的未处理异常，无论是同步还是异步代码</li>
+<li>错误信息详细</li>
+<li>可以自定义错误处理</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>无法图片加载错误、资源加载错误</li>
+<li>无法阻止错误冒泡</li>
+<li>无法提供错误堆栈</li>
+</ul>
+<pre><code class="language-js">//监听错误
+window.addEventListener(
+  &quot;error&quot;,
+  function (event) {
+    // 输出错误信息
+    console.log(&quot;错误信息：&quot; + event.message);
+    console.log(&quot;错误来源：&quot; + event.filename);
+    console.log(&quot;错误行号：&quot; + event.lineno);
+    console.log(&quot;错误列号：&quot; + event.colno);
+
+    // 如果有错误对象，输出错误堆栈
+    if (event.error) {
+      console.log(&quot;错误堆栈：&quot; + event.error.stack);
+    }
+  },
+  true
+);
+
+//监听微任务Promise异常
+window.addEventListener(
+  &quot;unhandledrejection&quot;,
+  function (event) {
+    // 输出错误信息
+    console.log(&quot;错误信息：&quot; + event.message);
+    console.log(&quot;错误来源：&quot; + event.filename);
+    console.log(&quot;错误行号：&quot; + event.lineno);
+    console.log(&quot;错误列号：&quot; + event.colno);
+
+    // 如果有错误对象，输出错误堆栈
+    if (event.error) {
+      console.log(&quot;错误堆栈：&quot; + event.error.stack);
+    }
+  },
+  true
+);
+</code></pre>
+<h2>Promise.then().catch(cb）</h2>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>可以捕获 Promise 的拒绝（失败）状态，并执行相应的错误处理逻辑</li>
+<li>可以很方便地处理 Promise 的成功和失败回调</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>无法捕获 Promise 内部的同步异常，只能捕获到 Promise 对象本身的异常</li>
+<li>无法捕获到其他异步操作中的错误，例如网络请求失败等。</li>
+</ul>
+<pre><code class="language-js">function fetchUserData() {
+  return new Promise((resolve, reject) =&gt; {
+    // 模拟异步请求
+    setTimeout(() =&gt; {
+      const random = Math.random();
+      if (random &lt; 0.5) {
+        resolve({ name: &quot;Alice&quot;, age: 25 });
+      } else {
+        reject(new Error(&quot;请求失败&quot;));
+      }
+    }, 1000);
+  });
+}
+
+fetchUserData()
+  .then((data) =&gt; {
+    console.log(&quot;用户信息：&quot;, data);
+  })
+  .catch((error) =&gt; {
+    console.log(&quot;请求失败：&quot;, error.message);
+  });
+
+// 示例：同步代码中的错误
+try {
+  throw new Error(&quot;这是一个同步代码中的错误&quot;);
+} catch (e) {
+  console.log(e);
+}
+</code></pre>
+<h2>自己封装 XMLHttpRequest&amp;fetch | 覆写请求接口对象</h2>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>可以更灵活地控制请求的细节，例如设置请求头、发送 FormData 数据等。</li>
+<li>可以捕捉请求过程中的各个阶段的错误，如请求失败、超时等</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>需要编写更多的代码来处理请求细节，容易出现回调地狱。</li>
+<li>需要手动处理跨域问题</li>
+<li>不支持 Promise，需要使用回调函数来处理响应结果。</li>
+</ul>
+<pre><code class="language-js">// 覆写XMLHttpRequest API
+if (!window.XMLHttpRequest) return;
+var xmlhttp = window.XMLHttpRequest;
+var _oldSend = xmlhttp.prototype.send;
+var _handleEvent = function (event) {
+  if (event &amp;&amp; event.currentTarget &amp;&amp; event.currentTarget.status !== 200) {
+    report(event);
+  }
+};
+xmlhttp.prototype.send = function () {
+  if (this[&quot;addEventListener&quot;]) {
+    this[&quot;addEventListener&quot;](&quot;error&quot;, _handleEvent);
+    this[&quot;addEventListener&quot;](&quot;load&quot;, _handleEvent);
+    this[&quot;addEventListener&quot;](&quot;abort&quot;, _handleEvent);
+    this[&quot;addEventListener&quot;](&quot;close&quot;, _handleEvent);
+  } else {
+    var _oldStateChange = this[&quot;onreadystatechange&quot;];
+    this[&quot;onreadystatechange&quot;] = function (event) {
+      if (this.readyState === 4) {
+        _handleEvent(event);
+      }
+      _oldStateChange &amp;&amp; _oldStateChange.apply(this, arguments);
+    };
+  }
+  return _oldSend.apply(this, arguments);
+};
+</code></pre>
+<h2>其他的一些捕获异常方式</h2>
+<ul>
+<li>Vue 提供的错误处理回调——Vue.errorHandler(针对与 vue 框架，无法捕获异步异常）</li>
+<li>微信小程序提供的错误处理——onError(异步、同步都可以捕获)。</li>
+</ul>
+<h3>业界已经有较好的监控系统</h3>
+<ul>
+<li>Sentry 开源</li>
+<li>Webfunny</li>
+<li>fundebug</li>
+<li>阿里的 ARMS</li>
+<li>FrontJS</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/81.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/83.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

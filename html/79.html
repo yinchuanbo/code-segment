@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>梳理一下浏览器中常见 Observer</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>梳理一下浏览器中常见 Observer</h2>
+                    <p>2024-06-08 13:41:26 · YinHao</p>
+                  </div>
+                  <h2>MutationObserver</h2>
+<p>MutationObserver 用于监听 DOM 对象的变更（包括子节点），当节点属性发生变化，或执行增删改操作时执行对应的 callback。</p>
+<p>MutationObserver 为我们提供了一种十分方便的监听 DOM 变化的方式。</p>
+<h3>基本使用</h3>
+<pre><code class="language-js">// Observer需要一个用于监听的目标DOM
+const targetNode = document.getElementById(&quot;app&quot;);
+
+//用于确定mutation监听变化的范围
+const config = {
+  attributes: true, // 监听目标节点的属性变化，例如id，class等属性
+  childList: true, // 除目标节点外还要监听目标节点的直接子节点
+  subtree: true, // subtree的范围大于childList，还包括子节点children
+  characterData: true, // 监听TextNode需要额外配置，默认TextNode变化不会触发callback
+};
+
+// 当观察到变动时执行的回调函数，mutationsList包含本次变更的信息
+const callback = function (mutationsList, observer) {
+  console.log(mutationsList);
+};
+
+const observer = new MutationObserver(callback);
+observer.observe(targetNode, config);
+</code></pre>
+<h2>API 介绍</h2>
+<h3>observe</h3>
+<p>observe 用于开启对某个 DOM 的监听，一个 MutationObserver 可以通过多次调用 observe 监听多个 DOM 的变化。</p>
+<p>当变化发生时 MutationObserver 会将一个或多个 mutation 对象传给 callback 的第一个参数，mutation 对象内包含本次变更的相关信息下面看一下 mutation 的结构</p>
+<pre><code class="language-js">{
+  addedNodes: [],  //新增DOM时会包含被新增的DOM
+  attributeName: &quot;id&quot;,   //本次变更的属性名
+  attributeNamespace: null,  //命名空间URI，一般用不到
+  nextSibling: null, //当存在添加/删除节点的操作时会存在nextSibling/previousSibling, 引用上一个/下一个兄弟节点
+  previousSibling: null,
+  oldValue: null,
+  removedNodes: [],
+  target: Text,
+  type: &quot;characterData&quot; //变更类型，如characterData，childList等
+}
+</code></pre>
+<h3>takeRecords</h3>
+<p>takeRecords 用于获取在事件队列中但还未传递给 callback 的 mutation 对象，通常使用在调用 disconnect 时又不想丢失之前的 mutationRecords（如果 mutation 连续触发，可能出现 mutation 还在队列中但未传递给 callback 的情况）。</p>
+<h3>disconnect</h3>
+<pre><code class="language-js">observer.disconnect();
+</code></pre>
+<p>调用 observer.disconnect 后 Observer 将不再监听 target，如果不需要监听请及时调用该方法，以免产生预期之外的行为以及内存泄漏。</p>
+<h2>常见场景</h2>
+<p>对于需要监听 DOM 变化的场景可考虑使用 MutationObserver，利于用于 Tag group 内元素的动态渲染，下面使用 MutationObserver 实现一个简单的 Todo List</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;MutationObserver To-Do List Demo&lt;/title&gt;
+    &lt;style&gt;
+      #todo-list {
+        list-style-type: none;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;待办事项列表&lt;/h1&gt;
+
+    &lt;ul id=&quot;todo-list&quot;&gt;
+      &lt;li&gt;完成作业&lt;/li&gt;
+      &lt;li&gt;购物&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;button id=&quot;addTask&quot;&gt;添加任务&lt;/button&gt;
+    &lt;button id=&quot;removeTask&quot;&gt;移除任务&lt;/button&gt;
+    &lt;p id=&quot;taskCount&quot;&gt;任务数量：2&lt;/p&gt;
+
+    &lt;script&gt;
+      const todoList = document.getElementById(&quot;todo-list&quot;);
+      const taskCount = document.getElementById(&quot;taskCount&quot;);
+
+      const observer = new MutationObserver((mutationsList, observer) =&gt; {
+        mutationsList.forEach((mutation) =&gt; {
+          if (mutation.type === &quot;childList&quot;) {
+            updateTaskCount();
+          }
+        });
+      });
+
+      const config = { childList: true };
+
+      observer.observe(todoList, config);
+
+      document.getElementById(&quot;addTask&quot;).addEventListener(&quot;click&quot;, () =&gt; {
+        const newTask = document.createElement(&quot;li&quot;);
+        newTask.textContent = &quot;新任务&quot;;
+        todoList.appendChild(newTask);
+      });
+
+      document.getElementById(&quot;removeTask&quot;).addEventListener(&quot;click&quot;, () =&gt; {
+        const tasks = todoList.getElementsByTagName(&quot;li&quot;);
+        if (tasks.length &gt; 0) {
+          todoList.removeChild(tasks[0]);
+        }
+      });
+
+      function updateTaskCount() {
+        const tasks = todoList.getElementsByTagName(&quot;li&quot;);
+        taskCount.textContent = `任务数量：${tasks.length}`;
+      }
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2>IntersectionObserver</h2>
+<p>IntersectionObserver 用于监听一个元素的可见比例（一个 DOM 元素被另一个 DOM 元素遮挡百分比）变化。</p>
+<h3>基本使用</h3>
+<pre><code class="language-js">const target = document.getElementById(&quot;app&quot;);
+
+const options = {
+  root: rootTarget, // 相对于某个元素进行遮挡计算
+  rootMargin: &quot;0px&quot;, // 进行计算的边界范围，通过rootMargin可以实现提前计算或延迟计算（相对于root原本尺寸）的效果
+  threshold: 0.5, // 触发callback时的遮挡比例，0.5代表元素被遮挡50%时触发callback。由于浏览器事件循环机制的影响，callback触发时遮挡比例通常不会是精确的50%。
+};
+
+const intersectionObserver = new IntersectionObserver((entries, observer) =&gt; {
+  //和MutationObserver相同，也是产生一个array
+  entries.forEach((entry) =&gt; {
+    console.log(entry);
+  });
+}, options);
+
+intersectionObserver.observe(target);
+</code></pre>
+<h2>API 介绍</h2>
+<h3>observe &amp; options</h3>
+<p>observe 方法用于启动一个 Observer 对 DOM 元素的监听。在创建 IntersectionObserver 时可以通过传入 option 改变监听的行为。</p>
+<pre><code class="language-js">const options = {
+  root: root,
+  rootMargin: &quot;100px&quot;,
+  threshold: 0.7,
+};
+</code></pre>
+<p>在上面的配置中，通过配置 rootMargin 为 100px 在 target 距离 root 元素 100px 时即可判定为被遮挡，通过 threshold 设置为 0.7，当遮挡比例超过 70% 时执行 callback。</p>
+<h3>entry</h3>
+<p>callback 第一个 param 是 entry 对象构成的 array，entry 包含了触发 callback 时 DOM 的位置信息</p>
+<pre><code class="language-js">//被监听DOM元素的Rect信息
+boundingClientRect:  {
+  bottom: 208
+  height: 200
+  left: 8
+  right: 208
+  top: 8
+  width: 200
+  x: 8
+  y: 8
+}
+intersectionRatio: 1 //交叉比例
+// 被监听元素与Root元素交叉部分矩形的Rect信息。
+intersectionRect: {
+  bottom: 208,
+  height: 200,
+  left: 8,
+  right: 208,
+  top: 8,
+  width: 200,
+  x: 8,
+  y: 8
+},
+// 是否处于交叉状态
+isIntersecting: true,
+isVisible: false,
+// Root元素的Rect信息
+rootBounds:  {
+  bottom: 606,
+  height: 606,
+  left: 0,
+  right: 476,
+  top: 0,
+  width: 476,
+  x: 0,
+  y: 0
+},
+// root元素
+target: div#target,
+time: 49.09999990463257
+</code></pre>
+<h2>常见场景</h2>
+<p>乍一看 IntersectionObserver 好像没啥用，单这个 Api 在某些场景下十分好用。</p>
+<p>比如我们有一个通过 sticky 固定在屏幕顶部的 header 元素，我们希望在触发 sticky 时给 header 加一个 shadow（很多 table 都有这样的功能）</p>
+<p>一种很常见的做法是监听 scroll，当滚动一定距离时加上 shadow 即可。但是监听 scroll 本身会早成一定的渲染压力（scroll 触发非常频繁），同时如果使用 React 这样的框架又会造成额外的 render，在用户的视角看来更卡了。</p>
+<p>此时使用 IntersectionObserver 就很合适了，因为我们需要监听的只是触发 sticky 的一瞬间，其他的滚动都是无效的，没必要进行计算。</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Sticky Header with Shadow on Intersection&lt;/title&gt;
+    &lt;style&gt;
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        height: 80px;
+        background-color: #3498db;
+        color: white;
+        text-align: center;
+        line-height: 80px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-shadow {
+        transition: box-shadow 0.3s ease;
+      }
+
+      .header-shadow.shadow {
+        box-shadow: 0 2px 5px black;
+      }
+
+      section {
+        height: 1000px;
+        background-color: #ecf0f1;
+        padding: 20px;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;guard&quot;&gt;&lt;/div&gt;
+    &lt;header id=&quot;sticky-header&quot; class=&quot;header-shadow&quot;&gt;Sticky Header&lt;/header&gt;
+
+    &lt;section&gt;
+      &lt;p&gt;向下滚动触发sticky时展示shadow&lt;/p&gt;
+    &lt;/section&gt;
+
+    &lt;script&gt;
+      const header = document.getElementById(&quot;sticky-header&quot;);
+      const section = document.querySelector(&quot;section&quot;);
+
+      const options = {
+        threshold: 1,
+      };
+      //guard滚动到可视区域以外时认为触发了shadow
+      const intersectionObserver = new IntersectionObserver((entries) =&gt; {
+        entries.forEach((entry) =&gt; {
+          if (entry.isIntersecting) {
+            header.classList.remove(&quot;shadow&quot;);
+          } else {
+            header.classList.add(&quot;shadow&quot;);
+          }
+        });
+      }, options);
+      intersectionObserver.observe(document.getElementById(&quot;guard&quot;));
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2>ResizeObserver</h2>
+<h3>基本使用</h3>
+<p>和前面的 api 用法差不多，这里不过多介绍。</p>
+<pre><code class="language-js">const box = document.getElementById(&quot;box&quot;);
+
+const resizeObserver = new ResizeObserver((entries) =&gt; {
+  entries.forEach((entry) =&gt; {
+    console.log(entry);
+  });
+});
+
+resizeObserver.observe(box);
+</code></pre>
+<p>entry 对象包含 resize 相关的信息，下面看一下 entry 的结构</p>
+<pre><code class="language-js">{
+  // 不同box-sizing下的尺寸
+  borderBoxSize: [{
+    blockSize: 200,
+    inlineSize: 200,
+  }],
+  contentBoxSize: [{
+    blockSize: 200,
+    inlineSize: 200,
+  }],
+  contentRect: {
+    bottom: 200,
+    height: 200,
+    left: 0,
+    right: 200,
+    top: 0,
+    width: 200,
+    x: 0,
+    y: 0
+  },
+  // 在物理设备像素上的大小, 在不同的屏幕上尺寸不同例如Retina
+  devicePixelContentBoxSize: [{
+      blockSize: 300,
+      inlineSize: 300
+    }
+  ],
+  target: div#resizable-box
+}
+</code></pre>
+<h2>常见场景</h2>
+<p>可以基于 ResizeObserver 实现一个简单的 resize-detector（参考 react-resize-detector），在尺寸变化时返回尺寸信息。</p>
+<h3>实现一个简单的 resize-detector</h3>
+<p>这个 demo 做简单一点，点击盒子就算拖拽有效。</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;ResizeObserver Demo with Resizable Box&lt;/title&gt;
+    &lt;style&gt;
+      #resizable-box {
+        width: 200px;
+        height: 200px;
+        background-color: #3498db;
+        color: white;
+        text-align: center;
+        line-height: 200px;
+        font-size: 24px;
+        transition: background-color 0.5s ease;
+        resize: both;
+        overflow: auto;
+        cursor: pointer;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;resizable-box&quot;&gt;Resize me!&lt;/div&gt;
+
+    &lt;script&gt;
+      const resizableBox = document.getElementById(&quot;resizable-box&quot;);
+      let isResizing = false;
+      let startX, startY, startWidth, startHeight;
+
+      const resizeObserver = new ResizeObserver((entries) =&gt; {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          console.log(&quot;宽度:&quot;, width, &quot;高度:&quot;, height);
+        }
+      });
+
+      resizeObserver.observe(resizableBox);
+
+      resizableBox.addEventListener(&quot;mousedown&quot;, startResize);
+      document.addEventListener(&quot;mousemove&quot;, handleResize);
+      document.addEventListener(&quot;mouseup&quot;, stopResize);
+
+      function startResize(e) {
+        isResizing = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(
+          document.defaultView.getComputedStyle(resizableBox).width,
+          10
+        );
+        startHeight = parseInt(
+          document.defaultView.getComputedStyle(resizableBox).height,
+          10
+        );
+      }
+
+      function handleResize(e) {
+        if (!isResizing) return;
+        const newWidth = startWidth + (e.clientX - startX);
+        const newHeight = startHeight + (e.clientY - startY);
+
+        resizableBox.style.width = newWidth + &quot;px&quot;;
+        resizableBox.style.height = newHeight + &quot;px&quot;;
+      }
+
+      function stopResize() {
+        isResizing = false;
+      }
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2>PerformanceObserver</h2>
+<p>PerformanceObserver 用于监听浏览器的 performance 事件，方便在 performance 事件触发时作统一处理。</p>
+<h3>基本使用</h3>
+<pre><code class="language-js">// mdn demo
+function perf_observer(list, observer) {
+  console.log(list);
+}
+var observer2 = new PerformanceObserver(perf_observer);
+// entryTypes用于指定要监听的事件类型
+observer2.observe({ entryTypes: [&quot;measure&quot;] });
+</code></pre>
+<p>下面列一下常见的 entryTypes</p>
+<ul>
+<li>mark 用于标记时间戳的事件</li>
+<li>measure performance.measure 触发的事件</li>
+<li>frame 网页渲染的事件</li>
+<li>navigation 导航的事件，例如页面加载或重新加载</li>
+<li>resource 资源加载事件</li>
+<li>longtask 长任务事件</li>
+<li>paint：绘制事件，例如 FP，FCP</li>
+<li>layout-shift 用于监视布局变化的事件</li>
+</ul>
+<p>对于对性能比较敏感的项目以及长期性能监控来说这个 api 还是比较方便的。</p>
+<h2>ReportingObserver</h2>
+<p>ReportingObserver 用于监听浏览器报告的事件，例如废弃 API，过时特性，网络错误。做监控 SDK 的同学应该经常能用到，日常业务代码用的比较少。</p>
+<h3>基本使用</h3>
+<pre><code class="language-js">const observer = new ReportingObserver((reports, observer) =&gt; {
+  reports.forEach((report) =&gt; {
+    console.log(report);
+  });
+});
+
+// 监听过时特性
+observer.observe({ types: [&quot;deprecation&quot;] });
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/78.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/80.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
