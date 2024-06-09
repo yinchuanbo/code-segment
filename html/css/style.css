@@ -20,7 +20,7 @@ body {
 body {
   background-color: #131313;
   color: #fff;
-  padding: 30px 0;
+  padding: 20px 0;
   min-height: 100vh;
   height: fit-content;
 }
@@ -43,10 +43,14 @@ body {
   margin: 0 auto;
   padding: 30px;
   padding-bottom: 10px;
-  border: 1px solid #313131;
+  /* border: 1px solid #313131; */
   /* background-color: #181818; */
   min-height: calc(100vh - 40px);
-  border-radius: 32px;
+  /* border-radius: 32px; */
+  background-color: #181818;
+  border-radius: 5px;
+  padding-top: 20px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 pre[class*="language-"] {
@@ -60,7 +64,10 @@ pre[class*="language-"] {
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
   background-color: transparent;
-  border: 1px solid #313131;
+  /* border: 1px solid #313131; */
+}
+.code-toolbar {
+  background-color: #131313;
 }
 
 code[class*="language-"],
@@ -185,7 +192,7 @@ table tbody tr td:nth-child(1) {
 }
 
 blockquote {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #131313;
   padding: 20px 0;
   margin-bottom: 20px;
   padding-left: 20px;
@@ -224,7 +231,7 @@ blockquote::before {
 }
 
 .container-header h2 {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   color: #fff;
   font-size: 25px;
 }
@@ -247,7 +254,7 @@ pre code.hljs {
 .home {
   position: fixed;
   bottom: 20px;
-  right: calc((100% - 1000px) / 2 - 70px);
+  right: calc((100% - 1000px) / 2 - 90px);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -257,8 +264,9 @@ pre code.hljs {
 .home {
   width: 50px;
   height: 50px;
-  left: calc((100% - 1000px) / 2 - 70px);
+  left: calc((100% - 1000px) / 2 - 90px);
   border: 1px solid #313131;
+  background-color: #181818;
   cursor: pointer;
   user-select: none;
   color: #fff;
@@ -278,6 +286,7 @@ pre code.hljs {
   text-align: center;
   font-size: 14px;
   border: 1px solid #313131;
+  background-color: #181818;
   cursor: pointer;
   user-select: none;
   color: #fff;
