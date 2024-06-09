@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>js 如何监听一个变量改变</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>js 如何监听一个变量改变</h2>
+                    <p>2024-06-09 16:53:05 · YinHao</p>
+                  </div>
+                  <h2>需求和背景</h2>
+<p>在业务中，由于项目采用微前端架构，需要通过 A 应用的某个值的变化对 B 应用中的 DOM 进行改变（如弹出一个 Modal），第一个想到的可能是发布订阅模式，其实不如将问题缩小化，采用原生的能力去解决。</p>
+<p>下面给出两种解决方案，同时也是尤大写<code>Vue</code>时的思路</p>
+<ul>
+<li>ES5 的 <code>Object.defineProperty</code></li>
+<li>ES6 的 <code>Proxy</code></li>
+</ul>
+<h2>Object.defineProperty</h2>
+<blockquote>
+<p><code>Object.defineProperty()</code>  方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象</p>
+<p>——MDN</p>
+</blockquote>
+<h3>用法如下：</h3>
+<pre><code class="language-javascript">Object.defineProperty(obj, prop, option);
+</code></pre>
+<h3>入参用法：</h3>
+<ul>
+<li>obj：代理对象;</li>
+<li>prop：代理对象中的 key;</li>
+<li>option：配置对象，<code>get</code>、<code>set</code>都在其中配置;</li>
+</ul>
+<h3>例子：</h3>
+<pre><code class="language-javascript">var obj = {
+  name: &quot;sorryhc&quot;,
+};
+var rocordName = &quot;sorryhc&quot;;
+
+Object.defineProperty(obj, &quot;name&quot;, {
+  enumerable: true,
+  configurable: true,
+  set: function (newVal) {
+    rocordName = newVal;
+    console.log(&quot;set: &quot; + rocordName);
+  },
+  get: function () {
+    console.log(&quot;get: &quot; + rocordName);
+    return rocordName;
+  },
+});
+
+obj.name = &quot;sorrycc&quot;; // set: sorrycc
+console.log(obj.name); // get: sorrycc
+</code></pre>
+<ul>
+<li>对一个对象进行整体响应式监听：</li>
+</ul>
+<pre><code class="language-javascript">// 监视对象
+function observe(obj) {
+  // 遍历对象，使用 get/set 重新定义对象的每个属性值
+  Object.keys(obj).forEach((key) =&gt; {
+    defineReactive(obj, key, obj[key]);
+  });
+}
+
+function defineReactive(obj, k, v) {
+  // 递归子属性
+  if (typeof v === &quot;object&quot;) observe(v);
+
+  // 重定义 get/set
+  Object.defineProperty(obj, k, {
+    enumerable: true,
+    configurable: true,
+    get: function reactiveGetter() {
+      console.log(&quot;get: &quot; + v);
+      return v;
+    },
+    // 重新设置值时，触发收集器的通知机制
+    set: function reactiveSetter(newV) {
+      console.log(&quot;set: &quot; + newV);
+      v = newV;
+    },
+  });
+}
+
+let data = { a: 1 };
+// 监视对象
+observe(data);
+data.a; // get: 1
+data.a = 2; // set: 2
+</code></pre>
+<p>整体思路就是遇到子对象就递归，和深拷贝一样的读参顺序。</p>
+<h3>缺陷</h3>
+<p>如果学习过<code>Vue2</code>源码的同学可能比较熟，基于下面的缺陷，也是出现了<code>$set</code>、<code>$get</code>的用法。</p>
+<ul>
+<li>IE8 及更低版本 IE 是不支持的</li>
+<li>无法检测到对象属性的新增或删除</li>
+<li>如果修改数组的  <code>length</code> （ <code>Object.defineProperty</code>  不能监听数组的长度），以及数组的  <code>push</code>  等变异方法是无法触发  <code>setter</code>  的</li>
+</ul>
+<h2>Proxy</h2>
+<blockquote>
+<p><strong>Proxy</strong>  对象用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）</p>
+<p>— MDN</p>
+</blockquote>
+<pre><code class="language-javascript">const obj = new Proxy(target, handler);
+</code></pre>
+<p>其中：</p>
+<ul>
+<li><code>target</code> ：要使用  <code>Proxy</code>  包装的目标对象（可以是任何类型的对象，包括原生数组，函数，甚至另一个代理）</li>
+<li><code>handler</code> ：一个通常以函数作为属性的对象，各属性中的函数分别定义了在执行各种操作时代理  <code>obj</code>  的行为</li>
+</ul>
+<h3>例子</h3>
+<pre><code class="language-javascript">const handler = {
+  get: function (target, name) {
+    return name in target ? target[name] : &quot;no prop!&quot;;
+  },
+  set: function (target, prop, value, receiver) {
+    target[prop] = value;
+    console.log(&quot;property set: &quot; + prop + &quot; = &quot; + value);
+    return true;
+  },
+};
+
+var user = new Proxy({}, handler);
+user.name = &quot;sorryhc&quot;; // property set: name = sorryhc
+
+console.log(user.name); // sorryhc
+console.log(user.age); // no prop!
+</code></pre>
+<p>并且<code>Proxy</code>提供了更丰富的代理能力：</p>
+<ul>
+<li><code>getPrototypeOf</code> / <code>setPrototypeOf</code></li>
+<li><code>isExtensible</code> / <code>preventExtensions</code></li>
+<li><code>ownKeys</code> / <code>getOwnPropertyDescriptor</code></li>
+<li><code>defineProperty</code> / <code>deleteProperty</code></li>
+<li><code>get</code> / <code>set</code> / <code>has</code></li>
+<li><code>apply</code> / <code>construct</code></li>
+</ul>
+<p>感兴趣的可以查看  <a href="https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FJavaScript%2FReference%2FGlobal_Objects%2FProxy">MDN</a> ，一一尝试一下，这里不再赘述</p>
+<h2>在 React 中的实践</h2>
+<p>这里展示两段伪代码，大概业务流程是，当点击页面某个按钮（打开/关闭弹窗），触发<code>window.obj.showModal</code>的切换，从而被监听到全局变量的变化，从而改变<code>React</code>中的<code>state</code>状态，最终触发<code>Modal</code>的弹窗。</p>
+<h3>Object.defineProperty</h3>
+<pre><code class="language-javascript">window.obj = {
+  showModal: false,
+};
+
+const [visible, setVisible] = useState(false);
+
+useEffect(() =&gt; {
+  visible &amp;&amp;
+    Modal.show({
+      // ...
+    });
+}, [visible]);
+
+Object.defineProperty(window.obj, &quot;showModal&quot;, {
+  enumerable: true,
+  configurable: true,
+  set: function (newVal) {
+    setVisible(newVal);
+    console.log(&quot;set: &quot; + newVal);
+  },
+  get: function () {
+    console.log(&quot;get: &quot; + visible);
+    return visible;
+  },
+});
+
+window.obj.showModal = !window.obj.showModal; // set: true
+console.log(window.obj.showModal); // get: true
+</code></pre>
+<h3>Proxy</h3>
+<pre><code class="language-javascript">const [visible, setVisible] = useState(false);
+
+useEffect(() =&gt; {
+  visible &amp;&amp;
+    Modal.show({
+      // ...
+    });
+}, [visible]);
+
+const handler = {
+  get: function (target, name) {
+    return name in target ? target[name] : &quot;no prop!&quot;;
+  },
+  set: function (target, prop, value, receiver) {
+    target[prop] = value;
+    setVisible(value);
+    console.log(&quot;property set: &quot; + prop + &quot; = &quot; + value);
+    return true;
+  },
+};
+
+window.obj = new Proxy({ showModal: false }, handler);
+window.obj.showModal = !window.obj.showModal; // property set: showModal = true
+
+console.log(window.obj.showModal); // true
+</code></pre>
+<h2>总结</h2>
+<p><code>Proxy</code> 相比于 <code>defineProperty</code> 的优势：</p>
+<ul>
+<li>基于 <code>Proxy</code> 和 <code>Reflect</code> ，可以原生监听数组，可以监听对象属性的添加和删除</li>
+<li>不需要深度遍历监听：判断当前 <code>Reflect.get</code> 的返回值是否为 <code>Object</code> ，如果是则再通过 <code>reactive</code> 方法做代理， 这样就实现了深度观测</li>
+<li>只在 <code>getter</code> 时才对对象的下一层进行劫持(优化了性能)</li>
+</ul>
+<p>而<code>Proxy</code>除了兼容性不足以外，其他方面的表示都优于<code>Object.defineProperty</code>。</p>
+<p>所以，建议使用 <code>Proxy</code> 监测变量变化</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/122.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

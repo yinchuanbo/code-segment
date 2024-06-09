@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>js 小众且好用的技巧</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>js 小众且好用的技巧</h2>
+                    <p>2024-06-09 16:42:16 · YinHao</p>
+                  </div>
+                  <h2>数组</h2>
+<h3>生成数组</h3>
+<p>当你需要要生成一个 0-99 的数组</p>
+<p>方案 1</p>
+<pre><code class="language-js">const createArr = (n) =&gt; Array.from(new Array(n), (v, i) =&gt; i);
+const arr = createArr(100); // 0 - 99 数组
+</code></pre>
+<p>方案 2</p>
+<pre><code class="language-js">const createArr = (n) =&gt; new Array(n).fill(0).map((v, i) =&gt; i);
+createArr(100); // 0 - 99数组
+</code></pre>
+<h3>打乱数组</h3>
+<p>当你有一个数组，你需要打乱这个数组的排序</p>
+<pre><code class="language-js">const randomSort = (list) =&gt; list.sort(() =&gt; Math.random() - 0.5);
+randomSort([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]); // 随机排列结果
+</code></pre>
+<h3>数组去重</h3>
+<p>当你需要将数组中的所有重复的元素只保留一个</p>
+<pre><code class="language-js">const removeDuplicates = (list) =&gt; [...new Set(list)];
+removeDuplicates([0, 0, 2, 4, 5]); // [0,2,4,5]
+</code></pre>
+<h3>多数组取交集</h3>
+<p>当你需要取多个数组中的交集</p>
+<pre><code class="language-js">const intersection = (a, ...arr) =&gt;
+  [...new Set(a)].filter((v) =&gt; arr.every((b) =&gt; b.includes(v)));
+
+intersection([1, 2, 3, 4], [2, 3, 4, 7, 8], [1, 3, 4, 9]);
+// [3, 4]
+</code></pre>
+<h3>查找最大值索引</h3>
+<p>但你需要找到一个数组中的最大值的索引</p>
+<pre><code class="language-js">const indexOfMax = (arr) =&gt;
+  arr.reduce((prev, curr, i, a) =&gt; (curr &gt; a[prev] ? i : prev), 0);
+indexOfMax([1, 3, 9, 7, 5]); // 2
+</code></pre>
+<h3>查找最小值索引</h3>
+<p>当你需要找到一个数组中的最小值的索引</p>
+<pre><code class="language-js">const indexOfMin = (arr) =&gt;
+  arr.reduce((prev, curr, i, a) =&gt; (curr &lt; a[prev] ? i : prev), 0);
+indexOfMin([2, 5, 3, 4, 1, 0, 9]); // 5
+</code></pre>
+<h3>找到最接近的数值</h3>
+<p>当你需要在一个数组中找到一个最接近的值</p>
+<pre><code class="language-js">const closest = (arr, n) =&gt;
+  arr.reduce((prev, curr) =&gt;
+    Math.abs(curr - n) &lt; Math.abs(prev - n) ? curr : prev
+  );
+closest([29, 87, 8, 78, 97, 20, 75, 33, 24, 17], 50); // 33
+</code></pre>
+<h3>压缩多个数组</h3>
+<p>当你需要将多个数组压缩成一个数组</p>
+<pre><code class="language-js">const zip = (...arr) =&gt;
+  Array.from({ length: Math.max(...arr.map((a) =&gt; a.length)) }, (_, i) =&gt;
+    arr.map((a) =&gt; a[i])
+  );
+zip([1, 2, 3, 4], [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;], [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;]);
+</code></pre>
+<h3>矩阵交换行和列</h3>
+<p>当你需要将一个矩阵的行和列进行互相交换</p>
+<pre><code class="language-javascript">const transpose = (matrix) =&gt;
+  matrix[0].map((col, i) =&gt; matrix.map((row) =&gt; row[i]));
+transpose(
+  [
+    // [
+    [1, 2, 3], //      [1, 4, 7],
+    [4, 5, 6], //      [2, 5, 8],
+    [7, 8, 9], //      [3, 6, 9],
+  ] //  ]
+);
+</code></pre>
+<h2>数字转换</h2>
+<h3>进制转换</h3>
+<p>将 10 进制转换成 n 进制，可以使用 toString(n)</p>
+<pre><code class="language-js">const toDecimal = (num, n = 10) =&gt; num.toString(n);
+// 假设数字10要转换成2进制
+toDecimal(10, 2); // &#39;1010&#39;
+</code></pre>
+<p>将 n 进制转换成 10 进制，可以使用 parseInt(num, n)</p>
+<pre><code class="language-js">// 10的2进制为1010
+const toDecimalism = (num, n = 10) =&gt; parseInt(num, n);
+toDecimalism(1010, 2);
+</code></pre>
+<h2>正则</h2>
+<h3>手机号格式化</h3>
+<p>当你需要将手机号码格式化成 xxx-xxxx-xxxx 的形式</p>
+<pre><code class="language-javascript">const formatPhone = (str, sign = &quot;-&quot;) =&gt;
+  str
+    .replace(/(\W|\s)/g, &quot;&quot;)
+    .split(/^(\d{3})(\d{4})(\d{4})$/)
+    .filter((item) =&gt; item)
+    .join(sign);
+
+formatPhone(&quot;13123456789&quot;); // &#39;131-2345-6789&#39;
+formatPhone(&quot;13 1234 56 789&quot;, &quot; &quot;); // &#39;131 2345 6789&#39;
+</code></pre>
+<h3>去除多余空格</h3>
+<p>当你需要将一段文本中的多个空格合并成一个空格</p>
+<pre><code class="language-js">const setTrimOut = (str) =&gt; str.replace(/\s\s+/g, &quot; &quot;);
+const str = setTrimOut(&quot;hello,   jack&quot;); //
+</code></pre>
+<h2>web</h2>
+<h3>重新加载当前页面</h3>
+<pre><code class="language-js">const reload = () =&gt; location.reload();
+reload();
+</code></pre>
+<h3>滚动到页面顶部</h3>
+<p>如果你需要将页面翻到最顶部</p>
+<pre><code class="language-js">const goToTop = () =&gt; window.scrollTo(0, 0);
+goToTop();
+</code></pre>
+<h3>元素滚动</h3>
+<p>如果你希望将一个元素顺滑的滚动到可视区域的起点</p>
+<pre><code class="language-js">const scrollToTop = (element) =&gt;
+  element.scrollIntoView({ behavior: &quot;smooth&quot;, block: &quot;start&quot; });
+scrollToTop(document.body);
+</code></pre>
+<p>如果你希望将一个元素顺滑的滚动到可视区域的终点</p>
+<pre><code class="language-js">const scrollToBottom = (element) =&gt;
+  element.scrollIntoView({ behavior: &quot;smooth&quot;, block: &quot;end&quot; });
+scrollToBottom(document.body);
+</code></pre>
+<h3>检查当前是否 IE 浏览器</h3>
+<pre><code class="language-js">const isIE = !!document.documentMode;
+</code></pre>
+<h3>从给定文本中剥离 html</h3>
+<p>当你需要在某个文本中将里面的标签全部过滤掉</p>
+<pre><code class="language-js">const stripHtml = (html) =&gt;
+  new DOMParser().parseFromString(html, &quot;text/html&quot;).body.textContent || &quot;&quot;;
+stripHtml(&quot;&lt;div&gt;test&lt;/div&gt;&quot;); // &#39;test&#39;
+</code></pre>
+<h3>重定向</h3>
+<p>当你需要跳转到其他页面</p>
+<pre><code class="language-js">const goTo = (url) =&gt; (location.href = url);
+</code></pre>
+<h3>文本粘贴</h3>
+<p>当你需要复制文本到粘贴板上</p>
+<pre><code class="language-js">const copy = (test) =&gt;
+  navigator.clipboard?.writeText &amp;&amp; navigator.clipboard.writeText(text);
+copy(&quot;你需要粘贴的文本&quot;);
+</code></pre>
+<h2>日期</h2>
+<h3>判断日期是否为今天</h3>
+<pre><code class="language-js">const isToday = (date) =&gt;
+  date.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10);
+</code></pre>
+<h3>日期转换</h3>
+<p>当你需要将日期转换为为 YYYY-MM-DD 格式</p>
+<pre><code class="language-js">const formatYmd = (date) =&gt; date.toISOString().slice(0, 10);
+formatYmd(new Date());
+</code></pre>
+<h3>秒数转换</h3>
+<p>当你需要将秒数转换为 hh:mm:ss 格式</p>
+<pre><code class="language-js">const formatSeconds = (s) =&gt; new Date(s * 1000).toISOString().substr(11, 8);
+formatSeconds(200); // 00:03:20
+</code></pre>
+<h3>获取某年某月的第一天</h3>
+<p>当你需要获取某年某月的第一天</p>
+<pre><code class="language-javascript">const getFirstDate = (d = new Date()) =&gt;
+  new Date(d.getFullYear(), d.getMonth(), 1);
+getFirstDate(new Date(&quot;2022-04&quot;)); // Fri Apr 01 2022 00:00:00 GMT+0800 (中国标准时间)
+</code></pre>
+<h3>获取某年某月的最后一天</h3>
+<p>当你需要获取某年某月的最后一天</p>
+<pre><code class="language-js">const getLastDate = (d = new Date()) =&gt;
+  new Date(d.getFullYear(), d.getMonth() + 1, 0);
+getLastDate(new Date(&quot;2023-03-04&quot;)); // Fri Mar 31 2023 00:00:00 GMT+0800 (中国标准时间)
+</code></pre>
+<h3>获取某年月份天数</h3>
+<p>当你需要获取某年某个月份的总天数</p>
+<pre><code class="language-js">const getDaysNum = (year, month) =&gt; new Date(year, month, 0).getDate();
+const day = getDaysNum(2024, 2); // 29
+</code></pre>
+<h2>函数</h2>
+<h3>异步函数判断</h3>
+<p>判断一个函数是否属于异步函数</p>
+<pre><code class="language-js">const isAsyncFunction = (v) =&gt;
+  Object.prototype.toString.call(v) === &quot;[object AsyncFunction]&quot;;
+isAsyncFunction(async function () {}); // true
+</code></pre>
+<h2>数字</h2>
+<h3>截断数字</h3>
+<p>当你需要将小数点后的某些数字截断而不取四舍五入</p>
+<pre><code class="language-js">const toFixed = (n, fixed) =&gt;
+  `${n}`.match(new RegExp(`^-?\d+(?:.\d{0,${fixed}})?`))[0];
+toFixed(10.255, 2); // 10.25
+</code></pre>
+<h3>四舍五入</h3>
+<p>当你需要将小数点后的某些数字截断，并取四舍五入</p>
+<pre><code class="language-js">const round = (n, decimals = 0) =&gt;
+  Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`);
+round(10.255, 2); // 10.26
+</code></pre>
+<h3>补零</h3>
+<p>当你需要在一个数字 num 不足 len 位数的时候前面补零操作</p>
+<pre><code class="language-js">const replenishZero = (num, len, zero = 0) =&gt;
+  num.toString().padStart(len, zero);
+replenishZero(8, 2); // 08
+</code></pre>
+<h2>对象</h2>
+<h3>删除无效属性</h3>
+<p>当你需要删除一个对象中的属性值为 null 或 undefined 的所有属性</p>
+<pre><code class="language-javascript">const removeNullUndefined = (obj) =&gt;
+  Object.entries(obj).reduce(
+    (a, [k, v]) =&gt; (v == null ? a : ((a[k] = v), a)),
+    {}
+  );
+
+removeNullUndefined({ name: &quot;&quot;, age: undefined, sex: null }); // { name: &#39;&#39; }
+</code></pre>
+<h3>反转对象键值</h3>
+<p>当你需要将对象的键值对交换</p>
+<pre><code class="language-js">const invert = (obj) =&gt;
+  Object.keys(obj).reduce((res, k) =&gt; Object.assign(res, { [obj[k]]: k }), {});
+invert({ name: &quot;jack&quot; }); // {jack: &#39;name&#39;}
+</code></pre>
+<h2>其他</h2>
+<h3>比较两个对象</h3>
+<p>当你需要比较两个对象，js 的等于只能判断对象的地址是否相同，当地址不相同的时候无法判断两个对象的键值对是否一致。</p>
+<pre><code class="language-js">const isEqual = (...objects) =&gt;
+  objects.every((obj) =&gt; JSON.stringify(obj) === JSON.stringify(objects[0]));
+isEqual({ name: &quot;jack&quot; }, { name: &quot;jack&quot; }); // true
+isEqual({ name: &quot;jack&quot; }, { name: &quot;jack1&quot; }, { name: &quot;jack&quot; }); // false
+</code></pre>
+<h3>随机颜色生成</h3>
+<p>当你需要获取一个随机颜色</p>
+<pre><code class="language-js">const getRandomColor = () =&gt;
+  `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
+getRandomColor(); // &#39;#4c2fd7&#39;
+</code></pre>
+<h3>颜色格式转换</h3>
+<p>当你需要将 16 进制的颜色转换成 rgb</p>
+<pre><code class="language-js">const hexToRgb = (hex) =&gt;
+  hex
+    .replace(
+      /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+      (_, r, g, b) =&gt; `#${r}${r}${g}${g}${b}${b}`
+    )
+    .substring(1)
+    .match(/.{2}/g)
+    .map((x) =&gt; parseInt(x, 16));
+hexToRgb(&quot;#00ffff&quot;); // [0, 255, 255]
+hexToRgb(&quot;#0ff&quot;); // [0, 255, 255]
+</code></pre>
+<h3>获取随机 ip</h3>
+<p>当你需要生成一个 ip 地址</p>
+<pre><code class="language-javascript">const randomIp = () =&gt;
+  Array(4)
+    .fill(0)
+    .map((_, i) =&gt; Math.floor(Math.random() * 255) + (i === 0 ? 1 : 0))
+    .join(&quot;.&quot;);
+</code></pre>
+<h3>uuid</h3>
+<p>当你需要生成一个 id</p>
+<pre><code class="language-js">const uuid = (a) =&gt;
+  a
+    ? (a ^ ((Math.random() * 16) &gt;&gt; (a / 4))).toString(16)
+    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
+uuid();
+</code></pre>
+<h3>获取 cookie</h3>
+<p>当你需要将 cookie 转换成对象</p>
+<pre><code class="language-js">const getCookie = () =&gt;
+  document.cookie
+    .split(&quot;;&quot;)
+    .map((item) =&gt; item.split(&quot;=&quot;))
+    .reduce((acc, [k, v]) =&gt; (acc[k.trim().replace(&#39;&quot;&#39;, &quot;&quot;)] = v) &amp;&amp; acc, {});
+getCookie();
+</code></pre>
+<h3>强制等待</h3>
+<p>当你需要等待一段时间，但又不想写在 setTimeout 函数中，造成回调地狱</p>
+<pre><code class="language-js">const sleep = async (t) =&gt; new Promise((resolve) =&gt; setTimeout(resolve, t));
+sleep(2000).then(() =&gt; {
+  console.log(&quot;time&quot;);
+});
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/120.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/122.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

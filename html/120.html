@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>一个全新的 JavaScript 事件</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>一个全新的 JavaScript 事件</h2>
+                    <p>2024-06-09 16:37:51 · YinHao</p>
+                  </div>
+                  <p>今天给大家介绍一个新的 JavaScript 事件：<code>scrollend</code>。</p>
+<p>不知道大家在网页开发的过程中有没有遇到过关于滚动事件的痛点，我们可以通过 <code>onscroll</code> 事件来监听浏览器是否发生了滚动，但是我们却很难知道滚动会在什么时候完成，我们可能会写出下面的代码：</p>
+<pre><code class="language-js">document.onscroll = (event) =&gt; {
+  clearTimeout(window.scrollEndTimer);
+  window.scrollEndTimer = setTimeout(callback, 100);
+};
+</code></pre>
+<p>我们只能大概预测滚动是在什么事件完成，比如在上面的代码中我们通过 <code>setTimeout</code> 预估滚动可能在 <code>100ms</code> 后完成，这会导致回调函数可能在滚动过程中，或者滚动结束一段事件之后触发，这样的用户体验肯定是不太好的。</p>
+<p>有了 <code>scrollend</code> 事件之后，这样的需求就变得简单多了：</p>
+<pre><code class="language-js">document.onscrollend = (event) =&gt; {
+  // …
+};
+</code></pre>
+<p>那么为啥这样一个看起来很简单的事件却花了这么长时间才被 <code>Web</code> 平台支持上呢，其实还是有很多细节需要考虑的。网页视口和滚动的细节其实非常多，假如有一个被放大的网页，你可以在这个状态下进行滚动，但实际上却不一定在滚动文档，即使是这种用户驱动的可视视口滚动交互在完成后也会触发 <code>scrollend</code> 事件。以下是所有 <code>scrollend</code> 事件可能会触发的场景：</p>
+<ul>
+<li>浏览器动画结束或滚动完成。</li>
+<li>用户的触摸被释放。</li>
+<li>用户的鼠标释放了滚动键。</li>
+<li>用户的按键被释放。</li>
+<li>滚动到片段完成。</li>
+<li>滚动捕捉完成。</li>
+<li><code>scrollTo()</code> 完成。</li>
+<li>用户滚动了可视视口。</li>
+</ul>
+<p><code>scrollend</code> 事件在以下情况下不会触发：</p>
+<ul>
+<li>用户的手势没有导致任何滚动位置变化。</li>
+<li><code>scrollTo()</code> 没有产生任何位置变化。</li>
+</ul>
+<p>与其他滚动事件一样，你可以通过多种方式注册事件侦听器：</p>
+<pre><code class="language-js">addEventListener(&quot;scrollend&quot;, (event) =&gt; {
+  // 滚动结束
+});
+
+aScrollingElement.addEventListener(&quot;scrollend&quot;, (event) =&gt; {
+  // 滚动结束
+});
+</code></pre>
+<p>也可以使用事件属性：</p>
+<pre><code class="language-js">document.onscrollend = (event) =&gt; {
+  // 滚动结束
+};
+aScrollingElement.onscrollend = (event) =&gt; {
+  // 滚动结束
+};
+</code></pre>
+<p>如果你现在想要使用的话，建议先检查事件在当前浏览器版本中是否支持：</p>
+<pre><code class="language-js">&quot;onscrollend&quot; in window;
+// 可用
+
+if (&quot;onscrollend&quot; in window) {
+  document.onscrollend = callback;
+} else {
+  document.onscroll = (event) =&gt; {
+    clearTimeout(window.scrollEndTimer);
+    window.scrollEndTimer = setTimeout(callback, 100);
+  };
+}
+</code></pre>
+<p>这个事件目前已经在 <code>Firefox 109</code> 版本中提供支持，后续其他浏览器也将陆续提供支持：</p>
+<p><img src="./imgs/120/06.png" alt=""></p>
+<p>在还没有提供支持的浏览器版本中，你也可以先使用下面这 <code>polyfill</code>：</p>
+<p><a href="https://github.com/argyleink/scrollyfills">https://github.com/argyleink/scrollyfills</a></p>
+<pre><code class="language-js">import { scrollend } from &quot;scrollyfills&quot;;
+document.onscrollend = callback;
+</code></pre>
+<p>为了保持页面的运行体验流畅，在滚动事件发生时应该尽量避免复杂的计算逻辑。所以很多需要在滚动时触发的复杂的计算我们推荐在 <code>scrollend</code> 事件中完成。一个比较常见的用例是将相关的 UI 元素与滚动停止的位置进行同步。比如下面的场景将轮播滚动位置与点指示器同步。</p>
+<ul>
+<li>将滚动轮播图的位置与点指示器进行同步。</li>
+<li>将图库项目与其元数据进行同步。</li>
+<li>在用户滚动到新选项卡后获取数据。</li>
+</ul>
+<p>你可以在下面这个网站中查看一些真实案例的使用场景和写法：</p>
+<p><a href="https://gui-challenges.web.app/carousel/dist/">https://gui-challenges.web.app/carousel/dist/</a></p>
+<h2>最后</h2>
+<p>参考链接</p>
+<ul>
+<li><a href="https://github.com/argyleink/scrollyfills">https://github.com/argyleink/scrollyfills</a></li>
+<li><a href="https://developer.chrome.com/en/blog/scrollend-a-new-javascript-event/">https://developer.chrome.com/en/blog/scrollend-a-new-javascript-event/</a></li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/119.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/121.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
