@@ -43,12 +43,12 @@ body {
   margin: 0 auto;
   padding: 30px;
   padding-bottom: 10px;
-  /* border: 1px solid #313131; */
+  border: 1px solid #313131;
   /* background-color: #181818; */
   min-height: calc(100vh - 40px);
   /* border-radius: 32px; */
-  background-color: #181818;
-  border-radius: 5px;
+  /* background-color: #181818; */
+  /* border-radius: 5px; */
   padding-top: 20px;
   /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
@@ -56,7 +56,7 @@ body {
 pre[class*="language-"] {
   margin: 20px 0;
   padding: 20px;
-  /* border: 1px solid #313131; */
+  border: 1px solid #313131;
   border-radius: 0;
   font-style: italic;
 }
@@ -266,7 +266,7 @@ pre code.hljs {
   height: 50px;
   left: calc((100% - 1000px) / 2 - 90px);
   border: 1px solid #313131;
-  background-color: #181818;
+  /* background-color: #181818; */
   cursor: pointer;
   user-select: none;
   color: #fff;
@@ -286,7 +286,7 @@ pre code.hljs {
   text-align: center;
   font-size: 14px;
   border: 1px solid #313131;
-  background-color: #181818;
+  /* background-color: #181818; */
   cursor: pointer;
   user-select: none;
   color: #fff;
