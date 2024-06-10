@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>利用 Web Worker 编写更稳定的定时器</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>利用 Web Worker 编写更稳定的定时器</h2>
+                    <p>2024-06-10 08:58:33 · YinHao</p>
+                  </div>
+                  <p>当浏览器最小化或处于后台时，会对<code>setTimeout</code>和<code>setInterval</code>进行一定的优化，可能是节流，也可能将任务集中到浏览器回到前台的时候（此时可能看到多次定时回调函数在短时间内被触发）。因此如果需要一个更稳定的定时器，比如程序逻辑中需要一个不间断的定时，可以利用 Web Wokrer。</p>
+<p>原理很简单，因为 Web Worker 运行在另一个线程中，不受主线程的影响。示例：</p>
+<pre><code class="language-js">let normalTime = 0;
+setInterval(() =&gt; {
+  console.debug(&quot;Normal: &quot;, normalTime++);
+}, 1000);
+const blob = new Blob(
+  [
+    `let workerTime = 0;
+    self.setInterval(()=&gt;{
+        console.debug(&#39;In Worker: &#39;, workerTime);
+        self.postMessage(workerTime);
+        workerTime++;
+    }, 1000);`,
+  ],
+  { type: &quot;application/javascript&quot; }
+);
+const worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = (ev) =&gt; {
+  console.debug(&quot;Out of Worker: &quot;, ev.data);
+};
+</code></pre>
+<p>利用<code>Blob</code>动态创建了一个 Web Worker，在其中开启一个定时器，向外发送时间消息。</p>
+<p>运行这段代码，将浏览器最小化，过了一段时间后再看，<code>normalTime</code>的数值就会小于<code>workerTime</code>。而<code>workerTime</code>就是更准确的计数值，<strong>虽然受限于<code>setInterval</code>本身其并不是精确的计时，但这个方法会更加稳定</strong>。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/124.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
