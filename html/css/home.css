@@ -31,6 +31,10 @@ body {
   background: transparent;
 }
 
+.container {
+  padding: 20px 0;
+}
+
 .container,
 .container ul {
   width: 100%;
@@ -41,8 +45,9 @@ body {
 .container ul {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 33.33333333%);
+  grid-template-columns: repeat(3, calc((100% - 80px) / 3));
   /* grid-gap: 0 50px; */
+  gap: 20px;
   place-content: center;
 }
 
@@ -54,7 +59,7 @@ body {
   display: flex;
   justify-content: center;
   /* border-bottom: 1px solid #313131; */
-  background-color: #131313;
+  background-color: #181818;
   /* font-weight: 600; */
 }
 
@@ -92,11 +97,9 @@ a:hover {
   border-right: 1px solid #313131;
 } */
 
-.container ul li:nth-child(3n + 2) {
+/* .container ul li:nth-child(3n + 2) {
   background-color: #181818;
-  /* border-left: 1px solid #313131;
-  border-right: 1px solid #313131; */
-}
+} */
 
 .preview_eye {
   position: relative;
@@ -105,7 +108,8 @@ a:hover {
 .preview_eye::before {
   content: "";
   position: absolute;
-  bottom: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   right: 10px;
   width: 25px;
   height: 25px;
