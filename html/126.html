@@ -3,7 +3,7 @@
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title></title>
+                <title>前端实现人类动作捕捉</title>
                 <link rel=icon href="./imgs/code.svg" sizes=32x32>
                 <link rel="stylesheet" href="./css/prism.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
@@ -11,10 +11,124 @@
               <body>
                 <div class="container">
                   <div class="container-header">
-                    <h2></h2>
-                    <p>2024-06-10 09:12:38 · YinHao</p>
+                    <h2>前端实现人类动作捕捉</h2>
+                    <p>2024-06-12 15:09:34 · YinHao</p>
                   </div>
-                  
+                  <h2>什么是 HandtrackJS</h2>
+<p>HandtrackJS 是一个基于 JavaScript 的开源库，用于实时手部检测和手势识别。它利用了机器学习模型来检测手的位置和姿势，使得开发者可以在网页和其他 JavaScript 环境中轻松地实现手势控制和交互功能。</p>
+<p>HandtrackJS 提供了对应的案例，我们可以一起来看下对应的效果：</p>
+<p><img src="./imgs/126/01.png" alt=""></p>
+<p>根据示例 DEMO 我们可以发现，利用 HandtrackJS 可以直接捕获到人像与手势，同时还可以根据不同的手势进行识别，如下图所示：</p>
+<p><img src="./imgs/126/01.gif" alt=""></p>
+<p>整个手势的状态被识别并分为了：<code>open、pinch、closed</code> 三种不同的状态</p>
+<h2>实现一个动作捕捉功能</h2>
+<p>整个 HandtrackJS 使用也非常方便，根据官方文档所示，我们可以分别通过 npm 或 cdn 的形式直接进行安装，这里为了方便，直接通过 cdn 的形式引入：</p>
+<pre><code class="language-html">&lt;body class=&quot;bx--body p20&quot;&gt;
+  &lt;div class=&quot;mb10&quot;&gt;
+    &lt;button
+      id=&quot;trackbutton&quot;
+      class=&quot;bx--btn bx--btn--secondary&quot;
+      type=&quot;button&quot;
+      disabled
+    &gt;
+      点击启动
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;!-- 捕捉和展示实时视频流 --&gt;
+  &lt;video
+    class=&quot;videobox canvasbox&quot;
+    autoplay=&quot;autoplay&quot;
+    id=&quot;myvideo&quot;
+    style=&quot;display: none&quot;
+  &gt;&lt;/video&gt;
+  &lt;!-- 视频流渲染到 canvas 之中 --&gt;
+  &lt;canvas id=&quot;canvas&quot; class=&quot;border canvasbox&quot;&gt;&lt;/canvas&gt;
+  &lt;!-- cdn 引入 handtrack --&gt;
+  &lt;script src=&quot;lib/handtrack.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;js/index.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+<p>在上面代码中，核心有两个标签：</p>
+<ol>
+<li><p>video：它的主要作用是开启一个视频流，用来捕获摄像头图像的。但是真正的展示并不是通过它来做，所以这里直接 display: none 隐藏即可</p>
+</li>
+<li><p>canvas：这是真正用来展示捕获内容的界面</p>
+</li>
+</ol>
+<h2>JS 部分</h2>
+<p>搞定了 html 之后，接下来我们来处理 js 的内容</p>
+<ol>
+<li>利用 handTrack 加载模型</li>
+</ol>
+<p>handTrack 是 HandtrackJS 的核心类，可以利用它的 load 方法加载配置、模型：</p>
+<pre><code class="language-js">let model = null; // 存储加载的模型
+let trackButton = document.getElementById(&quot;trackbutton&quot;); // 获取按钮元素
+
+// 模型参数配置
+const modelParams = {
+  maxNumBoxes: 20, // 最大检测框数量
+  iouThreshold: 0.5, // IOU阈值
+  scoreThreshold: 0.6, // 分数阈值
+};
+
+// 加载模型
+handTrack.load(modelParams).then((lmodel) =&gt; {
+  model = lmodel; // 保存加载的模型
+  trackButton.disabled = false; // 启用按钮
+});
+</code></pre>
+<ol start="2">
+<li>按钮按下，开启视频捕捉</li>
+</ol>
+<p>监听 trackButton 按钮的点击行为，利用 video 开启摄像头</p>
+<pre><code class="language-js">// 获取HTML中的video和canvas元素
+const video = document.getElementById(&quot;myvideo&quot;);
+const canvas = document.getElementById(&quot;canvas&quot;);
+const context = canvas.getContext(&quot;2d&quot;); // 获取canvas的2D绘图上下文
+
+let isVideo = false; // 标记视频是否正在播放
+
+// 开始视频捕捉
+function startVideo() {
+  handTrack.startVideo(video).then(function (status) {
+    if (status) {
+      // 如果视频启动成功
+      isVideo = true; // 设置视频状态为正在播放
+      runDetection(); // 开始检测
+    } else {
+      // 视频启动失败处理（未实现）
+    }
+  });
+}
+
+// 运行检测
+function runDetection() {
+  model.detect(video).then((predictions) =&gt; {
+    model.renderPredictions(predictions, canvas, context, video); // 在canvas上绘制检测结果
+    if (isVideo) {
+      requestAnimationFrame(runDetection); // 如果视频正在播放，继续检测
+    }
+  });
+}
+
+// 切换视频播放状态
+function toggleVideo() {
+  if (!isVideo) {
+    startVideo(); // 如果视频未播放，则启动视频
+  } else {
+    handTrack.stopVideo(video); // 停止视频
+    isVideo = false; // 设置视频状态为未播放
+  }
+}
+
+// 按钮点击事件监听，点击按钮时切换视频状态
+trackButton.addEventListener(&quot;click&quot;, function () {
+  toggleVideo();
+});
+</code></pre>
+<p>至此整个的检测就已经全部完成了，是不是还是挺简单的。咱们来看看效果</p>
+<p><img src="./imgs/126/01.webp" alt=""></p>
+
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/125.html'">PREV</div>
                     <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
