@@ -34,10 +34,11 @@ const htmlcode = document.getElementById("htmlcode");
 const csscode = document.getElementById("csscode");
 const jscode = document.getElementById("jscode");
 
-require.config({
-  paths: { vs: "https://unpkg.com/monaco-editor@^0.21.2/min/vs" },
-});
-window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+// require.config({
+//   paths: { vs: "https://unpkg.com/monaco-editor@^0.21.2/min/vs" },
+// });
+
+// window.MonacoEnvironment = { getWorkerUrl: () => proxy };
 
 function vsCodeObj(value = "", language = "") {
   return {
@@ -86,6 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
     iframeWrapper = iframeDocument.getElementById("iframe__wrapper");
     styleContent = iframeDocument.getElementById("live-preview-style");
     scriptContent = iframeDocument.getElementById("script__preview");
+    require.config({
+      paths: {
+        vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.0/min/vs",
+      },
+    });
     require(["vs/editor/editor.main"], function () {
       editorHTML = monaco.editor.create(
         htmlcode,
