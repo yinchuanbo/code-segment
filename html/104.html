@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D 轮播效果</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      data-name="vs/editor/editor.main"
+      href="./css/editor.main.css"
+    />
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;!-- Slider main container --&gt;
+&lt;div class=&#34;swiper-container&#34;&gt;
+  &lt;!-- Additional required wrapper --&gt;
+  &lt;div class=&#34;swiper-wrapper&#34;&gt;
+    &lt;!-- Slides --&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;picture&#34;&gt;
+        &lt;img
+          src=&#34;https://images.unsplash.com/photo-1464863979621-258859e62245?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=6b4e41a670c097c8fd2834579f5d5958&amp;auto=format&amp;fit=crop&amp;w=633&amp;q=80&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;detail&#34;&gt;
+        &lt;h3&gt;Marie Edwards&lt;/h3&gt;
+        &lt;span&gt;Web Designer&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;picture&#34;&gt;
+        &lt;img
+          src=&#34;https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=49899e285952107fdfd9415b8d3bf74a&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;detail&#34;&gt;
+        &lt;h3&gt;Kelly Woods&lt;/h3&gt;
+        &lt;span&gt;Web Designer&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;picture&#34;&gt;
+        &lt;img
+          src=&#34;https://images.unsplash.com/photo-1502980426475-b83966705988?ixlib=rb-0.3.5&amp;s=739aef35459daa8aaeaa55363d492bc1&amp;auto=format&amp;fit=crop&amp;w=673&amp;q=80&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;detail&#34;&gt;
+        &lt;h3&gt;Roger Rice&lt;/h3&gt;
+        &lt;span&gt;Web Designer&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;picture&#34;&gt;
+        &lt;img
+          src=&#34;https://images.unsplash.com/photo-1502768040783-423da5fd5fa0?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=0c6416353c255d2746a68c8a83943bdf&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;detail&#34;&gt;
+        &lt;h3&gt;Jessica Garcia&lt;/h3&gt;
+        &lt;span&gt;Web Designer&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;picture&#34;&gt;
+        &lt;img
+          src=&#34;https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=9a138cf8acd85036bd292d7f10074e79&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;detail&#34;&gt;
+        &lt;h3&gt;Sean Adams&lt;/h3&gt;
+        &lt;span&gt;Web Designer&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-slide&#34;&gt;
+      &lt;div class=&#34;picture&#34;&gt;
+        &lt;img
+          src=&#34;https://images.unsplash.com/photo-1500080209535-717dd4ebaa6b?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=ddee81e2e574e8190b07139ddb0f1938&amp;auto=format&amp;fit=crop&amp;w=687&amp;q=80&#34;
+          alt=&#34;&#34;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;detail&#34;&gt;
+        &lt;h3&gt;Crystal Davidson&lt;/h3&gt;
+        &lt;span&gt;Web Designer&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- If we need pagination --&gt;
+  &lt;!-- &lt;div class=&#34;swiper-pagination&#34;&gt;&lt;/div&gt; --&gt;
+
+  &lt;!-- If we need navigation buttons --&gt;
+  &lt;!--     &lt;div class=&#34;swiper-button-prev&#34;&gt;&lt;/div&gt; --&gt;
+  &lt;!--     &lt;div class=&#34;swiper-button-next&#34;&gt;&lt;/div&gt; --&gt;
+
+  &lt;!-- If we need scrollbar --&gt;
+  &lt;!-- &lt;div class=&#34;swiper-scrollbar&#34;&gt;&lt;/div&gt; --&gt;
+&lt;/div&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  /* background-color: #f2f2f2; */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.swiper-container {
+  width: 100%;
+  /* padding-top: 50px;
+  padding-bottom: 50px; */
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 320px;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.picture {
+  width: 320px;
+  height: 320px;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.detail {
+  padding: 25px 20px;
+  font-weight: 600;
+  text-align: center;
+
+  h3 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  span {
+    display: block;
+    font-size: 16px;
+    color: #f44336;
+  }
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">var swiper = new Swiper(&#34;.swiper-container&#34;, {
+  effect: &#34;coverflow&#34;,
+  grabCursor: true,
+  centeredSlides: true,
+  slidesPerView: &#34;auto&#34;,
+  coverflowEffect: {
+    rotate: 20,
+    stretch: 0,
+    depth: 350,
+    modifier: 1,
+    slideShadows: true,
+  },
+  // pagination: {
+  //   el: &#34;.swiper-pagination&#34;,
+  // },
+});</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-104-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>总结一下 Map，Set，WeakSet，WeakMap</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>总结一下 Map，Set，WeakSet，WeakMap</h2>
+                    <p>2024-06-09 15:46:51 · YinHao</p>
+                  </div>
+                  <p>Set 是叫集合的数据结构，Map 是叫字典的数据结构</p>
+<p>相同点：Set 和 Map 存储不重复的值</p>
+<p>不同点：Set 用 [value, value] 存储数据，Map 用 [key,value]存储数据</p>
+<h2>总结</h2>
+<p>Set：</p>
+<ul>
+<li>成员唯一、无序且不重复。</li>
+<li>[value, value]，键值与键名是一致的（或者说只有键值，没有键名）。</li>
+<li>可以遍历，方法有：add、delete、has。</li>
+</ul>
+<p>Map：</p>
+<ul>
+<li>本质上是键值对的集合，类似集合。</li>
+<li>可以遍历，方法很多可以跟各种数据格式转换。</li>
+</ul>
+<p>WeakSet：</p>
+<ul>
+<li>成员都是对象。</li>
+<li>成员都是弱引用，可以被垃圾回收机制回收，可以用来保存 DOM 节点，不容易造成内存泄漏。</li>
+<li>不能遍历，方法有 add、delete、has。</li>
+</ul>
+<p>WeakMap：</p>
+<ul>
+<li>只接受对象作为键名（null 除外），不接受其他类型的值作为键名。</li>
+<li>键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的。</li>
+<li>不能遍历，方法有 get、set、has、delete。</li>
+</ul>
+<h2>Set</h2>
+<h3>介绍</h3>
+<ul>
+<li><strong>Set 类似数组，成员唯一。</strong></li>
+<li><strong>Set 本身是构造函数，生成 Set 数据结构。</strong></li>
+<li><strong>Set 可以存储任意类型的唯一值。</strong></li>
+<li><strong>Setkey 的值和 value 的值一样</strong></li>
+</ul>
+<pre><code class="language-js">let s = new Set();
+[1, 2, 3, 4, 5, 6, 1, 2].map((item) =&gt; {
+  s.add(item);
+}); // [1,2,3,4,5,6]
+
+// 数组去重
+let arr = [1, 2, 3, 4, 3, 2, 4, 5];
+console.log([...new Set(arr)]);
+</code></pre>
+<p>注：Set 里面加入值时不会发送类型转换，及 5 和 ‘5’ 是两个不同的值，Set 判断两个值是否相等类似于‘===’</p>
+<p>但判断 NaN 时，’===‘的判断 NaN 等于 NaN，Set 的判断 NaN 不等于 NaN。</p>
+<h3>操作</h3>
+<ul>
+<li>add(value)：新增，相当于 Array 的 push</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, 3, 2, 4, 5]);
+arr.add(9); // 1,2,3,4,9
+</code></pre>
+<ul>
+<li>delete(value)：存在就删除里面的 value</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, 3, 2, 4, 5]);
+arr.delete(1); // true, 删除成功
+</code></pre>
+<ul>
+<li>has(value)：判断 Set 里面有没有这个值</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, 3, 2, 4, 5]);
+arr.has(1); // true
+</code></pre>
+<ul>
+<li>clear()：清空集合</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, 3, 2, 4, 5]);
+arr.clear();
+</code></pre>
+<h3>遍历</h3>
+<ul>
+<li>keys()：返回一个包含集合中所有键的迭代器。</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, { a: 1, b: 2 }]);
+arr.keys(); // SetIterator {1, 2, 3, 4, {…}}
+</code></pre>
+<ul>
+<li>values()：返回一个包含集合中所有值得迭代器。</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, { a: 1, b: 2 }]);
+arr.keys(); // SetIterator {1, 2, 3, 4, {…}}
+</code></pre>
+<ul>
+<li>entries()：返回一个包含 Set 对象中所有元素得键值对迭代器。</li>
+</ul>
+<pre><code class="language-js">let arr = new Set([1, 2, 3, 4, (a = { a: 1, b: 2 })]);
+arr.entries(); // SetIterator {1 =&gt; 1, 2 =&gt; 2, 3 =&gt; 3, 4 =&gt; 4, {…} =&gt; {…}}
+</code></pre>
+<h2>Map</h2>
+<h3>介绍</h3>
+<p>Map 是键值对的结构，查找速度极快</p>
+<pre><code class="language-js">let a = new Map();
+let obj = { a: 1 };
+a.set(&quot;a&quot;, obj); // set 键值对
+a.get(&quot;a&quot;); // obj
+a.has(&quot;a&quot;); // true
+a.delete(&quot;a&quot;); // 删除成功
+a.has(&quot;a&quot;);
+</code></pre>
+<h3>操作</h3>
+<ul>
+<li>set(key, value): 字典添加新元素</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 }); // Map(1) {&#39;x&#39; =&gt; {…}}
+</code></pre>
+<ul>
+<li>get(key)：通过键查找值并返回</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.get(&quot;x&quot;); // {a: 1}
+</code></pre>
+<ul>
+<li>has(key)：判断是否存在 key</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.has(&quot;x&quot;); // true
+</code></pre>
+<ul>
+<li>delete(key)：通过 key 移除 map 中的 key 的值</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.delete(&quot;x&quot;); // true
+</code></pre>
+<ul>
+<li>clear()：清空字典全部的内容</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.clear();
+</code></pre>
+<h3>遍历</h3>
+<ul>
+<li>Keys()：将字典中包含的所有键名以迭代器形式返回。</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.keys(); // MapIterator {&#39;x&#39;}
+</code></pre>
+<ul>
+<li>values()：将字典中包含的所有数值以迭代器形式返回。</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.values(); // MapIterator {{…}}
+</code></pre>
+<ul>
+<li>entries()：返回所有成员的迭代器。</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.entries(); // MapIterator {&#39;x&#39; =&gt; {…}}
+</code></pre>
+<ul>
+<li>forEach()：遍历字典的所有成员。</li>
+</ul>
+<pre><code class="language-js">let a = new Map();
+a.set(&quot;x&quot;, { a: 1 });
+a.forEach((item) =&gt; {
+  console.log(item);
+});
+// {a: 1}
+</code></pre>
+<h2>WeakSet</h2>
+<h3>介绍</h3>
+<p>weakSet 和 Set 的区别:</p>
+<ol>
+<li>WeakSet 只能是对象的集合，不像 Set 一样什么类型数据都能存储。</li>
+<li>WeakSet 集合里面对对象的引用是弱引用，即如果集合里面的对象没有被外部引用，就会被回收掉。</li>
+</ol>
+<h3>操作</h3>
+<ul>
+<li>add(value)：在 WeakSet 对象中添加一个元素 value。</li>
+</ul>
+<pre><code class="language-js">let aaa = new WeakSet();
+aaa.add({}); // WeakSet {{…}}
+</code></pre>
+<ul>
+<li>has(value)：判断 WeakSet 对象中是否包含 value。</li>
+</ul>
+<pre><code class="language-js">let a = {};
+let aaa = new WeakSet();
+aaa.add(a);
+aaa.has(a); // true
+</code></pre>
+<ul>
+<li>delete(value)：删除元素 value。</li>
+</ul>
+<pre><code class="language-js">let a = {};
+let aaa = new WeakSet();
+aaa.add(a);
+aaa.delete(a); // true
+</code></pre>
+<h2>WeakMap</h2>
+<h3>介绍</h3>
+<p>WeakMap 和 Map 的区别:</p>
+<ol>
+<li>WeakMap 也是键值对集合，但是键必须是弱引用对象，而值可以是任意类型</li>
+<li><strong>WeakMap 集合里面键的对象的引用是弱引用</strong>，即如果集合里面键的对象没有被外部引用，就会被回收掉。</li>
+</ol>
+<h3>操作</h3>
+<ul>
+<li>set(key，value)：设置 WeakMap 键值对</li>
+<li>get(key): 获取 WeakMap 键对应的值</li>
+<li>has(key): 有没有与这个 key 关联的值</li>
+<li>delete(key): 删除可以关联的键值对</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/110.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/112.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

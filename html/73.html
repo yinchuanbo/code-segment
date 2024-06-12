@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>使用 HTML5 音频和视频</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>使用 HTML5 音频和视频</h2>
+                    <p>2024-06-08 13:30:21 · YinHao</p>
+                  </div>
+                  <h2>Audio</h2>
+<pre><code class="language-html">&lt;audio src=&quot;&quot; controls=&quot;controls&quot;&gt;&lt;/audio&gt;
+</code></pre>
+<p><strong>audio 支持的属性值：</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>autoplay</td>
+<td>autoplay</td>
+<td>如果出现该属性，则音频在就绪后马上播放</td>
+</tr>
+<tr>
+<td>controls</td>
+<td>controls</td>
+<td>如果出现该属性，则向用户显示控件，比如播放按钮</td>
+</tr>
+<tr>
+<td>loop</td>
+<td>loop</td>
+<td>如果出现该属性，则每当音频结束时重新开始播放</td>
+</tr>
+<tr>
+<td>preload</td>
+<td>preload</td>
+<td>如果出现该属性，则音频在页面加载时进行加载，并预备播放。如果使用 autoplay，则忽略该属性。</td>
+</tr>
+</tbody></table>
+<p>audio 标签可以包含多个 source 标签，用来导入不同的音频文件，浏览器会自动选择第一个可识别的格式进行播放。</p>
+<pre><code class="language-html">&lt;audio controls=&quot;controls&quot;&gt;
+  &lt;source src=&quot;medias/test.ogg&quot; type=&quot;audio/ogg&quot; /&gt;
+  &lt;source src=&quot;medias/test.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  你的浏览器不支持 audio 标签
+&lt;/audio&gt;
+</code></pre>
+<pre><code class="language-html">&lt;audio autoplay loop&gt;
+  &lt;source src=&quot;medias/test.ogg&quot; type=&quot;audio/ogg&quot; /&gt;
+  &lt;source src=&quot;medias/test.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  你的浏览器不支持 audio 标签
+&lt;/audio&gt;
+</code></pre>
+<h2>Video</h2>
+<pre><code class="language-html">&lt;video src=&quot;&quot; controls=&quot;controls&quot;&gt;&lt;/video&gt;
+</code></pre>
+<p><strong>video 支持的属性值：</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>autoplay</td>
+<td>autoplay</td>
+<td>如果出现该属性，则视频在就绪后马上播放</td>
+</tr>
+<tr>
+<td>controls</td>
+<td>controls</td>
+<td>如果出现该属性，则向用户显示控件，比如播放按钮</td>
+</tr>
+<tr>
+<td>loop</td>
+<td>loop</td>
+<td>如果出现该属性，则当媒介文件完成播放后再次开始播放</td>
+</tr>
+<tr>
+<td>muted</td>
+<td>muted</td>
+<td>设置视频的音频输出应该被静音</td>
+</tr>
+<tr>
+<td>poster</td>
+<td>URL</td>
+<td>设置视频下载时显示的图像，或者在用户单击 “播放” 按钮前显示的图像</td>
+</tr>
+<tr>
+<td>preload</td>
+<td>preload</td>
+<td>如果出现该属性，则视频在页面加载时进行加载，并预备播放。如果使用 “autoplay”，则忽略该属性</td>
+</tr>
+</tbody></table>
+<pre><code class="language-html">&lt;video controls autoplay&gt;
+  &lt;source src=&quot;medias/trailer.ogg&quot; type=&quot;video/ogg&quot; /&gt;
+  &lt;source src=&quot;medias/trailer.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+  您的浏览器不支持 video 标签
+&lt;/video&gt;
+</code></pre>
+<p>也可以使用 Js 脚本控制媒体播放，简单说明如下：</p>
+<ul>
+<li><p>load(): 可以加载音频或视频文件</p>
+</li>
+<li><p>play()</p>
+</li>
+<li><p>pause()</p>
+</li>
+<li><p>canPlayType(type): 检测 video 元素是否支持给定 MIME 类型的文件</p>
+</li>
+</ul>
+<h3>设置属性</h3>
+<p>audio 和 video 元素拥有相同的脚本属性。</p>
+<ol>
+<li>autobuffer 属性</li>
+</ol>
+<p>可读写属性，使用该属性可以使得 audio 和 video 元素实现自动缓冲，默认为 false。</p>
+<p>如果值为 true，则自动缓冲，但并不播放。</p>
+<p>如果使用了 autoplay 属性，则 autobuffer 属性会被忽略。</p>
+<pre><code class="language-html">&lt;audio controls=&quot;controls&quot; autobuffer=&quot;true&quot;&gt;
+  &lt;source src=&quot;medias/test.ogg&quot; type=&quot;audio/ogg&quot; /&gt;
+  &lt;source src=&quot;medias/test.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  你的浏览器不支持 audio 标签
+&lt;/audio&gt;
+</code></pre>
+<ol start="2">
+<li>buffered 属性</li>
+</ol>
+<p>只读属性，用于返回一个 TimeRanges 对象，确认浏览器已经缓存媒体文件。</p>
+<ol start="3">
+<li>currentSrc 属性</li>
+</ol>
+<p>只读属性，无默认值。用于返回媒体数据的 URL 地址，如果不存在，则返回空。</p>
+<ol start="4">
+<li>currentTime 属性</li>
+</ol>
+<p>可读写属性，用于获取或设置当前播放位置，返回值为时间，单位为秒。</p>
+<ol start="5">
+<li>defaultPlaybackRate</li>
+</ol>
+<p>可读写属性，用于获取或设置当前播放速率，前提是用户没有使用快进或快退控件。</p>
+<ol start="6">
+<li>duration 属性</li>
+</ol>
+<p>只读属性，用于获取当前媒体的持续时间，返回值为时间，单位为秒。</p>
+<ol start="7">
+<li>ended 属性</li>
+</ol>
+<p>只读属性，用于返回一个布尔值，以获悉媒体是否播放结束。</p>
+<ol start="8">
+<li>error 属性</li>
+</ol>
+<p>只读属性，用于返回一个 <code>MediaError</code> 对象以表明当前的错误状态。如果没有出现错误，则返回 null。</p>
+<p>错误状态共有 4 个可能值：</p>
+<ul>
+<li><p>MEDIA_ERR_ABORTED (数字值为 1): 媒体资源获取异常，媒体数据的下载过程因用户操作而终止。</p>
+</li>
+<li><p>MEDIA_ERR_NETWORK (数字值为 2): 网路错误，在媒体数据已经就绪时用户停止了媒体下载资源的过程。</p>
+</li>
+<li><p>MEDIA_ERR_DECODE (数字值为 3): 媒体解码错误，在媒体数据已经就绪时解码过程中出现了错误。</p>
+</li>
+<li><p>MEDIA_ERR_SRC_NOT_SUPPORTED (数字值为 4): 媒体格式不被支持。</p>
+</li>
+</ul>
+<ol start="9">
+<li>initialTime 属性</li>
+</ol>
+<p>只读属性，用于获取最早的可用于回放的位置，返回值为时间，单位为秒。</p>
+<ol start="10">
+<li>networkState 属性</li>
+</ol>
+<p>只读属性，用于返回媒体的网络状态，共有 4 个可能值：</p>
+<ul>
+<li><p>NETWORK_EMPTY (数字值为 0): 元素尚未初始化</p>
+</li>
+<li><p>NETWORK_IDLE (数字值为 1): 加载完成，网络空闲</p>
+</li>
+<li><p>NETWORK_LOADING (数字值为 2): 媒体数据加载中</p>
+</li>
+<li><p>NETWORK_NO_SOURCE (数字值为 3): 因为不存在支持的编码格式，加载失败</p>
+</li>
+</ul>
+<ol start="11">
+<li>playbackRate 属性</li>
+</ol>
+<p>可读写属性，用于读取或设置媒体资源播放的当前速率。</p>
+<ol start="12">
+<li>played 属性</li>
+</ol>
+<p>只读属性，用于返回一个 TimeRanges 对象，标明媒体资源在浏览器中已播放的时间范围。</p>
+<p>TimeRanges 对象的 length 属性为已播放部分的时间段，该对象有两个方法，end 方法用于返回已播放时间段的结束时间，start 方法用于返回已播放时间段的开始时间，</p>
+<pre><code class="language-js">var ranges = document.getElementById(&quot;myVideo&quot;).played;
+for (var i = 0; i &lt; ranges.length; i++) {
+  var start = ranges.start(i);
+  var end = ranges.end(i);
+  console.log(&quot;从&quot; + start + &quot;开始播放到&quot; + end + &quot;结束。&quot;);
+}
+</code></pre>
+<ol start="13">
+<li>preload 属性</li>
+</ol>
+<p>可读写属性，用于定义视频是否预加载，</p>
+<ul>
+<li><p>none: 不进行预加载</p>
+</li>
+<li><p>metadata: 部分预加载</p>
+</li>
+<li><p>auto: 全部预加载</p>
+</li>
+</ul>
+<ol start="14">
+<li>readyState 属性</li>
+</ol>
+<p>只读属性，用于返回媒体当前播放位置的就绪状态，共有 5 个可能值：</p>
+<ul>
+<li><p>HAVE_NOTHING (数字值为 0)：当前播放位置没有有效的媒体资源。</p>
+</li>
+<li><p>HAVE_METADATA (数字值为 1)：媒体资源确认存在且加载中，但当前位置没有能够加载到有效的媒体数据以进行播放。</p>
+</li>
+<li><p>HAVE_CURRENT_DATA (数字值为 2)：已获取当前播放数据，但没有足够的数据进行播放。</p>
+</li>
+<li><p>HAVE_FUTURE_DATA (数字值为 3)：在当前位置已获取到后续播放媒体数据，可以进行播放。</p>
+</li>
+<li><p>HAVE_ENOUGH_DATA (数字值为 4)：媒体数据可以进行播放，且浏览器确认媒体数据正以某一种速率进行加载并有足够的后续数据以继续进行播放，而不会使浏览器的播放进度赶上加载数据的末端。</p>
+</li>
+</ul>
+<ol start="15">
+<li>seekable 属性</li>
+</ol>
+<p>只读属性，用于返回一个 TimeRanges 对象，表明可以对当前媒体资源进行请求。</p>
+<ol start="16">
+<li>seeking 属性</li>
+</ol>
+<p>只读属性，用于返回一个默认值，表示浏览器是否正在请求某一播放位置的媒体数据，true 表示浏览器正在请求数据，而 false 表示浏览器已经停止请求数据。</p>
+<ol start="17">
+<li>volume 属性</li>
+</ol>
+<p>可读写属性，用于获取或设置媒体资源的播放音量。范围为 <code>0.0 ~ 1.0</code>。</p>
+<h2>设置方法</h2>
+<p>audio 和 video 元素拥有相同的脚本方法：</p>
+<ol>
+<li>canPlayType()</li>
+</ol>
+<p>用户返回一个字符串以表明客户端是否能够播放指定的媒体类型</p>
+<pre><code class="language-js">var canPlay = media.canPlayType(type);
+</code></pre>
+<p>type 为客户端浏览器能够播放的媒体类型。</p>
+<p>可能得返回值有：</p>
+<ul>
+<li><p>probably: 表示浏览器确定支持此媒体类型</p>
+</li>
+<li><p>maybe: 表示浏览器可能支持此媒体类型</p>
+</li>
+<li><p>空字符串: 表示浏览器不支持此媒体类型</p>
+</li>
+</ul>
+<ol start="2">
+<li>load()</li>
+</ol>
+<p>用于重置媒体元素并重新载入媒体，不返回任何值。</p>
+<p>该方法可中止任何正在进行的任务或事件。</p>
+<p>元素的 playbackRate 属性值会被强行设置为 defaultPlaybackRate 属性的值，而且元素的 error 值会被强行设置为 null。</p>
+<p><strong>示例</strong></p>
+<pre><code class="language-html">&lt;input type=&quot;button&quot; value=&quot;载入新的视频&quot; onclick=&quot;loadNewVideo()&quot; /&gt;
+
+&lt;script&gt;
+  function loadNewVideo() {
+    var video = document.getElementsByTagName(&quot;video&quot;)[0];
+    var sources = video.getElementsByTagName(&quot;source&quot;);
+    sources[0].src = &quot;medias/video2.ogv&quot;;
+    sources[1].src = &quot;medias/video2.mp4&quot;;
+    video.load(); // 用 load 方法载入新的视频
+  }
+&lt;/script&gt;
+</code></pre>
+<h3>设置事件</h3>
+<p>一种是使用 <code>addEventListener()</code> 监听</p>
+<p>另一种是使用 <code>video.onplay = function() {}</code></p>
+<p><strong>音频和视频相关事件</strong></p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>abort</td>
+<td>浏览器在完全加载媒体数据之前中止获取媒体数据</td>
+</tr>
+<tr>
+<td>canplay</td>
+<td>浏览器能够开始播放媒体数据，但估计以当前速率播放不能直接将媒体播放完，即可能因播放期间需要缓冲而停止</td>
+</tr>
+<tr>
+<td>canplaythrough</td>
+<td>浏览器以当前速率可以直接播放完整个媒体资源，在此期间不需要缓冲</td>
+</tr>
+<tr>
+<td>durationchange</td>
+<td>媒体长度（duration 属性）改变</td>
+</tr>
+<tr>
+<td>emptied</td>
+<td>媒体资源元素突然为空时，可能是网络错误或加载错误等</td>
+</tr>
+<tr>
+<td>ended</td>
+<td>媒体播放已抵达结尾</td>
+</tr>
+<tr>
+<td>error</td>
+<td>在元素加载期间出现错误</td>
+</tr>
+<tr>
+<td>loadeddata</td>
+<td>已经加载当前播放位置的媒体数据</td>
+</tr>
+<tr>
+<td>loadedmetadata</td>
+<td>浏览器已经获取媒体元素的持续时间和尺寸</td>
+</tr>
+<tr>
+<td>loadstart</td>
+<td>浏览器开始加载媒体数据</td>
+</tr>
+<tr>
+<td>pause</td>
+<td>媒体数据暂停播放</td>
+</tr>
+<tr>
+<td>play</td>
+<td>媒体数据将要开始播放</td>
+</tr>
+<tr>
+<td>playing</td>
+<td>媒体数据已经开始播放</td>
+</tr>
+<tr>
+<td>progress</td>
+<td>浏览器正在获取媒体数据</td>
+</tr>
+<tr>
+<td>ratechange</td>
+<td>媒体数据的默认播放速率（defaultPlaybackRate 属性）改变或播放速率（playbackRate 属性）改变</td>
+</tr>
+<tr>
+<td>readystatechange</td>
+<td>就绪状态（ready-state）改变</td>
+</tr>
+<tr>
+<td>seeked</td>
+<td>浏览器停止请求数据，媒体元素的定位属性不再为真（seeking 属性值为 false）且定位已结束</td>
+</tr>
+<tr>
+<td>seeking</td>
+<td>浏览器正在请求数据，媒体元素的定位属性为真（seeking 属性值为 true）且定位已开始</td>
+</tr>
+<tr>
+<td>stalled</td>
+<td>浏览器获取媒体数据过程中出现异常</td>
+</tr>
+<tr>
+<td>suspend</td>
+<td>浏览器非主动获取媒体数据，但在取回整个媒体文件之前中止</td>
+</tr>
+<tr>
+<td>timeupdate</td>
+<td>媒体当前播放位置（currentTime 属性）发生改变</td>
+</tr>
+<tr>
+<td>volumechange</td>
+<td>媒体音量（volume 属性）改变或静音（muted 属性）</td>
+</tr>
+<tr>
+<td>waiting</td>
+<td>媒体已停止播放但打算继续播放</td>
+</tr>
+</tbody></table>
+<p><strong>示例</strong></p>
+<pre><code class="language-html">&lt;body onload=&quot;init()&quot;&gt;
+  &lt;video
+    id=&quot;video1&quot;
+    autoplay
+    oncanplay=&quot;startVideo()&quot;
+    onended=&quot;stopTimeline()&quot;
+    autobuffer=&quot;true&quot;
+    width=&quot;400&quot;
+    height=&quot;300&quot;
+  &gt;
+    &lt;source src=&quot;medias/volcano.ogv&quot; type=&quot;video/ogg&quot; /&gt;
+    &lt;source src=&quot;medias/volcano.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+  &lt;/video&gt;
+  &lt;button onclick=&quot;play()&quot;&gt;播放&lt;/button&gt;
+  &lt;button onclick=&quot;pause()&quot;&gt;暂停&lt;/button&gt;
+&lt;/body&gt;
+</code></pre>
+<pre><code class="language-js">var video;
+function init() {
+  video = document.getElementById(&quot;video1&quot;);
+  video.addEventListener(
+    &quot;ended&quot;,
+    function () {
+      alert(&quot;播放结束&quot;);
+    },
+    true
+  );
+  video.addEventListener(
+    &quot;error&quot;,
+    function () {
+      switch (video.error.code) {
+        case MediaError.MEDIA_ERROR_ABORTED:
+          alert(&quot;视频的下载过程被中止&quot;);
+          break;
+        case MediaError.MEDIA_ERROR_NETWORK:
+          alert(&quot;网络发生故障，视频的下载过程被中止&quot;);
+          break;
+        case MediaError.MEDIA_ERROR_DECODE:
+          alert(&quot;解码失败&quot;);
+          break;
+        case MediaError.MEDIA_ERROR_SRC_NOT_SUPPORTED:
+          alert(&quot;媒体资源不可用或媒体格式不被支持&quot;);
+          break;
+        default:
+          alert(&quot;发生未知错误&quot;);
+      }
+    },
+    false
+  );
+}
+
+function play() {
+  video.play();
+}
+
+function pause() {
+  video.pause();
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/72.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/74.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

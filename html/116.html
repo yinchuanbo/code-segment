@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>前端的网络状态</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>前端的网络状态</h2>
+                    <p>2024-06-09 16:08:53 · YinHao</p>
+                  </div>
+                  <h2><code>online</code>  和  <code>offline</code>  事件</h2>
+<p><code>online</code> 和 <code>offline</code> 事件是浏览器自带的两个事件，可以通过添加事件监听器来检测当前网络连接状态。当浏览器的网络连接发生变化，比如从在线状态切换到离线状态，或者从离线状态切换到在线状态时，这两个事件就会被触发。以下是示例代码：</p>
+<pre><code class="language-js">window.addEventListener(&quot;online&quot;, () =&gt; {
+  console.log(&quot;Online&quot;);
+});
+window.addEventListener(&quot;offline&quot;, () =&gt; {
+  console.log(&quot;Offline&quot;);
+});
+</code></pre>
+<p>在上述代码中，我们分别添加了 <code>online</code> 和 <code>offline</code> 事件监听器，并在触发事件时输出相应的信息到控制台。</p>
+<h2><code>navigator.onLine</code></h2>
+<p>除了使用事件监听器之外，JavaScript 还提供了另一种方式来检测浏览器的网络连接状态，即使用 <code>navigator.onLine</code> 属性。该属性返回一个布尔值，表示浏览器是否处于联网状态。以下是示例代码：</p>
+<pre><code class="language-js">if (navigator.onLine) {
+  console.log(&quot;Online&quot;);
+} else {
+  console.log(&quot;Offline&quot;);
+}
+</code></pre>
+<p>在上述代码中，我们使用了 <code>navigator.onLine</code> 属性来检测当前的网络连接状态，并根据返回的布尔值输出相应信息到控制台。需要注意的是，<code>navigator.onLine</code> 属性只能检测当前的网络连接状态，而不能监听网络连接状态的变化。 如何通过前端获取更多的网络信息 <code>navigator.connection</code></p>
+<h2>什么是 <code>navigator.connection</code>？</h2>
+<p><code>navigator.connection</code> 是 Web API 中提供的一种获取网络连接相关信息的接口。该接口返回的是一个 <code>NetworkInformation</code> 对象，包含了多个关于用户设备网络连接状况的属性，如网络类型、带宽、往返时间等。</p>
+<p>通过 <code>navigator.connection</code> API 能够获取的主要网络连接属性如下：</p>
+<ul>
+<li><code>downlink</code>: 当前网络连接的估计下行速度（单位为 Mbps）</li>
+<li><code>downlinkMax</code>: 设备网络连接最大可能下行速度（单位为 Mbps）</li>
+<li><code>effectiveType</code>: 当前网络连接的估计速度类型（如 slow-2g、2g、3g、4g 等）</li>
+<li><code>rtt</code>: 当前网络连接的估计往返时间（单位为毫秒）</li>
+<li><code>saveData</code>: 是否处于数据节省模式</li>
+</ul>
+<p>除此之外，还有其他诸如 <code>type</code>、<code>onchange</code> 等属性，用于获取设备网络连接的类型和注册网络连接状态变化事件等功能。</p>
+<h2>如何使用 <code>navigator.connection</code>？</h2>
+<p>在使用 <code>navigator.connection</code> API 之前，需要先进行是否支持的判断。可以通过以下方式判断浏览器是否支持该 API：</p>
+<pre><code class="language-js">if (&quot;connection&quot; in navigator) {
+  // 支持 navigator.connection API
+} else {
+  // 不支持 navigator.connection API
+}
+</code></pre>
+<p>如果返回结果为 true，则表示当前浏览器支持 <code>navigator.connection</code> API。</p>
+<p>使用 <code>navigator.connection</code> API 需要注意的是，该接口的返回值是一个只读对象，因此不能直接修改其中的属性值。同时，在某些浏览器中可能会出现某些属性不被支持的情况，需要根据实际需求进行选择和测试。</p>
+<p>以下是一个示例代码，用于获取当前设备的网络连接信息并将其输出到控制台：</p>
+<pre><code class="language-js">if (&quot;connection&quot; in navigator) {
+  const networkInfo = navigator.connection;
+  console.log(&quot;Network downlink:&quot;, networkInfo.downlink);
+  console.log(&quot;Network effective type:&quot;, networkInfo.effectiveType);
+  console.log(&quot;Network round-trip time:&quot;, networkInfo.rtt);
+  console.log(&quot;Network data saving mode:&quot;, networkInfo.saveData);
+} else {
+  console.log(&quot;navigator.connection is not supported.&quot;);
+}
+</code></pre>
+<h2>总结</h2>
+<p><code>navigator.connection</code> API 是一种用于获取用户设备当前的网络连接状态信息的 JavaScript 接口，能够提供多种有助于优化网络应用程序的关键性能指标，如带宽、往返时间等。通过该 API 您可以针对用户当前的网络环境进行优化，从而提高应用程序的性能和用户体验。值得注意的是，由于不同浏览器兼容性问题的存在，需要在使用前进行检测以保证代码正常运行。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/115.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/117.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

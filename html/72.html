@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>文件操作</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>文件操作</h2>
+                    <p>2024-06-08 13:29:08 · YinHao</p>
+                  </div>
+                  <h2>FileList</h2>
+<p>File 控件新添 multiple 属性，允许用户在一个 File 控件内选择和提交多个文件。</p>
+<pre><code class="language-html">&lt;input type=&quot;file&quot; multiple /&gt;
+</code></pre>
+<p><strong>示例</strong></p>
+<pre><code class="language-html">&lt;input type=&quot;file&quot; id=&quot;file&quot; multiple /&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;ShowFileName()&quot; value=&quot;文件上传&quot; /&gt;
+</code></pre>
+<pre><code class="language-js">function ShowFileName() {
+  for (var i = 0; i &lt; document.getElementById(&quot;file&quot;).files.length; i++) {
+    var file = document.getElementById(&quot;file&quot;).files[i];
+    console.log(file.name);
+  }
+}
+</code></pre>
+<h2>Blob</h2>
+<p>Blob 对象用于存储二进制数据，还可以设置存储数据的 MIME 类型，</p>
+<h3>访问 Blob</h3>
+<p>Blob 对象包含两个属性：</p>
+<ul>
+<li><p>size: 表示一个 Blob 对象的字节长度</p>
+</li>
+<li><p>type: 表示 Blob 的 MIME 类型，如果为未知类型，则返回一个空字符串。</p>
+</li>
+</ul>
+<p><strong>下面演示如果获取文件域中第一个文件的 Blob 对象，并访问该文件的长度和文件类型</strong></p>
+<pre><code class="language-js">function showFileType() {
+  var file = document.getElementById(&quot;file&quot;).files[0];
+  console.log(file.size);
+  console.log(file.type);
+}
+</code></pre>
+<blockquote>
+<p>注意：对于图像类型的文件，Blob 对象的 type 属性都是以 “image/” 开头，后面是图像类型。</p>
+</blockquote>
+<p><strong>利用 Blob 的 type 属性，判断用户选择的文件是否为图像文件</strong></p>
+<pre><code class="language-html">&lt;input type=&quot;file&quot; id=&quot;file&quot; multiple /&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;fileUpload()&quot; value=&quot;文件上传&quot; /&gt;
+&lt;script&gt;
+  function fileUpload() {
+    const fileDom = document.getElementById(&quot;file&quot;);
+    var file;
+    for (var i = 0; i &lt; fileDom.files.length; i++) {
+      file = fileDom.files[i];
+      if (!/image\/\w+/.test(file.type)) {
+        alert(file.name + &quot;不是图像文件!&quot;);
+        continue;
+      } else {
+        alert(file.name + &quot;文件已上传!&quot;);
+      }
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+<blockquote>
+<p>拓展：file 控件新添加 accept 属性，设置 file 控件只能接受某种类型的文件，<code>&lt;input type=&quot;file&quot; id=&quot;file&quot; accept=&quot;image/*&quot; /&gt;</code></p>
+</blockquote>
+<h3>创建 Blob</h3>
+<ul>
+<li>基本语法</li>
+</ul>
+<pre><code class="language-js">var blob = new Blob(blobParts, type);
+
+/*
+  1. blobParts: 可选参数，数组类型，其中可以存放任意个以下类型的对象，这些对象中所携带的数据将被依序追加到 Blob 对象中，
+
+  - ArrayBuffer 对象
+  - ArrayBufferView 对象
+  - Blob 对象
+
+  2. type: 可选参数，字符串类型，设置被创建的 Blob 对象的 type 属性值，即定义 Blob 对象 MIME 类型。默认参数值为空字符串，表示未知类型。
+*/
+</code></pre>
+<p>注：当创建 Blob 对象时，可以使用两个可选参数，如果不使用任何参数，创建的 Blob 对象的 size 属性值为 0，即 Blob 对象的字节长度为 0。即 <code>var blob = new Blob()</code></p>
+<p><strong>下面演示如何设置第一个参数</strong></p>
+<pre><code class="language-js">var blob = new Blob([&quot;4234&quot; + &quot;5678&quot;]);
+var shorts = new Uint16Array(buffer, 622, 128);
+var blobA = new Blob([blob, shorts]);
+var bytes = new Uint8Array(buffer, shorts.byteOffset + shorts.byteLength);
+var blobB = new Blob([blob, blobA, bytes]);
+var blobC = new Blob([buffer, blob, blobA, bytes]);
+</code></pre>
+<p><strong>下面演示如何设置第二个参数</strong></p>
+<pre><code class="language-js">var blob = new Blob([&quot;4234&quot; + &quot;5678&quot;], { type: &quot;text/plain&quot; });
+var blob = new Blob([&quot;4234&quot; + &quot;5678&quot;], { type: &quot;text/plain;charset=UTF-8&quot; });
+</code></pre>
+<p><strong>下面完整的演示如何创建一个 Blob 对象</strong></p>
+<pre><code class="language-html">&lt;textarea id=&quot;textarea&quot;&gt;&lt;/textarea&gt;
+&lt;button onclick=&quot;test()&quot;&gt;创建 Blob 对象&lt;/button&gt;
+&lt;p id=&quot;result&quot;&gt;&lt;/p&gt;
+
+&lt;script&gt;
+  function test() {
+    var text = document.getElementById(&quot;textarea&quot;).value;
+    var result = document.getElementById(&quot;result&quot;);
+    // 创建 Blob 对象
+    if (!window.Blob) {
+      result.innerHTML = &quot;浏览器不支持 Blob 对象&quot;;
+    } else {
+      var blob = new Blob([text]);
+      if (window.URL) {
+        result.innerHTML = `&lt;a download href=&quot;${window.URL.createObjectURL(
+          blob
+        )}&quot; target=&quot;_blank&quot;&gt;Blob 对象文件下载&lt;/a&gt;`;
+      }
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+<h3>截取 Blob</h3>
+<p>Blob 对象包含 slice() 方法，它可以从 Blob 对象中截取一部分数据，然后将这些数据创建为一个新的 Blob 对象并返回，</p>
+<pre><code class="language-js">var newBlob = blob.slice(start, end, contentType);
+</code></pre>
+<ol>
+<li>start: 可选参数，整数值，设置起始位置</li>
+</ol>
+<ul>
+<li>如果值是 0，表示从第一个字节开始复制数据。</li>
+<li>如果值是负值，且 Blob 对象的 size 属性值 + start 参数值大于等于 0，则起始位置为 Blob 对象的 size 属性值 + start 参数值。</li>
+<li>如果值是负值，且 Blob 对象的 size 属性值 + start 参数值小于 0，则起始位置为 Blob 对象的起点位置。</li>
+<li>如果值是正数，且大于等于 Blob 对象的 size 属性值，则起始位置为 Blob 对象的 size 属性值。</li>
+<li>如果值为正数，且小于 Blob 对象的 size 属性值，则起始位置为 start 参数值。</li>
+</ul>
+<ol start="2">
+<li>end: 可选参数，整数值，设置终点位置</li>
+</ol>
+<ul>
+<li>如果忽略该参数，则终点位置为 Blob 对象的结束位置。</li>
+<li>如果值为负数，且 Blob 对象的 size 属性值 + end 参数值大于等于 0，则终点位置为 Blob 对象的 size 属性值 + end 参数值。</li>
+<li>如果值为负数，且 Blob 对象的 size 属性值 + end 参数值小于 0，则终点位置为 Blob 对象的起始位置。</li>
+<li>如果值为正数，且大于等于 Blob 对象的 size 属性值，则终点位置为 Blob 对象的 size 属性值。</li>
+<li>如果值为正数，且小于 Blob 对象的 size 属性值，则终点位置为 end 参数值。</li>
+</ul>
+<ol start="3">
+<li>contentType: 可选参数，字符串值，指定新建 Blob 对象的 MIME 类型，</li>
+</ol>
+<p>如果 slice() 方法的三个参数均省略，相当于把一个 Blob 对象原样复制到一个新建的 Blob 对象中。</p>
+<p><strong>下面演示 Blob 对象的 slice() 方法应用</strong></p>
+<pre><code class="language-html">&lt;input type=&quot;file&quot; id=&quot;file&quot; multiple /&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;showFileType()&quot; value=&quot;文件上传&quot; /&gt;
+&lt;script&gt;
+  function showFileType() {
+    var file = document.getElementById(&quot;file&quot;).files[0];
+    if (file) {
+      var file1 = file.slice(); // 复制 file 对象
+      var file2 = file.slice(0, file.size); // 复制 file 对象
+      var file3 = file.slice(-Math.round(file.size / 2)); // 复制 file 对象的后半部分
+      var file4 = file.slice(0, Math.round(file.size / 2)); // 复制 file 对象的前半部分
+      // 复制 file 对象，从开始处复制到结束之前的 150 个字节处，并设置 MIME 类型
+      var file5 = file.slice(0, -150, &quot;application/plain&quot;);
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/71.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/73.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

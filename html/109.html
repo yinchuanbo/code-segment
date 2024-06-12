@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>document.referrer 拦截问题</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>document.referrer 拦截问题</h2>
+                    <p>2024-06-08 21:40:25 · YinHao</p>
+                  </div>
+                  <h2>问题描述</h2>
+<ul>
+<li>最近遇到一个有意思的问题，项目中有一个地方，点击需要跳转到一个新的域名地址</li>
+<li>笔者使用 a 标签做跳转，跳是跳过去了，可是跳过去以后，反而打不开了，显示 403</li>
+</ul>
+<p>大致这样的代码：</p>
+<pre><code class="language-html">&lt;a href=&quot;http://abcdefg.com&quot; target=&quot;_blank&quot;&gt;点击跳转&lt;/a&gt;
+</code></pre>
+<h2>原因分析</h2>
+<p>既然跳过去出问题，那么猜测是另外一个项目做了拦截</p>
+<p>于是就去问问之前负责过<code>http://abcdefg.com</code>这个项目的同事</p>
+<p>被告知：</p>
+<p>为了安全考虑，对 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/referrer">document.referrer</a> 进行了拦截判断（前后端均可拦截操作）</p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/referrer">developer.mozilla.org/zh-CN/docs/…</a>
+了解，既然直接跳过去，会把 referrer 带着，那么就想办法，不带着就行了</p>
+<h2>5 种解决方案</h2>
+<p><strong>from</strong></p>
+<p><em>推荐下面的解决方案三</em></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;from&lt;/title&gt;
+    &lt;!-- 解决方案一 禁内容referrer --&gt;
+    &lt;!-- &lt;meta name=&quot;referrer&quot; content=&quot;never&quot;&gt; --&gt;
+    &lt;!-- 解决方案二 不带着referrer --&gt;
+    &lt;!-- &lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt; --&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- 解决方案三 a标签加rel属性控制 --&gt;
+    &lt;a
+      href=&quot;http://127.0.0.1:5502/referrer.html&quot;
+      target=&quot;_blank&quot;
+      rel=&quot;noopener noreferrer&quot;
+      &gt;点击跳转&lt;/a
+    &gt;
+
+    &lt;!-- 解决方案四 使用referrerpolicy属性控制 --&gt;
+    &lt;!-- &lt;a href=&quot;http://127.0.0.1:5500/referrer.html&quot; target=&quot;_blank&quot; referrerpolicy=&quot;no-referrer&quot;&gt;点击跳转&lt;/a&gt; --&gt;
+    &lt;!-- 解决方案五 换成window.open并注入js执行代码 --&gt;
+    &lt;!-- &lt;button&gt;点击跳转&lt;/button&gt;
+ &lt;script&gt;
+ let btn = document.querySelector(&#39;button&#39;)
+ btn.onclick = () =&gt; {
+ window.open(&#39;javascript:window.name;&#39;, `
+ &lt;script&gt;location.replace(&quot;http://127.0.0.1:5502/referrer.html&quot;)&lt;\/script&gt;
+ `)
+ }
+ &lt;/script&gt; --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>referrer</strong></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;referrer&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h2&gt;&lt;/h2&gt;
+    &lt;script&gt;
+      let referrer = document.referrer;
+      let h2 = document.querySelector(&quot;h2&quot;);
+      if (referrer) {
+        h2.innerHTML = &quot;不允许从别的地方跳转过来访问&quot;;
+      } else {
+        h2.innerHTML = &quot;欢迎直接访问&quot;;
+      }
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<blockquote>
+<p>可以用 vscode 的插件 live serve 跑一下两个 html 文件，效果更佳</p>
+</blockquote>
+<h2>referrer 的用处</h2>
+<ul>
+<li><p>document.referrer 这个字段记录了，项目是怎么被打开的（是直接浏览器地址栏打开，还是从某个地方跳转过来打开的）</p>
+</li>
+<li><p>可以统计访问源，或做一些控制，或者可以返回到访问源</p>
+</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/108.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/110.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

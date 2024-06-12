@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>这 10 个 Web API，不常用但是很实用</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>这 10 个 Web API，不常用但是很实用</h2>
+                    <p>2024-06-09 16:02:36 · YinHao</p>
+                  </div>
+                  <p>JavaScript 中有些 API 可能使用率比较低，下面我们逐一介绍它们的用法和使用场景。</p>
+<p>至于标题，主要是想让你进来看看，兄弟们别打我！</p>
+<h2>Blob API</h2>
+<p>Blob API 用于处理二进制数据，可以方便地将数据转换为 Blob 对象或从 Blob 对象读取数据。</p>
+<pre><code class="language-js">// 创建一个Blob对象
+const myBlob = new Blob([&quot;Hello, world!&quot;], { type: &quot;text/plain&quot; });
+
+// 读取Blob对象的数据
+const reader = new FileReader();
+reader.addEventListener(&quot;loadend&quot;, () =&gt; {
+  console.log(reader.result);
+});
+reader.readAsText(myBlob);
+</code></pre>
+<p>使用场景：在 Web 应用中，可能需要上传或下载二进制文件，使用 Blob API 可以方便地处理这些数据。</p>
+<h2>WeakSet</h2>
+<p>WeakSet 类似于 Set，但可以存储弱引用的对象。这意味着，如果没有其他引用指向一个对象，那么这个对象可以被垃圾回收器回收，而不需要手动从 WeakSet 中删除。</p>
+<pre><code class="language-js">const myWeakSet = new WeakSet();
+const obj1 = {};
+const obj2 = {};
+
+myWeakSet.add(obj1);
+myWeakSet.add(obj2);
+
+console.log(myWeakSet.has(obj1)); // true
+
+obj1 = null;
+
+console.log(myWeakSet.has(obj1)); // false
+</code></pre>
+<p>使用场景：在某些情况下，可能需要存储一些临时的对象，但又不希望这些对象占用太多的内存。使用 WeakSet 可以方便地管理这些对象。</p>
+<h2>TextEncoder 和 TextDecoder</h2>
+<p>TextEncoder 和 TextDecoder 用于处理字符串和字节序列之间的转换。它们可以方便地将字符串编码为字节序列或将字节序列解码为字符串。</p>
+<pre><code class="language-js">const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+const myString = &quot;Hello, world!&quot;;
+const myBuffer = encoder.encode(myString);
+
+console.log(myBuffer); // Uint8Array(13) [72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]
+
+const decodedString = decoder.decode(myBuffer);
+
+console.log(decodedString); // &quot;Hello, world!&quot;
+</code></pre>
+<p>使用场景：在 Web 应用中，可能需要将字符串转换为二进制数据，或将二进制数据转换为字符串。使用 TextEncoder 和 TextDecoder 可以方便地进行这些转换。</p>
+<h2>Proxy API</h2>
+<p>Proxy API 可以用于创建代理对象，可以拦截对象属性的读取、赋值等操作。这个功能可以用于实现元编程、数据劫持等功能。</p>
+<pre><code class="language-js">const myObject = {
+  name: &quot;John&quot;,
+  age: 30,
+};
+
+const myProxy = new Proxy(myObject, {
+  get(target, property) {
+    console.log(`Getting property ${property}`);
+    return target[property];
+  },
+  set(target, property, value) {
+    console.log(`Setting property ${property} to ${value}`);
+    target[property] = value;
+  },
+});
+
+console.log(myProxy.name); // &quot;John&quot;
+
+myProxy.age = 31; // Setting property age to 31
+</code></pre>
+<p>使用场景：在某些情况下，可能需要拦截对象属性的读取、赋值等操作，以实现更高级的功能。使用 Proxy API 可以方便地实现这些功能。</p>
+<h2>Object.entries() 和 Object.values()</h2>
+<p>Object.entries() 用于获取对象的可枚举属性和值的数组，Object.values() 用于获取对象的可枚举属性值的数组。</p>
+<pre><code class="language-js">const myObject = {
+  name: &quot;John&quot;,
+  age: 30,
+};
+
+console.log(Object.entries(myObject)); // [[&quot;name&quot;, &quot;John&quot;], [&quot;age&quot;, 30]]
+console.log(Object.values(myObject)); // [&quot;John&quot;, 30]
+</code></pre>
+<p>使用场景：在某些情况下，可能需要获取对象的可枚举属性或属性值。使用 Object.entries()和 Object.values()可以方便地实现这些功能。</p>
+<h2>IntersectionObserver</h2>
+<p>IntersectionObserver 可以用于检测元素是否进入视口，可以用于实现无限滚动、懒加载等功能。</p>
+<pre><code class="language-js">const myObserver = new IntersectionObserver((entries, observer) =&gt; {
+  entries.forEach((entry) =&gt; {
+    if (entry.isIntersecting) {
+      console.log(`${entry.target.id} is now visible`);
+      observer.unobserve(entry.target);
+    }
+  });
+});
+
+const myElement = document.getElementById(&quot;myElement&quot;);
+myObserver.observe(myElement);
+</code></pre>
+<p>使用场景：在 Web 应用中，可能需要实现无限滚动、懒加载等功能，使用 IntersectionObserver 可以方便地实现这些功能。</p>
+<h2>Symbol</h2>
+<p>Symbol 可以用于创建唯一标识符，可以用于定义对象的私有属性或方法。</p>
+<pre><code class="language-js">const mySymbol = Symbol(&quot;mySymbol&quot;);
+
+const myObject = {
+  [mySymbol]: &quot;This is a private property&quot;,
+  publicProperty: &quot;This is a public property&quot;,
+};
+
+console.log(myObject[mySymbol]); // &quot;This is a private property&quot;
+console.log(myObject.publicProperty); // &quot;This is a public property&quot;
+</code></pre>
+<p>使用场景：在某些情况下，可能需要定义对象的私有属性或方法，使用 Symbol 可以方便地实现这些功能。</p>
+<h2>Reflect API</h2>
+<p>Reflect API 可以用于实现元编程，例如动态调用对象的方法或构造函数。</p>
+<pre><code class="language-js">class MyClass {
+  constructor(value) {
+    this.value = value;
+  }
+
+  getValue() {
+    return this.value;
+  }
+}
+
+const myObject = Reflect.construct(MyClass, [&quot;Hello, world!&quot;]);
+const myMethod = Reflect.get(myObject, &quot;getValue&quot;);
+const myValue = myMethod.call(myObject);
+
+console.log(myValue); // &quot;Hello, world!&quot;
+</code></pre>
+<p>使用场景：在某些情况下，可能需要动态调用对象的方法或构造函数，使用 Reflect API 可以方便地实现这些功能。</p>
+<h2>Generator API</h2>
+<p>Generator API 可以用于生成迭代器，可以用于实现异步操作或惰性计算。</p>
+<pre><code class="language-js">function* myGenerator() {
+  yield &quot;Hello&quot;;
+  yield &quot;world&quot;;
+  yield &quot;!&quot;;
+}
+
+const myIterator = myGenerator();
+
+console.log(myIterator.next().value); // &quot;Hello&quot;
+console.log(myIterator.next().value); // &quot;world&quot;
+console.log(myIterator.next().value); // &quot;!&quot;
+</code></pre>
+<p>使用场景：在某些情况下，可能需要实现异步操作或惰性计算，使用 Generator API 可以方便地实现这些功能。</p>
+<h2>Web Workers</h2>
+<p>Web Workers 可以用于在后台线程中执行 JavaScript 代码，可以用于提高性能或实现复杂的计算。</p>
+<pre><code class="language-js">// main.js
+const myWorker = new Worker(&quot;worker.js&quot;);
+
+myWorker.postMessage(&quot;Hello, worker!&quot;);
+
+myWorker.onmessage = (event) =&gt; {
+  console.log(`Message received from worker: ${event.data}`);
+};
+
+// worker.js
+onmessage = (event) =&gt; {
+  console.log(`Message received in worker: ${event.data}`);
+  postMessage(&quot;Hello, main!&quot;);
+};
+</code></pre>
+<p>使用场景：在 Web 应用中，可能需要处理大量计算密集型任务或执行长时间运行的操作，使用 Web Workers 可以提高性能或避免阻塞用户界面。</p>
+<h2>AudioContext</h2>
+<p>AudioContext 可以用于处理音频，可以用于实现音频播放、音效处理等功能。</p>
+<pre><code class="language-js">const audioContext = new AudioContext();
+
+fetch(&quot;https://example.com/audio.mp3&quot;)
+  .then((response) =&gt; response.arrayBuffer())
+  .then((arrayBuffer) =&gt; audioContext.decodeAudioData(arrayBuffer))
+  .then((audioBuffer) =&gt; {
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+  });
+</code></pre>
+<p>使用场景：在 Web 应用中，可能需要实现音频播放、音效处理等功能，使用 AudioContext 可以方便地实现这些功能。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/113.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/115.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

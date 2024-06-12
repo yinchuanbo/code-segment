@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>缓存 http 错误，避免多次报错提示</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>缓存 http 错误，避免多次报错提示</h2>
+                    <p>2024-06-09 15:55:44 · YinHao</p>
+                  </div>
+                  <h3>前言</h3>
+<p>先解释一下标题，最近在开发一个老项目时发现一个非常影响用户体验的场景：</p>
+<p><img src="./imgs/112/01.awebp" alt=""></p>
+<p>因为项目性质问题，我们给项目设置了较短的登录有效时间，而当登录过期时用户在某一页面进行操作，如果该操作同时请求了多个请求，则会得到多条登录过期的报错提示。作为一个专业的前端，怎么可以允许这种情况发生呢，于是就有了今天文章的内容。</p>
+<h3>缓存</h3>
+<p>项目中使用的 http 为统一二次封装的请求函数，登录过期的错误也是统一进行处理：</p>
+<pre><code class="language-js">service.interceptors.response.use(
+  (respon) =&gt; {
+    xxxxx;
+  },
+  (error) =&gt; {
+    let status = JSON.parse(JSON.stringify(error.response));
+    //跳转失败,返回首页.
+    if (status.data.code == &quot;401&quot;) {
+      Message({
+        message: status.data.message,
+        type: &quot;error&quot;,
+        duration: 5 * 1000,
+      });
+      router.push({
+        path: &quot;/login&quot;,
+      });
+    }
+    return Promise.reject(error);
+  }
+);
+</code></pre>
+<p>如上，当接口返回<code>401</code>时，则表明接口登录失效，需要抛出<code>message</code>,这个过程中，如果同时有几个接口返回<code>401</code>则会有多少条<code>message</code>。这时，我们可以有什么办法可以处理同一类型的错误只报错一次呢？没错，这就是我们今天要讲的方法：缓存。</p>
+<p>首先，我们需要明确自己的需求：</p>
+<ul>
+<li>根据 http 错误码进行缓存，以达到判断同种的 http 错误码的错误</li>
+<li>缓存具有过期机制，当过了设置的有效期自动清除缓存的错误</li>
+</ul>
+<p>上代码！！！！！！</p>
+<pre><code class="language-js">// errorCache.js
+// config = {
+//  cacheTime: &#39;xxxx&#39;
+// }
+const errorCache = {};
+
+function isCacheError(error, config) {
+  if (
+    errorCache[error.code] &amp;&amp;
+    !isExpire(errorCache[error.code].timestamp, config.cacheTime)
+  ) {
+    return true;
+  }
+
+  errorCache[error.code] = {
+    timestamp: Date.now(),
+  };
+  setTimeout(() =&gt; {
+    delete errorCache[error.code];
+  }, config.cacheTime);
+
+  return false;
+}
+
+function isExpire(timestamp, cacheTime) {
+  return Date.now() - timestamp &gt; cacheTime;
+}
+
+export default isCacheError;
+</code></pre>
+<p>思路：</p>
+<ul>
+<li>声明缓存用对象<code>errorCache</code>,<code>key</code>为 http 错误码，<code>value</code>为错误的时间戳。例：<code>{401: {timestamp: 1686122336413}}</code></li>
+<li>每类错误都将在缓存在<code>errorCache</code>中，在设置的<code>config.cacheTime</code>内，同类错误都将返回<code>true</code>,反之则将错误添加至缓存并返回<code>false</code></li>
+</ul>
+<p>应用：</p>
+<pre><code class="language-js">(error) =&gt; {
+  let status = JSON.parse(JSON.stringify(error.response));
+  if (!isCacheError(status.data, { cacheTime: 5 * 1000 })) {
+    if (status.data.code == &quot;401&quot;) {
+      Message({
+        message: status.data.message,
+        type: &quot;error&quot;,
+        duration: 5 * 1000,
+      });
+      router.push({
+        path: &quot;/login&quot;,
+      });
+    }
+  }
+  return Promise.reject(error);
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/111.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/113.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

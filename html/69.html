@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>统一 Node 版本</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>统一 Node 版本</h2>
+                    <p>2024-06-08 13:24:48 · YinHao</p>
+                  </div>
+                  <h3>1. package.json 的 engines 字段</h3>
+<p>在项目的 <code>package.json</code> 文件中，可以使用 <code>engines</code> 字段来指定所需的 <code>Node</code> 版本，在该字段中，可以定义一个范围或者具体的版本号来限制 <code>Node</code> 的版本。</p>
+<pre><code class="language-json">// 指定特定版本号
+{
+  //...
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;14.17.0&quot;
+  }
+}
+</code></pre>
+<pre><code class="language-json">// 指定版本号范围
+{
+  //...
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;&gt;=12.0.0 &lt;16.0.0&quot;
+  }
+}
+</code></pre>
+<pre><code class="language-json">// 波浪线符号：表示项目需要 Node 版本为 14.17.x
+{
+  //...
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;~14.17.0&quot;
+  }
+}
+</code></pre>
+<pre><code class="language-json">// 插入符号：表示项目需要 Node 版本为 14.x.x
+{
+  //...
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;^14.17.0&quot;
+  }
+}
+</code></pre>
+<p>但是，我们在使用 <code>npm install</code> 时，发现 <code>engines</code> 配置并没有起作用，然后换 <code>yarn</code> 安装，发现 <code>engines</code> 配置又起作用了。</p>
+<p><strong>这是怎么回事呢？</strong></p>
+<h3>2. 使用 .npmrc 文件</h3>
+<p>原来 <code>engines</code> 只是建议，默认不开启严格版本校验，只会给出提示，需要手动开启严格模式。</p>
+<p>在根目录下 <code>.npmrc</code> 添加 <code>engine-strict=true</code> 才会起作用，配置完成后再执行 <code>npm install</code>。</p>
+<pre><code class="language-sh"># .npmrc
+engine-strict=true
+</code></pre>
+<p>此时，通过 <code>npm</code> 安装，限制 <code>Node</code> 版本便起作用了。</p>
+<h3>3. 使用 .nvmrc 文件</h3>
+<p>通过上面的方式，可以做到让大家使用相同的 Node 版本，但每次提示版本不符合，需要开发人员到 <code>package.json</code> 中查看版本号，然后再使用 <code>nvm</code> 切换指定版本，太麻烦了，</p>
+<p>我们可以创建一个 <code>.nvmrc</code> 文件，指定项目 <code>Node</code> 版本：</p>
+<pre><code class="language-sh"># .nvmrc
+v14.17.5
+</code></pre>
+<p>此时，执行 <code>nvm use</code> 自动就切换到项目执行的 <code>Node</code> 版本。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/68.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/70.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

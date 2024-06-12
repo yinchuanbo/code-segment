@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS技巧: 从高度 0 过渡到自动高度</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>CSS技巧: 从高度 0 过渡到自动高度</h2>
+                    <p>2024-06-08 11:37:53 · YinHao</p>
+                  </div>
+                  <p>我们实际上可以使用一个简单的技巧，就是用一个网格项制作一个 CSS 网格。</p>
+<p>然后真正要做的就是把我们的<code>grid-template-rows</code>从<code>0fr</code>过渡到<code>1fr</code>。这样我们的网格项将从 0 过渡到它的“自然”高度。</p>
+<pre><code class="language-css">.accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: 250ms grid-template-rows ease;
+}
+
+.accordion:hover .accordion-body {
+  grid-template-rows: 1fr;
+}
+
+.accordion-body &gt; div {
+  overflow: hidden;
+}
+</code></pre>
+<p><img src="./imgs/63/01.awebp" alt=""></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/62.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/64.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

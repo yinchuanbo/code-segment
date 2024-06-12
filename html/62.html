@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS 动画性能优化</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>CSS 动画性能优化</h2>
+                    <p>2024-06-08 11:26:34 · YinHao</p>
+                  </div>
+                  <h2>1. 使用 transform 和 opacity 属性</h2>
+<p>别慌，这里有个秘籍。我们可以用<code>transform</code>和<code>opacity</code>属性来做动画，因为它们能够实现硬件加速，减少重绘和重排。别再用那些会引起布局变化的属性了，比如<code>width</code>、<code>height</code>，这样只会让浏览器头疼。</p>
+<pre><code class="language-css">.element {
+  transform: translateX(100px);
+  opacity: 0.5;
+  transition: transform 0.3s ease;
+}
+</code></pre>
+<ul>
+<li>具体案例了解一下：</li>
+</ul>
+<pre><code class="language-html">&lt;head&gt;
+  &lt;style&gt;
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: red;
+      transform: translateX(0);
+      opacity: 1;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+    .box.animate {
+      transform: translateX(200px);
+      opacity: 0.5;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;box&quot; id=&quot;box&quot;&gt;&lt;/div&gt;
+  &lt;button onclick=&quot;animateBox()&quot;&gt;Animate&lt;/button&gt;
+  &lt;script&gt;
+    function animateBox() {
+      document.getElementById(&quot;box&quot;).classList.toggle(&quot;animate&quot;);
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+<p>点击按钮，你会看到红色方块平滑地移动并逐渐变透明，动画流畅且性能优秀。</p>
+<h2>2. 优化动画帧率</h2>
+<p>要掌握好动画的帧率，不能让它太快也不能让它太慢。一般来说，60 帧每秒就很不错了，用<code>requestAnimationFrame</code>函数可以帮你控制好动画的更新频率。</p>
+<pre><code class="language-js">function animate() {
+  // 动画逻辑
+  requestAnimationFrame(animate);
+}
+animate();
+</code></pre>
+<ul>
+<li>具体案例了解一下：</li>
+</ul>
+<pre><code class="language-html">&lt;head&gt;
+  &lt;style&gt;
+    .circle {
+      width: 50px;
+      height: 50px;
+      background-color: blue;
+      border-radius: 50%;
+      position: absolute;
+      top: 50px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;circle&quot; id=&quot;circle&quot;&gt;&lt;/div&gt;
+  &lt;script&gt;
+    let start = null;
+    const element = document.getElementById(&quot;circle&quot;);
+    const duration = 2000; // 动画时长2秒
+    function step(timestamp) {
+      if (!start) start = timestamp;
+      const progress = timestamp - start;
+      const translateX = Math.min((progress / duration) * 200, 200);
+      element.style.transform = `translateX(${translateX}px)`;
+      if (progress &lt; duration) {
+        requestAnimationFrame(step);
+      }
+    }
+    requestAnimationFrame(step);
+  &lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+<p>这个例子中，小蓝圆会在 2 秒内平滑地移动 200 像素，利用<code>requestAnimationFrame</code>保持 60fps。</p>
+<h2>3. 使用 will-change 属性</h2>
+<p>听说过<code>will-change</code>属性吗？它可以提前告诉浏览器，哪些元素要发生变化，这样浏览器就可以提前做好准备了。但别滥用哦，否则会增加内存消耗。</p>
+<pre><code class="language-css">.element {
+  will-change: transform, opacity;
+}
+</code></pre>
+<ul>
+<li>举个栗子：</li>
+</ul>
+<pre><code class="language-html">&lt;head&gt;
+  &lt;style&gt;
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: green;
+      will-change: transform, opacity;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .box.animate {
+      transform: translateY(100px);
+      opacity: 0.3;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;box&quot; id=&quot;box&quot;&gt;&lt;/div&gt;
+  &lt;button onclick=&quot;animateBox()&quot;&gt;Animate&lt;/button&gt;
+  &lt;script&gt;
+    function animateBox() {
+      document.getElementById(&quot;box&quot;).classList.toggle(&quot;animate&quot;);
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+<p>这个例子中，点击按钮时，绿色方块会平滑地向下移动并变透明，使用<code>will-change</code>优化了动画性能。</p>
+<h2>4. 避免频繁重绘与重排</h2>
+<p>动画中样式变化太频繁可不行，这会让浏览器忙个不停。尽量合并多个样式变化，或者使用缓存，让浏览器轻松一点。</p>
+<p>举个例子，如果你要改变多个样式属性，应该一次性完成：</p>
+<pre><code class="language-css">.element {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.element.animate {
+  transform: translateX(100px);
+  opacity: 0.5;
+}
+</code></pre>
+<h2>5. 使用 CSS 变量</h2>
+<p>使用 CSS 变量可以让你的动画更加灵活和可维护。例如：</p>
+<pre><code class="language-css">:root {
+  --translate-distance: 100px;
+  --animation-duration: 0.5s;
+}
+.element {
+  transform: translateX(0);
+  transition: transform var(--animation-duration) ease;
+}
+.element.animate {
+  transform: translateX(var(--translate-distance));
+}
+</code></pre>
+<p>通过这种方式，你可以很容易地调整动画的属性，而不需要修改多个地方的代码。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/61.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/63.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

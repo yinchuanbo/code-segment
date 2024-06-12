@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="icon" href="../imgs/code.svg" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../tools/mergely.css" />
+    <link rel="stylesheet" href="../tools/style.css" />
+    <!-- <link rel="icon" sizes="any" mask href="../imgs/ico5.svg" /> -->
+    <title>tools</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="container-tabs">
+        <div class="tabs-item active">Text Diff</div>
+        <div class="tabs-item">Css Compress</div>
+        <div class="tabs-item">Html Compress</div>
+        <div class="tabs-item">Js Compress</div>
+        <div class="tabs-item">Scss Compress</div>
+        <div class="tabs-item">Json Format</div>
+        <div class="tabs-item">Base64 Convert</div>
+        <div class="tabs-item">Image To Base64</div>
+      </div>
+      <div class="container-contents">
+        <div class="contents-item active" id="compare"></div>
+        <div class="contents-item">
+          <div class="contents-item__left">
+            <textarea
+              id="css-compress"
+              placeholder="Please enter CSS"
+            ></textarea>
+          </div>
+          <div class="contents-item__right" id="css-compress-output"></div>
+        </div>
+        <div class="contents-item">
+          <div class="contents-item__left">
+            <textarea
+              id="html-compress"
+              placeholder="Please enter HTML"
+            ></textarea>
+          </div>
+          <div class="contents-item__right" id="html-compress-output"></div>
+        </div>
+        <div class="contents-item">
+          <div class="contents-item__left">
+            <textarea id="js-compress" placeholder="Please enter JS"></textarea>
+          </div>
+          <div class="contents-item__right" id="js-compress-output"></div>
+        </div>
+        <div class="contents-item">
+          <div class="contents-item__left">
+            <textarea
+              id="scss-compress"
+              placeholder="Please enter SCSS"
+            ></textarea>
+          </div>
+          <div class="contents-item__right" id="scss-compress-output"></div>
+        </div>
+        <div class="contents-item">
+          <div class="contents-item__left">
+            <textarea
+              id="json-compress"
+              placeholder="Please enter JSON"
+            ></textarea>
+          </div>
+          <div class="contents-item__right" id="json-compress-output"></div>
+        </div>
+        <div class="contents-item">
+          <div class="contents-item__left" id="base64-bm">
+            <textarea id="base64-bm-input"></textarea>
+            <div>
+              <button class="base64Btn" id="bmBtn">Encode</button>
+              <button class="base64Btn" id="jmBtn">Decode</button>
+            </div>
+            <textarea id="base64-bm-output"></textarea>
+          </div>
+          <!-- <div class="contents-item__right" id="base64-jm">
+            <textarea id="base64-jm-input"></textarea>
+            <button class="base64Btn" id="jmBtn">解码</button>
+            <textarea id="base64-jm-output"></textarea>
+          </div> -->
+        </div>
+        <div class="contents-item uploadImg">
+          <label class="imgInput__label">
+            <input type="file" name="" id="imgInput" style="display: none" />
+            <p>Please click to upload the image</p>
+          </label>
+          <textarea id="imgInput__output" readonly></textarea>
+        </div>
+      </div>
+    </div>
+    <script src="../js/bundle.min.js"></script>
+    <script src="../js/mergely.min.js"></script>
+    <script src="../js/sass.sync.min.js"></script>
+    <script src="../js/base64.min.js"></script>
+    <script src="../tools/script.js"></script>
+  </body>
+</html>

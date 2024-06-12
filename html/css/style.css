@@ -5,7 +5,11 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Fira Code";
+  font-family: "hack";
+}
+
+:root {
+  --color-01: #ff1493;
 }
 
 html,
@@ -42,13 +46,17 @@ body {
   border: 1px solid #313131;
   /* background-color: #181818; */
   min-height: calc(100vh - 40px);
-  border-radius: 32px;
+  /* border-radius: 32px; */
+  /* background-color: #181818; */
+  /* border-radius: 5px; */
+  padding-top: 20px;
+  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
 
 pre[class*="language-"] {
   margin: 20px 0;
   padding: 20px;
-  /* border: 1px solid #313131; */
+  border: 1px solid #313131;
   border-radius: 0;
   font-style: italic;
 }
@@ -56,14 +64,19 @@ pre[class*="language-"] {
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
   background-color: transparent;
-  border: 1px solid #313131;
+  /* border: 1px solid #313131; */
+}
+.code-toolbar {
+  background-color: #131313;
 }
 
 code[class*="language-"],
 pre[class*="language-"] {
   font-size: 16px;
-  font-family: "Fira Code";
+  font-family: "hack";
   line-height: 2;
+  box-shadow: none;
+  background-color: transparent;
 }
 
 h1 {
@@ -112,7 +125,7 @@ ol > li {
 }
 
 ol > li::marker {
-  color: #ff0000;
+  color: var(--color-01);
   float: left;
   font-weight: 600;
 }
@@ -132,7 +145,7 @@ ul > li::before {
   left: 0;
   width: 7px;
   height: 7px;
-  background-color: #ff0000;
+  background-color: var(--color-01);
   border-radius: 100%;
 }
 
@@ -142,7 +155,7 @@ p {
 }
 
 p code {
-  color: #ff0000;
+  color: var(--color-01);
   font-style: italic;
   margin: 0 5px;
 }
@@ -179,7 +192,7 @@ table tbody tr td:nth-child(1) {
 }
 
 blockquote {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #131313;
   padding: 20px 0;
   margin-bottom: 20px;
   padding-left: 20px;
@@ -200,7 +213,7 @@ blockquote::before {
   left: 0;
   width: 5px;
   height: 100%;
-  background-color: #ff0000;
+  background-color: var(--color-01);
 }
 
 /* .token.constant,
@@ -218,8 +231,9 @@ blockquote::before {
 }
 
 .container-header h2 {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   color: #fff;
+  font-size: 25px;
 }
 
 .container-header p {
@@ -240,7 +254,7 @@ pre code.hljs {
 .home {
   position: fixed;
   bottom: 20px;
-  right: calc((100% - 1000px) / 2 - 70px);
+  right: calc((100% - 1000px) / 2 - 90px);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -250,8 +264,9 @@ pre code.hljs {
 .home {
   width: 50px;
   height: 50px;
-  left: calc((100% - 1000px) / 2 - 70px);
+  left: calc((100% - 1000px) / 2 - 90px);
   border: 1px solid #313131;
+  /* background-color: #181818; */
   cursor: pointer;
   user-select: none;
   color: #fff;
@@ -271,6 +286,7 @@ pre code.hljs {
   text-align: center;
   font-size: 14px;
   border: 1px solid #313131;
+  /* background-color: #181818; */
   cursor: pointer;
   user-select: none;
   color: #fff;
@@ -282,15 +298,16 @@ pre code.hljs {
 }
 
 img {
-  max-width: 600px;
+  max-width: 700px;
   display: block;
   margin: 0 auto;
   cursor: pointer;
+  background-color: #fff;
 }
 
 a {
-  text-decoration: none;
-  color: #fff;
+  /* text-decoration: none; */
+  color: #40a9ff;
 }
 
 .img__preview {
@@ -355,4 +372,15 @@ div.code-toolbar > .toolbar > .toolbar-item > button,
 div.code-toolbar > .toolbar > .toolbar-item > span {
   border-radius: 0;
   padding-bottom: 2px;
+}
+
+.token.constant,
+.token.deleted,
+.token.property,
+.token.symbol,
+.token.tag,
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: var(--color-01);
 }

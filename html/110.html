@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS 属性 contain</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>CSS 属性 contain</h2>
+                    <p>2024-06-08 22:01:26 · YinHao</p>
+                  </div>
+                  <h2>CSS Contain 属性</h2>
+<p><code>contain</code>属性用于指示浏览器，元素的内容是独立于文档流其他部分的，这样浏览器可以对该元素进行性能上的优化。它被设计用来帮助提高大型网页的性能，尤其是那些含有大量元素和复杂布局的页面。</p>
+<h3>属性值解读</h3>
+<p><code>contain</code>属性有以下几个值：</p>
+<ul>
+<li><code>none</code>: 默认值，表示不对元素做任何特殊的父子关系处理。</li>
+<li><code>strict</code>: 代表应用了所有的其他属性值（除了<code>paint</code>），意即<code>layout</code>、<code>style</code>和<code>size</code>。</li>
+<li><code>content</code>: 同<code>strict</code>，但允许元素与外界有绘制上的交互。</li>
+<li><code>size</code>: 元素的尺寸不依赖于其子元素。</li>
+<li><code>layout</code>: 装箱尺寸不受其子孙元素的影响，并相互隔绝布局效果。</li>
+<li><code>style</code>: 对于子孙元素的样式计算不会影响到外部元素。</li>
+<li><code>paint</code>: 元素的子元素不会显示在它的边框之外。</li>
+</ul>
+<h3>使用场景及示例</h3>
+<ul>
+<li>场景一：提升滚动性能</li>
+</ul>
+<p>在拥有大量项目的长列表或网格布局中，<code>contain</code>属性的<code>layout</code>值能够显著提升滚动性能。元素内部的变化（如动画或布局更改）不会影响到列表外部，从而减少了重排和重绘的范围，节省了浏览器的计算资源。</p>
+<pre><code class="language-css">.long-list-item {
+  contain: layout;
+}
+</code></pre>
+<ul>
+<li>场景二：独立组件</li>
+</ul>
+<p>HTML 模版或 Web 组件经常需要内部样式不干扰外部环境。使用<code>contain</code>属性的<code>style</code>值能够确保组件的样式计算得到隔离，避免外部样式的影响。</p>
+<pre><code class="language-css">.isolated-component {
+  contain: style;
+}
+</code></pre>
+<ul>
+<li>场景三：性能卓越的弹框</li>
+</ul>
+<p>在具有交互式弹框的页面上使用，可以设置<code>contain</code>属性的<code>paint</code>值。弹框通常是覆盖在页面最上方的内容，其内部的变化不应该影响到下方的内容。通过应用<code>contain: paint;</code>可以优化浏览器的性能，因为浏览器知道它只需关注弹框本身的重绘。</p>
+<pre><code class="language-css">.modal {
+  contain: paint;
+}
+</code></pre>
+<h3>样式隔离的综合运用</h3>
+<p>以下为一个实际应用的完整示例，展示了如何使用<code>contain</code>属性中的<code>layout</code>和<code>style</code>值来提升页面中特定区域的性能：</p>
+<pre><code class="language-css">/* 定义了一个独立的容器，具备容器尺寸大小以及样式计算的隔离功能 */
+.independent-container {
+  contain: layout style;
+  /* 其他的样式 */
+}
+/* 下面的类应用于容器内的元素 */
+.container-item {
+  /* 元素的样式 */
+}
+</code></pre>
+<pre><code class="language-html">&lt;div class=&quot;independent-container&quot;&gt;
+  &lt;div class=&quot;container-item&quot;&gt;...&lt;/div&gt;
+  &lt;!-- 更多容器项 --&gt;
+&lt;/div&gt;
+</code></pre>
+<p>该容器因<code>contain</code>属性的设置，被浏览器认为是一个独立的布局和样式上下文环境。容器内部的任何布局更改或者样式计算不会逃逸到外部，反之亦然。从而减轻了主文档流的计算负担，提升了整体界面的性能和响应能力。</p>
+<h2>总结</h2>
+<p><code>contain</code>属性是 CSS 中的真正宝藏，它通过限制一个元素与文桌流其他部分的关联，为开发者提供了一个强大的工具来提升网页性能。虽然在平常的开发中可能不常见，但只要在合适的地方应用，就能够极大地改进页面的渲染表现。开发者应当更加关注这类属性，探索并利用它们独特的优势，以期打造出既美观又高性能的网络体验。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/109.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/111.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

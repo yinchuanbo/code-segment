@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>有效封装 WebSocket</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>有效封装 WebSocket</h2>
+                    <p>2024-06-09 16:00:03 · YinHao</p>
+                  </div>
+                  <h2>前言</h2>
+<p>在现代 Web 应用中，实时通信已经成为越来越重要的一部分。而 <a href="https://link.juejin.cn/?target=https%3A%2F%2Fzh.wikipedia.org%2Fwiki%2FWebSocket" title="https://zh.wikipedia.org/wiki/WebSocket">WebSocket</a> 技术的出现，使得实时通信变得更加高效和便捷。</p>
+<p>WebSocket 协议是一种基于 TCP 协议的双向通信协议，它能够在客户端和服务器之间建立起持久性的连接，从而实现实时通信。</p>
+<p>在前端开发中，为了更好地利用 WebSocket 技术，我们通常会对其进行封装，以便于全局调用并根据自己的业务做不同的预处理。</p>
+<p>本文将介绍如何有效封装一个 WebSocket 供全局使用，并根据自己的业务做不同的预处理，实现更方便的调用，减少重复代码。</p>
+<h2>具体实现</h2>
+<p>我们将基于 Web API 提供的 <code>WebSocket</code> 类，封装一个 <code>Socket</code> 类，该类将提供以下功能：</p>
+<ol>
+<li>建立 WebSocket 连接，并支持发送 <code>query</code> 参数。</li>
+<li>发送、接收消息，支持对 <code>WebSocket</code> 的事件进行监听。</li>
+<li>断开 WebSocket 连接。</li>
+<li>支持心跳检测。</li>
+<li>可以根据业务需要，对发送和接收的消息进行预处理。</li>
+</ol>
+<p>下面是实现代码：</p>
+<pre><code class="language-js">// socket.js
+import modal from &quot;@/plugins/modal&quot;;
+const baseURL = import.meta.env.VITE_APP_BASE_WS;
+const EventTypes = [&quot;open&quot;, &quot;close&quot;, &quot;message&quot;, &quot;error&quot;, &quot;reconnect&quot;];
+const DEFAULT_CHECK_TIME = 55 * 1000; // 心跳检测的默认时间
+const DEFAULT_CHECK_COUNT = 3; // 心跳检测默认失败重连次数
+const DEFAULT_CHECK_DATA = { Type: 1, Parameters: [&quot;alive&quot;] }; // 心跳检测的默认参数 - 跟后端协商的
+const CLOSE_ABNORMAL = 1006; // WebSocket非正常关闭code码
+
+class EventMap {
+  deps = new Map();
+  depend(eventType, callback) {
+    this.deps.set(eventType, callback);
+  }
+  notify(eventType, event) {
+    if (this.deps.has(eventType)) {
+      this.deps.get(eventType)(event);
+    }
+  }
+}
+
+class Socket extends WebSocket {
+  heartCheckData = DEFAULT_CHECK_DATA;
+  heartCheckTimeout = DEFAULT_CHECK_TIME;
+  heartCheckInterval = null;
+  heartCheckCount = DEFAULT_CHECK_COUNT;
+  constructor(options, dep, reconnectCount = 0) {
+    let _baseURL = baseURL;
+    const {
+      url,
+      protocols,
+      query = {},
+      greet = null,
+      customBase = null,
+    } = options;
+    const _queryParams = Object.keys(query).reduce((str, key) =&gt; {
+      if (typeof query[key] !== &quot;object&quot; &amp;&amp; typeof query[key] !== &quot;function&quot;) {
+        return (str +=
+          str.length &gt; 0 ? `&amp;${key}=${query[key]}` : `${key}=${query[key]}`);
+      } else {
+        return str;
+      }
+    }, &quot;&quot;);
+    if (customBase) {
+      _baseURL = customBase;
+    }
+    super(`${_baseURL}${url}?${_queryParams}`, protocols);
+    this._currentOptions = options;
+    this._dep = dep;
+    this._reconnectCount = reconnectCount;
+    greet &amp;&amp;
+      Object.assign(this, {
+        heartCheckData: greet,
+      });
+    this.initSocket();
+  }
+
+  // 初始化WebSocket
+  initSocket() {
+    // 监听webSocket的事件
+    this.onopen = function (e) {
+      this._dep.notify(&quot;open&quot;, e);
+      this.heartCheckStart();
+    };
+    this.onclose = function (e) {
+      this._dep.notify(&quot;close&quot;, e);
+      // 如果WebSocket是非正常关闭 则进行重连
+      if (e.code === CLOSE_ABNORMAL) {
+        if (this._reconnectCount &lt; this.heartCheckCount) {
+          this._reconnectCount++;
+          const _socket = new Socket(
+            this._currentOptions,
+            this._dep,
+            this._reconnectCount
+          );
+          this._dep.notify(&quot;reconnect&quot;, _socket);
+        } else {
+          return modal.msgError(&quot;WebSocket重连失败, 请联系技术客服!&quot;);
+        }
+      }
+    };
+    this.onerror = function (e) {
+      this._dep.notify(&quot;error&quot;, e);
+    };
+    this.onmessage = function (e) {
+      // 如果后端返回的是二进制数据
+      if (e.data instanceof Blob) {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(e.data);
+        reader.onload = (ev) =&gt; {
+          if (ev.target.readyState === FileReader.DONE) {
+            this._dep.notify(&quot;message&quot;, ev.target?.result);
+          }
+        };
+      } else {
+        // 处理普通数据
+        try {
+          const _parseData = JSON.parse(e.data);
+          this._dep.notify(&quot;message&quot;, _parseData);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+  }
+
+  // 订阅事件
+  subscribe(eventType, callback) {
+    if (typeof callback !== &quot;function&quot;)
+      throw new Error(&quot;The second param is must be a function&quot;);
+    if (!EventTypes.includes(eventType))
+      throw new Error(&quot;The first param is not supported&quot;);
+    this._dep.depend(eventType, callback);
+  }
+
+  // 发送消息
+  sendMessage(data, options = {}) {
+    const { transformJSON = true } = options;
+    let result = data;
+    if (transformJSON) {
+      result = JSON.stringify(data);
+    }
+    this.send(result);
+  }
+
+  // 关闭WebSocket
+  closeSocket(code, reason) {
+    this.close(code, reason);
+  }
+
+  // 开始心跳检测
+  heartCheckStart() {
+    this.heartCheckInterval = setInterval(() =&gt; {
+      if (this.readyState === this.OPEN) {
+        let transformJSON = typeof this.heartCheckData === &quot;object&quot;;
+        this.sendMessage(this.heartCheckData, { transformJSON });
+      } else {
+        this.clearHeartCheck();
+      }
+    }, this.heartCheckTimeout);
+  }
+
+  // 清除心跳检测
+  clearHeartCheck() {
+    clearInterval(this.heartCheckInterval);
+  }
+
+  // 重置心跳检测
+  resetHeartCheck() {
+    clearInterval(this.heartCheckInterval);
+    this.heartCheckStart();
+  }
+}
+// 默认的配置项
+const defaultOptions = {
+  url: &quot;&quot;,
+  protocols: &quot;&quot;,
+  query: {},
+};
+
+export const useSocket = (options = defaultOptions) =&gt; {
+  if (!window.WebSocket)
+    return modal.msgWarning(&quot;您的浏览器不支持WebSocket, 请更换浏览器!&quot;);
+  const dep = new EventMap();
+  const reconnectCount = 0;
+  return new Socket(options, dep, reconnectCount);
+};
+</code></pre>
+<p>接下来我们从实际使用的角度解释一下上面的代码，首先我们暴露了一个 <code>useSocket</code> 函数，该函数接收一个 <code>options</code> 配置项参数，支持的参数有：</p>
+<ul>
+<li><code>url</code>：要连接的 WebSocket URL；</li>
+<li><code>protocols</code>：一个协议字符串或者一个包含协议字符串的数组；</li>
+<li><code>query</code>：可以通过 URL 传递给后端的查询参数；</li>
+<li><code>greet</code>：心跳检测的打招呼信息；</li>
+<li><code>customBase</code>：自定义的 <code>baseURL</code> ，否则默认使用环境变量中定义的 <code>env.VITE_APP_BASE_WS</code>。</li>
+</ul>
+<p>在调用该函数后，我们首先会判断当前用户的浏览器是否支持 <code>WebSocket</code>，如果不支持给予用户提示。</p>
+<p>然后我们实例化了一个 <code>EventMap</code> 类的实例对象 <code>dep</code>，你可以把它当作是一个依赖收集桶，当用户订阅了某个 <code>WebSocket</code> 事件时，我们将收集这个事件对应的回调作为依赖，在事件触发时，再通知该依赖，然后调用该事件对应的回调函数。</p>
+<p>接下来我们定义了一个初始的重连次数记录值 <code>reconnectCount</code> 为 0，每当这个 <code>WebSocket</code> 重连时，该值会自增。</p>
+<p>之后我们实例化了自己封装的 <code>Socket</code> 类，并传入了我们上面的三个参数。 在 <code>Socket</code> 类的构造函数 <code>constructor</code> 中，我们先取出配置项，把 <code>query</code> 内的参数拼接在 URL 上，然后使用 <code>super</code> 调用父类的构造函数进行建立 <code>WebSocket</code> 连接。</p>
+<p>之后我们缓存了当前 <code>Socket</code> 实例化时的参数，再调用 <code>initSocket()</code> 方法去进行 <code>WebSocket</code> 事件的监听：</p>
+<ul>
+<li><code>onopen</code>：触发 <code>dep</code> 内 <code>open</code> 对应的回调函数并且打开心跳检测；</li>
+<li><code>onclose</code>：触发 <code>dep</code> 内 <code>close</code> 对应的回调函数并且对关闭的 <code>code</code> 码进行判断，如果是非正常关闭连接，将会进行重连，如果重连次数达到阈值，则通知给用户；</li>
+<li><code>onerror</code>：触发 <code>dep</code> 内 <code>error</code> 对应的回调函数；</li>
+<li><code>onmessage</code>：接收到服务端返回的数据，可以先根据自身业务做一些预处理，比如我就根据不同的数据类型进行了数据解析的预处理，之后再触发 <code>dep</code> 内 <code>message</code> 对应的回调函数并传入处理过后的数据。</li>
+</ul>
+<p>我们也暴露了一些成员方法以供实例对象使用：</p>
+<ul>
+<li><code>subscribe</code>：订阅 WebSocket 事件，传入事件类型并须是 <code>EventTypes</code> 内的类型之一，第二个参数则是回调函数；</li>
+<li><code>sendMessage</code>：同样的，我们在给服务端发送数据之前也可以根据自身业务做一些预处理，比如我将需要转成 JSON 的数据，在这里统一转换后再发送给服务端；</li>
+<li><code>closeSocket</code>：关闭 WebSocket 连接；</li>
+<li><code>heartCheckStart</code>：开始心跳检测，会创建一个定时器，在一定时间之后（默认是 55s）给服务端发送信息确认连接是否正常；</li>
+<li><code>clearHeartCheck</code>：清除心跳检测定时器（如果当前 WebSocket 连接已经关闭，则自动清除）；</li>
+<li><code>resetHeartCheck</code>：重置心跳检测定时器。</li>
+</ul>
+<h2>如何使用</h2>
+<p>让我们看下如何使用这个封装好的 <code>useSocket</code> 函数，以在 Vue3 中使用为例：</p>
+<pre><code class="language-js">// xx.jsx or xx.vue
+import { useSocket } from &quot;./socket.js&quot;;
+const socket = ref(null); // WebSocket实例
+const initWebSocket = () =&gt; {
+  const options = {
+    url: &quot;/&lt;your url&gt;&quot;,
+    query: {
+      // something params
+    },
+  };
+  socket.value = useSocket(options);
+  socket.value.subscribe(&quot;open&quot;, () =&gt; {
+    console.log(&quot;WebSocket连接成功!&quot;);
+    const greet = &quot;hello&quot;;
+    // 发送打招呼消息
+    socket.value.sendMessage(greet);
+  });
+  socket.value.subscribe(&quot;close&quot;, (reason) =&gt; {
+    console.log(&quot;WebSocket连接关闭!&quot;, reason);
+  });
+  socket.value.subscribe(&quot;message&quot;, (result) =&gt; {
+    console.log(&quot;WebSocket接收到消息:&quot;, result);
+  });
+  socket.value.subscribe(&quot;error&quot;, (err) =&gt; {
+    console.log(&quot;WebSocket捕获错误:&quot;, err);
+  });
+  socket.value.subscribe(&quot;reconnect&quot;, (_socket) =&gt; {
+    console.log(&quot;WebSocket断开重连:&quot;, _socket);
+    socket.value = _socket;
+  });
+};
+initWebSocket();
+</code></pre>
+<p>最后，如果想 debug 我们的心跳检测是否有效，可以使用下面这段代码：</p>
+<pre><code class="language-js">// 测试心跳检测重连 手动模拟断开的情况
+if (this._reconnectCount &gt; 0) return;
+const tempTimer = setInterval(() =&gt; {
+  this.close();
+  if (this._reconnectCount &lt; 3) {
+    console.log(&quot;重连&quot;);
+    this._reconnectCount++;
+    const _socket = new Socket(
+      this._currentOptions,
+      this._dep,
+      this._reconnectCount
+    );
+    this._dep.notify(&quot;reconnect&quot;, _socket);
+  } else {
+    return clearInterval(tempTimer);
+  }
+}, 3 * 1000);
+</code></pre>
+<p>在 <code>initSocket()</code> 方法中的 <code>this.onopen</code> 事件的回调函数内的最后添加上面这段代码即可。</p>
+<h2>总结</h2>
+<p>至此，我们实现了一个 WebSocket 类的封装，提供了连接、断开、消息发送、接收和心跳检测等功能，并可以根据业务需要对消息进行预处理。同时，我们还介绍了如何使用封装好的 <code>useSocket</code> 函数。</p>
+<p>WebSocket 封装的好处在于可以让我们在全局范围内方便地使用 WebSocket，提高代码的可读性和可维护性，降低代码的复杂度和重复性。在实际开发过程中，我们可以结合自己的业务需求，对封装的 WebSocket 类进行扩展和优化，以达到更好的效果。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/112.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/114.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

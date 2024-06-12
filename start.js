@@ -3,7 +3,7 @@ const fs = require("fs");
 const { exec } = require("child_process");
 
 var params = {
-  port: 2222,
+  port: 3333,
   host: "0.0.0.0",
   root: "./html",
   open: true,

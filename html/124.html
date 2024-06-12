@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>scss 日常用法</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>scss 日常用法</h2>
+                    <p>2024-06-09 20:17:20 · YinHao</p>
+                  </div>
+                  <h3>1. 变量（Variables）</h3>
+<pre><code class="language-scss">$primary-color: #3498db;
+$secondary-color: #2ecc71;
+
+body {
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+</code></pre>
+<h3>2. 嵌套（Nesting）</h3>
+<pre><code class="language-scss">nav {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      display: inline-block;
+    }
+  }
+  a {
+    text-decoration: none;
+  }
+}
+</code></pre>
+<h3>混合（Mixins）</h3>
+<pre><code class="language-scss">@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+
+.button {
+  @include border-radius(5px);
+}
+</code></pre>
+<h3>4. 继承（Inheritance）</h3>
+<pre><code class="language-scss">%message-shared {
+  border: 1px solid #ccc;
+  padding: 10px;
+  color: #333;
+}
+
+.success-message {
+  @extend %message-shared;
+  background-color: #dff0d8;
+}
+
+.error-message {
+  @extend %message-shared;
+  background-color: #f2dede;
+}
+</code></pre>
+<h3>5. 导入（Import）：将多个 Sass 文件合并为一个文件</h3>
+<pre><code class="language-scss">@import &quot;variables&quot;;
+@import &quot;mixins&quot;;
+@import &quot;base&quot;;
+</code></pre>
+<h3>6. 函数（Functions）：使用 Sass 提供的内置函数或自定义函数进行数学计算、颜色操作等</h3>
+<pre><code class="language-scss">$base-font-size: 16px;
+
+@function em($target, $context: $base-font-size) {
+  @return #{$target / $context}em;
+}
+
+h1 {
+  font-size: em(24px);
+}
+</code></pre>
+<h3>7. 循环（Loops）：使用 Sass 的循环功能来减少重复代码</h3>
+<pre><code class="language-scss">@for $i from 1 through 3 {
+  .item-#{$i} {
+    width: 100px * $i;
+  }
+}
+</code></pre>
+<h3>8. 条件语句（Control Directives）：使用 Sass 中的条件语句来根据条件设置样式</h3>
+<pre><code class="language-scss">$theme: dark;
+
+body {
+  @if $theme == dark {
+    background-color: #333;
+    color: #fff;
+  } @else {
+    background-color: #fff;
+    color: #333;
+  }
+}
+</code></pre>
+<h3>9. 模块化（Modularity）：将样式表拆分为多个模块，并通过导入文件组织样式</h3>
+<pre><code class="language-scss">// _variables.scss
+$primary-color: #3498db;
+</code></pre>
+<pre><code class="language-scss">// _mixins.scss
+@mixin button-styles {
+  padding: 10px;
+  border: 1px solid $primary-color;
+}
+</code></pre>
+<pre><code class="language-scss">// style.scss
+@import &quot;variables&quot;;
+@import &quot;mixins&quot;;
+.button {
+  @include button-styles;
+}
+</code></pre>
+<h3>10. 自定义指令（Custom Directives）：使用 Sass 的 @at-root 和 @at-root-parent 指令来控制样式的输出</h3>
+<pre><code class="language-scss">@mixin nested-styles {
+  @at-root {
+    color: #333;
+  }
+}
+.container {
+  @include nested-styles;
+}
+</code></pre>
+<p>转换为 css:</p>
+<pre><code class="language-css">color: #333;
+</code></pre>
+<h3>11. 插值（Interpolation）：使用 #{} 插入 Sass 变量、表达式等到样式中</h3>
+<pre><code class="language-scss">$property: margin;
+$value: 10px;
+.element {
+  #{$property}-top: $value;
+}
+</code></pre>
+<h3>12. 继承选择器（Selector Inheritance）：使用 @at-root 和 &amp; 结合实现选择器的继承</h3>
+<pre><code class="language-scss">%hover-effect {
+  &amp;:hover {
+    color: red;
+  }
+}
+.element {
+  @at-root {
+    .other-class {
+      @extend %hover-effect;
+    }
+  }
+}
+</code></pre>
+<h3>13. Placeholders（%）：使用 % 定义占位符样式，在需要时再通过 @extend 引用</h3>
+<pre><code class="language-scss">%clearfix {
+  &amp;:after {
+    content: &quot;&quot;;
+    display: table;
+    clear: both;
+  }
+}
+.container {
+  @extend %clearfix;
+}
+</code></pre>
+<h3>14. 模块化（Module Bundling）：使用 @use 和 @forward 指令进行模块化开发，实现更好的样式组织和隔离</h3>
+<pre><code class="language-scss">// _variables.scss
+$primary-color: #3498db;
+</code></pre>
+<pre><code class="language-scss">// _mixins.scss
+@mixin button-styles {
+  padding: 10px;
+  border: 1px solid $primary-color;
+}
+</code></pre>
+<pre><code class="language-scss">// style.scss
+@use &quot;variables&quot;;
+@use &quot;mixins&quot;;
+.button {
+  @include mixins.button-styles;
+}
+</code></pre>
+<h3>15. 扩展原生 CSS 功能（Extending Native CSS Features）：使用 Sass 实现 CSS 中没有的功能，例如循环生成动画、栅格系统等</h3>
+<pre><code class="language-scss">@for $i from 1 through 12 {
+  .col-#{$i} {
+    width: (100% / 12) * $i;
+    float: left;
+  }
+}
+</code></pre>
+<h3>16. 动态导入（Dynamic Import）：根据需求动态加载 SCSS 文件并合并样式</h3>
+<pre><code class="language-scss">$theme: light;
+
+@function get-theme-file() {
+  @return &quot;themes/&quot; + $theme + &quot;.scss&quot;;
+}
+
+@import get-theme-file();
+</code></pre>
+<h3>17. 自定义 @规则（Custom @ Rules）：通过 mixin 和混合宏实现自定义样式规则，扩展 Sass 的能力</h3>
+<pre><code class="language-scss">@mixin custom-placeholder {
+  &amp;::placeholder {
+    color: red;
+  }
+}
+.input {
+  @include custom-placeholder;
+}
+</code></pre>
+<h3>18. 多重继承（Multiple Inheritance）：通过 @extend 同时继承多个占位符或选择器</h3>
+<pre><code class="language-scss">%button-base {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+%button-red {
+  color: red;
+}
+
+.element {
+  @extend %button-base, %button-red;
+}
+</code></pre>
+<h3>19. 条件语句（Conditional Statements）：使用 @if、@else if 和 @else 实现根据条件应用不同样式</h3>
+<pre><code class="language-scss">$theme: dark;
+
+.element {
+  @if $theme == dark {
+    background-color: black;
+    color: white;
+  } @else if $theme == light {
+    background-color: white;
+    color: black;
+  } @else {
+    background-color: gray;
+    color: black;
+  }
+}
+</code></pre>
+<h3>20. 颜色函数（Color Functions）：使用 Sass 的颜色函数进行颜色计算、转换等操作</h3>
+<pre><code class="language-scss">$base-color: #3498db;
+.element {
+  background-color: darken($base-color, 10%);
+}
+</code></pre>
+<h3>21. 样式映射（Style Maps）：使用 map 数据类型管理多个相关的样式属性</h3>
+<pre><code class="language-scss">$colors: (
+  primary: blue,
+  secondary: green,
+);
+.element {
+  color: map-get($colors, primary);
+}
+</code></pre>
+<h3>22. 模块化开发（Modular Development）：通过文件分割、模块化导入等方式组织 Sass 文件，提高可维护性</h3>
+<pre><code class="language-scss">@import &quot;variables&quot;;
+@import &quot;mixins&quot;;
+@import &quot;base&quot;;
+@import &quot;components&quot;;
+</code></pre>
+<h3>23. 函数式混合（Functional Mixins）：创建函数式混合以支持更复杂的样式计算</h3>
+<pre><code class="language-scss">@function divide($a, $b) {
+  @return $a / $b;
+}
+@mixin apply-transform($x, $y) {
+  transform: translate(divide($x, 2), divide($y, 2));
+}
+.element {
+  @include apply-transform(100px, 200px);
+}
+</code></pre>
+<h3>24. 使用 @each 循环遍历列表或映射（@each Loop for Lists or Maps）：使用 @each 循环遍历列表或映射进行样式处理</h3>
+<pre><code class="language-scss">$colors: (
+  primary: blue,
+  secondary: green,
+  tertiary: red,
+);
+
+@each $key, $value in $colors {
+  .#{$key}-button {
+    background-color: $value;
+  }
+}
+</code></pre>
+<h3>25. 样式函数（Style Functions）：定义自定义函数以处理样式属性的计算或转换</h3>
+<pre><code class="language-scss">@function adjust-color($color, $percent) {
+  @return mix(white, $color, $percent);
+}
+.element {
+  background-color: adjust-color(blue, 30%);
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/123.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/125.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

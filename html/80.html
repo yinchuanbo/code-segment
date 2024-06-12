@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>文本描边完美实现</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>文本描边完美实现</h2>
+                    <p>2024-06-08 13:42:43 · YinHao</p>
+                  </div>
+                  <h2>背景</h2>
+<p>最近在公司做画布相关的内容，涉及到了字体描边的方案选择，在三种方案对比和尝试下，最终选用了 SVG 作为字体描边的方案，今天就来讲讲这些方案的优缺点。</p>
+<h2>字体描边方案对比</h2>
+<h3>1. text-stroke</h3>
+<p><strong>优点：</strong> 实现效果好</p>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>兼容性一般</strong>，需要配合 <code>-webkit-background-clip</code> 属性来实现外描边，而市面上的截图库都不支持这个属性 😅，也就是截图后描边效果会丢失（尝试过 html2canvas、html-to-image、dom-to-image，以及公司内部的一些截图库）</li>
+<li><strong>有描边吞字的现象</strong>：描边宽度变大时，描边会向内扩展把文本覆盖，</li>
+<li><strong>宽度为 0px 的时候也依旧存在描边</strong></li>
+</ul>
+<p><strong>效果：</strong></p>
+<p><img src="./imgs/80/01.awebp" alt=""></p>
+<h3>2. text-shadow</h3>
+<p><strong>优点：</strong> 兼容性好</p>
+<p><strong>缺点：</strong> 实现效果不好，怎么说呢，很难评，有种锯齿的美，毕竟人家不是干这行的 😅</p>
+<p><strong>效果：</strong></p>
+<p><img src="./imgs/80/02.awebp" alt=""></p>
+<h3>3. SVG</h3>
+<p><strong>优点：</strong> 兼容性好、实现效果好，整体上看比 <strong>text-stroke</strong> 效果还要好</p>
+<p><strong>缺点：</strong> iOS 上同样存在描边吞字的现象，但是它的缺点都可以解决，还请看下文</p>
+<p><strong>效果：</strong></p>
+<p><img src="./imgs/80/03.awebp" alt=""></p>
+<h3>4. Canvas</h3>
+<p><strong>优点：</strong> 兼容性好</p>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>字体整体比较模糊</li>
+<li>有描边吞字的现象</li>
+<li>需要通过 canvas api 来进行绘制</li>
+</ul>
+<p><strong>效果：</strong></p>
+<p><img src="./imgs/80/04.awebp" alt=""></p>
+<h3>调试</h3>
+<p>上面四种方案都可以在 CodeSandBox 中自行尝试一下：</p>
+<p><a href="https://codesandbox.io/p/sandbox/suspicious-ellis-2z5tjx?file=%2Findex.html%3A10%2C9">codesandbox.io/p/sandbox/s…</a></p>
+<h2>SVG 实现字体描边</h2>
+<p>通过 svg 的 <code>paint-order</code> 来实现字体描边，兼容性最好，并且实现效果也很不错，基本兼容市面上所有浏览器，并且截图库基本都支持这个属性，下面就来讲讲 SVG 字体描边方案的实现：</p>
+<pre><code class="language-html">&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;200&quot;&gt;
+  &lt;text x=&quot;0&quot; y=&quot;0&quot; alignment-baseline=&quot;text-before-edge&quot; text-anchor=&quot;start&quot;&gt;
+    字体描边
+  &lt;/text&gt;
+&lt;/svg&gt;
+</code></pre>
+<pre><code class="language-css">text {
+  font-size: 50px;
+  font-weight: bold;
+  stroke: red;
+  stroke-width: 4px;
+  paint-order: stroke;
+}
+</code></pre>
+<p>通过 <code>stroke-linejoin</code> 属性，可以 对 svg 的描边有更灵活的控制：</p>
+<p><img src="./imgs/80/05.awebp" alt=""></p>
+<p>但是在 iOS 中，使用 <code>paint-order</code> 有一个坑：当 <code>stroke-width</code> 被设置成不同值的时候，描边有可能向文字内部扩展，导致字体被吞没，最终字体的颜色变成跟描边的颜色一致。</p>
+<p>解决这个问题当然也有一个办法：使用 svg 的 <code>tspan</code></p>
+<p><code>tspan</code> 可以控制一个 <code>text</code> 标签中多行文本的展示，通过设置 <code>dx</code>、<code>dy</code> 属性来控制与上一个 <code>tspan</code> 的距离。那么对于 iOS 描边展示异常这个问题，我们就有了一个解决办法：</p>
+<ol>
+<li><code>text</code> 内添加两个 <code>tspan</code></li>
+<li>第一个 <code>tspan</code> 用来控制描边展示，设置 stroke-width</li>
+<li>第二个 <code>tspan</code> 用户展示字体主体，覆盖在第一个 <code>tspan</code> 上面（设置 <code>dx=&quot;0&quot; dy=&quot;0&quot;</code>）</li>
+</ol>
+<pre><code class="language-html">&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;200&quot;&gt;
+  &lt;text&gt;
+    &lt;tspan
+      x=&quot;0&quot;
+      y=&quot;0&quot;
+      style=&quot;stroke-width: 5px&quot;
+      alignment-baseline=&quot;text-before-edge&quot;
+      text-anchor=&quot;start&quot;
+    &gt;
+      文本
+    &lt;/tspan&gt;
+    &lt;tspan
+      dx=&quot;0&quot;
+      dy=&quot;0&quot;
+      alignment-baseline=&quot;text-before-edge&quot;
+      text-anchor=&quot;start&quot;
+    &gt;
+      文本
+    &lt;/tspan&gt;
+  &lt;/text&gt;
+&lt;/svg&gt;
+</code></pre>
+<p>兼容性如下：</p>
+<p><img src="./imgs/80/06.awebp" alt=""></p>
+<h2>总结</h2>
+<ul>
+<li>整体上来看，通过 SVG 实现字体描边比其他三种方案效果都要好，并且兼容性也不错；</li>
+<li>同时，<code>tspan</code> 可以控制 <code>text</code> 中的文本换行，通过 <code>tspan</code> 可以解决字体被描边覆盖的问题</li>
+</ul>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/79.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/81.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

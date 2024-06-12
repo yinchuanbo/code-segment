@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Fetch API 发起的请求可以被暂停吗</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Fetch API 发起的请求可以被暂停吗</h2>
+                    <p>2024-06-08 09:43:17 · YinHao</p>
+                  </div>
+                  <pre><code class="language-js">// 定义一个名为 _request 的异步函数，它返回一个 Promise，3 秒后返回数字 123。
+function _request() {
+  return new Promise((res) =&gt;
+    setTimeout(() =&gt; {
+      res(123);
+    }, 3000)
+  );
+}
+
+// 创建一个控制暂停的 Promise
+function createPauseControllerPromise() {
+  // result 对象包含了暂停相关的状态和方法
+  const result = {
+    isPause: false, // 标志是否暂停
+    resolveWhenResume: false, // 标志在恢复时是否需要调用 resolve
+    resolve(value) {}, // 用于手动解决 Promise 的方法，初始为空函数
+    pause() {
+      this.isPause = true; // 将状态设为暂停
+    },
+    resume() {
+      if (!this.isPause) return; // 如果没有暂停则直接返回
+      this.isPause = false; // 将状态设为不暂停
+      if (this.resolveWhenResume) {
+        this.resolve(); // 如果在恢复时需要解决，则调用 resolve 方法
+      }
+    },
+    promise: Promise.resolve(), // 默认的 Promise 对象，初始为已解决状态
+  };
+
+  // 创建一个新的 Promise 并将它的解决函数赋值给 result.resolve
+  const promise = new Promise((res) =&gt; {
+    result.resolve = res; // 保存 resolve 函数，便于外部控制
+  });
+
+  result.promise = promise; // 将新创建的 Promise 赋值给 result.promise
+
+  return result; // 返回控制对象 result
+}
+
+// 定义一个函数，接收一个返回 Promise 的异步函数，并为它添加暂停和恢复的控制
+function requestWithPauseControl(request) {
+  // 创建一个暂停控制的 Promise 控制器
+  const controller = createPauseControllerPromise();
+
+  // 执行传入的异步函数，并在其完成后检查是否需要暂停
+  const controlRequest = request().then((data) =&gt; {
+    if (!controller.isPause) controller.resolve(); // 如果没有暂停，则解决控制器的 Promise
+    controller.resolveWhenResume = controller.isPause; // 如果已暂停，则标记在恢复时解决 Promise
+    return data; // 返回异步函数的结果
+  });
+
+  // 等待请求和控制器的 Promise 都解决，然后返回请求的结果
+  const result = Promise.all([controlRequest, controller.promise]).then(
+    (data) =&gt; data[0]
+  ); // 返回请求结果的第一项，即请求的数据
+
+  // 请求完成后，确保控制器的 Promise 被解决
+  result.finally(() =&gt; controller.resolve());
+
+  // 为结果添加 pause 和 resume 方法，绑定控制器的相应方法
+  result.pause = controller.pause.bind(controller);
+  result.resume = controller.resume.bind(controller);
+
+  return result; // 返回带有 pause 和 resume 方法的 Promise
+}
+</code></pre>
+<pre><code class="language-js">// 使用示例
+const myRequest = requestWithPauseControl(_request);
+console.log(&quot;发起请求&quot;);
+myRequest.pause(); // 暂停请求
+console.log(&quot;暂停请求&quot;);
+setTimeout(() =&gt; {
+  myRequest.resume(); // 3秒后恢复请求
+}, 3000);
+
+myRequest.then((result) =&gt; {
+  console.log(result); // 123
+});
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/58.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/60.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

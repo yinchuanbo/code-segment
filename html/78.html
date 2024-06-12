@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>聊聊图片预加载</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>聊聊图片预加载</h2>
+                    <p>2024-06-08 13:38:46 · YinHao</p>
+                  </div>
+                  <h2>如何进行图片的预加载</h2>
+<p>前端实现图片的预加载，其实是利用了浏览器的缓存，我们通过 a 标签来提前加载图片，如下：</p>
+<pre><code class="language-js">const img = new Image();
+img.src = &quot;链接&quot;;
+img.onload = function () {
+  console.log(&quot;加载完成&quot;);
+};
+</code></pre>
+<h2>预加载的策略</h2>
+<h3>场景一：贪婪加载</h3>
+<p>刚进入页面有 loading，需要将后面的图片全部加载完成。如进入 h5 游戏的时候，需要把后面用到的人物背景图片都加载出来。</p>
+<p>这个时候我们不考虑带宽的问题，一次性加载所有的图片。</p>
+<p>将每次加载图片封装成一次 promise：</p>
+<pre><code class="language-js">new Promise((reslove, reject) =&gt; {
+  const img = new Image();
+  img.src = &quot;链接&quot;;
+  img.onload = onerror = resolve;
+});
+</code></pre>
+<p>再使用 promise.all 进行全加载</p>
+<pre><code class="language-js">Promise.all([...])
+</code></pre>
+<h3>场景二：部分加载</h3>
+<p>正常展示当前页面，但是下个页面的图片可以先偷偷加载进来，同时不要影响当前页面正常图片的加载。</p>
+<p>这时候我们需要考虑带宽，不能一次性使用加载图片拉满，这样会导致页面加载的图片加载不出来。可以使用批量加载，比如每次加载 5 张，加载完 5 张之后再加载下 5 张。这样如果当前页面如果有图片也可以正常展示加载。</p>
+<p>具体实现类似分页一样，获取要加载图片里面的 5 张，进行加载，直到加载结束。</p>
+<pre><code class="language-js">// 总任务
+function loadImages(list) {
+  const pageSize = 5;
+  const pageNum = 0;
+  return new Promise((reslove, reject) =&gt; {
+    function run() {
+      Promise.all(genetateTasks(list, pageSize, paegNum)).then(() =&gt; {
+        pageNum++;
+        const hasLength = pageSize * pageNum;
+        if (totalNum &gt; hasLength) {
+          run();
+        } else {
+          reslove(true);
+        }
+      });
+    }
+    run();
+  });
+}
+</code></pre>
+<p>子任务处理：</p>
+<pre><code class="language-js">// 子任务
+function genetateTasks(list, pageSize, pageNum) {
+  const promiseArr = [];
+  const start = pageNum * pageSize;
+  const end = (pageNum + 1) * pageSize - 1;
+  for (let i = start; i &lt; end; i++) {
+    const p = new Promise((reslove, reject) =&gt; {
+      const img = new Image();
+      img.src = list[i];
+      img.onload = img.onerror = reslove;
+    });
+    promiseArr.push(p);
+  }
+  return promiseArr;
+}
+</code></pre>
+<h2>注意点</h2>
+<ul>
+<li><p>在移动端，如果使用贪婪加载，可能会导致你的 loading 图片都没有加载出来（因为都去加载预加载的图片去了），需要将加载图片的逻辑放在 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/load_event">window.load</a> 事件之后</p>
+</li>
+<li><p>在部分加载的时候，如果需要保证当前页面的效果，可以在当前页面图片加载之后再开始加载（可以使用 imagesloaded）</p>
+</li>
+</ul>
+<h2>推荐</h2>
+<p><a href="https://github.com/desandro/imagesloaded">imagesloaded</a> - 用来判断当前页面图片是否加载好</p>
+<p><a href="https://github.com/CreateJS/PreloadJS">preloadJS</a> - 用来预加载一些文件，除了图片，还有 js、css 等</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/77.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/79.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>FileReader</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>FileReader</h2>
+                    <p>2024-06-08 13:28:33 · YinHao</p>
+                  </div>
+                  <h3>读取文件</h3>
+<pre><code class="language-js">if (typeof FileReader === &quot;undefined&quot;) {
+  alert(&quot;当前浏览器不支持 FileReader 对象&quot;);
+} else {
+  var reader = new FileReader();
+}
+</code></pre>
+<p>FileReader 对象包含 5 个方法，其中前 4 个用以读取文件，另一个用来中断读取操作。</p>
+<ol>
+<li><p>readAsText(Blob, type): 将 Blob 对象或文件中的数据读取为文本数据。该方法包含两个参数，其中第二个参数是文本的编码方式，默认为 UTF-8。</p>
+</li>
+<li><p>readAsBinaryString(Blob): 将 Blob 对象或文件中的数据读取为二进制字符串，通常用该方法将文件提交到服务器端，服务器端可以通过这段字符串存储文件。</p>
+</li>
+<li><p>readAsDataURL(Blob): 将 Blob 对象或文件中的数据读取为 DataURL 字符串，该方法就是将数据以一种特殊格式的 URL 地址形式直接读入页面。</p>
+</li>
+<li><p>readAsArrayBuffer(Blob): 将 Blob 对象或文件中的数据读取为一个 ArrayBuffer 对象。</p>
+</li>
+<li><p>abort(): 不包含参数，中断读取操作。</p>
+</li>
+</ol>
+<p><strong>下面演示如何在网页中读取并显示图像文件、文本文件和二进制代码文件</strong></p>
+<pre><code class="language-html">&lt;input type=&quot;file&quot; id=&quot;file&quot; /&gt;
+&lt;input type=&quot;button&quot; value=&quot;读取图像&quot; onclick=&quot;readAsDataURL()&quot; /&gt;
+&lt;input type=&quot;button&quot; value=&quot;读取二进制数据&quot; onclick=&quot;readAsBinaryString()&quot; /&gt;
+&lt;input type=&quot;button&quot; value=&quot;读取文本文件&quot; onclick=&quot;readAsText()&quot; /&gt;
+&lt;div name=&quot;result&quot; id=&quot;result&quot;&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  window.onload = function () {
+    var result = document.getElementById(&quot;result&quot;);
+    var file = document.getElementById(&quot;file&quot;);
+    if (typeof FileReader === &quot;undefined&quot;) {
+      result.innerHTML = &quot;&lt;h1&gt;当前浏览器不支持 FileReader 对象&lt;/h1&gt;&quot;;
+      file.setAttribute(&quot;disabled&quot;, &quot;disabled&quot;);
+    }
+  };
+  function readAsDataURL() {
+    var file = document.getElementById(&quot;file&quot;).files[0];
+    if(!image\/\w+/.test(file.type)) {
+        alert(&quot;提交文件不是图像类型&quot;);
+        return false;
+    }
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(e) {
+      result.innerHTML = `&lt;img src=&quot;${this.result}&quot; /&gt;`;
+    }
+  }
+  function readAsBinaryString() {
+    var file = document.getElementById(&quot;file&quot;).files[0];
+    var reader = new FileReader();
+    reader.readAsBinaryString(file);
+    reader.onload = function(e) {
+      result.innerHTML = this.result;
+    }
+  }
+  function readAsText() {
+    var file = document.getElementById(&quot;file&quot;).files[0];
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function(e) {
+      result.innerHTML = this.result;
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+<h3>事件检测</h3>
+<p>FileReader 对象提供 6 个事件，用于监测文件读取状态，</p>
+<ol>
+<li><p>onabort: 数据读取中断时触发</p>
+</li>
+<li><p>onprogress: 数据读取中触发</p>
+</li>
+<li><p>onerror: 数据读取出错时触发</p>
+</li>
+<li><p>onload: 数据读取成功时触发</p>
+</li>
+<li><p>onloadstart: 数据开始读取时触发</p>
+</li>
+<li><p>onloadend: 数据读取完成时触发，无论成功或失败</p>
+</li>
+</ol>
+<p><strong>使用 FileReader 对象读取文件时会发生一些列事件，在控制台跟踪读取状态的先后顺序</strong></p>
+<pre><code class="language-html">&lt;input type=&quot;file&quot; id=&quot;file&quot; /&gt;
+&lt;input type=&quot;button&quot; value=&quot;读取图像&quot; onclick=&quot;readAsDataURL()&quot; /&gt;
+&lt;div name=&quot;result&quot; id=&quot;result&quot;&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  window.onload = function () {
+    var result = document.getElementById(&quot;result&quot;);
+    var file = document.getElementById(&quot;file&quot;);
+    if (typeof FileReader === &quot;undefined&quot;) {
+      result.innerHTML = &quot;&lt;h1&gt;当前浏览器不支持 FileReader 对象&lt;/h1&gt;&quot;;
+      file.setAttribute(&quot;disabled&quot;, &quot;disabled&quot;);
+    }
+  };
+  function readAsDataURL() {
+    var file = document.getElementById(&quot;file&quot;).files[0];
+    if(!image\/\w+/.test(file.type)) {
+        alert(&quot;提交文件不是图像类型&quot;);
+        return false;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      result.innerHTML = `&lt;img src=&quot;${this.result}&quot; /&gt;`;
+    }
+    // 事件
+    reader.onprogress = function(e) {
+      console.log(&quot;progress&quot;)
+    }
+    reader.onabort = function(e) {
+      console.log(&quot;abort&quot;)
+    }
+    reader.onerror = function(e) {
+      console.log(&quot;error&quot;)
+    }
+    reader.onloadstart = function(e) {
+      console.log(&quot;loadstart&quot;)
+    }
+    reader.onloadend = function(e) {
+      console.log(&quot;loadend&quot;)
+    }
+    reader.readAsDataURL(file);
+  }
+
+  /*
+    执行结果：
+      loadstart
+      progress
+      load
+      loadend
+  */
+&lt;/script&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/70.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/72.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

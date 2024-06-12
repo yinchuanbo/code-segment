@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>scrollIntoview</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>scrollIntoview</h2>
+                    <p>2024-06-08 14:10:57 · YinHao</p>
+                  </div>
+                  <p>大家可能都知道 dom 有一个  <code>scrollIntoview</code>方法，它可以轻易的让目标元素滚动到可视范围之内，而无需手动计算偏移量</p>
+<pre><code class="language-js">dom.scrollIntoview();
+</code></pre>
+<p>效果如下</p>
+<p><img src="./imgs/94/01.gif" alt=""></p>
+<p>这样跳转比较生硬，因此可能还知道有这样一个参数</p>
+<pre><code class="language-js">dom.scrollIntoview({
+  behavior: &quot;smooth&quot;,
+});
+</code></pre>
+<p>这样就能平滑滚动了</p>
+<p><img src="./imgs/94/02.gif" alt=""></p>
+<p>仅仅只有这些了吗？其实还可以做很多</p>
+<h3>一、重新学习 scrollIntoView 语法</h3>
+<p>打开 MDN 官网</p>
+<blockquote>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoView">https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoView</a></p>
+</blockquote>
+<p>语法其实很简单，有三种形式</p>
+<pre><code class="language-js">scrollIntoView();
+scrollIntoView(alignToTop);
+scrollIntoView(scrollIntoViewOptions);
+</code></pre>
+<p>首先看第 2 种形式，就一个参数 <strong>「alignToTop」</strong>  布尔值</p>
+<p>默认为  <code>true</code>，表示是否沿着元素的顶端和滚动容器对齐，否则和元素底端对齐。</p>
+<pre><code class="language-js">dom.scrollIntoView();
+dom.scrollIntoView(true);
+</code></pre>
+<p>这两种效果是相同的</p>
+<p><img src="./imgs/94/03.gif" alt=""></p>
+<p>如果设置为<code>false</code>，那么会居底部对齐</p>
+<pre><code class="language-js">dom.scrollIntoview(false);
+</code></pre>
+<p>效果如下</p>
+<p><img src="./imgs/94/04.gif" alt=""></p>
+<p>注意，<strong>「alignToTop」</strong> 自适应于 <strong>「垂直方向」</strong> 上的滚动，如果是 <strong>「水平方向」</strong> 的滚动，设置了没有任何区别。</p>
+<pre><code class="language-js">// 水平滚动下，以下 3 种写法作用相同
+dom.scrollIntoview();
+dom.scrollIntoview(true);
+dom.scrollIntoview(false);
+</code></pre>
+<p>效果都是一样的，如下</p>
+<p><img src="./imgs/94/05.gif" alt=""></p>
+<p>🤔 为啥是居右侧对齐呢？同时为了满足两个方向上的灵活控制，出现了  <strong>「scrollIntoViewOptions」</strong>  参数。</p>
+<p>这个稍微复杂一点，接着往下看。</p>
+<h3>二、详解 scrollIntoViewOptions 参数</h3>
+<p><strong>「scrollIntoViewOptions」</strong> 是一个对象，包含 3 个属性，分别是  <strong>「behavior」</strong>、<strong>「block」</strong>、<strong>「inline」</strong></p>
+<pre><code class="language-js">dom.scrollIntoView({
+  behavior: &quot;smooth&quot;,
+  block: &quot;end&quot;,
+  inline: &quot;nearest&quot;,
+});
+</code></pre>
+<p>首先来看 <strong>「behavior」</strong> 属性，这是用来定义滚动动画的，有 3 个关键词</p>
+<ul>
+<li><strong>「smooth」</strong>：平滑滚动</li>
+<li><strong>「instant」</strong>：无动画，直接跳转</li>
+<li><strong>「auto」</strong>：默认值，滚动行为由  scroll-behavior[1]  的计算值决定</li>
+</ul>
+<p>默认情况下是  <strong>「auto」</strong>，也就是由 CSS scroll-behavior 属性决定，如果我们给滚动容器添加了这个属性</p>
+<pre><code class="language-css">.list {
+  scroll-behavior: smooth;
+}
+</code></pre>
+<p>这样，在不传递任何参数的情况下，也能实现平滑滚动</p>
+<pre><code class="language-js">dom.scrollIntoView();
+</code></pre>
+<p>效果如下</p>
+<p><img src="./imgs/94/06.gif" alt=""></p>
+<p>一般情况下推荐使用 CSS 方式。</p>
+<p>至于 <strong>「instant」</strong>，实测和  <strong>「auto」</strong>  效果一致，如果设置了 CSS 平滑滚动，即使设置了<code>scroll-behavior: instant</code>仍然是平滑滚动，并不是我想象中的直接跳转 ❓。</p>
+<p><img src="./imgs/94/07.gif" alt=""></p>
+<p>接下来看第 2 个属性 <strong>「block」</strong>，这是用来定义 <strong>「垂直方向」</strong> 上的对齐方式，有 4 个关键词</p>
+<ul>
+<li><strong>「start」</strong>：<strong>「默认值」</strong>。元素顶部和滚动容器顶部对齐</li>
+<li><strong>「center」</strong>：元素和滚动容器居中对齐</li>
+<li><strong>「end」</strong>：元素底部和滚动容器底部对齐</li>
+<li><strong>「nearest」</strong>：如果已经在视野范围内，就不滚动，否则就滚动到顶部或者底部（哪个更靠近就滚到哪里）</li>
+</ul>
+<p>其中，<strong>「start」</strong>  和  <strong>「end」</strong> 分别是顶部对齐和底部对齐，效果等同于</p>
+<pre><code class="language-js">// 以下写法
+dom.scrollIntoView({
+  block: &quot;start&quot;,
+});
+dom.scrollIntoView({
+  block: &quot;end&quot;,
+});
+// 等同于
+dom.scrollIntoView(true);
+dom.scrollIntoView(false);
+</code></pre>
+<p>前面已经演示过了，这里就不重复了</p>
+<p><strong>「center」</strong> 是一个比较实用的属性，可以让元素一直处于中间位置，非常适合上一个、下一个切换的场景</p>
+<pre><code class="language-js">dom.scrollIntoView({
+  block: &quot;center&quot;,
+});
+</code></pre>
+<p>这里简单实现了一个上下切换的效果</p>
+<p><img src="./imgs/94/08.gif" alt=""></p>
+<p><strong>「nearest」</strong> 表示邻近的，可能稍微复杂一点，会根据元素 <strong>是否已经在可视范围内</strong> 做判断，避免频繁滚动，下面是一个原理演示</p>
+<p><img src="./imgs/94/01.png" alt=""></p>
+<pre><code class="language-js">dom.scrollIntoView({
+  block: &quot;nearest&quot;,
+});
+</code></pre>
+<p>实际效果如下</p>
+<p><img src="./imgs/94/09.gif" alt=""></p>
+<p>如果用这个来实现上一个、下一个的功能，体验可能会更好</p>
+<p><img src="./imgs/94/10.gif" alt=""></p>
+<p>非常适合下拉列表中的上下键盘操作（截图为 Ant Design Select 组件）</p>
+<blockquote>
+<p><a href="https://ant.design/components/select-cn">https://ant.design/components/select-cn</a></p>
+</blockquote>
+<p><img src="./imgs/94/02.png" alt=""></p>
+<p>还有个 <strong>「inline」</strong> 属性，和 <strong>「block」</strong> 是一致的，只是用来定义 <strong>「水平方向」</strong> 上的对齐方式，也有 4 个关键词</p>
+<ul>
+<li><strong>「start」</strong>：元素左侧和滚动容器左侧对齐</li>
+<li><strong>「center」</strong>：元素和滚动容器居中对齐</li>
+<li><strong>「end」</strong>：元素右侧和滚动容器右侧对齐</li>
+<li><strong>「nearest」</strong>：<strong>「默认值」</strong>。如果已经在视野范围内，就不滚动，否则就滚动到左边或者右边（哪个更靠近就滚到哪里）</li>
+</ul>
+<p>作用效果和前面完全是一致的，这里就不一一演示了。</p>
+<p>有没有发现？<strong>「block」</strong>  和  <strong>「inline」</strong>  的默认值是不一样的，这也是为什么在水平滚动下，<code>scrollIntoView(true)</code>和<code>scrollIntoView(false)</code>效果完全一致了，就是因为水平方向上已经在可视区了，所以不会有任何滚动。</p>
+<h3>三、水平和垂直同时存在的情况</h3>
+<p>很多时候，页面可能会存在水平和垂直都有滚动的情况，例如下面这种</p>
+<p><img src="./imgs/94/03.png" alt=""></p>
+<p>整个页面是可以上下滚动的，然后页面中包含一个可以横向滚动的区域。</p>
+<p>如果这时想要将红色部分滚动到可视区中间，应该怎么做？</p>
+<p>按照前面的参数，可能会想到这样</p>
+<pre><code class="language-js">dom.scrollIntoView({
+  inline: &quot;center&quot;,
+});
+</code></pre>
+<p>效果是这样的…</p>
+<p><img src="./imgs/94/11.gif" alt=""></p>
+<p>可以看到，水平方向确实滚动到了中间，但是垂直方向上滚动到了最顶部。</p>
+<p>这是因为垂直方向的默认值为<code>start</code>，所以为了产生避免这样的影响，可以这样</p>
+<pre><code class="language-js">dom.scrollIntoView({
+  block: &quot;neareast&quot;,
+  inline: &quot;center&quot;,
+});
+</code></pre>
+<p>这样就不会上下跳动了</p>
+<p><img src="./imgs/94/12.gif" alt=""></p>
+<h3>四、scrollIntoView 的边距</h3>
+<p>大家发现没，在使用<code>start</code>、<code>end</code>这些属性值的时候，元素滚动到视野范围之内都是紧靠边缘的</p>
+<p><img src="./imgs/94/04.png" alt=""></p>
+<p>视觉上有点不好看，有没有办法预留一点空间呢？</p>
+<p>当然有了，不过不是  <strong>「scrollIntoView」</strong> 本身，而是需要借助 CSS 中的  <strong>「scroll-margin」</strong> 属性。关于这个特性，之前在这篇文章有有详细介绍，有兴趣的可以回顾一下</p>
+<blockquote>
+<p><a href="http://mp.weixin.qq.com/s?__biz=MzIyMDc1NTYxNg==&mid=2247486316&idx=1&sn=2a54ec347f72cd91d61a68d6e232f370&chksm=97c668a3a0b1e1b56f501e2d7267606af48cc406769359e3867ac53149ecb52bf9c86f95cc43&scene=21#wechat_redirect">提升滚动体验！CSS 如何设置自动滚动定位的“安全”间距？（跳转公众号）</a></p>
+</blockquote>
+<p>因此在这里，要留点间距也很简单，只需要</p>
+<pre><code class="language-css">.item {
+  scroll-margin: 10px;
+}
+</code></pre>
+<p>再看看前面的上一个、下一个效果</p>
+<p><img src="./imgs/94/13.gif" alt=""></p>
+<p>是不是舒服了很多？</p>
+<h3>五、scrollIntoViewIfNeeded</h3>
+<p>除了  <strong>「scrollIntoView」</strong>，还有个非标准的  <strong>「scrollIntoViewIfNeeded」</strong>，-webkit-支持</p>
+<blockquote>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoViewIfNeeded">https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoViewIfNeeded</a></p>
+</blockquote>
+<p>顾名思义，就是只有需要滚动定位的时候才会滚动，和<code>neareast</code>功能有点像</p>
+<p>这个方法可以传递一个布尔值</p>
+<pre><code class="language-js">element.scrollIntoViewIfNeeded(); // 等同于 element.scrollIntoViewIfNeeded(true)
+element.scrollIntoViewIfNeeded(true);
+element.scrollIntoViewIfNeeded(false);
+</code></pre>
+<p>表示在滚动到视线范围之内时是否 <strong>「居中对齐」</strong>。</p>
+<p>这是和<code>scrollIntoView</code>不太一样的地方，相当于同时满足了<code>neareast</code>和<code>center</code>的功能，非常适合用在需要初始化滚动的场景，比如这种滚动定位的任务进度条</p>
+<p><img src="./imgs/94/05.png" alt=""></p>
+<p>下面用一个简单案例模拟一下</p>
+<p><img src="./imgs/94/14.gif" alt=""></p>
+<p>完整 demo 可以参考以下链接</p>
+<ul>
+<li>scrollIntoViewIfNeed (juejin.cn)[2]</li>
+<li>scrollIntoViewIfNeeded (codepen.io)[3]</li>
+</ul>
+<h3>六、兼容性和总结</h3>
+<p><strong>「Scrollintoview」</strong> 是个兼容性非常好的属性，有多好呢？连 IE6 都支持</p>
+<p><img src="./imgs/94/06.png" alt=""></p>
+<p>当然这只是基础功能，也就是滚动到视区范围，像 options 参数都是后来才出现的，兼容性稍微差一点</p>
+<p><img src="./imgs/94/07.png" alt=""></p>
+<p>另外，你可能发现，在 safari 上平滑滚动不支持，因此推荐用 CSS scroll-behavior 的方式，兼容性稍微好一点（15.4+）</p>
+<p><img src="./imgs/94/08.png" alt=""></p>
+<p>下面再来回顾一下这几个关键词</p>
+<ul>
+<li><strong>「start」</strong>：元素顶部和滚动容器顶部（左侧）对齐</li>
+<li><strong>「center」</strong>：元素和滚动容器居中对齐</li>
+<li><strong>「end」</strong>：元素底部和滚动容器底部（右侧）对齐</li>
+<li><strong>「nearest」</strong>：如果已经在视野范围内，就不滚动，否则就滚动到顶部（左侧）或者底部（右侧）（哪个更靠近就滚到哪里）</li>
+</ul>
+<p><code>[1]scroll-behavior：</code> <a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/scroll-behavior">https://developer.mozilla.org/zh-CN/docs/Web/CSS/scroll-behavior</a></p>
+<p><code>[2]scrollIntoViewIfNeed (juejin.cn)：</code> <a href="https://code.juejin.cn/pen/7279261289191309375">https://code.juejin.cn/pen/7279261289191309375</a></p>
+<p><code>[3]scrollIntoViewIfNeeded (codepen.io)：</code> <a href="https://codepen.io/xboxyan/pen/dywzrPB">https://codepen.io/xboxyan/pen/dywzrPB</a></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/93.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/95.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

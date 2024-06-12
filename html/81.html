@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>普通的文本输入框实现敏感词文字高亮</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>普通的文本输入框实现敏感词文字高亮</h2>
+                    <p>2024-06-08 13:45:10 · YinHao</p>
+                  </div>
+                  <h3>实现思路</h3>
+<blockquote>
+<p>实现标红就需要给文字加上 html 标签和样式，但是输入框会将 html 都转为字符串，既然输入框无法实现，那么我们换一种思路，通过 div 代替输入框来显示输入的文本，那我们是不是就可以实现文本标红了？</p>
+</blockquote>
+<pre><code class="language-html">&lt;div class=&quot;main&quot;&gt;
+  &lt;div id=&quot;shadowInput&quot; class=&quot;highlight-shadow-input&quot;&gt;&lt;/div&gt;
+  &lt;textarea
+    id=&quot;textarea&quot;
+    cols=&quot;30&quot;
+    rows=&quot;10&quot;
+    class=&quot;highlight-input&quot;
+  &gt;&lt;/textarea&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">.main {
+  position: relative;
+}
+.highlight-shadow-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  padding: 8px;
+  border: 1px;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-family: monospace;
+  overflow-y: auto;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+.highlight-input {
+  position: relative;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0);
+  -webkit-text-fill-color: transparent;
+  z-index: 999;
+  word-break: break-all;
+}
+</code></pre>
+<p>实现这个功能的精髓就在于将输入框的背景和输入的文字设置为透明，然后将其层级设置在 div 之上，这样用户既可以在输入框中输入，而输入的文字又不会展示出来，然后将输入的文本处理后渲染到 div 上。</p>
+<pre><code class="language-js">const textarea = document.getElementById(&quot;textarea&quot;);
+const shadowInput = document.getElementById(&quot;shadowInput&quot;);
+const sensitive = [&quot;敏感词&quot;, &quot;禁用词&quot;];
+textarea.oninput = (e) =&gt; {
+  let value = e.target.value;
+  sensitive.forEach((word) =&gt; {
+    value = value
+      .replaceAll(word, `&lt;span style=&quot;color:#e52e2e&quot;&gt;${word}&lt;/span&gt;`)
+      .replaceAll(&quot;\n&quot;, &quot;&lt;br&gt;&quot;);
+  });
+  shadowInput.innerHTML = value;
+};
+</code></pre>
+<p>监听输入框 oninput 事件，用 replaceAll 匹配到敏感词并转为 html 后渲染到 shadowInput 上。此外，我们还需要对输入框的滚动进行监听，因为 shadowInput 是固定高度的，如果用户输入的文本出现滚动条，则需要让 shadowInput 也滚动到对应的位置</p>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;div id=&quot;shadowInput&quot; class=&quot;highlight-shadow-input&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-js">textarea.onscroll = (e) =&gt; {
+  shadowInput.scrollTop = e.target.scrollTop;
+};
+// 此处输入时也需要同步是因为输入触底换行时，div的高度不会自动滚动
+textarea.onkeydown = (e) =&gt; {
+  shadowInput.scrollTop = e.target.scrollTop;
+};
+</code></pre>
+<h3>最终实现效果</h3>
+<p><img src="./imgs/81/01.awebp" alt=""></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/80.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/82.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

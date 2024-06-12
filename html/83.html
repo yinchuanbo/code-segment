@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>性能优化-时间分片渲染简单做法</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>性能优化-时间分片渲染简单做法</h2>
+                    <p>2024-06-08 13:49:16 · YinHao</p>
+                  </div>
+                  <p>在经典的面试题中：”<strong>如果后端返回了十万条数据要你插入到页面中，你会怎么处理？</strong>”</p>
+<p>除了像 <a href="https://ahooks.gitee.io/zh-CN/hooks/use-virtual-list">useVirtualList</a> 这样的虚拟列表来处理外，我们还可以通过 <code>时间分片</code> 来处理</p>
+<h3>通过 setTimeout</h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;十万数据渲染&lt;/title&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;ul id=&quot;list-container&quot;&gt;&lt;/ul&gt;
+
+    &lt;script&gt;
+      const oListContainer = document.getElementById(&quot;list-container&quot;);
+
+      const fetchData = () =&gt; {
+        return new Promise((resolve) =&gt; {
+          const response = {
+            code: 0,
+            msg: &quot;success&quot;,
+            data: [],
+          };
+
+          for (let i = 0; i &lt; 100000; i++) {
+            response.data.push(`content-${i + 1}`);
+          }
+
+          setTimeout(() =&gt; {
+            resolve(response);
+          }, 100);
+        });
+      };
+
+      // 模拟请求后端接口返回十万条数据
+      // 渲染 total 条数据中的第 page 页，每页 pageCount 条数据
+      const renderData = (data, total, page, pageCount) =&gt; {
+        // base case -- total 为 0 时没有数据要渲染 不再递归调用
+        if (total &lt;= 0) return;
+
+        // total 比 pageCount 少时只渲染 total 条数据
+        pageCount = Math.min(pageCount, total);
+
+        setTimeout(() =&gt; {
+          const startIdx = page * pageCount;
+          const endIdx = startIdx + pageCount;
+          const dataList = data.slice(startIdx, endIdx);
+
+          // 将 pageCount 条数据插入到容器中
+          for (let i = 0; i &lt; pageCount; i++) {
+            const oItem = document.createElement(&quot;li&quot;);
+            oItem.innerText = dataList[i];
+            oListContainer.appendChild(oItem);
+          }
+
+          renderData(data, total - pageCount, page + 1, pageCount);
+        }, 0);
+      };
+
+      fetchData().then((res) =&gt; {
+        renderData(res.data, res.data.length, 0, 200);
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>上面的例子中，我们使用了 <code>setTimeout</code>，在每一次宏任务中插入一页数据，然后设置多个这样地宏任务，直到把所有数据都插入为止。</p>
+<p><img src="./imgs/83/01.awebp" alt=""></p>
+<p>但是很明显能看到的问题是，快速拖动滚动条时，数据列表中会有闪烁的情况</p>
+<p>这是因为：</p>
+<blockquote>
+<p>当使用 <code>setTimeout</code> 来拆分大量的 DOM 插入操作时，虽然我们将延迟时间设置为 0ms，但实际上由于 JavaScript 是单线程的，任务执行时会被放入到事件队列中，而事件队列中的任务需要等待当前任务执行完成后才能执行。所以即使设置了 0ms 延迟，<code>setTimeout</code> 的回调函数也不一定会立即执行，可能会受到其他任务的阻塞。</p>
+</blockquote>
+<blockquote>
+<p>当 <code>setTimeout</code> 的回调函数执行的间隔超过了浏览器每帧更新的时间间隔（一般是 16.7ms），就会出现丢帧现象。丢帧指的是浏览器在更新页面时，没有足够的时间执行全部的任务，导致部分任务被跳过，从而导致页面渲染不连续，出现闪烁的情况</p>
+</blockquote>
+<p>所以，我们改善一下，通过 <code>requestAnimationFrame</code> 来处理</p>
+<h3>通过 requestAnimationFrame</h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;直接插入十万条数据&lt;/title&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;ul id=&quot;list-container&quot;&gt;&lt;/ul&gt;
+
+    &lt;script&gt;
+      const oListContainer = document.getElementById(&quot;list-container&quot;);
+
+      const fetchData = () =&gt; {
+        return new Promise((resolve) =&gt; {
+          const response = {
+            code: 0,
+            msg: &quot;success&quot;,
+            data: [],
+          };
+
+          for (let i = 0; i &lt; 100000; i++) {
+            response.data.push(`content-${i + 1}`);
+          }
+
+          setTimeout(() =&gt; {
+            resolve(response);
+          }, 100);
+        });
+      };
+
+      // 模拟请求后端接口返回十万条数据
+      // 渲染 total 条数据中的第 page 页，每页 pageCount 条数据
+      const renderData = (data, total, page, pageCount) =&gt; {
+        // base case -- total 为 0 时没有数据要渲染 不再递归调用
+        if (total &lt;= 0) return;
+
+        // total 比 pageCount 少时只渲染 total 条数据
+        pageCount = Math.min(pageCount, total);
+
+        requestAnimationFrame(() =&gt; {
+          const startIdx = page * pageCount;
+          const endIdx = startIdx + pageCount;
+          const dataList = data.slice(startIdx, endIdx);
+
+          // 将 pageCount 条数据插入到容器中
+          for (let i = 0; i &lt; pageCount; i++) {
+            const oItem = document.createElement(&quot;li&quot;);
+            oItem.innerText = dataList[i];
+            oListContainer.appendChild(oItem);
+          }
+
+          renderData(data, total - pageCount, page + 1, pageCount);
+        });
+      };
+
+      fetchData().then((res) =&gt; {
+        renderData(res.data, res.data.length, 0, 200);
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><img src="./imgs/83/02.awebp" alt=""></p>
+<p>很明显，闪烁的问题被解决了</p>
+<p>这是因为：</p>
+<blockquote>
+<p><code>requestAnimationFrame</code> 会在浏览器每次进行页面渲染时执行回调函数，保证了每次任务的执行间隔是稳定的，避免了丢帧现象。所以在处理大量 DOM 插入操作时，推荐使用 <code>requestAnimationFrame</code> 来拆分任务，以获得更流畅的渲染效果</p>
+</blockquote>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/82.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/84.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

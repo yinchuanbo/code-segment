@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>7 个 Promise 静态方法</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>7 个 Promise 静态方法</h2>
+                    <p>2024-06-08 09:51:50 · YinHao</p>
+                  </div>
+                  <p>Promise 状态变化如下：</p>
+<p><img src="./imgs/60/01.png" alt=""></p>
+<h2>Promise.all</h2>
+<p>Promise.all 方法相信各位都很熟悉，该方法接受一个数组，返回一个 Promise 实例。</p>
+<p>Promise.all 的能力如下：</p>
+<p><img src="./imgs/60/02.png" alt=""></p>
+<ul>
+<li><p>当所有传入的 promise 都变为成功状态（fulfilled），Promise.all 返回的 promise 也会随着变成完成状态（fulfilled），返回的内容是个数组，数组内容对应传入的各个 promise 的返回。</p>
+</li>
+<li><p>当任意一个传入的 promise 变成了拒绝状态（rejected），Promise.all 返回的 promise 也会立即变成拒绝状态（rejected），返回内容就是第一个拒绝状态的 promise 的返回。</p>
+</li>
+</ul>
+<pre><code class="language-js">const promise1 = Promise.resolve(18);
+const promise2 = 35;
+const promise3 = new Promise((resolve, reject) =&gt; {
+  setTimeout(resolve, 1000, &quot;foo&quot;);
+});
+
+Promise.all([promise1, promise2, promise3]).then((values) =&gt; {
+  console.log(values);
+});
+// 1 秒后输出: Array [18, 25, &quot;foo&quot;]
+
+const promise1 = new Promise((resolve, reject) =&gt; {
+  setTimeout(reject, 500, &quot;bar&quot;);
+});
+const promise2 = 35;
+const promise3 = new Promise((resolve, reject) =&gt; {
+  setTimeout(resolve, 1000, &quot;foo&quot;);
+});
+
+Promise.all([promise1, promise2, promise3]).catch((values) =&gt; {
+  console.log(values);
+});
+// 0.5s 后输出: bar
+</code></pre>
+<h2>Promise.allSettled</h2>
+<p>Promise.allSettled 该方法接受一个数组，返回一个 Promise 实例。</p>
+<p>Promise.allSettled 的能力如下：</p>
+<p><img src="./imgs/60/01.webp" alt=""></p>
+<p>当所有传入的 promise 都变为已完成状态（settled ），无论它们成功还是失败，Promise.allSettled 会返回一个 promise 实例，状态为已成功，参数是个数组，数组的对象都有三个属性：</p>
+<ul>
+<li><p>status：fulfilled 或者 rejected，代表 promise 的状态</p>
+</li>
+<li><p>value：fulfilled 时才存在，为 promise 返回的值</p>
+</li>
+<li><p>reason：rejected 时才存在，为 promise 返回的值</p>
+</li>
+</ul>
+<pre><code class="language-js">const promise1 = Promise.resolve(3);
+const promise2 = new Promise((resolve, reject) =&gt;
+  setTimeout(reject, 1000, &quot;foo&quot;)
+);
+const promises = [promise1, promise2];
+
+Promise.allSettled(promises).then((results) =&gt;
+  results.forEach((result) =&gt;
+    console.log(result.status === &quot;fulfilled&quot; ? result.value : result.reason)
+  )
+);
+// 1s 后依次输出：3、foo
+</code></pre>
+<p><strong>Promise.allSettled vs Promise.all</strong></p>
+<ul>
+<li><p>Promise.all 需要所有任务都返回成功才行，只有一个失败，就立即返回。比如一系列规则校验，全部通过才是校验成功，只要一个失败就立即返回失败。</p>
+</li>
+<li><p>Promise.allSettled 更关注一系列任务是否都完成（settled）了，同时无论任务成功（fulfilled）还是失败（rejected），每个任务的返回都能在最后的结果中查看。比如我上传三个文件，上传结果在所有任务都返回后再给出（如：上传成功两个，失败一个），同时能对失败的上传做额外处理。</p>
+</li>
+</ul>
+<h2>Promise.any</h2>
+<p>Promise.any 该方法同样接受一个数组，返回一个 Promise 实例。</p>
+<p>Promise.any 的能力如下：</p>
+<p><img src="./imgs/60/02.webp" alt=""></p>
+<ul>
+<li><p>当传入的 promise 有一个变成成功状态（fulfilled），Promise.any 返回的 promise 也会随着变成完成状态（fulfilled），返回的内容是最先 resolve 的 promise 的返回。</p>
+</li>
+<li><p>当所有传入的 promise 变成了拒绝状态（rejected），Promise.any 返回的 promise 也会变成拒绝状态（rejected），返回的内容是个对象，对象的 errors 属性对应传入的各个 promise 的返回。</p>
+</li>
+</ul>
+<pre><code class="language-js">const promise1 = Promise.reject(0);
+const promise2 = new Promise((resolve) =&gt; setTimeout(resolve, 100, &quot;quick&quot;));
+const promise3 = new Promise((resolve) =&gt; setTimeout(resolve, 500, &quot;slow&quot;));
+
+const promises = [promise1, promise2, promise3];
+
+Promise.any(promises).then((value) =&gt; console.log(value));
+// 0.1s 后输出：quick
+
+const promise1 = Promise.reject(0);
+const promise2 = new Promise((resolve, reject) =&gt;
+  setTimeout(reject, 100, &quot;quick&quot;)
+);
+const promise3 = new Promise((resolve, reject) =&gt;
+  setTimeout(reject, 500, &quot;slow&quot;)
+);
+
+const promises = [promise1, promise2, promise3];
+
+Promise.any(promises).catch((value) =&gt; {
+  console.dir(value.errors);
+});
+// 0.5s 后输出：[0, &#39;quick&#39;, &#39;slow&#39;]
+</code></pre>
+<p><strong>Promise.any vs Promise.all</strong></p>
+<p>Promise.any 和 Promise.all 可以与 Array.prototype.some() 和 Array.prototype.every() 进行类比。</p>
+<p>Promise.any 更关注某个最先成功的任务，比如你向多个服务器节点请求同个资源，哪个最先返回就使用哪个。</p>
+<h2>Promise.race</h2>
+<p>Promise.race 该方法同样接受一个数组，返回一个 Promise 实例。</p>
+<p>Promise.race 的能力如下：</p>
+<p><img src="./imgs/60/03.png" alt=""></p>
+<p>当传入的 promise 数组中有一个状态为已完成（settled）, Promise.race 返回的 promise 就会根据最先完成的 promise 改变状态（fulfilled 或 rejected），并返回内容。</p>
+<pre><code class="language-js">const promise1 = new Promise((resolve, reject) =&gt; {
+  setTimeout(resolve, 500, &quot;one&quot;);
+});
+
+const promise2 = new Promise((resolve, reject) =&gt; {
+  setTimeout(resolve, 100, &quot;two&quot;);
+});
+
+Promise.race([promise1, promise2]).then((value) =&gt; {
+  console.log(value);
+});
+// 0.1s 后输出: &quot;two&quot;
+
+const promise1 = new Promise((resolve, reject) =&gt; {
+  setTimeout(resolve, 500, &quot;one&quot;);
+});
+
+const promise2 = new Promise((resolve, reject) =&gt; {
+  setTimeout(reject, 100, &quot;two&quot;);
+});
+
+Promise.race([promise1, promise2]).catch((value) =&gt; {
+  console.log(value);
+});
+// 0.1s 后输出: &quot;two&quot;
+</code></pre>
+<p><strong>Promise.race vs Promise.any</strong></p>
+<ul>
+<li><p>Promise.race 更关注第一个返回的，无论状态是成功还是失败。</p>
+</li>
+<li><p>Promise.any 则是关注第一个成功返回的。</p>
+</li>
+</ul>
+<p>Promise.race 可以用来控制请求并发，代码如下：</p>
+<pre><code class="language-js">/**
+ * poolLimit: 并发数
+ * iterable: 并发迭代数组
+ * iteratorFn: 并发执行函数
+ */
+async function asyncPool(poolLimit, iterable, iteratorFn) {
+  // 用于保存所有异步请求
+  const ret = [];
+  // 用户保存正在进行的请求
+  const executing = new Set();
+  for (const item of iterable) {
+    // 构造出请求 Promise
+    const p = Promise.resolve().then(() =&gt; iteratorFn(item, iterable));
+    ret.push(p);
+    executing.add(p);
+    // 请求执行结束后从正在进行的数组中移除
+    const clean = () =&gt; executing.delete(p);
+    p.then(clean).catch(clean);
+    // 如果正在执行的请求数大于并发数，就使用 Promise.race 等待一个最快执行完的请求
+    if (executing.size &gt;= poolLimit) {
+      await Promise.race(executing);
+    }
+  }
+  // 返回所有结果
+  return Promise.all(ret);
+}
+
+// 使用方法
+const timeout = (i) =&gt;
+  new Promise((resolve) =&gt; setTimeout(() =&gt; resolve(i), i));
+asyncPool(2, [1000, 5000, 3000, 2000], timeout).then((results) =&gt; {
+  console.log(results);
+});
+
+// 6s 后输出：[1000, 5000, 3000, 2000]
+</code></pre>
+<p>核心实现就是使用 Promise.race 和 Promise.all。如果发出的请求大等于并发数了，这时就不会发起下一个请求，而是使用 Promise.race 等待一个最快执行结束的请求，然后在继续发请求。最后通过 Promise.all 返回所有结束。</p>
+<h2>Promise.resolve</h2>
+<p>Promise.resolve 这个相信大家都有在平时开发中使用，用于快速创建一个状态为 fulfilled 的 promise 实例。</p>
+<pre><code class="language-js">const promise1 = Promise.resolve(123);
+
+promise1.then((value) =&gt; {
+  console.log(value);
+});
+
+// 输出: 123
+</code></pre>
+<h2>Promise.reject</h2>
+<p>Promise.reject 类似 Promise.resolve，用于快速创建一个状态为 rejected 的 promise 实例。</p>
+<pre><code class="language-js">function resolved(result) {
+  console.log(&quot;Resolved&quot;);
+}
+
+function rejected(result) {
+  console.log(result);
+}
+
+Promise.reject(new Error(&quot;fail&quot;)).then(resolved, rejected);
+
+// 输出: fail
+</code></pre>
+<h2>Promise.withResolvers</h2>
+<p>当我们需要把回调函数式的异步编程兼容成 Promise 时，我们通常会用 <code>new Promise((resolve, rejcet) =&gt; {})</code> 来处理，有了 <code>Promise.withResolvers</code> 后，代码会变得更简单。</p>
+<pre><code class="language-js">const { promise, resolve, reject } = Promise.withResolvers();
+
+// 等同于
+let resolve, reject;
+const promise = new Promise((res, rej) =&gt; {
+  resolve = res;
+  reject = rej;
+});
+</code></pre>
+<p>异步编程可以根据自己喜欢选择编写方式：</p>
+<pre><code class="language-js">const { promise, resolve, reject } = Promise.withResolvers()
+setTimeout(resolve, 1000, &#39;done&#39;)
+promise.then(console.log)
+// 1s 后输出: done
+
+// 等同于
+const promise = new Promise((resolve, reject) =&gt; {
+    setTimeout(resolve, 1000, &#39;done&#39;)
+})
+promise.then(console.log)
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/59.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/61.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

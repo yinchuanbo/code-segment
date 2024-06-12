@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">.box {
+  position: relative;
+  width: 10em;
+  height: 10em;
+  line-height: 10em;
+  overflow: hidden; }
+
+.box__right,
+.box__left,
+.box__top,
+.box__bottom,
+.box__center {
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  text-align: center;
+  line-height: inherit;
+  transition: transform 0.4s ease; }
+
+.box__right:before,
+.box__left:before,
+.box__top:before,
+.box__bottom:before,
+.box__center:before {
+  position: absolute;
+  content: "";
+  width: 70.71%;
+  height: 70.71%;
+  transform: rotate(45deg); }
+
+.box__right:hover,
+.box__left:hover,
+.box__top:hover,
+.box__bottom:hover,
+.box__center:hover {
+  transform: translateX(0);
+  z-index: 1; }
+
+.box__right:hover:before,
+.box__left:hover:before,
+.box__top:hover:before,
+.box__bottom:hover:before,
+.box__center:hover:before {
+  width: 100%;
+  height: 100%;
+  transform: none; }
+
+.box__right {
+  background: blue;
+  transform: translateX(100%); }
+
+.box__right:before {
+  right: 100%;
+  bottom: 0;
+  transform-origin: 100% 100%; }
+
+.box__right:hover ~ .box__center {
+  transform: translateX(-100%); }
+
+.box__left {
+  background: green;
+  transform: translateX(-100%); }
+
+.box__left:before {
+  left: 100%;
+  transform-origin: 0 0; }
+
+.box__left:hover ~ .box__center {
+  transform: translateX(100%); }
+
+.box__top {
+  background: red;
+  transform: translateY(-100%); }
+
+.box__top:before {
+  top: 100%;
+  right: 0;
+  transform-origin: 100% 0; }
+
+.box__top:hover ~ .box__center {
+  transform: translateY(100%); }
+
+.box__bottom {
+  background: yellow;
+  transform: translateY(100%); }
+
+.box__bottom:before {
+  bottom: 100%;
+  left: 0;
+  transform-origin: 0 100%; }
+
+.box__bottom:hover ~ .box__center {
+  transform: translateY(-100%); }
+
+.box__center {
+  background: orange;
+  z-index: -1; }
+</style>
+              </head>
+              <body>
+                <div class="box">
+  <div class="box__right">Right → Left</div>
+  <div class="box__left">Left → Right</div>
+  <div class="box__top">Top → Bottom</div>
+  <div class="box__bottom">Bottom → Top</div>
+  <div class="box__center">Hover from any side</div>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview"></script>
+              </body>
+            </html>
+            

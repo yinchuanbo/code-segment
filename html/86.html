@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>20 个 JS 工具函数助力高效开发</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>20 个 JS 工具函数助力高效开发</h2>
+                    <p>2024-06-08 13:54:41 · YinHao</p>
+                  </div>
+                  <h2>1.校验数据类型</h2>
+<pre><code class="language-js">export const typeOf = function (obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">typeOf(&quot;树哥&quot;); // string
+typeOf([]); // array
+typeOf(new Date()); // date
+typeOf(null); // null
+typeOf(true); // boolean
+typeOf(() =&gt; {}); // function
+</code></pre>
+<h2>2.防抖</h2>
+<pre><code class="language-js">export const debounce = (() =&gt; {
+  let timer = null;
+  return (callback, wait = 800) =&gt; {
+    timer &amp;&amp; clearTimeout(timer);
+    timer = setTimeout(callback, wait);
+  };
+})();
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">debounce(() =&gt; {
+  console.log(&quot;加载数据&quot;);
+}, 500);
+</code></pre>
+<h2>3.节流</h2>
+<pre><code class="language-js">export const throttle = (() =&gt; {
+  let last = 0;
+  return (callback, wait = 800) =&gt; {
+    let now = +new Date();
+    if (now - last &gt; wait) {
+      callback();
+      last = now;
+    }
+  };
+})();
+</code></pre>
+<h2>4.手机号脱敏</h2>
+<pre><code class="language-js">export const hideMobile = (mobile) =&gt; {
+  return mobile.replace(/^(\d{3})\d{4}(\d{4})$/, &quot;$1****$2&quot;);
+};
+</code></pre>
+<h2>5.开启全屏</h2>
+<pre><code class="language-js">export const launchFullscreen = (element) =&gt; {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullScreen();
+  }
+};
+</code></pre>
+<h2>6.关闭全屏</h2>
+<pre><code class="language-js">export const exitFullscreen = () =&gt; {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+};
+</code></pre>
+<h2>大小写转换</h2>
+<pre><code class="language-js">export const turnCase = (str, type) =&gt; {
+  switch (type) {
+    case 1:
+      return str.toUpperCase();
+    case 2:
+      return str.toLowerCase();
+    case 3:
+      //return str[0].toUpperCase() + str.substr(1).toLowerCase() // substr 已不推荐使用
+      return str[0].toUpperCase() + str.substring(1).toLowerCase();
+    default:
+      return str;
+  }
+};
+</code></pre>
+<h2>8.解析 URL 参数</h2>
+<pre><code class="language-js">export const getSearchParams = () =&gt; {
+  const searchPar = new URLSearchParams(window.location.search);
+  const paramsObj = {};
+  for (const [key, value] of searchPar.entries()) {
+    paramsObj[key] = value;
+  }
+  return paramsObj;
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">// 假设目前位于 https://****com/index?id=154513&amp;age=18;
+getSearchParams(); // {id: &quot;154513&quot;, age: &quot;18&quot;}
+</code></pre>
+<h2>9.判断手机是 Andoird 还是 IOS</h2>
+<pre><code class="language-js">/**
+ * 1: ios
+ * 2: android
+ * 3: 其它
+ */
+export const getOSType = () =&gt; {
+  let u = navigator.userAgent,
+    app = navigator.appVersion;
+  let isAndroid = u.indexOf(&quot;Android&quot;) &gt; -1 || u.indexOf(&quot;Linux&quot;) &gt; -1;
+  let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+  if (isIOS) {
+    return 1;
+  }
+  if (isAndroid) {
+    return 2;
+  }
+  return 3;
+};
+</code></pre>
+<h2>10.数组对象根据字段去重</h2>
+<ul>
+<li><p>arr 要去重的数组</p>
+</li>
+<li><p>key 根据去重的字段名</p>
+</li>
+</ul>
+<pre><code class="language-js">export const uniqueArrayObject = (arr = [], key = &quot;id&quot;) =&gt; {
+  if (arr.length === 0) return;
+  let list = [];
+  const map = {};
+  arr.forEach((item) =&gt; {
+    if (!map[item[key]]) {
+      map[item[key]] = item;
+    }
+  });
+  list = Object.values(map);
+
+  return list;
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">const responseList = [
+  { id: 1, name: &quot;树哥&quot; },
+  { id: 2, name: &quot;黄老爷&quot; },
+  { id: 3, name: &quot;张麻子&quot; },
+  { id: 1, name: &quot;黄老爷&quot; },
+  { id: 2, name: &quot;张麻子&quot; },
+  { id: 3, name: &quot;树哥&quot; },
+  { id: 1, name: &quot;树哥&quot; },
+  { id: 2, name: &quot;黄老爷&quot; },
+  { id: 3, name: &quot;张麻子&quot; },
+];
+
+uniqueArrayObject(responseList, &quot;id&quot;);
+// [{ id: 1, name: &#39;树哥&#39; },{ id: 2, name: &#39;黄老爷&#39; },{ id: 3, name: &#39;张麻子&#39; }]
+</code></pre>
+<h2>11.滚动到页面顶部</h2>
+<pre><code class="language-js">export const scrollToTop = () =&gt; {
+  const height = document.documentElement.scrollTop || document.body.scrollTop;
+  if (height &gt; 0) {
+    window.requestAnimationFrame(scrollToTop);
+    window.scrollTo(0, height - height / 8);
+  }
+};
+</code></pre>
+<h2>12.滚动到元素位置</h2>
+<pre><code class="language-js">export const smoothScroll = (element) =&gt; {
+  document.querySelector(element).scrollIntoView({
+    behavior: &quot;smooth&quot;,
+  });
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">smoothScroll(&quot;#target&quot;); // 平滑滚动到 ID 为 target 的元素
+</code></pre>
+<h2>13.uuid</h2>
+<pre><code class="language-js">export const uuid = () =&gt; {
+  const temp_url = URL.createObjectURL(new Blob());
+  const uuid = temp_url.toString();
+  URL.revokeObjectURL(temp_url); //释放这个url
+  return uuid.substring(uuid.lastIndexOf(&quot;/&quot;) + 1);
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">uuid(); // a640be34-689f-4b98-be77-e3972f9bffdd
+</code></pre>
+<h2>14.金额格式化</h2>
+<ul>
+<li><p>{number} number：要格式化的数字</p>
+</li>
+<li><p>{number} decimals：保留几位小数</p>
+</li>
+<li><p>{string} dec_point：小数点符号</p>
+</li>
+<li><p>{string} thousands_sep：千分位符号</p>
+</li>
+</ul>
+<pre><code class="language-js">export const moneyFormat = (number, decimals, dec_point, thousands_sep) =&gt; {
+  number = (number + &quot;&quot;).replace(/[^0-9+-Ee.]/g, &quot;&quot;);
+  const n = !isFinite(+number) ? 0 : +number;
+  const prec = !isFinite(+decimals) ? 2 : Math.abs(decimals);
+  const sep = typeof thousands_sep === &quot;undefined&quot; ? &quot;,&quot; : thousands_sep;
+  const dec = typeof dec_point === &quot;undefined&quot; ? &quot;.&quot; : dec_point;
+  let s = &quot;&quot;;
+  const toFixedFix = function (n, prec) {
+    const k = Math.pow(10, prec);
+    return &quot;&quot; + Math.ceil(n * k) / k;
+  };
+  s = (prec ? toFixedFix(n, prec) : &quot;&quot; + Math.round(n)).split(&quot;.&quot;);
+  const re = /(-?\d+)(\d{3})/;
+  while (re.test(s[0])) {
+    s[0] = s[0].replace(re, &quot;$1&quot; + sep + &quot;$2&quot;);
+  }
+
+  if ((s[1] || &quot;&quot;).length &lt; prec) {
+    s[1] = s[1] || &quot;&quot;;
+    s[1] += new Array(prec - s[1].length + 1).join(&quot;0&quot;);
+  }
+  return s.join(dec);
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">moneyFormat(10000000); // 10,000,000.00
+moneyFormat(10000000, 3, &quot;.&quot;, &quot;-&quot;); // 10-000-000.000
+</code></pre>
+<h2>15.存储操作</h2>
+<pre><code class="language-js">class MyCache {
+  constructor(isLocal = true) {
+    this.storage = isLocal ? localStorage : sessionStorage;
+  }
+
+  setItem(key, value) {
+    if (typeof value === &quot;object&quot;) value = JSON.stringify(value);
+    this.storage.setItem(key, value);
+  }
+
+  getItem(key) {
+    try {
+      return JSON.parse(this.storage.getItem(key));
+    } catch (err) {
+      return this.storage.getItem(key);
+    }
+  }
+
+  removeItem(key) {
+    this.storage.removeItem(key);
+  }
+
+  clear() {
+    this.storage.clear();
+  }
+
+  key(index) {
+    return this.storage.key(index);
+  }
+
+  length() {
+    return this.storage.length;
+  }
+}
+
+const localCache = new MyCache();
+const sessionCache = new MyCache(false);
+
+export { localCache, sessionCache };
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">localCache.getItem(&quot;user&quot;);
+sessionCache.setItem(&quot;name&quot;, &quot;树哥&quot;);
+sessionCache.getItem(&quot;token&quot;);
+localCache.clear();
+</code></pre>
+<h2>16.下载文件</h2>
+<ul>
+<li><p>api 接口</p>
+</li>
+<li><p>params 请求参数</p>
+</li>
+<li><p>fileName 文件名</p>
+</li>
+</ul>
+<pre><code class="language-js">const downloadFile = (api, params, fileName, type = &quot;get&quot;) =&gt; {
+  axios({
+    method: type,
+    url: api,
+    responseType: &quot;blob&quot;,
+    params: params,
+  })
+    .then((res) =&gt; {
+      let str = res.headers[&quot;content-disposition&quot;];
+      if (!res || !str) {
+        return;
+      }
+      let suffix = &quot;&quot;;
+      // 截取文件名和文件类型
+      if (str.lastIndexOf(&quot;.&quot;)) {
+        fileName
+          ? &quot;&quot;
+          : (fileName = decodeURI(
+              str.substring(str.indexOf(&quot;=&quot;) + 1, str.lastIndexOf(&quot;.&quot;))
+            ));
+        suffix = str.substring(str.lastIndexOf(&quot;.&quot;), str.length);
+      }
+      //  如果支持微软的文件下载方式(ie10+浏览器)
+      if (window.navigator.msSaveBlob) {
+        try {
+          const blobObject = new Blob([res.data]);
+          window.navigator.msSaveBlob(blobObject, fileName + suffix);
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        //  其他浏览器
+        let url = window.URL.createObjectURL(res.data);
+        let link = document.createElement(&quot;a&quot;);
+        link.style.display = &quot;none&quot;;
+        link.href = url;
+        link.setAttribute(&quot;download&quot;, fileName + suffix);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(link.href);
+      }
+    })
+    .catch((err) =&gt; {
+      console.log(err.message);
+    });
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">downloadFile(&quot;/api/download&quot;, { id }, &quot;文件名&quot;);
+</code></pre>
+<h2>17.时间操作</h2>
+<p>强烈推荐使用 <code>day.js</code></p>
+<h2>18.深拷贝</h2>
+<pre><code class="language-js">export const clone = (parent) =&gt; {
+  // 判断类型
+  const isType = (obj, type) =&gt; {
+    if (typeof obj !== &quot;object&quot;) return false;
+    const typeString = Object.prototype.toString.call(obj);
+    let flag;
+    switch (type) {
+      case &quot;Array&quot;:
+        flag = typeString === &quot;[object Array]&quot;;
+        break;
+      case &quot;Date&quot;:
+        flag = typeString === &quot;[object Date]&quot;;
+        break;
+      case &quot;RegExp&quot;:
+        flag = typeString === &quot;[object RegExp]&quot;;
+        break;
+      default:
+        flag = false;
+    }
+    return flag;
+  };
+
+  // 处理正则
+  const getRegExp = (re) =&gt; {
+    var flags = &quot;&quot;;
+    if (re.global) flags += &quot;g&quot;;
+    if (re.ignoreCase) flags += &quot;i&quot;;
+    if (re.multiline) flags += &quot;m&quot;;
+    return flags;
+  };
+  // 维护两个储存循环引用的数组
+  const parents = [];
+  const children = [];
+
+  const _clone = (parent) =&gt; {
+    if (parent === null) return null;
+    if (typeof parent !== &quot;object&quot;) return parent;
+
+    let child, proto;
+
+    if (isType(parent, &quot;Array&quot;)) {
+      // 对数组做特殊处理
+      child = [];
+    } else if (isType(parent, &quot;RegExp&quot;)) {
+      // 对正则对象做特殊处理
+      child = new RegExp(parent.source, getRegExp(parent));
+      if (parent.lastIndex) child.lastIndex = parent.lastIndex;
+    } else if (isType(parent, &quot;Date&quot;)) {
+      // 对Date对象做特殊处理
+      child = new Date(parent.getTime());
+    } else {
+      // 处理对象原型
+      proto = Object.getPrototypeOf(parent);
+      // 利用Object.create切断原型链
+      child = Object.create(proto);
+    }
+
+    // 处理循环引用
+    const index = parents.indexOf(parent);
+
+    if (index != -1) {
+      // 如果父数组存在本对象,说明之前已经被引用过,直接返回此对象
+      return children[index];
+    }
+    parents.push(parent);
+    children.push(child);
+
+    for (let i in parent) {
+      // 递归
+      child[i] = _clone(parent[i]);
+    }
+
+    return child;
+  };
+  return _clone(parent);
+};
+</code></pre>
+<blockquote>
+<p>此方法存在一定局限性：一些特殊情况没有处理: 例如 Buffer 对象、Promise、Set、Map。</p>
+</blockquote>
+<p><strong>如果确实想要完备的深拷贝，推荐使用 lodash 中的 cloneDeep 方法。</strong></p>
+<h2>19.模糊搜索</h2>
+<ul>
+<li><p>list 原数组</p>
+</li>
+<li><p>keyWord 查询的关键词</p>
+</li>
+<li><p>attribute 数组需要检索属性</p>
+</li>
+</ul>
+<pre><code class="language-js">export const fuzzyQuery = (list, keyWord, attribute = &quot;name&quot;) =&gt; {
+  const reg = new RegExp(keyWord);
+  const arr = [];
+  for (let i = 0; i &lt; list.length; i++) {
+    if (reg.test(list[i][attribute])) {
+      arr.push(list[i]);
+    }
+  }
+  return arr;
+};
+</code></pre>
+<ul>
+<li>示例：</li>
+</ul>
+<pre><code class="language-js">const list = [
+  { id: 1, name: &quot;树哥&quot; },
+  { id: 2, name: &quot;黄老爷&quot; },
+  { id: 3, name: &quot;张麻子&quot; },
+  { id: 4, name: &quot;汤师爷&quot; },
+  { id: 5, name: &quot;胡万&quot; },
+  { id: 6, name: &quot;花姐&quot; },
+  { id: 7, name: &quot;小梅&quot; },
+];
+fuzzyQuery(list, &quot;树&quot;, &quot;name&quot;); // [{id: 1, name: &#39;树哥&#39;}]
+</code></pre>
+<h2>20.遍历树节点</h2>
+<pre><code class="language-js">export const foreachTree = (data, callback, childrenName = &quot;children&quot;) =&gt; {
+  for (let i = 0; i &lt; data.length; i++) {
+    callback(data[i]);
+    if (data[i][childrenName] &amp;&amp; data[i][childrenName].length &gt; 0) {
+      foreachTree(data[i][childrenName], callback, childrenName);
+    }
+  }
+};
+</code></pre>
+<ul>
+<li>假设我们要从树状结构数据中查找 id 为 9 的节点</li>
+</ul>
+<pre><code class="language-js">const treeData = [{
+  id: 1,
+  label: &#39;一级 1&#39;,
+  children: [{
+    id: 4,
+    label: &#39;二级 1-1&#39;,
+    children: [{
+      id: 9,
+      label: &#39;三级 1-1-1&#39;
+    }, {
+      id: 10,
+      label: &#39;三级 1-1-2&#39;
+    }]
+  }]
+ }, {
+  id: 2,
+  label: &#39;一级 2&#39;,
+  children: [{
+    id: 5,
+    label: &#39;二级 2-1&#39;
+  }, {
+    id: 6,
+    label: &#39;二级 2-2&#39;
+  }]
+  }, {
+    id: 3,
+    label: &#39;一级 3&#39;,
+    children: [{
+      id: 7,
+      label: &#39;二级 3-1&#39;
+    }, {
+      id: 8,
+      label: &#39;二级 3-2&#39;
+    }]
+}],
+
+let result
+foreachTree(data, (item) =&gt; {
+  if (item.id === 9) {
+    result = item
+  }
+})
+console.log(&#39;result&#39;, result)  // {id: 9,label: &quot;三级 1-1-1&quot;}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/85.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/87.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

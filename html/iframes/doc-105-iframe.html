@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">#d1,
+#d2,
+#d3 {
+  width: 100px;
+  height: 100px; }
+
+#d1 {
+  background: lightsalmon;
+  position: fixed;
+  top: 10%;
+  left: 20%; }
+
+#d2 {
+  background: lightblue;
+  position: fixed;
+  top: 65%;
+  left: 20%; }
+
+#d3 {
+  background: red;
+  position: fixed;
+  top: 40%;
+  left: 55%; }
+</style>
+              </head>
+              <body>
+                <div id="d1"></div>
+<div id="d2"></div>
+<div id="d3"></div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">class MoveBall {
+  constructor({ startDom, endDom }) {
+    this.startXy = MoveBall.getCenterCoordinates(startDom);
+    this.endXy = MoveBall.getCenterCoordinates(endDom);
+    this.verticalDom = MoveBall.cerateVerticalDom(startDom);
+    this.horizontalDom = MoveBall.createHorizontalDom();
+    this.verticalDom.appendChild(this.horizontalDom);
+  }
+  static ballW = 30;
+  static ballH = 30;
+  static getCenterCoordinates(domElement) {
+    const rect = domElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    return { x: centerX, y: centerY };
+  }
+  static cerateVerticalDom(startDom) {
+    const startXy = MoveBall.getCenterCoordinates(startDom);
+    const verticalDom = document.createElement("div");
+    verticalDom.style.position = "fixed";
+    verticalDom.style.top = `${startXy.y - MoveBall.ballH / 2}px`;
+    verticalDom.style.left = `${startXy.x - MoveBall.ballW / 2}px`;
+    verticalDom.style.zIndex = "999";
+    return verticalDom;
+  }
+  static createHorizontalDom() {
+    const horizontalDom = document.createElement("div");
+    horizontalDom.style.width = `${MoveBall.ballW}px`;
+    horizontalDom.style.height = `${MoveBall.ballH}px`;
+    horizontalDom.style.borderRadius = "50%";
+    horizontalDom.style.background = "lightgreen";
+    return horizontalDom;
+  }
+  getOffsetXy() {
+    return {
+      x: this.endXy.x - this.startXy.x,
+      y: this.endXy.y - this.startXy.y,
+    };
+  }
+  freeThrow() {
+    document.body.appendChild(this.verticalDom);
+    let verticalEasing =
+      this.startXy.y < this.endXy.y
+        ? "cubic-bezier(.44,-1.43,1,1)"
+        : "cubic-bezier(0,0,.76,1.92)";
+    let verticalAnimate = this.verticalDom.animate(
+      [{ transform: `translate3d(0, ${this.getOffsetXy().y}px, 0)` }],
+      {
+        easing: verticalEasing,
+        duration: 800,
+        iterations: 1,
+      }
+    );
+    this.horizontalDom.animate(
+      [{ transform: `translate3d(${this.getOffsetXy().x}px, 0, 0)` }],
+      {
+        easing: "linear",
+        duration: 800,
+        iterations: 1,
+      }
+    );
+    verticalAnimate.onfinish = () => {
+      this.verticalDom.remove();
+    };
+  }
+}
+
+const d1 = document.getElementById("d1");
+const d2 = document.getElementById("d2");
+const d3 = document.getElementById("d3");
+d1.onclick = function (e) {
+  let moveball = new MoveBall({
+    startDom: d1,
+    endDom: d3,
+  });
+  moveball.freeThrow();
+};
+d2.onclick = function (e) {
+  let moveball = new MoveBall({
+    startDom: d2,
+    endDom: d3,
+  });
+  moveball.freeThrow();
+};
+</script>
+              </body>
+            </html>
+            
