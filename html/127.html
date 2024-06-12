@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>前端 js 动画库</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>前端 js 动画库</h2>
+                    <p>2024-06-12 18:12:16 · YinHao</p>
+                  </div>
+                  <h2>gsap</h2>
+<p>做前端动画，我强推这个框架，真的很好用！</p>
+<p><code>GSAP</code>（GreenSock Animation Platform）是一个用于创建<code>高性能、跨浏览器</code>的动画的<code>JavaScript库</code>。它提供了许多强大而灵活的 API，允许开发者创建各种复杂的动画效果。</p>
+<p>使用起来非常简单，我们实现一个动画，将.box 这个元素在 x 轴方向向右移动 200px，耗时 2 秒</p>
+<pre><code class="language-js">gsap.to(&quot;.box&quot;, {
+  x: 200,
+  duration: 2,
+});
+</code></pre>
+<p>当然，这只是 gsap 功能的冰山一角，它还有很多可以让我们高效工作的能力：</p>
+<ol>
+<li><strong>CSS 属性动画</strong>：可以对几乎所有 CSS 属性进行动画处理，包括不常用的属性。</li>
+<li><strong>时间线控制</strong>：提供时间线功能，可以方便地控制动画的<code>序列</code>和并行。</li>
+<li><strong>缓动函数</strong>：内置多种<code>缓动函数</code>，可以创建更自然的运动效果。</li>
+<li><strong>SVG 和 Canvas 动画</strong>：支持<code>SVG</code>和<code>HTML5 Canvas</code>元素的动画。</li>
+<li><strong>复杂动画路径</strong>：可以创建复杂的运动路径，实现复杂的动画效果。</li>
+<li><strong>3D 动画</strong>：虽然 GSAP 主要用于 2D 动画，但也支持一些 3D 动画效果。</li>
+<li><strong>插件系统</strong>：有丰富的插件系统，可以扩展其功能，比如 MorphSVG 插件可以创建 SVG 图形的形变动画。</li>
+<li><strong>性能优化</strong>：GSAP 在性能上做了大量优化，可以处理大量的动画而不影响页面性能。</li>
+<li><strong>跨浏览器兼容性</strong>：确保动画在各种浏览器和设备上都能平滑运行。</li>
+</ol>
+<p>GSAP 的一个关键特点是它对性能的优化，它使用优化的算法和浏览器的请求动画帧（<code>requestAnimationFrame</code>）API 来实现流畅的动画效果。</p>
+<p>此外，GSAP 的 API 设计得非常人性化，易于学习和使用，同时它还提供了大量的文档和示例来帮助开发者快速上手。</p>
+<blockquote>
+<p>gsap 官方地址：<a href="https://gsap.com">gsap.com</a></p>
+</blockquote>
+<h2>lottie</h2>
+<p><code>Lottie</code> 是一个由<code>爱彼迎（Airbnb）</code>开发的开源动画库，主要用法就是 UI 设计通过专业动画软件（如<code>After Effects</code>）设计好之后，输出<code>json</code>文件，然后通过 Lottie 将这些动画无缝地集成到移动 app 和网页中。</p>
+<pre><code class="language-js">lottie.loadAnimation({
+  container: element, // the dom element that will contain the animation
+  renderer: &quot;svg&quot;,
+  loop: true,
+  autoplay: true,
+  path: &quot;data.json&quot;, // the path to the animation json
+});
+</code></pre>
+<p>Lottie 优势：</p>
+<ol>
+<li><strong>After Effects 兼容性</strong>：Lottie 支持将 After Effects 项目（.json 格式的动画数据）直接转换为可在应用和网页中使用的动画。</li>
+<li><strong>跨平台</strong>：Lottie 支持多种平台，包括 Android、iOS、Web（通过 React Native、Vue、Angular 等框架）。</li>
+<li><strong>性能炸裂</strong>：Lottie 使用原生的图形和动画代码，这意味着动画性能通常比使用 CSS 或 JavaScript 直接编写的动画更优。</li>
+<li><strong>定制化</strong>：动画可以被定制和动态修改，例如更改颜色、大小、速度等。</li>
+<li><strong>轻量级</strong>：Lottie 动画文件体积小，因为它们只包含关键帧数据，而不是完整的视频或序列帧。</li>
+<li><strong>易于使用</strong>：Lottie 提供了简单的 API，使得在项目中集成动画变得非常容易。</li>
+<li><strong>动画效果丰富</strong>：由于它基于 After Effects，Lottie 可以支持复杂的动画效果，包括 3D 效果、遮罩、表达式等。</li>
+<li><strong>实时渲染</strong>：Lottie 动画是实时渲染的，这意味着动画可以在不同的屏幕尺寸和分辨率下保持高质量。</li>
+<li><strong>社区支持</strong>：作为一个开源项目，Lottie 有一个活跃的社区，不断有新的功能和改进被加入。</li>
+<li><strong>动画缓存</strong>：Lottie 支持动画的缓存，可以提高重复播放动画的性能。</li>
+</ol>
+<p>Lottie 的使用场景非常广泛，从简单的加载指示器到复杂的交互式动画，都可以用 Lottie 来实现。</p>
+<blockquote>
+<p>Lottie 官方地址：<a href="https://airbnb.io/lottie/#/web%22">airbnb.io/lottie/#/we…</a></p>
+</blockquote>
+<h2>React Spring</h2>
+<p><code>React Spring</code>：react 开发者的福音，这款框架是基于<code>React</code>的动画库，它使用基于物理的动画，可以创建非常自然和流畅的动画效果。</p>
+<p>初始化一个简单的动画，让 div 从左向右移动：</p>
+<pre><code class="language-js">import { useSpring, animated } from &quot;@react-spring/web&quot;;
+export default function MyComponent() {
+  const springs = useSpring({
+    from: { x: 0 },
+    to: { x: 100 },
+  });
+  return (
+    &lt;animated.div
+      style={{
+        width: 80,
+        height: 80,
+        background: &quot;#ff6d6d&quot;,
+        borderRadius: 8,
+        ...springs,
+      }}
+    /&gt;
+  );
+}
+</code></pre>
+<blockquote>
+<p>React Spring 官方地址：<a href="https://www.react-spring.dev/docs/getting-started">www.react-spring.dev/docs/gettin…</a></p>
+</blockquote>
+<h2>Anime.js</h2>
+<p><code>Anime.js</code>：一个<code>轻量级</code>的 JavaScript 动画库，它使用<code>CSS</code>属性和<code>SVG</code>，可以创建平滑的 CSS 和 SVG 动画</p>
+<p>初始化一个简单的动画：</p>
+<pre><code class="language-js">anime({
+  targets: &quot;.css-prop-demo .el&quot;,
+  left: &quot;240px&quot;,
+  backgroundColor: &quot;#FFF&quot;,
+  borderRadius: [&quot;0%&quot;, &quot;50%&quot;],
+  easing: &quot;easeInOutQuad&quot;,
+});
+</code></pre>
+<p>说实话，看 api，有点类似于 gsap 动画库，也不知道它倆是怎么个关系~</p>
+<blockquote>
+<p>Anime.js 官方地址：<a href="https://animejs.com/documentation/#cssSelector">animejs.com/documentati…</a></p>
+</blockquote>
+<h2>其他动画库</h2>
+<p>还有很多其他的动画库，但是作者本人还没用过，如果有用过的小伙伴也可以在评论区发表一下使用体验或者看法。</p>
+<ol>
+<li><strong>Framer Motion</strong>：也是一个基于<code>React</code>的动画库，它提供了一个简单的 API 来创建动画和交互效果。</li>
+<li><strong>Velocity.js</strong>：一个强大的动画引擎，可以与<code>jQuery</code>结合使用，提供丰富的动画效果。</li>
+<li><strong>Popmotion</strong>：一个功能全面的动作和动画库，支持 React 和非 React 环境。</li>
+<li><strong>Web Animations API</strong>：是现代浏览器提供的原生 JavaScript 动画 API，允许开发者以编程方式创建复杂的动画。</li>
+<li><strong>KUTE.js</strong>：一个轻量级的动画库，专注于性能和易用性，支持 CSS 属性、SVG 和自定义属性的动画。</li>
+<li><strong>Flickity</strong>：虽然主要是一个轻量级的画廊和卡丁车库，但它也提供了一些基本的动画功能。</li>
+<li><strong>GreenSock Draggable</strong>：GSAP 的一个插件，允许元素的拖放，可以创建交互式的动画效果。</li>
+<li><strong>CyberConnect</strong>：一个基于 Web Animations API 的库，可以创建复杂的动画和过渡效果。</li>
+</ol>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/126.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
