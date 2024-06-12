@@ -9,7 +9,7 @@
 }
 
 :root {
-  --color-01: #ff1493;
+  --color-01: #ff0000;
 }
 
 html,
@@ -374,7 +374,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
   padding-bottom: 2px;
 }
 
-.token.constant,
+/* .token.constant,
 .token.deleted,
 .token.property,
 .token.symbol,
@@ -383,4 +383,4 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
 .token.attr-value,
 .token.keyword {
   color: var(--color-01);
-}
+} */
