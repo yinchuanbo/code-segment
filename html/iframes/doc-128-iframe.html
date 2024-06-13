@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+.wrapper {
+  position: relative;
+  margin: 0 auto;
+  max-width: 1094px;
+  width: 100%; }
+
+button {
+  outline: none;
+  border: 0; }
+
+.ai_easily {
+  width: 100%;
+  height: 100%;
+  padding: 120px 0 80px; }
+  .ai_easily h2 {
+    color: #fff;
+    font: normal normal 600 38px/57px Poppins;
+    text-align: center;
+    margin-bottom: 68px; }
+  .ai_easily .sticky_wrapper {
+    position: relative;
+    overflow: visible;
+    padding-top: 250px;
+    margin-bottom: 168px; }
+    .ai_easily .sticky_wrapper .sticky-content-slide {
+      width: 100%;
+      height: 486px;
+      border-radius: 20px;
+      background-color: #fff;
+      box-shadow: 0px 20px 25px rgba(47, 40, 81, 0.44);
+      position: sticky;
+      overflow: hidden; }
+      .ai_easily .sticky_wrapper .sticky-content-slide .box {
+        position: relative;
+        height: 420px;
+        margin-bottom: 20px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide .box .left {
+          padding: 60px 0 0 83px; }
+          .ai_easily .sticky_wrapper .sticky-content-slide .box .left h3 {
+            color: #39325a;
+            font: normal normal 600 40px/60px Poppins;
+            width: 360px;
+            margin-bottom: 10px; }
+          .ai_easily .sticky_wrapper .sticky-content-slide .box .left p {
+            text-align: left;
+            color: #39325a;
+            font: normal normal 300 16px/27px Poppins;
+            width: 337px;
+            margin-bottom: 30px; }
+          .ai_easily .sticky_wrapper .sticky-content-slide .box .left .btn button {
+            width: 273px;
+            height: 49px;
+            border-radius: 25px;
+            background-color: #6d4dff;
+            color: #fff;
+            font: normal normal 500 18px/27px Poppins;
+            transition: all 0.3s; }
+            .ai_easily .sticky_wrapper .sticky-content-slide .box .left .btn button:hover {
+              background-color: rgba(109, 77, 255, 0.9); }
+        .ai_easily .sticky_wrapper .sticky-content-slide .box .right {
+          position: absolute;
+          top: 0;
+          right: 0; }
+      .ai_easily .sticky_wrapper .sticky-content-slide .num {
+        text-align: right;
+        padding: 0 23px 10px;
+        font: normal normal 600 26px/39px Poppins;
+        color: #8c72ff; }
+      .ai_easily .sticky_wrapper .sticky-content-slide.slide-1 {
+        z-index: 6;
+        bottom: 250px;
+        margin-bottom: 250px;
+        margin-top: -250px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-1 .num {
+          padding: 0 29px 10px; }
+      .ai_easily .sticky_wrapper .sticky-content-slide.slide-2 {
+        z-index: 5;
+        bottom: 200px;
+        margin-bottom: 200px;
+        margin-top: -200px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-2 .num {
+          color: #ff453e; }
+      .ai_easily .sticky_wrapper .sticky-content-slide.slide-3 {
+        z-index: 4;
+        bottom: 150px;
+        margin-bottom: 150px;
+        margin-top: -150px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-3 .num {
+          color: #3961ff; }
+      .ai_easily .sticky_wrapper .sticky-content-slide.slide-4 {
+        z-index: 3;
+        bottom: 100px;
+        margin-bottom: 100px;
+        margin-top: -100px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-4 .num {
+          color: #4dbc8c; }
+      .ai_easily .sticky_wrapper .sticky-content-slide.slide-5 {
+        z-index: 2;
+        bottom: 50px;
+        margin-bottom: 50px;
+        margin-top: -50px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-5 .left h3 {
+          width: 362px; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-5 .num {
+          color: #ff4e00; }
+      .ai_easily .sticky_wrapper .sticky-content-slide.slide-6 {
+        z-index: 1;
+        bottom: 0;
+        margin-bottom: 0;
+        margin-top: 0; }
+        .ai_easily .sticky_wrapper .sticky-content-slide.slide-6 .num {
+          color: #cc3dff; }
+  .ai_easily p {
+    text-align: center;
+    color: #ffffff;
+    font: normal normal 300 18px/27px Poppins; }
+</style>
+              </head>
+              <body>
+                <div class="ai_easily">
+  <div class="wrapper">
+    <h2 class="showup">
+      Generate AI Avatar Free for Any Scenarios in Your Life
+    </h2>
+    <div class="sticky_wrapper pc showup">
+      <div class="sticky-content-slide slide-1">
+        <div class="box">
+          <div class="left">
+            <h3>Social Media Profiles</h3>
+            <p>
+              Personalize your social media profiles with AI avatars. Multiple
+              styles can make your profile unique, updated, and popular.
+            </p>
+            <div class="btn">
+              <button id="scene1">Generate Now</button>
+            </div>
+          </div>
+          <div class="right">
+            <img
+              src="https://www.vidnoz.com/img/ai-avatar/slide1.png"
+              alt="Vidnoz AI Avatar Generator-Social Media Profiles"
+              width="580"
+              height="420"
+            />
+          </div>
+        </div>
+        <div class="num">01</div>
+      </div>
+      <div class="sticky-content-slide slide-2">
+        <div class="box">
+          <div class="left">
+            <h3>Live Channels Avatar</h3>
+            <p>
+              Wanna update your live-streaming channel avatar on Twitch or
+              Discord? Vidnoz AI avatar generator would offer you outstanding
+              avatars that can make your channel outstanding.
+            </p>
+            <div class="btn">
+              <button id="scene2">Generate Now</button>
+            </div>
+          </div>
+          <div class="right">
+            <img
+              src="https://www.vidnoz.com/img/ai-avatar/slide2.png"
+              alt="Vidnoz AI Avatar Generator-Live Channels Avatar"
+              width="580"
+              height="420"
+            />
+          </div>
+        </div>
+        <div class="num">02</div>
+      </div>
+      <div class="sticky-content-slide slide-3">
+        <div class="box">
+          <div class="left">
+            <h3>Gaming Avatar</h3>
+            <p>
+              Use multiple styles of AI avatars in your games and make your
+              gaming experience more interesting. Anime, loli, sketch avatars,
+              and more, are perfect for your new avatar in Genshin Impact, Apex
+              Legends, PUBG, etc.
+            </p>
+            <div class="btn">
+              <button id="scene3">Generate Now</button>
+            </div>
+          </div>
+          <div class="right">
+            <img
+              src="https://www.vidnoz.com/img/ai-avatar/slide3.png"
+              alt="Vidnoz AI Avatar Generator-Gaming Avatar"
+              width="580"
+              height="420"
+            />
+          </div>
+        </div>
+        <div class="num">03</div>
+      </div>
+      <div class="sticky-content-slide slide-4">
+        <div class="box">
+          <div class="left">
+            <h3>Promote<br />Your Business</h3>
+            <p>
+              AI avatars can replace people in explainer videos as AI anchors,
+              provide personalized customer services, make virtual assistants to
+              help users with shopping, etc. Your business will be boosted with
+              the help of them.
+            </p>
+            <div class="btn">
+              <button id="scene4">Generate Now</button>
+            </div>
+          </div>
+          <div class="right">
+            <img
+              src="https://www.vidnoz.com/img/ai-avatar/slide4.png"
+              alt="Vidnoz AI Avatar Generator-Promote Your Business"
+              width="588"
+              height="420"
+            />
+          </div>
+        </div>
+        <div class="num">04</div>
+      </div>
+      <div class="sticky-content-slide slide-5">
+        <div class="box">
+          <div class="left">
+            <h3>Create Faceless YouTube Channel</h3>
+            <p>
+              AI avatars can replace you to become the YouTuber in videos since
+              they can talk and move with Vidnoz AI video generator. These two
+              tools combined would be the best helpers for YouTubers who want to
+              create faceless channels.
+            </p>
+            <div class="btn">
+              <button id="scene5">Generate Now</button>
+            </div>
+          </div>
+          <div class="right">
+            <img
+              src="https://www.vidnoz.com/img/ai-avatar/slide5.png"
+              alt="Vidnoz AI Avatar Generator-Create Faceless YouTube Channel"
+              width="580"
+              height="420"
+            />
+          </div>
+        </div>
+        <div class="num">05</div>
+      </div>
+      <div class="sticky-content-slide slide-6">
+        <div class="box">
+          <div class="left">
+            <h3>Create Avatars<br />of Teachers</h3>
+            <p>
+              Teachers can make use of AI avatars to create online courses,
+              which is more entertaining and interactive for students on online
+              learning platforms.
+            </p>
+            <div class="btn">
+              <button id="scene6">Generate Now</button>
+            </div>
+          </div>
+          <div class="right">
+            <img
+              src="https://www.vidnoz.com/img/ai-avatar/slide6.png"
+              alt="Vidnoz AI Avatar Generator-Create Avatars of Teachers"
+              width="580"
+              height="420"
+            />
+          </div>
+        </div>
+        <div class="num">06</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview"></script>
+              </body>
+            </html>
+            

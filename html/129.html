@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>官网效果 - 轮播</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/editor.main.css"/>
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;section class=&#34;use__occasions&#34;&gt;
+  &lt;h2 class=&#34;use__occasions_title&#34;&gt;
+    Use Vidnoz AI Video Translator for Diverse Occasions
+  &lt;/h2&gt;
+  &lt;div class=&#34;use__occasions_desc&#34;&gt;
+    With Vidnoz AI Video Translator, people in all sorts of fields can do
+    pro-level video translation simply, gain dominant advantages, and fulfill
+    different goals.
+  &lt;/div&gt;
+  &lt;div class=&#34;use__occasions_swiper swiper-container&#34;&gt;
+    &lt;div class=&#34;swiper-wrapper&#34;&gt;
+      &lt;div class=&#34;use__occasions_swiper-item swiper-slide&#34;&gt;
+        &lt;h3&gt;Businesses and Marketers&lt;/h3&gt;
+        &lt;img
+          src=&#34;https://via.placeholder.com/678x388&#34;
+          alt=&#34;AI Video Translator for Marketer&#34;
+        /&gt;
+        &lt;p&gt;
+          Translate product videos, campaign videos, and company videos into
+          multiple languages. Unlock more sales opportunities, and build a
+          strong brand identity.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;use__occasions_swiper-item swiper-slide&#34;&gt;
+        &lt;h3&gt;Video Creator&lt;/h3&gt;
+        &lt;img
+          src=&#34;https://via.placeholder.com/678x388&#34;
+          alt=&#34;AI Video Translator for Creator&#34;
+        /&gt;
+        &lt;p&gt;
+          Translate video online free for YouTube, TikTok, Instagram, etc. Be an
+          influential content creator across the globe.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;use__occasions_swiper-item swiper-slide&#34;&gt;
+        &lt;h3&gt;Teachers and Trainers&lt;/h3&gt;
+        &lt;img
+          src=&#34;https://via.placeholder.com/678x388&#34;
+          alt=&#34;AI Video Translator for Teacher&#34;
+        /&gt;
+        &lt;p&gt;
+          Do lesson or
+          &lt;a href=&#34;https://www.vidnoz.com/training-and-development.html&#34;
+            &gt;training video&lt;/a
+          &gt;
+          translations and use them as a supplementary approach to teaching
+          foreign learners more effectively.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;use__occasions_swiper-item swiper-slide&#34;&gt;
+        &lt;h3&gt;Language Learners&lt;/h3&gt;
+        &lt;img
+          src=&#34;https://via.placeholder.com/678x388&#34;
+          alt=&#34;AI Video Translator for Learner&#34;
+        /&gt;
+        &lt;p&gt;
+          Convert the dubbing, voice-over, and subtitles in a video to
+          comprehend the meaning and learn a language fast.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;use__occasions_swiper-item swiper-slide&#34;&gt;
+        &lt;h3&gt;Podcasters&lt;/h3&gt;
+        &lt;img
+          src=&#34;https://via.placeholder.com/678x388&#34;
+          alt=&#34;AI Video Translator for Podcaster&#34;
+        /&gt;
+        &lt;p&gt;
+          Produce visual and multilingual podcasts by translating videos into
+          different languages.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;use__occasions_swiper-item swiper-slide&#34;&gt;
+        &lt;h3&gt;Event Collaboration&lt;/h3&gt;
+        &lt;img
+          src=&#34;https://via.placeholder.com/678x388&#34;
+          alt=&#34;AI Video Translator for Cooperation&#34;
+        /&gt;
+        &lt;p&gt;
+          Enhance efficiency and productivity through cross-border collaboration
+          by translating video content into multiple languages.
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;swiper-button-next&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;swiper-button-prev&#34;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button type=&#34;button&#34; class=&#34;primary&#34; onclick=&#34;window.scrollTo(0, 0);&#34;&gt;
+    Translate Now
+  &lt;/button&gt;
+&lt;/section&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">@import url(&#34;https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap&#34;);
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: &#34;Poppins&#34;, sans-serif;
+  -webkit-tap-highlight-color: rgba($color: #000000, $alpha: 0);
+  scroll-behavior: smooth;
+  user-select: none;
+}
+
+html,
+body {
+  box-sizing: inherit;
+}
+
+:root {
+  --btn-bg-color: #8b3dff;
+  --text-color: #fff;
+  --text-b-color: #000000;
+  --dot-color: #beb8cb;
+  --click-btn-color: #15151c;
+  --dot-active-color: #6d4dff;
+}
+@mixin button-base {
+  outline: none;
+  border: 0;
+  cursor: pointer;
+}
+
+@mixin flex-row-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column-center-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin font-info($fs, $lh, $fw, $c, $ta: center) {
+  font-size: pxToVw($fs);
+  font-weight: $fw;
+  line-height: pxToVw($lh);
+  font-family: inherit;
+  color: $c;
+  text-align: $ta;
+}
+
+@mixin font-info-pc($fs, $lh, $fw, $c, $ta: center) {
+  font-size: $fs;
+  font-weight: $fw;
+  line-height: $lh;
+  font-family: inherit;
+  color: $c;
+  text-align: $ta;
+}
+
+@function pxToVw($px) {
+  @return ($px / 750) * 100vw;
+}
+
+a {
+  color: var(--btn-bg-color);
+}
+button.primary {
+  @include button-base;
+  background-color: #6d4dff;
+  width: pxToVw(610);
+  height: pxToVw(100);
+  border-radius: pxToVw(50);
+  color: var(--text-color);
+  font-size: pxToVw(32);
+  font-weight: 500;
+}
+
+@media (min-width: 1200px) {
+  button.primary {
+    @include button-base;
+    background-color: #6d4dff;
+    width: 312px;
+    height: 49px;
+    border-radius: 25px;
+    color: var(--text-color);
+    font-size: 18px;
+    font-weight: 500;
+    transition: all 0.5s;
+    &amp;:hover {
+      background: #4a34da;
+      transition: all 0.5s;
+    }
+  }
+}
+.use__occasions {
+  @include flex-column-center-center;
+  padding-top: pxToVw(100);
+  padding-bottom: pxToVw(100);
+  background-color: #fff;
+  width: 100%;
+  .use__occasions_title {
+    max-width: pxToVw(630);
+    margin-bottom: pxToVw(24);
+    @include font-info(44, 71, 600, var(--text-b-color));
+    margin-bottom: pxToVw(25);
+  }
+  .use__occasions_desc {
+    max-width: pxToVw(630);
+    margin-bottom: pxToVw(55);
+    @include font-info(32, 55, 300, var(--text-b-color));
+  }
+  // swiper
+  .use__occasions_swiper {
+    width: pxToVw(630);
+    height: fit-content;
+    position: relative;
+    overflow: hidden;
+    height: pxToVw(840);
+    .use__occasions_swiper-item {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      transition: all 0.3s;
+      top: 0;
+      &gt; h3 {
+        @include font-info(32, 45, 600, var(--text-b-color));
+        margin-bottom: pxToVw(25);
+      }
+      &gt; img {
+        max-width: 100%;
+        display: block;
+      }
+      &gt; p {
+        @include font-info(32, 55, 300, var(--text-b-color));
+        margin-top: pxToVw(40);
+        letter-spacing: 0.64px;
+      }
+    }
+    .swiper__dots {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: pxToVw(30);
+      @include flex-row-center-center;
+      z-index: 9;
+      .swiper__dots-item {
+        display: block;
+        width: pxToVw(34);
+        height: pxToVw(34);
+        border-radius: 100%;
+        transition: all 0.3s;
+        transform-origin: center;
+        position: relative;
+        &amp;::before {
+          content: &#34;&#34;;
+          position: absolute;
+          width: pxToVw(21);
+          height: pxToVw(21);
+          background-color: var(--dot-color);
+          border-radius: 100%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          transition: all 0.3s;
+        }
+        &amp;:not(.active) {
+          cursor: pointer;
+        }
+        &amp; + .swiper__dots-item {
+          margin-left: pxToVw(18);
+        }
+        &amp;.active {
+          border-radius: 100%;
+          &amp;::before {
+            width: pxToVw(34);
+            height: pxToVw(34);
+            background-color: var(--dot-active-color);
+            transition: all 0.3s;
+          }
+        }
+      }
+    }
+  }
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .use__occasions {
+    @include flex-column-center-center;
+    padding-top: 100px;
+    padding-bottom: 108px;
+    overflow: hidden;
+    background-color: #fff;
+    width: 100%;
+    .use__occasions_title {
+      @include font-info-pc(44px, 65px, 600, var(--text-b-color));
+      margin-bottom: 15px;
+    }
+    .use__occasions_desc {
+      max-width: 890px;
+      @include font-info-pc(18px, 27px, 300, var(--text-b-color));
+      margin-bottom: 30px;
+    }
+    .use__occasions_swiper {
+      display: flex;
+      width: 678px;
+      height: 544px;
+      margin-bottom: 28px;
+      overflow: initial !important;
+      .use__occasions_swiper-item {
+        position: initial;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        transition: 0.5s;
+        height: auto !important;
+        cursor: pointer;
+        &gt; img {
+          max-width: 100%;
+          height: auto;
+          order: 0;
+          margin-bottom: 40px;
+        }
+        &gt; h3 {
+          @include font-info-pc(20px, 30px, 600, var(--text-b-color), left);
+          order: 1;
+          margin-bottom: 0;
+        }
+        &gt; p {
+          @include font-info-pc(16px, 25px, 300, var(--text-b-color), left);
+          order: 2;
+          margin-top: 0;
+          opacity: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+      }
+      .swiper-slide-active,
+      .swiper-slide-duplicate-active {
+        width: 678px !important;
+        &gt; p {
+          opacity: 1;
+        }
+      }
+      .swiper-button-next,
+      .swiper-button-prev {
+        width: 65px;
+        height: 65px;
+        background-color: var(--click-btn-color);
+        border-radius: 100%;
+        color: var(--text-color);
+        --swiper-navigation-size: 25px;
+        display: flex;
+        top: 40%;
+      }
+    }
+  }
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">// 移动端
+class CustomSwiperOne {
+  constructor({ container = &#34;&#34;, children = &#34;&#34; }) {
+    this.container = container;
+    this.children = children;
+    this.swiperItemIndex = 0;
+    this.init();
+  }
+  init() {
+    this.containerDom = document.querySelector(this.container);
+    this.containerItemDom = this.containerDom.querySelectorAll(this.children);
+    this.containerItemLen = this.containerItemDom.length;
+    this.render();
+  }
+  render() {
+    let dots = `&lt;div class=&#34;swiper__dots&#34;&gt;`;
+    for (let i = 0; i &lt; this.containerItemLen; i++) {
+      const item = this.containerItemDom[i];
+      item.style.left = `${i * 100}%`;
+      let classes = &#34;&#34;;
+      if (i === 0) {
+        classes = &#34;active&#34;;
+      }
+      dots += `&lt;span class=&#34;swiper__dots-item ${classes}&#34; data-i=&#34;${i}&#34;&gt;&lt;/span&gt;`;
+      this.moveItemByTouch(item);
+    }
+    this.containerDom.insertAdjacentHTML(&#34;beforeend&#34;, dots);
+    this.dotsClick();
+  }
+  clearDotActive() {
+    for (let i = 0; i &lt; this.dotsItem.length; i++) {
+      const dotItem = this.dotsItem[i];
+      dotItem.classList.remove(&#34;active&#34;);
+    }
+  }
+  dotAddActive() {
+    for (let i = 0; i &lt; this.dotsItem.length; i++) {
+      const dotItem = this.dotsItem[i];
+      dotItem.classList.remove(&#34;active&#34;);
+      if (i === this.swiperItemIndex) {
+        dotItem.classList.add(&#34;active&#34;);
+      }
+    }
+  }
+  dotsClick() {
+    this.dotsItem = this.containerDom.querySelectorAll(&#34;.swiper__dots-item&#34;);
+    for (let i = 0; i &lt; this.dotsItem.length; i++) {
+      const dotItem = this.dotsItem[i];
+      dotItem.onclick = () =&gt; {
+        this.clearDotActive();
+        this.moveSwiperItem(dotItem.dataset.i);
+        dotItem.classList.add(&#34;active&#34;);
+      };
+    }
+  }
+  moveSwiperItem(i = 0) {
+    const dis = i - this.swiperItemIndex;
+    for (let i = 0; i &lt; this.containerItemLen; i++) {
+      const item = this.containerItemDom[i];
+      let left = parseInt(item.style.left);
+      left -= dis * 100;
+      item.style.left = `${left}%`;
+    }
+    this.swiperItemIndex = i;
+    this.dotAddActive();
+  }
+  moveItemByTouch(element = null) {
+    if (!element) return;
+    let startX, startY, distX, distY;
+    element.addEventListener(&#34;touchstart&#34;, handleTouchStart, false);
+    element.addEventListener(&#34;touchmove&#34;, handleTouchMove, false);
+    function handleTouchStart(event) {
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    }
+    function handleTouchMove(event) {
+      if (!startX || !startY) {
+        return;
+      }
+      distX = event.touches[0].clientX - startX;
+      distY = event.touches[0].clientY - startY;
+      if (Math.abs(distX) &gt; Math.abs(distY)) {
+        event.preventDefault();
+      }
+    }
+    element.addEventListener(
+      &#34;touchend&#34;,
+      () =&gt; {
+        if (Math.abs(distX) &gt; 50) {
+          let i = this.swiperItemIndex;
+          if (distX &gt; 0) {
+            if (this.swiperItemIndex &lt;= 0) {
+              i = 0;
+            } else {
+              i--;
+            }
+            this.handleSwiperItem(i);
+          } else if (distX &lt; 0) {
+            if (this.swiperItemIndex &gt;= this.containerItemLen - 1) {
+              i = this.containerItemLen - 1;
+            } else {
+              i++;
+            }
+            this.handleSwiperItem(i);
+          }
+        }
+        startX = null;
+        startY = null;
+        distX = 0;
+        distY = 0;
+      },
+      false
+    );
+  }
+  handleSwiperItem(i) {
+    this.moveSwiperItem(i);
+  }
+}
+
+const isMobileDevice = function () {
+  const userAgent = navigator.userAgent;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    userAgent
+  );
+};
+
+if (isMobileDevice()) {
+  new CustomSwiperOne({
+    container: &#34;.use__occasions_swiper&#34;,
+    children: &#34;.use__occasions_swiper-item&#34;,
+  });
+} else {
+  var mySwiper = new Swiper(&#34;.swiper-container&#34;, {
+    width: 270,
+    slidesPerView: 1,
+    initialSlide: 2,
+    observer: true,
+    observeParents: true,
+    spaceBetween: 15,
+    centeredSlides: true,
+    // loop: true,
+    navigation: {
+      nextEl: &#34;.use__occasions .swiper-button-next&#34;,
+      prevEl: &#34;.use__occasions .swiper-button-prev&#34;,
+    },
+  });
+  const slides = document.querySelectorAll(&#34;.use__occasions_swiper-item&#34;);
+  slides.forEach((slide, index) =&gt; {
+    slide.addEventListener(&#34;click&#34;, function () {
+      mySwiper.slideTo(index);
+    });
+  });
+}</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-129-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.min.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

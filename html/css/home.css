@@ -194,6 +194,7 @@ a {
   position: fixed;
   inset: 0;
   background-color: #222;
+  z-index: 300;
 }
 
 .preview__click_close {
