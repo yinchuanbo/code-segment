@@ -42,6 +42,7 @@ fs.readdir(mdDir, (err, files) => {
     if (file.endsWith(".md")) {
       const mdFile = path.resolve(mdDir, file);
       const htmlFile = path.resolve(htmlDir, file.replace(".md", ".html"));
+      let params = `doc-${file.split(".")[0]}`;
       try {
         let data = fs.readFileSync(mdFile, "utf8");
         const titleMatch = data.match(/title: "(.*?)"/);
@@ -196,7 +197,6 @@ fs.readdir(mdDir, (err, files) => {
               </body>
             </html>
             `;
-          let params = `doc-${file.split(".")[0]}`;
           fs.writeFileSync(
             `./html/iframes/${params}-iframe.html`,
             compiledIframeHtml
@@ -209,7 +209,12 @@ fs.readdir(mdDir, (err, files) => {
             url: `./iframes/${params}-iframe.html`,
           });
         }
-        itemHtml += `<li class="${ code === "true" ? 'preview_eye' : '' }"><a href="/${filename}">${title}</a></li>`;
+        const curUrl = `./iframes/${params}-iframe.html`;
+        const htmlP = `<div class="preview__click" data-url="${curUrl}" title="点击查看效果"></div>`
+        itemHtml += `<li class="${ code === "true" ? 'preview_eye' : '' }">
+           <a href="/${filename}">${title}</a>
+           ${ code === "true" ? htmlP : '' }
+        </li>`;
         fs.writeFileSync(htmlFile, details);
         console.log(`${file} compiled successfully to ${htmlFile}`);
       } catch (err) {
@@ -235,6 +240,7 @@ fs.readdir(mdDir, (err, files) => {
           <div class="container">
             ${itemHtml}
           </div>
+          <script src="./js/home.js"></script>
         </body>
       </html>
       `;
