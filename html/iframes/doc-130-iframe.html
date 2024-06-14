@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">* {
+  box-sizing: border-box;
+}
+
+:root {
+  --h: 33;
+  --s: 90%;
+  --l: 90%;
+  font-family: "Noto Sans", sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ee5522;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='100' y1='33' x2='100' y2='-3'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='100' y1='135' x2='100' y2='97'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='%23d23d09' fill-opacity='0.6'%3E%3Crect x='100' width='100' height='100'/%3E%3Crect y='100' width='100' height='100'/%3E%3C/g%3E%3Cg fill-opacity='0.5'%3E%3Cpolygon fill='url(%23a)' points='100 30 0 0 200 0'/%3E%3Cpolygon fill='url(%23b)' points='100 100 0 130 0 100 200 100 200 130'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.glass-btn {
+  font-size: clamp(1.2rem, 5vw + 1rem, 2.5rem);
+  width: 10em;
+  height: 4em;
+  user-select: none;
+
+  border-radius: 0.5em;
+  background-image: linear-gradient(#0003, #0000);
+
+  box-shadow: 0 -0.125em 0.25em #0002, 0 0.25em 0.25em hsl(var(--h) var(--s) var(
+            --l
+          ) / 0.5), 0 0 0 0.1em hsl(var(--h) var(--s) var(--l) / 0.5), 0 0.175em
+      0.3em hsl(var(--h) var(--s) var(--l) / 0.5) inset,
+    0 -0.025em 0.175em hsl(var(--h) var(--s) var(--l) / 0.4) inset, 0 -0.25em
+      1em 0.3em hsl(var(--h) var(--s) var(--l) / 0.3) inset,
+    0 0.6em 0 hsl(var(--h) var(--s) var(--l) / 0.3) inset, 0 2em 1em #0004;
+  backdrop-filter: blur(0.15em);
+  position: relative;
+  display: grid;
+  place-content: center;
+  color: hsl(var(--h) var(--s) var(--l) / 0.7);
+  text-shadow: 0.03em 0.03em #fff5, -0.03em -0.03em #0005;
+  cursor: pointer;
+  transition: 0.1s ease;
+  padding-top: 0.2em;
+}
+
+.glass-btn:before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  width: 80%;
+  left: 10%;
+  height: 1.5em;
+
+  background-image: radial-gradient(
+    100% 100% at center,
+    hsla(var(--h), var(--s), 80%, 0.25),
+    hsla(var(--h), var(--s), 80%, 0) 50%
+  );
+}
+
+.glass-btn:after {
+  content: "";
+  inset: 0;
+  top: 0.5em;
+  position: absolute;
+
+  background-image: linear-gradient(
+    105deg,
+    transparent 20%,
+    hsl(var(--h) var(--s) var(--l) / 0.2) 20%,
+    hsl(var(--h) var(--s) var(--l) / 0.2) 30%,
+    transparent 30%,
+    transparent 32%,
+    hsl(var(--h) var(--s) var(--l) / 0.2) 5%,
+    hsl(var(--h) var(--s) var(--l) / 0.2) 40%,
+    transparent 0%
+  );
+  background-size: 400% 100%;
+  background-position: 100% 0%;
+  transition: 0.3s ease;
+}
+
+.glass-btn:active:after {
+  background-position: -50% 0%;
+}
+
+.glass-btn:active {
+  translate: 0.01em 0.25em;
+  box-shadow: 0 -0.125em 0.25em #0002, 0 0.25em 0.25em hsl(var(--h) var(--s) var(
+            --l
+          ) / 0.5), 0 0 0 0.1em hsl(var(--h) var(--s) var(--l) / 0.5), 0 0.175em
+      0.3em hsl(var(--h) var(--s) var(--l) / 0.8) inset,
+    0 -0.025em 0.175em hsl(var(--h) var(--s) var(--l) / 0.4) inset, 0 -0.25em
+      1em 0.3em hsl(var(--h) var(--s) var(--l) / 0.3) inset,
+    0 0.6em 0 hsl(var(--h) var(--s) var(--l) / 0.3) inset, 0 1em 0.5em #0004;
+  backdrop-filter: blur(0.08em);
+}
+
+.glass-btn:active:before {
+  height: 1em;
+}
+</style>
+              </head>
+              <body>
+                <div class="container">
+  <div class="glass-btn">Glassy</div>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview"></script>
+              </body>
+            </html>
+            
