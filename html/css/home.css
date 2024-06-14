@@ -16,6 +16,7 @@ body {
 body {
   background-color: #131313;
   color: #444;
+  background-image: url("https://www.transparenttextures.com/patterns/translucent-fibres.png");
 }
 
 ::-webkit-scrollbar {
