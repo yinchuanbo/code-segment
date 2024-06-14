@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>使用 Web Worker 优化前端大文件上传</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>使用 Web Worker 优化前端大文件上传</h2>
+                    <p>2024-06-14 18:42:33 · YinHao</p>
+                  </div>
+                  <h3>1. 分析任务</h3>
+<p>上传大文件时，为防止长时间占用主线程，可以将文件分割成多个小片段（chunks），每个片段独立上传。利用 Web Workers 可以并行处理文件的读取、分片、上传等任务。</p>
+<h3>2. 设置 Web Worker 环境</h3>
+<p>首先，你需要创建一个 Worker 脚本。例如，<code>uploadWorker.js</code>，该脚本将用来处理文件的读取及上传逻辑。</p>
+<pre><code class="language-js">// uploadWorker.js
+self.onmessage = function (e) {
+  const { fileChunk, uploadUrl } = e.data;
+  // 处理文件上传逻辑
+  uploadFileChunk(fileChunk, uploadUrl);
+};
+function uploadFileChunk(chunk, url) {
+  // 使用Fetch API或XMLHttpRequest上传文件片段
+  fetch(url, {
+    method: &quot;POST&quot;,
+    body: chunk,
+  })
+    .then((response) =&gt; {
+      return response.json();
+    })
+    .then((data) =&gt; {
+      self.postMessage({ status: &quot;uploaded&quot;, data: data });
+    })
+    .catch((error) =&gt; {
+      self.postMessage({ status: &quot;error&quot;, error: error });
+    });
+}
+</code></pre>
+<h2>3. 在主线程中使用 Web Worker</h2>
+<p>在主线程，我们创建 Worker，并处理文件分割，然后发送文件块到 Worker。</p>
+<pre><code class="language-js">// 主文件 main.js
+const worker = new Worker(&quot;uploadWorker.js&quot;);
+worker.onmessage = function (e) {
+  console.log(&quot;从Worker返回的消息:&quot;, e.data);
+};
+function handleFileUpload(file) {
+  const chunkSize = 1024 * 1024 * 5; // 分割大小，例如5MB
+  let currentChunk = 0;
+  const chunks = [];
+  while (currentChunk &lt; file.size) {
+    chunks.push(
+      file.slice(currentChunk, Math.min(file.size, currentChunk + chunkSize))
+    );
+    currentChunk += chunkSize;
+  }
+  chunks.forEach((chunk) =&gt; {
+    // 将每个chunk发送至worker处理
+    worker.postMessage({
+      fileChunk: chunk,
+      uploadUrl: &quot;https://example.com/upload&quot;,
+    });
+  });
+}
+// 监听文件选择器的改变
+document
+  .querySelector(&quot;#fileInput&quot;)
+  .addEventListener(&quot;change&quot;, function (event) {
+    const file = event.target.files[0];
+    handleFileUpload(file);
+  });
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/132.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/134.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
