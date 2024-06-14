@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">* {
+  border: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0; }
+
+:root {
+  --hue: 223;
+  --bg: hsl(var(--hue), 10%, 50%);
+  --fg: hsl(var(--hue), 10%, 10%);
+  --trans-dur: 0.3s;
+  font-size: calc(32px + (48 - 32) * (100vw - 320px) / (2560 - 320)); }
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  display: flex;
+  font: 1em/1.5 sans-serif;
+  height: 100vh; }
+
+.mickey {
+  --x: 0;
+  --x-abs: 0;
+  --y: 0;
+  --y-abs: 0;
+  margin: auto;
+  position: relative;
+  width: 7.85em;
+  height: 6.85em; }
+
+.mickey div {
+  position: absolute; }
+
+.mickey__ear-right,
+.mickey__ear-left,
+.mickey__head {
+  background-color: #000; }
+
+.mickey__ear-right,
+.mickey__ear-left {
+  border-radius: 50%;
+  top: 0.175em;
+  width: 3em;
+  height: 2.55em; }
+
+.mickey__ear-right {
+  left: -0.1em;
+  transform: translate(calc(var(--x) * -0.35em), calc(var(--y) * -0.35em)) rotate(-45deg); }
+
+.mickey__ear-left {
+  right: -0.1em;
+  transform: translate(calc(var(--x) * -0.35em), calc(var(--y) * -0.35em)) rotate(45deg); }
+
+.mickey__head {
+  border-radius: 50% 50% 50% 50% / 2.5em 2.5em 2.15em 2.15em;
+  top: 1.55em;
+  left: calc(50% - 2.525em);
+  width: 5.05em;
+  height: 4.65em;
+  transform: translate(calc(var(--x) * -0.25em), calc(var(--y) * -0.25em)); }
+
+.mickey__eye-back-right,
+.mickey__eye-back-left,
+.mickey__mouth-back-right,
+.mickey__mouth-back-left,
+.mickey__mouth-top,
+.mickey__lip,
+.mickey__nose-back,
+.mickey__nose-middle {
+  background-color: #fff; }
+
+.mickey__eye-back-right,
+.mickey__eye-back-left {
+  top: 1.85em;
+  width: 1.9em;
+  height: 3em;
+  transform: translate(calc(var(--x) * -0.22em), calc(var(--y) * -0.22em)); }
+
+.mickey__eye-back-right {
+  border-radius: 50% 50% 0 60% / 40% 50% 0 60%;
+  left: 2.2em; }
+
+.mickey__eye-back-left {
+  border-radius: 50% 50% 60% 0 / 50% 40% 60% 0;
+  right: 2.2em; }
+
+.mickey__eye-front-right,
+.mickey__eye-front-left {
+  background-color: #000;
+  border-radius: 50%;
+  top: 2.95em;
+  width: 0.55em;
+  height: 1.35em;
+  transform: translate(calc(var(--x) * 0.07em), calc(var(--y) * 0.07em)); }
+
+.mickey__eye-front-right {
+  left: 3.2em; }
+
+.mickey__eye-front-left {
+  right: 3.2em; }
+
+.mickey__mouth-back-right,
+.mickey__mouth-back-left {
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.05em #000;
+  top: 4.35em;
+  width: 2.8em;
+  height: 1.5em; }
+
+.mickey__mouth-back-right {
+  left: 1.15em;
+  transform: translate(calc(var(--x) * -0.08em), calc(var(--y) * 0.1em)) scale(calc(1 + var(--x-abs) * 0.13), 1) rotate(55deg); }
+
+.mickey__mouth-back-left {
+  right: 1.15em;
+  transform: translate(calc(var(--x) * -0.08em), calc(var(--y) * 0.1em)) scale(calc(1 + var(--x-abs) * 0.13), 1) rotate(-55deg); }
+
+.mickey__mouth-top,
+.mickey__mouth-bottom {
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  transform: translate(calc(var(--x) * 0.1em), calc(var(--y) * 0.1em)); }
+
+.mickey__mouth-top {
+  box-shadow: 0 0.1em 0 #000;
+  clip-path: polygon(0 0.3em, 100% 0.3em, 100% 100%, 0 100%);
+  top: 4em;
+  left: 1.9em;
+  width: 4.05em;
+  height: 1.7em; }
+
+.mickey__mouth-bottom {
+  background-color: #000;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  clip-path: polygon(0 1.1em, 100% 1.1em, 100% 100%, 0 100%);
+  top: 3.25em;
+  left: 2em;
+  width: 3.85em;
+  height: 3.3em; }
+
+.mickey__lip {
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  box-shadow: 0 -0.05em 0 #000 inset;
+  clip-path: polygon(0 0.8em, 100% 0.8em, 100% 100%, 0 100%);
+  top: 5.05em;
+  left: 2.4em;
+  width: 3.05em;
+  height: 1.8em;
+  transform: translate(calc(var(--x) * 0.12em), calc(var(--y) * 0.12em)); }
+
+.mickey__tongue {
+  border-radius: 0 0 100% 100% / 0 0 100% 100%;
+  overflow: hidden;
+  top: 5.9em;
+  left: 3.225em;
+  width: 1.4em;
+  height: 0.56em;
+  transform: translate(calc(var(--x) * 0.11em), calc(var(--y) * 0.11em)); }
+
+.mickey__tongue:before,
+.mickey__tongue:after {
+  background-color: #fff;
+  border-radius: 50% 50% 0 0;
+  content: "";
+  display: block;
+  position: absolute;
+  width: 0.875em;
+  height: inherit; }
+
+.mickey__tongue:after {
+  right: 0; }
+
+.mickey__dimple-right,
+.mickey__dimple-left {
+  border-radius: 50%;
+  box-shadow: 0 0.05em 0 #000 inset;
+  top: 4.25em;
+  width: 0.3em;
+  height: 0.2em; }
+
+.mickey__dimple-right {
+  left: 1.775em;
+  transform: translate(calc(var(--x) * 0.1em), calc(var(--y) * 0.1em)) rotate(-30deg); }
+
+.mickey__dimple-left {
+  right: 1.775em;
+  transform: translate(calc(var(--x) * 0.1em), calc(var(--y) * 0.1em)) rotate(30deg); }
+
+.mickey__nose-back {
+  border-radius: 50%;
+  top: 4.15em;
+  left: 2.925em;
+  width: 2em;
+  height: 0.9em;
+  transform: translate(calc(var(--x) * 0.4em), calc(var(--y) * 0.4em)); }
+
+.mickey__nose-middle {
+  border-radius: 50% 50% 50% 50% / 0.32em 0.32em 0.68em 0.68em;
+  box-shadow: 0 0.05em 0 #000 inset;
+  top: 4.05em;
+  left: 3.065em;
+  width: 1.72em;
+  height: 1em;
+  transform: translate(calc(var(--x) * 0.4em), calc(var(--y) * 0.4em)); }
+
+.mickey__nose-front {
+  background-color: #000;
+  border-radius: 50%;
+  top: 4.32em;
+  left: 3.4em;
+  width: 1.1em;
+  height: 0.7em;
+  transform: translate(calc(var(--x) * 0.7em), calc(var(--y) * 0.7em)); }
+</style>
+              </head>
+              <body>
+                <div
+  class="mickey"
+  role="img"
+  aria-label="Black-and-white head of Mickey Mouse"
+>
+  <div class="mickey__ear-right"></div>
+  <div class="mickey__ear-left"></div>
+  <div class="mickey__head"></div>
+  <div class="mickey__mouth-back-right"></div>
+  <div class="mickey__mouth-back-left"></div>
+  <div class="mickey__lip"></div>
+  <div class="mickey__mouth-bottom"></div>
+  <div class="mickey__mouth-top"></div>
+  <div class="mickey__tongue"></div>
+  <div class="mickey__eye-back-right"></div>
+  <div class="mickey__eye-back-left"></div>
+  <div class="mickey__dimple-right"></div>
+  <div class="mickey__dimple-left"></div>
+  <div class="mickey__eye-front-right"></div>
+  <div class="mickey__eye-front-left"></div>
+  <div class="mickey__nose-back"></div>
+  <div class="mickey__nose-middle"></div>
+  <div class="mickey__nose-front"></div>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">window.addEventListener("DOMContentLoaded", () => {
+  const mm = new MickeyMouse(".mickey");
+});
+
+class MickeyMouse {
+  constructor(el) {
+    this.el = document.querySelector(el);
+
+    this.init();
+  }
+  get isMobile() {
+    return "ontouchstart" in document.documentElement;
+  }
+  get maxDistance() {
+    const { innerWidth, innerHeight } = window;
+
+    if (innerWidth > innerHeight) return innerWidth / 2;
+    return innerHeight / 2;
+  }
+  init() {
+    const moveEvent = this.isMobile ? "touchmove" : "mousemove";
+
+    document.addEventListener(moveEvent, this.update.bind(this));
+
+    if (this.isMobile)
+      document.addEventListener("touchstart", this.update.bind(this));
+  }
+  update(e) {
+    let eX = 0;
+    let eY = 0;
+
+    if (this.isMobile) {
+      const firstTouch = e.touches[0];
+      eX = firstTouch.clientX;
+      eY = firstTouch.clientY;
+    } else {
+      eX = e.clientX;
+      eY = e.clientY;
+    }
+
+    const x = Math.round(eX - window.innerWidth / 2);
+    const y = Math.round(eY - window.innerHeight / 2);
+    const max = this.maxDistance;
+    const percentX = x / max;
+    const percentY = y / max;
+
+    this.el?.style.setProperty("--x", percentX);
+    this.el?.style.setProperty("--x-abs", Math.abs(percentX));
+    this.el?.style.setProperty("--y", percentY);
+    this.el?.style.setProperty("--y-abs", Math.abs(percentY));
+  }
+}
+</script>
+              </body>
+            </html>
+            

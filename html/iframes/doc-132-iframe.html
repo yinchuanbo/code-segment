@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">@charset "UTF-8";
+.box {
+  width: 400px;
+  overflow: auto;
+  white-space: nowrap;
+  background: #eee;
+  border: 5px solid #aaa;
+  display: flex;
+  gap: 10px; }
+
+.box > span {
+  display: block;
+  height: 100px;
+  width: 100px;
+  background-color: red;
+  flex-shrink: 0; }
+
+/* H5的时候，隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+  height: 0 !important;
+  -webkit-appearance: none;
+  background: transparent; }
+
+/*禁止复制*/
+.no_copy {
+  moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+</style>
+              </head>
+              <body>
+                <div class="box no_copy">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">function dragMoveX(containerSelector) {
+  var container = document.querySelector(containerSelector);
+  var flag = false;
+  var downX;
+  var scrollLeft;
+
+  container.addEventListener("mousedown", function (event) {
+    console.log("mousedown");
+    flag = true;
+    downX = event.clientX;
+    scrollLeft = container.scrollLeft;
+  });
+
+  document.addEventListener("mousemove", function (event) {
+    console.log("mousemove", flag, event.clientX);
+    if (flag) {
+      var moveX = event.clientX;
+      var scrollX = moveX - downX;
+      container.scrollLeft = scrollLeft - scrollX;
+    }
+  });
+
+  document.addEventListener("mouseup", function () {
+    console.log("mouseup");
+    flag = false;
+  });
+
+  container.addEventListener("mouseleave", function (event) {
+    if (event.pageX < 0 || event.pageX > document.body.offsetWidth) {
+      console.log("在元素上移出");
+      flag = false;
+    }
+  });
+}
+
+dragMoveX(".box");
+</script>
+              </body>
+            </html>
+            
