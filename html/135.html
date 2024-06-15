@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>内存泄漏排查</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>内存泄漏排查</h2>
+                    <p>2024-06-15 08:07:58 · YinHao</p>
+                  </div>
+                  <h2>使用 Chrome devTools 查看内存情况</h2>
+<p>打开 Chrome 的无痕模式，以屏蔽 Chrome 插件对我们之后测试内存占用情况的影响。然后打开开发者工具，找到 Performance 栏，可以看到一些功能按钮，如开始录制按钮、刷新页面按钮、清空记录按钮、记录并可视化 js 内存、节点、事件监听器按钮、触发垃圾回收机制按钮等。</p>
+<p><img src="./imgs/135/01.awebp" alt=""></p>
+<p>请简单录制一下百度页面，观察我们能够获取到什么信息，如下动图所示：</p>
+<p><img src="./imgs/135/02.awebp" alt=""></p>
+<p>从图表中我们可以清楚地观察到，在页面加载过程中<code>JS Heap</code>（js 堆内存）、<code>documents</code>（文档）、<code>Nodes</code>（DOM 节点）、<code>Listeners</code>（监听器）、<code>GPU memory</code>（<code>GPU</code>内存）的最低值、最高值以及随时间的变化趋势，这是我们关注的重点。</p>
+<p>查看开发者工具中的<code>Memory</code>一栏，主要用于记录页面堆内存的具体情况以及 js 堆内存随加载时间线动态的分配情况。</p>
+<p><img src="./imgs/135/03.awebp" alt=""></p>
+<p>堆快照类似于照相机，可以记录当前页面的堆内存情况。每次进行快照，都会生成一条快照记录。</p>
+<p><img src="./imgs/135/04.awebp" alt=""></p>
+<p>根据上图所示，我们首先进行了一次快照，记录了当时堆内存空间占用为 33.7MB。随后，我们点击了页面中的一些按钮，再次执行了一次快照，记录了当时堆内存空间占用为 32.5MB。此外，通过点击相应的快照记录，我们可以查看当时所有内存中的变量情况，包括结构和占总内存的百分比等信息。</p>
+<p><img src="./imgs/135/05.awebp" alt=""></p>
+<p>在记录数据后，我们可以观察到图表右上角有起伏的蓝色和灰色柱状图，其中<code>蓝色</code>代表当前时间线下所占用的内存；<code>灰色</code>表示之前占用的内存空间已被清除释放。</p>
+<p>在发现存在内存泄漏的情况时，我们可以使用<code>Memory</code>来更清晰地确认问题并定位问题。</p>
+<p>首先，可以使用<code>Allocation instrumentation on timeline</code>来确认问题，如下图所示：.</p>
+<p><img src="./imgs/135/06.awebp" alt=""></p>
+<h2>内存泄漏的场景</h2>
+<ul>
+<li>闭包使用不当引起内存泄漏</li>
+<li>全局变量</li>
+<li>分离的<code>DOM</code>节点</li>
+<li>控制台的打印</li>
+<li>遗忘的定时器</li>
+</ul>
+<h3>1. 闭包使用不当引起内存泄漏</h3>
+<p>使用<code>Performance</code>和<code>Memory</code>来查看一下闭包导致的内存泄漏问题</p>
+<pre><code class="language-html">&lt;button onclick=&quot;myClick()&quot;&gt;执行fn1函数&lt;/button&gt;
+&lt;script&gt;
+  function fn1 () {
+  let a = new Array(10000)  // 这里设置了一个很大的数组对象
+  let b = 3
+  function fn2() {
+  let c = [1, 2, 3]
+  }
+  fn2()
+  return a
+  }
+  let res = []
+  function myClick() {
+  res.push(fn1())
+  }
+  }
+&lt;/script&gt;
+</code></pre>
+<p>在<code>fn1</code>函数执行上下文退出后，本应将该上下文中的变量<code>a</code>视为垃圾数据并进行回收。然而，由于<code>fn1</code>函数最终将变量<code>a</code>返回并赋值给全局变量<code>res</code>，这导致对变量<code>a</code>的引用产生，使得变量<code>a</code>被标记为活动变量并一直占用相应的内存。如果假设后续不再使用变量<code>res</code>，那么这就是一个闭包使用不当的例子。</p>
+<p>为了能够在<code>performance</code>的曲线图中观察效果，我们设置了一个按钮，每次点击执行时，将<code>fn1</code>函数的返回值添加到全局数组变量<code>res</code>中。如下图所示：</p>
+<p><img src="./imgs/135/07.awebp" alt=""></p>
+<ul>
+<li>在每次录制开始时手动触发一次垃圾回收机制，这是为了确认一个初始的堆内存基准线，便于后面的对比。然后我们点击了几次按钮，即往全局数组变量<code>res</code>中添加了几个比较大的数组对象。最后再触发一次垃圾回收，发现录制结果的 JS Heap 曲线刚开始成阶梯式上升的，最后的曲线的高度比基准线要高，说明可能是存在内存泄漏的问题。</li>
+<li>在得知有内存泄漏的情况存在时，我们可以改用<code>Memory</code>来更明确地确认问题和定位问题。</li>
+<li>首先可以使用<code>Allocation instrumentation on timeline</code>来确认问题，如下图所示：.</li>
+</ul>
+<p><img src="./imgs/135/08.awebp" alt=""></p>
+<ul>
+<li>每次点击按钮后，动态内存分配情况图上都会出现一个<code>蓝色的柱形</code>，而且在我们触发垃圾回收后，<code>蓝色柱形</code>都没有变成灰色柱形，也就是说之前分配的内存没有被清除。</li>
+<li>因此，我们可以明确地确认存在内存泄漏的问题。接下来，我们需要精确定位问题，可以使用<code>Heap snapshot</code>来进行定位，如下图所示：</li>
+</ul>
+<p><img src="./imgs/135/09.awebp" alt=""></p>
+<ul>
+<li>首先，我们需要点击快照记录初始的内存情况，然后多次点击按钮后再次点击快照，记录此时的内存情况。我们发现，从原来的<code>1.1M</code>内存空间变成了<code>1.4M</code>内存空间。接着，我们选中第二条快照记录，可以看到右上角有一个<code>All objects</code>的字段，表示展示当前选中的快照记录所有对象的分配情况。我们想要知道的是第二条快照与第一条快照的区别在哪，因此选择<code>Object allocated between Snapshot1 and Snapshot2</code>，即展示第一条快照和第二条快照存在差异的内存对象分配情况。这时，我们可以看到 Array 的百分比很高，初步可以判断是该变量存在问题。点击查看详情后，就能查看到该变量对应的具体数据了。</li>
+</ul>
+<p>这是一个判断闭包是否导致内存泄漏问题并简单定位的方法</p>
+<h3>2. 全局变量</h3>
+<p>全局变量通常不会被垃圾回收，但并非所有变量都不能存在于全局范围。有时由于疏忽，会导致某些变量流失到全局，比如未声明变量，却直接对其赋值，这将导致该变量在全局范围创建。如下所示：</p>
+<pre><code class="language-js">function fn1() {
+  // 此处变量name未被声明
+  name = new Array(99999999);
+}
+fn1();
+</code></pre>
+<ul>
+<li>此时，当出现这种情况时，会自动在全局范围内创建一个变量<code>name</code>，并将一个大型数组赋值给<code>name</code>。由于它是全局变量，所以该内存空间将一直保持不释放。</li>
+<li>要解决这个问题，我们需要自己在平时多加注意，不要在变量声明之前进行赋值。另外，也可以考虑<code>开启严格模式</code>，这样在不知不觉中犯错时，会收到错误警告。例如，</li>
+</ul>
+<pre><code class="language-js">function fn1() {
+  &quot;use strict&quot;;
+  name = new Array(99999999);
+}
+fn1();
+</code></pre>
+<h3>3. 分离的<code>DOM</code>节点</h3>
+<p>如果您手动删除了一个<code>dom</code>节点，本应该释放该节点占用的内存，但由于疏忽导致某处代码仍然引用了该被移除节点，最终导致该节点占用的内存无法被释放，这种情况是很常见的。</p>
+<pre><code class="language-html">&lt;div id=&quot;root&quot;&gt;
+  &lt;div class=&quot;child&quot;&gt;我是子元素&lt;/div&gt;
+  &lt;button&gt;移除&lt;/button&gt;
+&lt;/div&gt;
+&lt;script&gt;
+  let btn = document.querySelector(&quot;button&quot;);
+  let child = document.querySelector(&quot;.child&quot;);
+  let root = document.querySelector(&quot;#root&quot;);
+
+  btn.addEventListener(&quot;click&quot;, function () {
+    root.removeChild(child);
+  });
+&lt;/script&gt;
+</code></pre>
+<p>代码的功能是在点击按钮后移除<code>.child</code>节点，尽管节点在点击后确实从<code>dom</code>中移除了，但全局变量<code>child</code>仍然保留对该节点的引用，导致该节点的内存无法释放，建议使用<code>Memory</code>的快照功能进行检测，具体操作如下图所示。</p>
+<p><img src="./imgs/135/10.awebp" alt=""></p>
+<p>先记录下初始状态的快照，然后在点击移除按钮后，再次点击一次快照。此时，我们无法看出内存大小的任何变化，因为被移除的节点占用的内存非常小，可以忽略不计。但是，我们可以点击第二条快照记录，在筛选框中输入“detached”，这样就会显示所有脱离但尚未被清除的节点对象。</p>
+<p>解决办法如下图所示：</p>
+<pre><code class="language-html">&lt;div id=&quot;root&quot;&gt;
+  &lt;div class=&quot;child&quot;&gt;我是子元素&lt;/div&gt;
+  &lt;button&gt;移除&lt;/button&gt;
+&lt;/div&gt;
+&lt;script&gt;
+  let btn = document.querySelector(&quot;button&quot;);
+  btn.addEventListener(&quot;click&quot;, function () {
+    let child = document.querySelector(&quot;.child&quot;);
+    let root = document.querySelector(&quot;#root&quot;);
+    root.removeChild(child);
+  });
+&lt;/script&gt;
+</code></pre>
+<p>修改非常简单，只需将对<code>.child</code>节点的引用移动到<code>click</code>事件的回调函数中。这样，当移除节点并退出回调函数的执行上下文后，对该节点的引用将自动清除，从而避免了内存泄漏的情况。让我们来验证一下。如下图所示：</p>
+<p><img src="./imgs/135/11.awebp" alt=""></p>
+<p>结果很明显，这样处理过后就不存在内存泄漏的情况了</p>
+<h3>4. 控制台的打印</h3>
+<pre><code class="language-html">&lt;button&gt;按钮&lt;/button&gt;
+&lt;script&gt;
+  document.querySelector(&quot;button&quot;).addEventListener(&quot;click&quot;, function () {
+    let obj = new Array(1000000);
+    console.log(obj);
+  });
+&lt;/script&gt;
+</code></pre>
+<p>我们在按钮的点击回调事件中创建了一个很大的数组对象并打印，用<code>performance</code>来验证一下</p>
+<p><img src="./imgs/135/12.awebp" alt=""></p>
+<p>开始录制时，首先进行一次垃圾回收以清除初始内存。然后点击按钮三次，即执行了三次点击事件。最后再次触发一次垃圾回收。观察录制结果发现，<code>JS Heap</code>曲线呈阶梯状上升，并且最终保持的高度比初始基准线高很多。这说明每次执行点击事件时，创建的大型数组对象<code>obj</code>由于被浏览器保存并且无法回收，导致内存占用增加。</p>
+<p>接下来注释掉<code>console.log</code>，再来看一下结果：</p>
+<pre><code class="language-html">&lt;button&gt;按钮&lt;/button&gt;
+&lt;script&gt;
+  document.querySelector(&quot;button&quot;).addEventListener(&quot;click&quot;, function () {
+    let obj = new Array(1000000);
+    // console.log(obj);
+  });
+&lt;/script&gt;
+</code></pre>
+<p><img src="./imgs/135/13.awebp" alt=""></p>
+<p>可以看到没有打印以后，每次创建的<code>obj</code>都立马被销毁了，并且最终触发垃圾回收机制后跟初始的基准线同样高，说明已经不存在内存泄漏的现象了</p>
+<p>其实同理  <code>console.log</code>也可以用<code>Memory</code>来进一步验证</p>
+<p>未注释  <code>console.log</code></p>
+<p><img src="./imgs/135/14.awebp" alt=""></p>
+<p>注释掉了<code>console.log</code></p>
+<p><img src="./imgs/135/15.awebp" alt=""></p>
+<p>最后简单总结一下：在开发环境下，可以使用控制台打印便于调试，但是在生产环境下，尽可能得不要在控制台打印数据。所以我们经常会在代码中看到类似如下的操作：</p>
+<pre><code class="language-js">// 如果在开发环境下，打印变量obj
+if (isDev) {
+  console.log(obj);
+}
+</code></pre>
+<p>这样就避免了生产环境下无用的变量打印占用一定的内存空间，同样的除了<code>console.log</code>之外，<code>console.error</code>、<code>console.info</code>、<code>console.dir</code>等等都不要在生产环境下使用</p>
+<h3>5. 遗忘的定时器</h3>
+<p>定时器也是平时很多人会忽略的一个问题，比如定义了定时器后就再也不去考虑清除定时器了，这样其实也会造成一定的内存泄漏。来看一个代码示例：</p>
+<pre><code class="language-html">&lt;button&gt;开启定时器&lt;/button&gt;
+&lt;script&gt;
+  function fn1() {
+    let largeObj = new Array(100000);
+    setInterval(() =&gt; {
+      let myObj = largeObj;
+    }, 1000);
+  }
+  document.querySelector(&quot;button&quot;).addEventListener(&quot;click&quot;, function () {
+    fn1();
+  });
+&lt;/script&gt;
+</code></pre>
+<p>这段代码是在点击按钮后执行<code>fn1</code>函数，<code>fn1</code>函数内创建了一个很大的数组对象<code>largeObj</code>，同时创建了一个<code>setInterval</code>定时器，定时器的回调函数只是简单的引用了一下变量<code>largeObj</code>，我们来看看其整体的内存分配情况吧：</p>
+<p><img src="./imgs/135/16.awebp" alt=""></p>
+<p>按道理来说点击按钮执行<code>fn1</code>函数后会退出该函数的执行上下文，紧跟着函数体内的局部变量应该被清除，但图中<code>performance</code>的录制结果显示似乎是存在内存泄漏问题的，即最终曲线高度比基准线高度要高，那么再用<code>Memory</code>来确认一次：</p>
+<p><img src="./imgs/135/17.awebp" alt=""></p>
+<ul>
+<li>在我们点击按钮后，从动态内存分配的图上可以看到一个蓝色柱形，表示浏览器为变量<code>largeObj</code>分配了一段内存。然而，这段内存并没有被释放，这说明存在内存泄漏的问题。其实，问题的原因是<code>setInterval</code>的回调函数内对变量<code>largeObj</code>有一个引用关系，而定时器一直未被清除，所以变量<code>largeObj</code>的内存也自然不会被释放。</li>
+<li>那么，我们如何解决这个问题呢？假设我们只需要让定时器执行三次，我们可以对代码进行一些修改：</li>
+</ul>
+<pre><code class="language-html">&lt;button&gt;开启定时器&lt;/button&gt;
+&lt;script&gt;
+  function fn1() {
+    let largeObj = new Array(100000);
+    let index = 0;
+    let timer = setInterval(() =&gt; {
+      if (index === 3) clearInterval(timer);
+      let myObj = largeObj;
+      index++;
+    }, 1000);
+  }
+  document.querySelector(&quot;button&quot;).addEventListener(&quot;click&quot;, function () {
+    fn1();
+  });
+&lt;/script&gt;
+</code></pre>
+<p>现在我们再通过<code>performance</code>和<code>memory</code>来看看还不会存在内存泄漏的问题</p>
+<ul>
+<li><code>performance</code></li>
+</ul>
+<p><img src="./imgs/135/18.awebp" alt=""></p>
+<p>这次的录制结果表明，最终曲线的高度与初始基准线的高度相同，这意味着没有发生内存泄漏。</p>
+<ul>
+<li><code>memory</code></li>
+</ul>
+<p><img src="./imgs/135/19.awebp" alt=""></p>
+<p>这里需要澄清一下，图中最初出现的蓝色柱形是因为我在录制后刷新了页面，可以忽略；接着我们点击了按钮，看到又出现了一个蓝色柱形，这时是为<code>fn1</code>函数中的变量<code>largeObj</code>分配了内存，<code>3s</code>后该内存被释放，变成了灰色柱形。因此可以得出结论，这段代码没有内存泄漏问题。</p>
+<p>简要总结一下：在使用定时器时，务必在不需要定时器时清除，否则可能出现类似本例的情况。除了<code>setTimeout</code>和<code>setInterval</code>，浏览器还提供了<code>API</code>，如<code>requestAnimationFrame</code>，也可能存在这种问题。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/134.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
