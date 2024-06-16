@@ -42,19 +42,18 @@
 <p>使用<code>Performance</code>和<code>Memory</code>来查看一下闭包导致的内存泄漏问题</p>
 <pre><code class="language-html">&lt;button onclick=&quot;myClick()&quot;&gt;执行fn1函数&lt;/button&gt;
 &lt;script&gt;
-  function fn1 () {
-  let a = new Array(10000)  // 这里设置了一个很大的数组对象
-  let b = 3
-  function fn2() {
-  let c = [1, 2, 3]
+  function fn1() {
+    let a = new Array(10000); // 这里设置了一个很大的数组对象
+    let b = 3;
+    function fn2() {
+      let c = [1, 2, 3];
+    }
+    fn2();
+    return a;
   }
-  fn2()
-  return a
-  }
-  let res = []
+  let res = [];
   function myClick() {
-  res.push(fn1())
-  }
+    res.push(fn1());
   }
 &lt;/script&gt;
 </code></pre>
