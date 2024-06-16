@@ -234,6 +234,7 @@ blockquote::before {
   margin-bottom: 8px;
   color: #fff;
   font-size: 25px;
+  text-emphasis: '🔥';
 }
 
 .container-header p {

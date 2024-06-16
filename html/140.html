@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>FLIP 动画</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>FLIP 动画</h2>
+                    <p>2024-06-16 15:21:50 · YinHao</p>
+                  </div>
+                  <p>有一种能够快速实现复杂动画交互的动画思维 <strong>FLIP</strong>，为了介绍这个动画思维，我准备了三个案例，大家可以在上面的视频中观看。</p>
+<h3><strong>0、FLIP</strong></h3>
+<p>FLIP 是四个单词的首字母，<code>First、Last、Invert、Play</code>，这四个单词给我们提供了完成动画的具体思路。</p>
+<p><strong>First</strong> 表示元素<strong>初始时</strong>的具体信息，在 html 环境中，这个事情是比较容易就能做到的，我们可以利用 <code>getBoundingClientRect</code> 或者 <code>getComputedStyle</code> 来拿到元素的初始信息</p>
+<p><strong>Last</strong> 表示元素<strong>结束时</strong>的位置信息。此时我们可以直接改变元素的位置，把元素放到新的节点上去。这样我们就可以直接使用同样的方式拿到结束时的元素具体信息</p>
+<p><strong>Invert</strong> 表示<strong>倒置</strong>。虽然元素到了结束时的节点位置，但是视觉上我们并没有看到，此时要设计让元素动画从 <code>First</code> 通过动画的方式变换到 <code>Last</code>，刚好我们又记录了动画的开始和结束信息，因此我们可以利用自己熟悉的动画方式来完成 <code>Invert</code></p>
+<p><strong>Play</strong> 表示动画开始<strong>执行</strong>。在代码上通常 <code>Invert</code> 表示传参，<code>Play</code> 表示具体的动画执行。</p>
+<p>接下来我们使用三个案例来进一步学习这个动画思想。</p>
+<h3><strong>1、案例一：元素 X 轴位置随机变化</strong></h3>
+<p>案例效果如图所示。</p>
+<img src="./imgs/140/01.gif">
+
+<p>案例的 html 结构如下</p>
+<pre><code class="language-html">&lt;div id=&quot;container&quot;&gt;
+  &lt;div class=&quot;item&quot;&gt;1&lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;2&lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;3&lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;4&lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;5&lt;/div&gt;
+&lt;/div&gt;
+&lt;button id=&quot;sort&quot;&gt;随机排序&lt;/button&gt;
+</code></pre>
+<p>先获取两个关键 DOM 对象</p>
+<pre><code class="language-js">const container = document.getElementById(&quot;container&quot;);
+const sortBtn = document.getElementById(&quot;sort&quot;);
+</code></pre>
+<p>First，记录元素初始位置信息。此时我们把开始的 X 位置信息保存在子节点对象上，我们也可以单独另起一个数组来保存所有子节点的具体信息。</p>
+<pre><code class="language-js">// 记录开始位置信息
+function record(container) {
+  const all = [...container.children];
+  all.forEach((item, i) =&gt; {
+    const rect = item.getBoundingClientRect();
+    item.startX = rect.left;
+  });
+}
+</code></pre>
+<p>Last，直接改变元素的节点位置。因为改变之后，元素在新的节点上，那么我们这里就可以单独快捷获取元素改变之后的位置信息，所以可以封装一个方法，只改变元素的节点位置信息，而在需要的时候获取 Last 即可。</p>
+<blockquote>
+<p>当然也可以单独在这一步把属性位置信息保存起来</p>
+</blockquote>
+<pre><code class="language-js">function change() {
+  const all = [...container.children];
+  const len = all.length;
+  all.forEach((item, i) =&gt; {
+    const newIndex = Math.floor(Math.random() * len);
+    if (newIndex !== i) {
+      const nextDOM = item.nextElementSibling;
+      container.insertBefore(item, all[newIndex]);
+      container.insertBefore(all[newIndex], nextDOM);
+    }
+  });
+}
+</code></pre>
+<p>Invert 和 play 在代码实现上往往会耦合在一起，Invert 表示参数传入，play 表示动画执行。因此我们可以最后再定义一个方法 <code>play</code> 表示动画的执行</p>
+<pre><code class="language-js">function play(container) {
+  const all = [...container.children];
+  const len = all.length;
+  all.forEach((item, i) =&gt; {
+    const rect = item.getBoundingClientRect();
+    const currentX = rect.left;
+    item.animate(
+      [
+        { transform: `translateX(${item.startX - currentX}px)` },
+        { transform: &quot;translateX(0px)&quot; },
+      ],
+      { duration: 600 }
+    );
+  });
+}
+</code></pre>
+<p>这里我使用了一个 DOM 元素自带的 <code>animate</code> 方法，来完成动画的实现，该方法目前还是一个实验性的 api，在 2022 年提出，目前最新版的 chrome 浏览器已经支持。</p>
+<p>该动画接口使用起来也比较简单，跟 <code>keyframes</code> 类似。</p>
+<pre><code class="language-js">animate(keyframes, options);
+</code></pre>
+<p><code>keyframes</code> 表示关键帧数组，<code>options</code> 表示动画持续时间，或者包含多个时间属性，用于配置动画函数或者 <code>iterations</code>、<code>delay</code> 等常见属性，与 css 的动画属性基本保持一致。</p>
+<blockquote>
+<p>你也可以自己封装一个类似的方法，或者使用成熟的第三方工具库，能达到类似效果的方式也比较多</p>
+</blockquote>
+<p>然后在点击按钮时，执行即可</p>
+<pre><code class="language-js">sortBtn.onclick = () =&gt; {
+  record(container);
+  change();
+  play(container);
+};
+</code></pre>
+<h3><strong>2、案例二：多属性变化</strong></h3>
+<p>案例效果展示如图</p>
+<img src="./imgs/140/02.gif">
+
+<p>元素多属性动画并不会增加多少实现复杂度，只是多记录几个元素而已。这个案例包含了 <code>x/y/backgroundColor</code> 三个属性</p>
+<p><strong>First</strong>，记录初始信息</p>
+<pre><code class="language-js">// 记录开始位置信息
+function record(container) {
+  const all = [...container.children];
+  all.forEach((item, i) =&gt; {
+    const rect = item.getBoundingClientRect();
+    item.startX = rect.left;
+    item.startY = rect.top;
+    item.bgColor = getComputedStyle(item)[&quot;backgroundColor&quot;];
+  });
+}
+</code></pre>
+<p>Last，直接改变元素节点位置</p>
+<blockquote>
+<p>因为改变节点位置之后，能够轻易获取到元素新的位置的具体属性，所以这一步可以称之为 <code>Last</code></p>
+</blockquote>
+<pre><code class="language-js">function change() {
+  const all = [...container.children];
+  const len = all.length;
+  all.forEach((item, i) =&gt; {
+    const newIndex = Math.floor(Math.random() * len);
+    if (newIndex !== i) {
+      const nextDOM = item.nextElementSibling;
+      container.insertBefore(item, all[newIndex]);
+      container.insertBefore(all[newIndex], nextDOM);
+    }
+  });
+}
+</code></pre>
+<p><code>Invert</code> and <code>Play</code></p>
+<pre><code class="language-js">function play(container) {
+  const all = [...container.children];
+  const len = all.length;
+  all.forEach((item, i) =&gt; {
+    const rect = item.getBoundingClientRect();
+    const currentX = rect.left;
+    const currentY = rect.top;
+    const bgColor = getComputedStyle(item, false)[&quot;backgroundColor&quot;];
+    item.animate(
+      [
+        {
+          transform: `translate(${item.startX - currentX}px, ${
+            item.startY - currentY
+          }px)`,
+          backgroundColor: item.bgColor,
+        },
+        { transform: &quot;translate(0px, 0px)&quot;, backgroundColor: bgColor },
+      ],
+      { duration: 600 }
+    );
+  });
+}
+</code></pre>
+<p>最后，点击执行</p>
+<pre><code class="language-js">sortBtn.onclick = () =&gt; {
+  record(container);
+  change();
+  play(container);
+};
+</code></pre>
+<h3><strong>3、案例三：共享元素动画</strong></h3>
+<p>上面那两个案例，在实践中基本上没什么用，主要用于辅助学习。因此大家可能对于高级感和优雅感的体会不是那么深刻。</p>
+<p>第三个案例则以在实践中，在前端很少有项目能够做到的<code>共享元素动画</code>，来为大家介绍这种动画思想方案的厉害之处。</p>
+<img src="./imgs/140/03.gif">
+
+<p><strong>共享元素动画</strong>在前端是一个很少被提及的概念，但是在客户端的开发中，却已经运用非常广泛。</p>
+<img src="./imgs/140/04.gif">
+
+<p>对于前端而言，<strong>这代表了未来页面交互的主要发展方向</strong>。例如在小红书的 web 端已经实现了该功能</p>
+<p>在 FLIP 的指导思想下，该功能实现起来也并不复杂。</p>
+<p>First，记录元素的初始信息</p>
+<pre><code class="language-js">const all = [...list.children];
+// 记录开始位置信息
+all.forEach((item, i) =&gt; {
+  const rect = item.getBoundingClientRect();
+  item.startX = rect.left;
+  item.startY = rect.top;
+  item.width = rect.width;
+  item.height = rect.height;
+});
+</code></pre>
+<p>当我们点击元素时，此时有两个元素位置信息在发生变化，一个是背景弹窗。他的变化比较简单，就是透明度的变化，因此我们不用记录他的信息。另外一个就是共享的元素 <code>item</code>，此时我们记录了四个信息：<code>startX、startY、width、height</code></p>
+<p><code>Last</code>，点击元素之后，出现弹窗。此时我们把相关的两个节点插入到正确的位置上即可。</p>
+<pre><code class="language-js">function change(element) {
+  current = element.cloneNode(true);
+  modal = document.createElement(&quot;div&quot;);
+
+  modal.id = &quot;modal&quot;;
+  modal.appendChild(current);
+  document.body.appendChild(modal);
+}
+</code></pre>
+<p><code>Invert</code> and <code>Play</code>. 也是比较简单，就是获取新节点的位置，然后设置动画即可</p>
+<pre><code class="language-js">function play(preItem) {
+  modal.animate(
+    [
+      { backgroundColor: `rgba(0, 0, 0, 0)` },
+      { backgroundColor: `rgba(0, 0, 0, ${0.3})` },
+    ],
+    { duration: 600 }
+  );
+
+  const rect = current.getBoundingClientRect();
+  const currentX = rect.left;
+  const currentY = rect.top;
+  const width = rect.width;
+  const height = rect.height;
+
+  const x = preItem.startX - currentX - (width - preItem.width) / 2;
+  const y = preItem.startY - currentY - (height - preItem.height) / 2;
+
+  console.log(x, y);
+
+  current.animate(
+    [
+      {
+        transform: `translate(${x}px, ${y}px)`,
+        width: `${preItem.width}px`,
+        height: `${preItem.height}px`,
+      },
+      {
+        transform: &quot;translate(0px, 0px)&quot;,
+        height: `${height}px`,
+        width: `${width}px`,
+      },
+    ],
+    { duration: 600 }
+  );
+}
+</code></pre>
+<p>最后给每个元素添加点击事件</p>
+<pre><code class="language-js">all.forEach((item, i) =&gt; {
+  item.onclick = (event) =&gt; {
+    change(event.target);
+    play(event.target);
+  };
+});
+</code></pre>
+<p>弹窗上也需要新增一个点击事件，用于执行弹窗消失的动画</p>
+<pre><code class="language-js">modal.onclick = () =&gt; {
+  const ani = modal.animate(
+    [
+      { backgroundColor: `rgba(0, 0, 0, ${0.3})` },
+      { backgroundColor: `rgba(0, 0, 0, 0)` },
+    ],
+    { duration: 600 }
+  );
+
+  const rect = current.getBoundingClientRect();
+  const currentX = rect.left;
+  const currentY = rect.top;
+  const width = rect.width;
+  const height = rect.height;
+
+  const x = element.startX - currentX - (width - element.width) / 2;
+  const y = element.startY - currentY - 100;
+
+  current.animate(
+    [
+      {
+        transform: &quot;translate(0px, 0px)&quot;,
+        height: `${height}px`,
+        width: `${width}px`,
+      },
+      {
+        transform: `translate(${x}px, ${y}px)`,
+        width: `${element.width}px`,
+        height: `${element.height}px`,
+      },
+    ],
+    { duration: 600 }
+  );
+
+  console.log(x, y);
+
+  ani.onfinish = () =&gt; {
+    modal.remove();
+  };
+};
+</code></pre>
+<p>并在运动结束之后，删除弹窗节点</p>
+<pre><code class="language-js">ani.onfinish = () =&gt; {
+  modal.remove();
+};
+</code></pre>
+<p>一个共享元素动画，就这么简单的实现了。</p>
+<h3><strong>4、共享元素动画扩展思考</strong></h3>
+<p>如果我们要结合路由切换转场来实现共享元素动画，其实实现原理也是一样的，非常的简单，我们只需要在路由切换时，把共享元素的初始位置信息记录下来并作为参数传递给下一个页面即可。</p>
+<p>也就是说，我们只需要把这里的两个点击事件，结合路由事件和参数传递，就能做到跟小红书一样的共享元素路由转场效果。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/139.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

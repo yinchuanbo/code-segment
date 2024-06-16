@@ -32,7 +32,7 @@ body {
 }
 
 .container {
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .container,
@@ -45,9 +45,9 @@ body {
 .container ul {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, calc((100% - 80px) / 3));
+  grid-template-columns: repeat(3, calc((100% - 40px) / 3));
   /* grid-gap: 0 50px; */
-  gap: 20px;
+  gap: 10px;
   place-content: center;
 }
 
@@ -60,8 +60,6 @@ body {
   justify-content: center;
   border: 1px solid #313131;
   position: relative;
-  /* background-color: #181818; */
-  /* font-weight: 600; */
 }
 
 @media (max-width: 768px) {

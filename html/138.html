@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Proxy 与 Reflect</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Proxy 与 Reflect</h2>
+                    <p>2024-06-16 14:04:45 · YinHao</p>
+                  </div>
+                  <p><strong>引言：</strong> 在 JavaScript 的世界里，<code>Proxy</code>  和  <code>Reflect</code>  如同蝙蝠侠与罗宾，总是并肩作战。但你是否想过，为什么每个前端开发者在使用 Proxy 时都应掌握 Reflect？Proxy 真的不够强大，需要 Reflect 来助力吗？</p>
+<h2>Proxy 的力量</h2>
+<p><code>Proxy</code>  对象是 JavaScript 中的一项强大特性，它允许我们为任何目标对象创建一个代理，从而拦截和定义对该对象的基本操作的自定义行为。这包括属性查找、赋值、枚举、函数调用等。通过代理，我们可以完全控制对内部对象的访问，并可以按照需要自定义行为。</p>
+<p>基本语法</p>
+<pre><code class="language-js">const proxy = new Proxy(target, handler);
+</code></pre>
+<ul>
+<li><code>target</code>：目标对象，即被代理的对象。</li>
+<li><code>handler</code>：处理程序对象，定义了代理对象的方法，用于拦截和定义目标对象的操作。</li>
+</ul>
+<p>我们看一个实例代码：</p>
+<pre><code class="language-js">const target = { name: &quot;小明&quot;, age: 18 };
+
+const handler = {
+  get(target, prop, receiver) {
+    console.log(`访问了属性：${prop}`);
+    return target[prop];
+  },
+  set(target, prop, value, receiver) {
+    console.log(`设置了属性：${prop}，值为：${value}`);
+    target[prop] = value;
+    return true;
+  },
+};
+
+const proxy = new Proxy(target, handler);
+
+console.log(proxy.name); // 输出：访问了属性：name，小明
+proxy.age = 19; // 输出：设置了属性：age，值为：19
+console.log(proxy.age); // 输出：访问了属性：age，19
+</code></pre>
+<p>这里我们通过创建了一个 <code>Proxy</code>，成功拦截了<code>target</code>属性的访问和赋值操作，并在这些操作发生时打印 console 出相应的信息。</p>
+<h2>Reflect 的出现与作用</h2>
+<p><code>Reflect</code> 是一个内置对象，它提供了一组与 JavaScript 运行时操作对应的方法。这些方法使得在编写代理处理程序时，可以轻松地调用对象的默认行为。</p>
+<p>以下是 <code>Reflect</code> 的基本语法和示例：</p>
+<pre><code class="language-js">// 定义目标对象
+const target = { name: &quot;小明&quot;, age: 18 };
+
+// 使用 Reflect.get() 来获取属性值
+const name = Reflect.get(target, &quot;name&quot;);
+console.log(name); // 输出：小明
+
+// 使用 Reflect.set() 来设置属性值
+Reflect.set(target, &quot;age&quot;, 19);
+console.log(target.age); // 输出：19
+
+// 使用 Reflect.has() 来检查属性是否存在
+const hasAge = Reflect.has(target, &quot;age&quot;);
+console.log(hasAge); // 输出：true
+
+// 使用 Reflect.deleteProperty() 来删除属性
+Reflect.deleteProperty(target, &quot;name&quot;);
+console.log(target.name); // 输出：undefined
+
+// 使用 Reflect.ownKeys() 来获取对象的所有自有属性的键
+const keys = Reflect.ownKeys(target);
+console.log(keys); // 输出：[&#39;age&#39;]
+</code></pre>
+<p><code>Reflect</code> 的方法与 JS 语言内部的操作紧密对应，使得在编写代理处理程序时能够轻松地调用原始操作。</p>
+<h2>为什么需要 Reflect 呢？🧐🧐🧐</h2>
+<h3>Proxy 的局限性</h3>
+<p>JavaScript 中的 <code>Proxy</code> 提供了一种强大且灵活的方式来拦截并定义对象的基本操作的自定义行为。然而，单独使用 <code>Proxy</code> 在某些情况下可能会遇到一些局限性，特别是在尝试模仿默认行为时。</p>
+<p>例如，如果我们想要在拦截属性的读取操作时，仍然返回属性的默认值，我们就需要在处理程序中实现这一点：</p>
+<pre><code class="language-js">const target = { name: &quot;小明&quot;, age: 18 };
+
+const handler = {
+  get(target, prop, receiver) {
+    if (prop in target) {
+      return target[prop]; // 手动模仿默认的 get 行为
+    }
+    return undefined; // 如果属性不存在，返回 undefined
+  },
+  set(target, prop, value, receiver) {
+    if (prop === &quot;age&quot; &amp;&amp; typeof value !== &quot;number&quot;) {
+      throw new TypeError(&quot;Age must be a number&quot;);
+    }
+    // 手动实现默认行为
+    target[prop] = value;
+    return true;
+  },
+};
+
+const proxy = new Proxy(target, handler);
+console.log(proxy.name); // 输出：小明
+</code></pre>
+<p>这种方式虽然可行，但不够优雅，因为它要求开发者手动实现语言的默认行为，并且容易出错。</p>
+<h3>Reflect 的优势</h3>
+<p>通过使用 <code>Reflect</code>，我们可以更优雅地实现上述行为：</p>
+<pre><code class="language-js">const target = { name: &quot;小明&quot;, age: 18 };
+
+const handler = {
+  get(target, prop, receiver) {
+    // 使用 Reflect 模仿默认的 get 行为，如果属性不存在，返回 undefined
+    return Reflect.get(target, prop, receiver);
+  },
+  set(target, prop, value, receiver) {
+    // 使用 Reflect.set() 调用默认行为，成功返回 true
+    return Reflect.set(target, prop, value, receiver);
+  },
+};
+
+const proxy = new Proxy(target, handler);
+console.log(proxy.name); // 输出：小明
+</code></pre>
+<p>这样代码更简洁，行为也更一致。</p>
+<h3>Reflect 的必要性</h3>
+<ol>
+<li><strong>默认行为的一致性</strong>：<code>Reflect</code> 对象提供了与大多数 <code>Proxy</code> traps 对应的方法，使得在进行对象操作时，可以保持一致的编程模式，且代码的可读性和可维护性更强。</li>
+<li><strong>更好的错误处理</strong>：<code>Reflect</code> 方法返回一个布尔值，可以清晰地指示操作是否成功，这使得错误处理更加直观。</li>
+<li><strong>函数式编程风格</strong>：<code>Reflect</code> 方法接受目标对象作为第一个参数，这允许你以函数式编程风格处理对象操作。</li>
+<li><strong>接收者（receiver）参数</strong>：<code>Reflect</code> 方法通常接受一个接收者参数，这允许你在调用方法时明确指定 <code>this</code> 的值，这在实现基于原型的继承和自定义 <code>this</code> 绑定时非常有用。</li>
+</ol>
+<h2>Proxy 与 Reflect 的结合</h2>
+<p>通过 <code>Proxy</code> 和 <code>Reflect</code> 的结合，可以更简洁地实现对象的代理和拦截操作。例如：</p>
+<pre><code class="language-js">const target = { name: &quot;小薇&quot;, age: 17 };
+
+const handler = {
+  get(target, prop, receiver) {
+    return Reflect.get(target, prop, receiver);
+  },
+  set(target, prop, value, receiver) {
+    return Reflect.set(target, prop, value, receiver);
+  },
+  has(target, prop) {
+    return Reflect.has(target, prop);
+  },
+  ownKeys(target) {
+    return Reflect.ownKeys(target);
+  },
+};
+
+const proxy = new Proxy(target, handler);
+console.log(proxy.name); // 输出：小薇
+proxy.age = 18;
+console.log(proxy.age); // 输出：18
+console.log(Object.keys(proxy)); // 输出：[&#39;name&#39;, &#39;age&#39;]
+</code></pre>
+<p>通过这种结合，代码更加简洁且易于维护。</p>
+<h2>不同应用场景（🔥 可以复制，直接拿来使用）</h2>
+<p>通过使用 <code>Proxy</code>，我们可以轻松地实现对象的代理和拦截操作。而 <code>Reflect</code> 的引入为与语言默认行为的交互提供了方便，使得编写更健壮和可维护的代码成为可能。</p>
+<p>以下是一些具体的应用场景：</p>
+<h3>数据绑定与观察者模式</h3>
+<p>在框架如 Vue.js 中，<code>Proxy</code> 和 <code>Reflect</code> 可用于实现数据绑定和观察者模式。例如，监听对象的属性变化并触发相应的更新：</p>
+<pre><code class="language-js">const handler = {
+  set(target, prop, value) {
+    console.log(`属性 ${prop} 被设置为 ${value}`);
+    return Reflect.set(target, prop, value);
+  },
+};
+
+const data = new Proxy({}, handler);
+
+data.name = &quot;小明&quot;; // 输出：属性 name 被设置为 小明
+</code></pre>
+<h3>表单验证</h3>
+<p>我们可以使用 <code>Proxy</code> 和 <code>Reflect</code> 实现表单验证，在设置对象属性时进行校验：</p>
+<pre><code class="language-js">const form = { username: &quot;&quot;, age: 0 };
+
+const handler = {
+  set(target, prop, value, receiver) {
+    if (prop === &quot;age&quot; &amp;&amp; (typeof value !== &quot;number&quot; || value &lt;= 0)) {
+      throw new TypeError(&quot;Age must be a positive number&quot;);
+    }
+    return Reflect.set(target, prop, value, receiver);
+  },
+};
+
+const proxy = new Proxy(form, handler);
+
+try {
+  proxy.age = -5; // 抛出错误：Age must be a positive number
+} catch (e) {
+  console.error(e.message);
+}
+
+proxy.age = 30; // 设置成功
+console.log(proxy.age); // 输出：30
+</code></pre>
+<h3>扩展对象功能</h3>
+<p>使用 <code>Proxy</code> 可以动态地扩展对象功能。例如，可以在现有对象上添加日志记录功能，而不需要修改对象的原始代码。</p>
+<pre><code class="language-js">const original = {
+  greet() {
+    console.log(&quot;Hello!&quot;);
+  },
+};
+
+const handler = {
+  apply(target, thisArg, argumentsList) {
+    console.log(`调用了方法：${target.name}`);
+    return Reflect.apply(target, thisArg, argumentsList);
+  },
+};
+
+const proxy = new Proxy(original.greet, handler);
+
+proxy(); // 输出：调用了方法：greet，Hello!
+</code></pre>
+<h3>方法劫持</h3>
+<p>方法劫持可以用于调试、性能监控或权限控制。例如，在调用某个方法前后插入自定义逻辑。</p>
+<pre><code class="language-js">const service = {
+  fetchData() {
+    console.log(&quot;Fetching data...&quot;);
+    // 模拟数据获取
+  },
+};
+
+const handler = {
+  apply(target, thisArg, argumentsList) {
+    console.log(&quot;开始调用 fetchData&quot;);
+    const result = Reflect.apply(target, thisArg, argumentsList);
+    console.log(&quot;结束调用 fetchData&quot;);
+    return result;
+  },
+};
+
+const proxy = new Proxy(service.fetchData, handler);
+
+proxy(); // 输出：开始调用 fetchData，Fetching data...，结束调用 fetchData
+</code></pre>
+<h3>API 请求拦截</h3>
+<p>我们还可以使用 <code>Proxy</code> 和 <code>Reflect</code> 实现 API 请求的拦截和日志记录：</p>
+<pre><code class="language-js">const api = {
+  fetchData(endpoint) {
+    console.log(`Fetching data from ${endpoint}`);
+    // 模拟 API 请求
+    return { data: &quot;Sample Data&quot; };
+  },
+};
+
+const handler = {
+  apply(target, thisArg, argumentsList) {
+    console.log(`调用了方法：${target.name}`);
+    return Reflect.apply(target, thisArg, argumentsList);
+  },
+};
+
+const proxy = new Proxy(api.fetchData, handler);
+
+const data = proxy(&quot;/api/data&quot;); // 输出：调用了方法：fetchData Fetching data from /api/data
+console.log(data); // 输出：{ data: &#39;Sample Data&#39; }
+</code></pre>
+<p>通过这些应用场景的展示，可以看出 <code>Proxy</code> 和 <code>Reflect</code> 在实际开发中具有广泛的应用前景和强大的灵活性。</p>
+<h2>性能对比（🔥 也很重要）</h2>
+<p>使用 <code>Proxy</code> 和 <code>Reflect</code> 的性能开销通常较小，但在高频次操作中可能会积累。以下是使用 <code>Proxy</code> 和 <code>Reflect</code> 的性能测试代码：</p>
+<pre><code class="language-js">const target = { value: 42 };
+const handler = {
+  get(target, prop, receiver) {
+    return Reflect.get(target, prop, receiver);
+  },
+};
+
+const proxy = new Proxy(target, handler);
+
+console.time(&quot;Proxy&quot;);
+for (let i = 0; i &lt; 1000000; i++) {
+  proxy.value;
+}
+console.timeEnd(&quot;Proxy&quot;); // 48.790771484375 ms
+
+console.time(&quot;Direct&quot;);
+for (let i = 0; i &lt; 1000000; i++) {
+  target.value;
+}
+console.timeEnd(&quot;Direct&quot;); // 1.714111328125 ms
+</code></pre>
+<p>在多数情况下，<code>Proxy</code> 和 <code>Reflect</code> 的性能足以满足需求，但在性能敏感的场景中，仍需谨慎使用。</p>
+<h2>总结</h2>
+<p><code>Proxy</code> 用于创建对象的代理，可以拦截和自定义对对象的操作。<code>Reflect</code>提供了一组与 JavaScript 语言内部操作相对应的方法，方便开发者更标准和简洁地操作对象。通过结合 <code>Proxy</code> 和 <code>Reflect</code>，可以编写出更简洁、易维护的代码。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/137.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/139.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

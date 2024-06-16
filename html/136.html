@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>前端图片磨皮处理</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>前端图片磨皮处理</h2>
+                    <p>2024-06-16 13:25:35 · YinHao</p>
+                  </div>
+                  <h2>我们来理清思路：</h2>
+<p>1、图片处理依旧使用 canvas，首先，将图片继续转化为 canvas</p>
+<p>2、获取图片像素参数，并对其进行计算，貌似很多人在用中值滤波算法</p>
+<p>3、利用 OpenCV 库来实现，OpenCV.js 是 OpenCV（开放源代码计算机视觉库的 JavaScript 版本，使用前我们先进行下载它，你可以去官方下载，也可以在这个项目中去拿：<a href="https://github.com/dnoyeb/opencv-js.git">https://github.com/dnoyeb/opencv-js.git</a></p>
+<p><img src="./imgs/136/01.png" alt=""></p>
+<h2>源码</h2>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;OpenCV.js&lt;/title&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+      .inputoutput {
+        /* float: left; */
+        margin: 10px 0;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;h1&gt;图片磨皮&lt;/h1&gt;
+    &lt;p id=&quot;status&quot;&gt;准备加载……&lt;/p&gt;
+    &lt;select id=&quot;select&quot;&gt;
+      &lt;option value=&quot;bilateralFilter&quot;&gt;双边滤波(bilateralFilter)&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;inputoutput&quot;&gt;
+        &lt;!-- &lt;img id=&quot;imageSrc&quot; alt=&quot;No Image&quot; /&gt; --&gt;
+        &lt;div class=&quot;caption&quot;&gt;
+          &lt;input type=&quot;file&quot; id=&quot;fileInput&quot; name=&quot;file&quot; /&gt;
+          &lt;button onclick=&quot;download()&quot;&gt;下载图片&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;inputoutput&quot;&gt;
+        &lt;span id=&quot;imgWarp&quot;&gt;&lt;/span&gt;
+        &lt;canvas id=&quot;canvasOutput&quot;&gt;&lt;/canvas&gt;
+        &lt;!-- &lt;div class=&quot;caption&quot;&gt;canvasOutput&lt;/div&gt; --&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;script
+      async
+      src=&quot;js/opencv.js&quot;
+      onload=&quot;onOpenCvReady();&quot;
+      type=&quot;text/javascript&quot;
+    &gt;&lt;/script&gt;
+
+    &lt;script type=&quot;text/javascript&quot;&gt;
+      // let imgElement = document.getElementById(&#39;imageSrc&#39;);
+      let imgElement = new Image();
+      let inputElement = document.getElementById(&quot;fileInput&quot;);
+      let select = document.getElementById(&quot;select&quot;);
+      inputElement.addEventListener(
+        &quot;change&quot;,
+        (e) =&gt; {
+          imgElement.src = URL.createObjectURL(e.target.files[0]);
+        },
+        false
+      );
+      document.getElementById(&quot;imgWarp&quot;).appendChild(imgElement);
+      select.addEventListener(
+        &quot;change&quot;,
+        (e) =&gt; {
+          // imgElement.src = URL.createObjectURL(e.target.files[0]);
+          console.log(select.value);
+        },
+        false
+      );
+
+      imgElement.onload = function () {
+        let mat = cv.imread(imgElement);
+        mat = bilateralFilter(mat, 4, 3);
+        cv.imshow(&quot;canvasOutput&quot;, mat);
+        mat.delete();
+      };
+
+      function onOpenCvReady() {
+        document.getElementById(&quot;status&quot;).innerHTML =
+          &quot;OpenCV加载完成，可以开始操作&quot;;
+      }
+
+      function download() {
+        const canvas = document.getElementById(&quot;canvasOutput&quot;);
+        let newUrl = canvas.toDataURL(&quot;image/png&quot;);
+        let a = document.createElement(&quot;a&quot;);
+        a.href = newUrl;
+        a.download = &quot;img.png&quot;;
+        a.click();
+        window.URL.revokeObjectURL(newUrl);
+      }
+
+      function bilateralFilter(image, value1, value2) {
+        let dst = new cv.Mat();
+        if (value1 == null || value1 == undefined) value1 = 3; //磨皮系数
+        if (value2 == null || value2 == undefined) value2 = 1; //细节系数 0.5 - 2
+
+        var dx = value1 * 5; //双边滤波参数
+        var fc = value1 * 12.5; //参数
+        var p = 0.1; //透明度
+
+        let temp1 = new cv.Mat(),
+          temp2 = new cv.Mat(),
+          temp3 = new cv.Mat(),
+          temp4 = new cv.Mat();
+
+        cv.cvtColor(image, image, cv.COLOR_RGBA2RGB, 0);
+
+        cv.bilateralFilter(image, temp1, dx, fc, fc); //bilateralFilter(Src)
+
+        let temp22 = new cv.Mat();
+        cv.subtract(temp1, image, temp22); //bilateralFilter(Src) - Src
+
+        cv.add(
+          temp22,
+          new cv.Mat(
+            image.rows,
+            image.cols,
+            image.type(),
+            new cv.Scalar(128, 128, 128, 128)
+          ),
+          temp2
+        ); //bilateralFilter(Src) - Src + 128
+
+        cv.GaussianBlur(
+          temp2,
+          temp3,
+          new cv.Size(2 * value2 - 1, 2 * value2 - 1),
+          0,
+          0
+        );
+        //2 * GuassBlur(bilateralFilter(Src) - Src + 128) - 1
+
+        let temp44 = new cv.Mat();
+        temp3.convertTo(temp44, temp3.type(), 2, -255);
+        //2 * GuassBlur(bilateralFilter(Src) - Src + 128) - 256
+
+        cv.add(image, temp44, temp4);
+        cv.addWeighted(image, p, temp4, 1 - p, 0.0, dst);
+        //Src * (100 - Opacity)
+
+        cv.add(
+          dst,
+          new cv.Mat(
+            image.rows,
+            image.cols,
+            image.type(),
+            new cv.Scalar(10, 10, 10, 0)
+          ),
+          dst
+        );
+        //(Src * (100 - Opacity) + (Src + 2 * GuassBlur(bilateralFilter(Src) - Src + 128) - 256) * Opacity) /100
+
+        return dst;
+      }
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>opencv.js 文件下载地址：<a href="https://github.com/dnoyeb/opencv-js.git">https://github.com/dnoyeb/opencv-js.git</a></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/135.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/137.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
