@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Eslint 配置指南</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Eslint 配置指南</h2>
+                    <p>2024-06-17 21:20:58 · YinHao</p>
+                  </div>
+                  <ol>
+<li>Eslint 配置指南</li>
+</ol>
+<p>ESLint 是一个强大的代码检查工具，用于识别 JavaScript 和其他支持的语言中的常见编程错误，并强制执行一致的编码风格。</p>
+<p>ESLint 最初是由 Nicholas C. Zakas 于 2013 年 6 月创建的开源项目。</p>
+<p>ESLint 是一个开源的 JavaScript 代码检查工具，它是用来进行代码的校验，检测代码中潜在的问题，比如某个变量定义了未使用、函数定义的参数重复、变量名没有按规范命名等等。</p>
+<p>中文官网：<a href="https://zh-hans.eslint.org/">https://zh-hans.eslint.org/</a></p>
+<p>英文官网：<a href="https://eslint.org/">https://eslint.org/</a></p>
+<p>下面是一个基本的 ESLint 配置指南，帮助你开始使用它来提升代码质量。</p>
+<p>1.1. 安装 ESLint</p>
+<p>首先，你需要在项目中安装 ESLint。如果你的项目是一个 Node.js 应用，通常会将其作为开发依赖安装：</p>
+<pre><code class="language-sh">npm install eslint --save-dev
+# 或者使用 yarn
+yarn add eslint --dev
+</code></pre>
+<p>1.2. 生成配置文件</p>
+<p>ESLint 支持多种格式的配置文件，包括 <code>.eslintrc.js</code>, <code>.eslintrc.yaml</code>, .<code>eslintrc.yml</code>, <code>.eslintrc.json</code>, 以及直接在 <code>package.json</code> 中的 <code>eslintConfig</code> 字段。你可以根据需要选择合适的格式。</p>
+<p>要生成配置文件，可以运行：</p>
+<pre><code class="language-sh">npx eslint --init
+</code></pre>
+<p>这会引导你进行一系列问题的回答，根据你的回答自动生成配置。</p>
+<p>例如，你可以选择你的环境（浏览器、Node.js 等）、想要遵循的编码规范（如 Airbnb、Google、Standard 等）以及是否要支持某些语言特性（比如 Vue.js 或 React）。</p>
+<p>1.3. 修改配置文件</p>
+<p>生成的 <code>.eslintrc.*</code> 文件包含了 ESLint 的基础配置。你可以手动编辑这个文件来调整规则，添加或移除规则，或改变规则的严格程度。配置文件通常看起来像这样：</p>
+<pre><code class="language-js">// .eslintrc.js 示例
+// @see https://eslint.bootcss.com/docs/rules/
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+    jest: true,
+  },
+  /* 指定如何解析语法 */
+  parser: &quot;vue-eslint-parser&quot;,
+  /** 优先级低于 parse 的语法解析配置 */
+  parserOptions: {
+    ecmaVersion: &quot;latest&quot;,
+    sourceType: &quot;module&quot;,
+    parser: &quot;@typescript-eslint/parser&quot;,
+    jsxPragma: &quot;React&quot;,
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  /* 继承已有的规则 */
+  extends: [
+    &quot;eslint:recommended&quot;,
+    &quot;plugin:vue/vue3-essential&quot;,
+    &quot;plugin:@typescript-eslint/recommended&quot;,
+    &quot;plugin:prettier/recommended&quot;,
+  ],
+  plugins: [&quot;vue&quot;, &quot;@typescript-eslint&quot;],
+  /*
+   * &quot;off&quot; 或 0    ==&gt;  关闭规则
+   * &quot;warn&quot; 或 1   ==&gt;  打开的规则作为警告（不影响代码执行）
+   * &quot;error&quot; 或 2  ==&gt;  规则作为一个错误（代码不能执行，界面报错）
+   */
+  rules: {
+    // eslint（https://eslint.bootcss.com/docs/rules/）
+    &quot;no-var&quot;: &quot;error&quot;, // 要求使用 let 或 const 而不是 var
+    &quot;no-multiple-empty-lines&quot;: [&quot;warn&quot;, { max: 1 }], // 不允许多个空行
+    &quot;no-console&quot;: process.env.NODE_ENV === &quot;production&quot; ? &quot;error&quot; : &quot;off&quot;,
+    &quot;no-debugger&quot;: process.env.NODE_ENV === &quot;production&quot; ? &quot;error&quot; : &quot;off&quot;,
+    &quot;no-unexpected-multiline&quot;: &quot;error&quot;, // 禁止空余的多行
+    &quot;no-useless-escape&quot;: &quot;off&quot;, // 禁止不必要的转义字符
+
+    // typeScript (https://typescript-eslint.io/rules)
+    &quot;@typescript-eslint/no-unused-vars&quot;: &quot;error&quot;, // 禁止定义未使用的变量
+    &quot;@typescript-eslint/prefer-ts-expect-error&quot;: &quot;error&quot;, // 禁止使用 @ts-ignore
+    &quot;@typescript-eslint/no-explicit-any&quot;: &quot;off&quot;, // 禁止使用 any 类型
+    &quot;@typescript-eslint/no-non-null-assertion&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint/no-namespace&quot;: &quot;off&quot;, // 禁止使用自定义 TypeScript 模块和命名空间。
+    &quot;@typescript-eslint/semi&quot;: &quot;off&quot;,
+
+    // eslint-plugin-vue (https://eslint.vuejs.org/rules/)
+    &quot;vue/multi-word-component-names&quot;: &quot;off&quot;, // 要求组件名称始终为 “-” 链接的单词
+    &quot;vue/script-setup-uses-vars&quot;: &quot;error&quot;, // 防止&lt;script setup&gt;使用的变量&lt;template&gt;被标记为未使用
+    &quot;vue/no-mutating-props&quot;: &quot;off&quot;, // 不允许组件 prop的改变
+    &quot;vue/attribute-hyphenation&quot;: &quot;off&quot;, // 对模板中的自定义组件强制执行属性命名样式
+  },
+};
+</code></pre>
+<p>1.4. 创建 <code>.eslintignore</code> 文件</p>
+<p>你可以创建一个 <code>.eslintignore</code> 文件来指定 ESLint 应该忽略哪些文件或目录。这与 <code>.gitignore</code> 类似，每一行一个路径模式。</p>
+<p>例如：</p>
+<pre><code class="language-sh">/node_modules/
+/dist/
+/build/
+</code></pre>
+<p>1.5. 运行 ESLint</p>
+<p>安装并配置好后，可以在命令行中运行 ESLint 来检查你的代码：</p>
+<pre><code class="language-sh">npx eslint yourfile.js
+# 或者检查整个项目
+npx eslint .
+</code></pre>
+<p>1.6. 整合到编辑器/IDE</p>
+<p>大多数现代代码编辑器（如 VSCode, WebStorm 等）都支持 ESLint 插件，允许你在编写代码时实时看到 ESLint 的警告和错误，并提供快速修复选项。确保安装对应的插件并启用它。</p>
+<p>1.7. 自动修复</p>
+<p>ESLint 提供了一个自动修复功能，可以尝试修复一些简单的警告和错误：</p>
+<pre><code class="language-sh">npx eslint --fix yourfile.js
+# 或者修复整个项目
+npx eslint --fix .
+</code></pre>
+<p>package.json 新增两个运行脚本</p>
+<pre><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;lint&quot;: &quot;eslint src&quot;,
+    &quot;fix&quot;: &quot;eslint src --fix&quot;
+  }
+}
+</code></pre>
+<p>以上就是 ESLint 的基本配置指南。随着项目的进展，你可能需要根据团队的编码规范进一步定制配置。记得定期更新 ESLint 及其插件以获取最新的规则和支持。</p>
+<ol start="2">
+<li>配置 prettier</li>
+</ol>
+<p>有了 eslint，为什么还要有 prettier？</p>
+<p>eslint 针对的是 javascript，是一个检测工具，包含 js 语法以及少部分格式问题，在 eslint 看来，语法对了就能保证代码正常运行，格式问题属于其次；</p>
+<p>而 prettier 属于格式化工具，它看不惯格式不统一，所以它就把 eslint 没干好的事接着干，另外，prettier 支持包含 js 在内的多种语言。</p>
+<p>总结起来，eslint 和 prettier 这俩兄弟一个保证 js 代码质量，一个保证代码美观。</p>
+<p>来到 VS Code 安装其对应的插件。</p>
+<p>2.1. 安装依赖包</p>
+<pre><code class="language-sh">npm install -D eslint-plugin-prettier prettier eslint-config-prettier
+yarn add -D eslint-plugin-prettier prettier eslint-config-prettier
+pnpm install -D eslint-plugin-prettier prettier eslint-config-prettier
+</code></pre>
+<p>同样是在 src 同级目录下安装.prettierrc.json 文件夹</p>
+<p>2.2. <code>.prettierrc.json</code> 添加规则</p>
+<pre><code class="language-json">{
+  &quot;printWidth&quot;: 120,
+  &quot;tabWidth&quot;: 2,
+  &quot;useTabs&quot;: false,
+  &quot;semi&quot;: false,
+  &quot;singleQuote&quot;: true,
+  &quot;bracketSpacing&quot;: true,
+  &quot;trailingComma&quot;: &quot;all&quot;,
+  &quot;jsxSingleQuote&quot;: false,
+  &quot;arrowParens&quot;: &quot;avoid&quot;,
+  &quot;proseWrap&quot;: &quot;preserve&quot;,
+  &quot;htmlWhitespaceSensitivity&quot;: &quot;strict&quot;,
+  &quot;endOfLine&quot;: &quot;auto&quot;
+}
+</code></pre>
+<p>2.3. <code>.prettierignore</code> 忽略文件</p>
+<pre><code class="language-sh">/dist/*
+/html/*
+.local
+/node_modules/**
+**/*.svg
+**/*.sh
+/public/*
+</code></pre>
+<p>通过 <code>pnpm run lint</code> 去检测语法，如果出现不规范格式，通过 <code>pnpm run fix</code> 修改</p>
+<p>2.4. 保存自动格式化</p>
+<p>想要按 <code>Ctrl+S</code> 保证的自动按 eslint 规则格式化代码的话，找到 <code>.vscode</code> 文件，内部新建个 <code>setting.json</code> 文件夹</p>
+<p>setting.json 写入代码</p>
+<pre><code class="language-json">{
+  &quot;editor.formatOnType&quot;: true,
+  &quot;editor.formatOnSave&quot;: true,
+  &quot;eslint.codeAction.showDocumentation&quot;: {
+    &quot;enable&quot;: true
+  },
+  &quot;editor.codeActionsOnSave&quot;: {
+    &quot;source.fixAll.eslint&quot;: true
+  },
+  &quot;eslint.validate&quot;: [&quot;javascript&quot;, &quot;javascriptreact&quot;, &quot;html&quot;, &quot;vue&quot;]
+}
+</code></pre>
+<ol start="3">
+<li>eslint-config-win</li>
+</ol>
+<p>此规则适用于 <code>JavaScript/Vue</code> 项目的 ESLint 配置规范。</p>
+<p>目前已支持 <code>Vue 3.0</code>，需要指定 extends 配置 vue3</p>
+<p><a href="https://gitee.com/braden/eslint-config-win?spm=5176.28575747.0.0.ff1f2adcn7ydP7">https://gitee.com/braden/eslint-config-win?spm=5176.28575747.0.0.ff1f2adcn7ydP7</a></p>
+<p>3.1. 安装</p>
+<pre><code class="language-sh">yarn add @winner-fed/eslint-config-win -D
+</code></pre>
+<p>3.2. 依赖版本</p>
+<pre><code class="language-sh">eslint ^7.32.0
+@babel/eslint-parser ^7.15.8
+vue-eslint-parser ^7.11.0
+eslint-plugin-vue ^7.20.0
+</code></pre>
+<p>Tips：如果项目中没有安装此依赖包或者版本不一致，请安装或者升级。</p>
+<p>3.3. 用法</p>
+<ul>
+<li>在你的项目的根目录下创建一个 <code>.eslintrc.js</code> 文件，并将以下内容复制进去：</li>
+</ul>
+<pre><code class="language-js">module.exports = {
+  extends: [&quot;@winner-fed/win&quot;],
+  env: {
+    // 你的环境变量（包含多个预定义的全局变量）
+    //
+    // browser: true,
+    // node: true,
+    // mocha: true,
+    // jest: true,
+    // jquery: true
+  },
+  globals: {
+    // 你的全局变量（设置为 false 表示它不允许被重新赋值）
+    //
+    // myGlobal: false
+  },
+  rules: {
+    // 自定义你的规则
+  },
+};
+</code></pre>
+<ul>
+<li>项目目录下的 package.json 添加检测指令，举个例子</li>
+</ul>
+<pre><code class="language-json">{
+//  ...
+ &quot;scripts&quot;: {
+   + &quot;lint:es&quot;: &quot;eslint \&quot;src/**/*.{vue,js,jsx}\&quot; --fix&quot;,
+ }
+//  ...
+}
+</code></pre>
+<p>3.3.1. Vue</p>
+<pre><code class="language-sh">npm install --save-dev eslint babel-eslint vue-eslint-parser eslint-plugin-vue @winner-fed/eslint-config-win
+</code></pre>
+<p>在你的项目的根目录下创建一个 <code>.eslintrc.js</code> 文件，并将以下内容复制进去：</p>
+<pre><code class="language-js">module.exports = {
+  extends: [
+    &quot;@winner-fed/win&quot;,
+    // 这里是针对 vue2 的配置
+    &quot;@winner-fed/win/vue&quot;,
+    // 如果是 vue3 的项目工程，则推荐下面配置
+    // &#39;@winner-fed/win/vue3&#39;,
+  ],
+  env: {
+    // 你的环境变量（包含多个预定义的全局变量）
+    //
+    // browser: true,
+    // node: true,
+    // mocha: true,
+    // jest: true,
+    // jquery: true
+  },
+  globals: {
+    // 你的全局变量（设置为 false 表示它不允许被重新赋值）
+    //
+    // myGlobal: false
+  },
+  rules: {
+    // 自定义你的规则
+  },
+};
+</code></pre>
+<p>3.4. Vue3 新增规则</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>规则描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://eslint.vuejs.org/rules/custom-event-name-casing.html">vue/custom-event-name-casing</a></td>
+<td>自定义事件名必须用 kebab-case 风格</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-arrow-functions-in-watch.html">vue/no-arrow-functions-in-watch</a></td>
+<td>watch 中禁止使用箭头函数</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-custom-modifiers-on-v-model.html">vue/no-custom-modifiers-on-v-model</a></td>
+<td>禁止自定义的 v-modal 修饰语</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-data-object-declaration.html">vue/no-deprecated-data-object-declaration</a></td>
+<td>禁止在 data 中使用已废弃的对象定义</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-destroyed-lifecycle.html">vue/no-deprecated-destroyed-lifecycle</a></td>
+<td>禁止使用已废弃的 destroyed 和 beforeDestroy 生命周期</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-dollar-listeners-api.html">vue/no-deprecated-dollar-listeners-api</a></td>
+<td>禁止使用已废弃的 $listeners</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-dollar-scopedslots-api.html">vue/no-deprecated-dollar-scopedslots-api</a></td>
+<td>禁止使用已废弃的 $scopedSlots</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-events-api.html">vue/no-deprecated-events-api</a></td>
+<td>禁止使用已废弃的 events 接口</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-filter.html">vue/no-deprecated-filter</a></td>
+<td>禁止使用已废弃的 filters 语法</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-functional-template.html">vue/no-deprecated-functional-template</a></td>
+<td>禁止使用已废弃的 functional 模版</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-html-element-is.html">vue/no-deprecated-html-element-is</a></td>
+<td>禁止使用已废弃的 is 属性</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-inline-template.html">vue/no-deprecated-inline-template</a></td>
+<td>禁止使用已废弃的 inline-template 属性</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-props-default-this.html">vue/no-deprecated-props-default-this</a></td>
+<td>禁止使用已废弃的 this</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-v-bind-sync.html">vue/no-deprecated-v-bind-sync</a></td>
+<td>禁止在 v-bind 指令中使用已废弃的 .sync 修饰符</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-v-on-native-modifier.html">vue/no-deprecated-v-on-native-modifier</a></td>
+<td>禁止使用已废弃的 .native 修饰符</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-v-on-number-modifiers.html">vue/no-deprecated-v-on-number-modifiers</a></td>
+<td>禁止使用已废弃的数字修饰符</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-deprecated-vue-config-keycodes.html">vue/no-deprecated-vue-config-keycodes</a></td>
+<td>禁止使用已废弃的 Vue.config.keyCodes</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-dupe-v-else-if.html">vue/no-dupe-v-else-if</a></td>
+<td>禁止在 v-if 和 v-else-if 中出现重复的测试表达式</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-duplicate-attr-inheritance.html">vue/no-duplicate-attr-inheritance</a></td>
+<td>使用 v-bind=“$attrs” 时 inheritAttrs 必须是 false</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-empty-component-block.html">vue/no-empty-component-block</a></td>
+<td>禁止 <code>&lt;template&gt; &lt;script&gt; &lt;style&gt;</code> 为空</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-invalid-model-keys.html">vue/no-invalid-model-keys</a></td>
+<td>禁止 model 中出现错误的属性</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-lifecycle-after-await.html">vue/no-lifecycle-after-await</a></td>
+<td>禁止异步注册生命周期</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-lone-template.html">vue/no-lone-template</a></td>
+<td>禁止出现没必要的 <code>&lt;template&gt;</code></td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-multiple-objects-in-class.html">vue/no-multiple-objects-in-class</a></td>
+<td>禁止 class 中出现复数的对象</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-multiple-slot-args.html">vue/no-multiple-slot-args</a></td>
+<td>禁止给 scoped slots 传递多个参数</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-multiple-template-root.html">vue/no-multiple-template-root</a></td>
+<td>禁止模版中有多个根节点</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-mutating-props.html">vue/no-mutating-props</a></td>
+<td>禁止修改组件的 props</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-ref-as-operand.html">vue/no-ref-as-operand</a></td>
+<td>禁止直接使用由 ref 生成的变量，必须使用它的 value</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-setup-props-destructure.html">vue/no-setup-props-destructure</a></td>
+<td>禁止对 setup 中的 props 解构</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-sparse-arrays.html">vue/no-sparse-arrays</a></td>
+<td>禁止在数组中出现连续的逗号</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-useless-concat.html">vue/no-useless-concat</a></td>
+<td>禁止没必要的字符拼接</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-useless-mustaches.html">vue/no-useless-mustaches</a></td>
+<td>禁止出现无用的 mustache 字符串</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-useless-v-bind.html">vue/no-useless-v-bind</a></td>
+<td>禁止出现无用的 v-bind</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-v-for-template-key.html">vue/no-v-for-template-key</a></td>
+<td>禁止 template 有 v-for 属性时又有 key 属性</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-v-for-template-key-on-child.html">vue/no-v-for-template-key-on-child</a></td>
+<td>禁止 template v-for 属性的子节点有 key 属性</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/no-watch-after-await.html">vue/no-watch-after-await</a></td>
+<td>禁止在 await 之后调用 watch</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/one-component-per-file.html">vue/one-component-per-file</a></td>
+<td>一个文件必须仅包含一个组件</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/order-in-components.html">vue/order-in-components</a></td>
+<td>组件的属性必须为一定的顺序</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/require-explicit-emits.html">vue/require-explicit-emits</a></td>
+<td>emits 属性必须包含 $emit() 中的值</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/require-slots-as-functions.html">vue/require-slots-as-functions</a></td>
+<td>this.$slots.default 必须被当作方法使用</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/require-toggle-inside-transition.html">vue/require-toggle-inside-transition</a></td>
+<td>transition 内部必须有条件指令</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/this-in-template.html">vue/return-in-emits-validator</a></td>
+<td>emits 中的方法必须有返回值</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/v-on-event-hyphenation.html">vue/v-on-event-hyphenation</a></td>
+<td>禁止在 v-on 的事件名使用横杠</td>
+</tr>
+<tr>
+<td><a href="https://eslint.vuejs.org/rules/valid-v-is.html">vue/valid-v-is</a></td>
+<td>v-is 指令必须合法</td>
+</tr>
+</tbody></table>
+<p>3.6. 开发维护</p>
+<p>以测试开发驱动，<code>config/rules/*.json</code> 文件都是根据 <code>test/</code> 文件夹对应的生成的</p>
+<ol start="4">
+<li>eslint 配置举例</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;rules&quot;: {
+    // 定义对象的set存取器属性时，强制定义get
+    &quot;accessor-pairs&quot;: 2,
+    // 指定数组的元素之间要以空格隔开(,后面)， never参数：[ 之前和 ] 之后不能带空格，always参数：[ 之前和 ] 之后必须带空格
+    &quot;array-bracket-spacing&quot;: [2, &quot;never&quot;],
+    // 在块级作用域外访问块内定义的变量是否报错提示
+    &quot;block-scoped-var&quot;: 0,
+    // if while function 后面的{必须与if在同一行，java风格。
+    &quot;brace-style&quot;: [2, &quot;1tbs&quot;, { &quot;allowSingleLine&quot;: true }],
+    // 双峰驼命名格式
+    &quot;camelcase&quot;: 2,
+    // 数组和对象键值对最后一个逗号， never参数：不能带末尾的逗号, always参数：必须带末尾的逗号，
+    // always-multiline：多行模式必须带逗号，单行模式不能带逗号
+    &quot;comma-dangle&quot;: [2, &quot;never&quot;],
+    // 控制逗号前后的空格
+    &quot;comma-spacing&quot;: [2, { &quot;before&quot;: false, &quot;after&quot;: true }],
+    // 控制逗号在行尾出现还是在行首出现
+    // http://eslint.org/docs/rules/comma-style
+    &quot;comma-style&quot;: [2, &quot;last&quot;],
+    // 圈复杂度
+    &quot;complexity&quot;: [2, 9],
+    // 以方括号取对象属性时，[ 后面和 ] 前面是否需要空格, 可选参数 never, always
+    &quot;computed-property-spacing&quot;: [2, &quot;never&quot;],
+    // 强制方法必须返回值，TypeScript强类型，不配置
+    &quot;consistent-return&quot;: 0,
+    // 用于指统一在回调函数中指向this的变量名，箭头函数中的this已经可以指向外层调用者，应该没卵用了
+    // e.g [0,&quot;that&quot;] 指定只能 var that = this. that不能指向其他任何值，this也不能赋值给that以外的其他值
+    &quot;consistent-this&quot;: 0,
+    // 强制在子类构造函数中用super()调用父类构造函数，TypeScrip的编译器也会提示
+    &quot;constructor-super&quot;: 0,
+    // if else while for do后面的代码块是否需要{ }包围，参数：
+    //    multi  只有块中有多行语句时才需要{ }包围
+    //    multi-line  只有块中有多行语句时才需要{ }包围, 但是块中的执行语句只有一行时，
+    //                   块中的语句只能跟和if语句在同一行。if (foo) foo++; else doSomething();
+    //    multi-or-nest 只有块中有多行语句时才需要{ }包围, 如果块中的执行语句只有一行，执行语句可以零另起一行也可以跟在if语句后面
+    //    [2, &quot;multi&quot;, &quot;consistent&quot;] 保持前后语句的{ }一致
+    //    default: [2, &quot;all&quot;] 全都需要{ }包围
+    &quot;curly&quot;: [2, &quot;all&quot;],
+    // switch语句强制default分支，也可添加 // no default 注释取消此次警告
+    &quot;default-case&quot;: 2,
+    // 强制object.key 中 . 的位置，参数:
+    //      property，&#39;.&#39;号应与属性在同一行
+    //      object, &#39;.&#39; 号应与对象名在同一行
+    &quot;dot-location&quot;: [2, &quot;property&quot;],
+    // 强制使用.号取属性
+    //    参数： allowKeywords：true 使用保留字做属性名时，只能使用.方式取属性
+    //                          false 使用保留字做属性名时, 只能使用[]方式取属性 e.g [2, {&quot;allowKeywords&quot;: false}]
+    //           allowPattern:  当属性名匹配提供的正则表达式时，允许使用[]方式取值,否则只能用.号取值 e.g [2, {&quot;allowPattern&quot;: &quot;^[a-z]+(_[a-z]+)+$&quot;}]
+    &quot;dot-notation&quot;: [2, { &quot;allowKeywords&quot;: true }],
+    // 文件末尾强制换行
+    &quot;eol-last&quot;: 2,
+    // 使用 === 替代 ==
+    &quot;eqeqeq&quot;: [2, &quot;allow-null&quot;],
+    // 方法表达式是否需要命名
+    &quot;func-names&quot;: 0,
+    // 方法定义风格，参数：
+    //    declaration: 强制使用方法声明的方式，function f(){} e.g [2, &quot;declaration&quot;]
+    //    expression：强制使用方法表达式的方式，var f = function() {}  e.g [2, &quot;expression&quot;]
+    //    allowArrowFunctions: declaration风格中允许箭头函数。 e.g [2, &quot;declaration&quot;, { &quot;allowArrowFunctions&quot;: true }]
+    &quot;func-style&quot;: 0,
+    &quot;no-alert&quot;: 0, //禁止使用alert confirm prompt
+    &quot;no-array-constructor&quot;: 2, //禁止使用数组构造器
+    &quot;no-bitwise&quot;: 0, //禁止使用按位运算符
+    &quot;no-caller&quot;: 1, //禁止使用arguments.caller或arguments.callee
+    &quot;no-catch-shadow&quot;: 2, //禁止catch子句参数与外部作用域变量同名
+    &quot;no-class-assign&quot;: 2, //禁止给类赋值
+    &quot;no-cond-assign&quot;: 2, //禁止在条件表达式中使用赋值语句
+    &quot;no-console&quot;: 2, //禁止使用console
+    &quot;no-const-assign&quot;: 2, //禁止修改const声明的变量
+    &quot;no-constant-condition&quot;: 2, //禁止在条件中使用常量表达式 if(true) if(1)
+    &quot;no-continue&quot;: 0, //禁止使用continue
+    &quot;no-control-regex&quot;: 2, //禁止在正则表达式中使用控制字符
+    &quot;no-debugger&quot;: 2, //禁止使用debugger
+    &quot;no-delete-var&quot;: 2, //不能对var声明的变量使用delete操作符
+    &quot;no-div-regex&quot;: 1, //不能使用看起来像除法的正则表达式/=foo/
+    &quot;no-dupe-keys&quot;: 2, //在创建对象字面量时不允许键重复 {a:1,a:1}
+    &quot;no-dupe-args&quot;: 2, //函数参数不能重复
+    &quot;no-duplicate-case&quot;: 2, //switch中的case标签不能重复
+    &quot;no-else-return&quot;: 2, //如果if语句里面有return,后面不能跟else语句
+    &quot;no-empty&quot;: 2, //块语句中的内容不能为空
+    &quot;no-empty-character-class&quot;: 2, //正则表达式中的[]内容不能为空
+    &quot;no-empty-label&quot;: 2, //禁止使用空label
+    &quot;no-eq-null&quot;: 2, //禁止对null使用==或!=运算符
+    &quot;no-eval&quot;: 1, //禁止使用eval
+    &quot;no-ex-assign&quot;: 2, //禁止给catch语句中的异常参数赋值
+    &quot;no-extend-native&quot;: 2, //禁止扩展native对象
+    &quot;no-extra-bind&quot;: 2, //禁止不必要的函数绑定
+    &quot;no-extra-boolean-cast&quot;: 2, //禁止不必要的bool转换
+    &quot;no-extra-parens&quot;: 2, //禁止非必要的括号
+    &quot;no-extra-semi&quot;: 2, //禁止多余的冒号
+    &quot;no-fallthrough&quot;: 1, //禁止switch穿透
+    &quot;no-floating-decimal&quot;: 2, //禁止省略浮点数中的0 .5 3.
+    &quot;no-func-assign&quot;: 2, //禁止重复的函数声明
+    &quot;no-implicit-coercion&quot;: 1, //禁止隐式转换
+    &quot;no-implied-eval&quot;: 2, //禁止使用隐式eval
+    &quot;no-inline-comments&quot;: 0, //禁止行内备注
+    &quot;no-inner-declarations&quot;: [2, &quot;functions&quot;], //禁止在块语句中使用声明（变量或函数）
+    &quot;no-invalid-regexp&quot;: 2, //禁止无效的正则表达式
+    &quot;no-invalid-this&quot;: 2, //禁止无效的this，只能用在构造器，类，对象字面量
+    &quot;no-irregular-whitespace&quot;: 2, //不能有不规则的空格
+    &quot;no-iterator&quot;: 2, //禁止使用__iterator__ 属性
+    &quot;no-label-var&quot;: 2, //label名不能与var声明的变量名相同
+    &quot;no-labels&quot;: 2, //禁止标签声明
+    &quot;no-lone-blocks&quot;: 2, //禁止不必要的嵌套块
+    &quot;no-lonely-if&quot;: 2, //禁止else语句内只有if语句
+    &quot;no-loop-func&quot;: 1, //禁止在循环中使用函数（如果没有引用外部变量不形成闭包就可以）
+    &quot;no-mixed-requires&quot;: [0, false], //声明时不能混用声明类型
+    &quot;no-mixed-spaces-and-tabs&quot;: [2, false], //禁止混用tab和空格
+    &quot;linebreak-style&quot;: [0, &quot;windows&quot;], //换行风格
+    &quot;no-multi-spaces&quot;: 1, //不能用多余的空格
+    &quot;no-multi-str&quot;: 2, //字符串不能用\换行
+    &quot;no-multiple-empty-lines&quot;: [1, { &quot;max&quot;: 2 }], //空行最多不能超过2行
+    &quot;no-native-reassign&quot;: 2, //不能重写native对象
+    &quot;no-negated-in-lhs&quot;: 2, //in 操作符的左边不能有!
+    &quot;no-nested-ternary&quot;: 0, //禁止使用嵌套的三目运算
+    &quot;no-new&quot;: 1, //禁止在使用new构造一个实例后不赋值
+    &quot;no-new-func&quot;: 1, //禁止使用new Function
+    &quot;no-new-object&quot;: 2, //禁止使用new Object()
+    &quot;no-new-require&quot;: 2, //禁止使用new require
+    &quot;no-new-wrappers&quot;: 2, //禁止使用new创建包装实例，new String new Boolean new Number
+    &quot;no-obj-calls&quot;: 2, //不能调用内置的全局对象，比如Math() JSON()
+    &quot;no-octal&quot;: 2, //禁止使用八进制数字
+    &quot;no-octal-escape&quot;: 2, //禁止使用八进制转义序列
+    &quot;no-param-reassign&quot;: 2, //禁止给参数重新赋值
+    &quot;no-path-concat&quot;: 0, //node中不能使用__dirname或__filename做路径拼接
+    &quot;no-plusplus&quot;: 0, //禁止使用++，--
+    &quot;no-process-env&quot;: 0, //禁止使用process.env
+    &quot;no-process-exit&quot;: 0, //禁止使用process.exit()
+    &quot;no-proto&quot;: 2, //禁止使用__proto__属性
+    &quot;no-redeclare&quot;: 2, //禁止重复声明变量
+    &quot;no-regex-spaces&quot;: 2, //禁止在正则表达式字面量中使用多个空格 /foo bar/
+    &quot;no-restricted-modules&quot;: 0, //如果禁用了指定模块，使用就会报错
+    &quot;no-return-assign&quot;: 1, //return 语句中不能有赋值表达式
+    &quot;no-script-url&quot;: 0, //禁止使用javascript:void(0)
+    &quot;no-self-compare&quot;: 2, //不能比较自身
+    &quot;no-sequences&quot;: 0, //禁止使用逗号运算符
+    &quot;no-shadow&quot;: 2, //外部作用域中的变量不能与它所包含的作用域中的变量或参数同名
+    &quot;no-shadow-restricted-names&quot;: 2, //严格模式中规定的限制标识符不能作为声明时的变量名使用
+    &quot;no-spaced-func&quot;: 2, //函数调用时 函数名与()之间不能有空格
+    &quot;no-sparse-arrays&quot;: 2, //禁止稀疏数组， [1,,2]
+    &quot;no-sync&quot;: 0, //nodejs 禁止同步方法
+    &quot;no-ternary&quot;: 0, //禁止使用三目运算符
+    &quot;no-trailing-spaces&quot;: 1, //一行结束后面不要有空格
+    &quot;no-this-before-super&quot;: 0, //在调用super()之前不能使用this或super
+    &quot;no-throw-literal&quot;: 2, //禁止抛出字面量错误 throw &quot;error&quot;;
+    &quot;no-undef&quot;: 1, //不能有未定义的变量
+    &quot;no-undef-init&quot;: 2, //变量初始化时不能直接给它赋值为undefined
+    &quot;no-undefined&quot;: 2, //不能使用undefined
+    &quot;no-unexpected-multiline&quot;: 2, //避免多行表达式
+    &quot;no-underscore-dangle&quot;: 1, //标识符不能以_开头或结尾
+    &quot;no-unneeded-ternary&quot;: 2, //禁止不必要的嵌套 var isYes = answer === 1 ? true : false;
+    &quot;no-unreachable&quot;: 2, //不能有无法执行的代码
+    &quot;no-unused-expressions&quot;: 2, //禁止无用的表达式
+    &quot;no-unused-vars&quot;: [2, { &quot;vars&quot;: &quot;all&quot;, &quot;args&quot;: &quot;after-used&quot; }], //不能有声明后未被使用的变量或参数
+    &quot;no-use-before-define&quot;: 2, //未定义前不能使用
+    &quot;no-useless-call&quot;: 2, //禁止不必要的call和apply
+    &quot;no-void&quot;: 2, //禁用void操作符
+    &quot;no-var&quot;: 0, //禁用var，用let和const代替
+    &quot;no-warning-comments&quot;: [
+      1,
+      { &quot;terms&quot;: [&quot;todo&quot;, &quot;fixme&quot;, &quot;xxx&quot;], &quot;location&quot;: &quot;start&quot; }
+    ], //不能有警告备注
+    &quot;no-with&quot;: 2, //禁用with
+    &quot;array-bracket-spacing&quot;: [2, &quot;never&quot;], //是否允许非空数组里面有多余的空格
+    &quot;arrow-parens&quot;: 0, //箭头函数用小括号括起来
+    &quot;arrow-spacing&quot;: 0, //=&gt;的前/后括号
+    &quot;accessor-pairs&quot;: 0, //在对象中使用getter/setter
+    &quot;block-scoped-var&quot;: 0, //块语句中使用var
+    &quot;brace-style&quot;: [1, &quot;1tbs&quot;], //大括号风格
+    &quot;callback-return&quot;: 1, //避免多次调用回调什么的
+    &quot;camelcase&quot;: 2, //强制驼峰法命名
+    &quot;comma-dangle&quot;: [2, &quot;never&quot;], //对象字面量项尾不能有逗号
+    &quot;comma-spacing&quot;: 0, //逗号前后的空格
+    &quot;comma-style&quot;: [2, &quot;last&quot;], //逗号风格，换行时在行首还是行尾
+    &quot;complexity&quot;: [0, 11], //循环复杂度
+    &quot;computed-property-spacing&quot;: [0, &quot;never&quot;], //是否允许计算后的键名什么的
+    &quot;consistent-return&quot;: 0, //return 后面是否允许省略
+    &quot;consistent-this&quot;: [2, &quot;that&quot;], //this别名
+    &quot;constructor-super&quot;: 0, //非派生类不能调用super，派生类必须调用super
+    &quot;curly&quot;: [2, &quot;all&quot;], //必须使用 if(){} 中的{}
+    &quot;default-case&quot;: 2, //switch语句最后必须有default
+    &quot;dot-location&quot;: 0, //对象访问符的位置，换行的时候在行首还是行尾
+    &quot;dot-notation&quot;: [0, { &quot;allowKeywords&quot;: true }], //避免不必要的方括号
+    &quot;eol-last&quot;: 0, //文件以单一的换行符结束
+    &quot;eqeqeq&quot;: 2, //必须使用全等
+    &quot;func-names&quot;: 0, //函数表达式必须有名字
+    &quot;func-style&quot;: [0, &quot;declaration&quot;], //函数风格，规定只能使用函数声明/函数表达式
+    &quot;generator-star-spacing&quot;: 0, //生成器函数*的前后空格
+    &quot;guard-for-in&quot;: 0, //for in循环要用if语句过滤
+    &quot;handle-callback-err&quot;: 0, //nodejs 处理错误
+    &quot;id-length&quot;: 0, //变量名长度
+    &quot;indent&quot;: [2, 4], //缩进风格
+    &quot;init-declarations&quot;: 0, //声明时必须赋初值
+    &quot;key-spacing&quot;: [0, { &quot;beforeColon&quot;: false, &quot;afterColon&quot;: true }], //对象字面量中冒号的前后空格
+    &quot;lines-around-comment&quot;: 0, //行前/行后备注
+    &quot;max-depth&quot;: [0, 4], //嵌套块深度
+    &quot;max-len&quot;: [0, 80, 4], //字符串最大长度
+    &quot;max-nested-callbacks&quot;: [0, 2], //回调嵌套深度
+    &quot;max-params&quot;: [0, 3], //函数最多只能有3个参数
+    &quot;max-statements&quot;: [0, 10], //函数内最多有几个声明
+    &quot;new-cap&quot;: 2, //函数名首行大写必须使用new方式调用，首行小写必须用不带new方式调用
+    &quot;new-parens&quot;: 2, //new时必须加小括号
+    &quot;newline-after-var&quot;: 2, //变量声明后是否需要空一行
+    &quot;object-curly-spacing&quot;: [0, &quot;never&quot;], //大括号内是否允许不必要的空格
+    &quot;object-shorthand&quot;: 0, //强制对象字面量缩写语法
+    &quot;one-var&quot;: 1, //连续声明
+    &quot;operator-assignment&quot;: [0, &quot;always&quot;], //赋值运算符 += -=什么的
+    &quot;operator-linebreak&quot;: [2, &quot;after&quot;], //换行时运算符在行尾还是行首
+    &quot;padded-blocks&quot;: 0, //块语句内行首行尾是否要空行
+    &quot;prefer-const&quot;: 0, //首选const
+    &quot;prefer-spread&quot;: 0, //首选展开运算
+    &quot;prefer-reflect&quot;: 0, //首选Reflect的方法
+    &quot;quotes&quot;: [1, &quot;single&quot;], //引号类型 `` &quot;&quot; &#39;&#39;
+    &quot;quote-props&quot;: [2, &quot;always&quot;], //对象字面量中的属性名是否强制双引号
+    &quot;radix&quot;: 2, //parseInt必须指定第二个参数
+    &quot;id-match&quot;: 0, //命名检测
+    &quot;require-yield&quot;: 0, //生成器函数必须有yield
+    &quot;semi&quot;: [2, &quot;always&quot;], //语句强制分号结尾
+    &quot;semi-spacing&quot;: [0, { &quot;before&quot;: false, &quot;after&quot;: true }], //分号前后空格
+    &quot;sort-vars&quot;: 0, //变量声明时排序
+    &quot;space-after-keywords&quot;: [0, &quot;always&quot;], //关键字后面是否要空一格
+    &quot;space-before-blocks&quot;: [0, &quot;always&quot;], //不以新行开始的块{前面要不要有空格
+    &quot;space-before-function-paren&quot;: [0, &quot;always&quot;], //函数定义时括号前面要不要有空格
+    &quot;space-in-parens&quot;: [0, &quot;never&quot;], //小括号里面要不要有空格
+    &quot;space-infix-ops&quot;: 0, //中缀操作符周围要不要有空格
+    &quot;space-return-throw-case&quot;: 2, //return throw case后面要不要加空格
+    &quot;space-unary-ops&quot;: [0, { &quot;words&quot;: true, &quot;nonwords&quot;: false }], //一元运算符的前/后要不要加空格
+    &quot;spaced-comment&quot;: 0, //注释风格不要有空格什么的
+    &quot;strict&quot;: 2, //使用严格模式
+    &quot;use-isnan&quot;: 2, //禁止比较时使用NaN，只能用isNaN()
+    &quot;valid-jsdoc&quot;: 0, //jsdoc规则
+    &quot;valid-typeof&quot;: 2, //必须使用合法的typeof的值
+    &quot;vars-on-top&quot;: 2, //var必须放在作用域顶部
+    &quot;wrap-iife&quot;: [2, &quot;inside&quot;], //立即执行函数表达式的小括号风格
+    &quot;wrap-regex&quot;: 0, //正则表达式字面量用小括号包起来
+    &quot;yoda&quot;: [2, &quot;never&quot;] //禁止尤达条件
+  }
+}
+</code></pre>
+<pre><code class="language-js">module.exports = {
+  root: true,
+  parserOptions: {
+    parser: &quot;babel-eslint&quot;,
+    sourceType: &quot;module&quot;,
+  },
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+  },
+  extends: [&quot;plugin:vue/recommended&quot;, &quot;eslint:recommended&quot;],
+
+  // add your custom rules here
+  //it is base on https://github.com/vuejs/eslint-config-vue
+  rules: {
+    // 强制&quot;for&quot;循环中更新子句的计算器朝着正确的方向移动
+    &quot;for-direction&quot;: 0,
+    // 禁止function定义中出现重名参数
+    &quot;no-dupe-args&quot;: 2,
+    // 禁止对象字面量中出现重复的key
+    &quot;no-dupe-keys&quot;: 2,
+    // 禁止出现重复的case标签
+    &quot;no-duplicate-case&quot;: 2,
+    // 禁止对catch子句的参数重新赋值
+    &quot;no-ex-assign&quot;: 2,
+    // 禁止对关系运算符的左操作数使用否定操作符
+    &quot;no-unsafe-negation&quot;: 2,
+    // 禁止出现令人困惑的多行表达式
+    &quot;no-unexpected-multiline&quot;: 2,
+    // 禁止在return、throw、continue、break语句之后出现不可达代码
+    &quot;no-unreachable&quot;: 2,
+    // 禁止在finally语句块中出现控制流语句
+    &quot;no-unsafe-finally&quot;: 2,
+    // 要求使用isNaN()检查NaN
+    &quot;use-isnan&quot;: 2,
+    // 强制typeof表达式与有效的字符串进行比较
+    &quot;valid-typeof&quot;: 2,
+    // 还可以写表达式，厉害了~
+    &quot;no-debugger&quot;: process.env.NODE_ENV === &quot;production&quot; ? &quot;error&quot; : &quot;off&quot;,
+    &quot;no-console&quot;: process.env.NODE_ENV === &quot;production&quot; ? &quot;error&quot; : &quot;off&quot;,
+
+    /**
+     * 【================================================ Best Practices ================================================】
+     * 这些规则是关于最佳实践的，帮助你避免一些问题。
+     */
+    // 强制 getter 和 setter在对象中成对出现
+    &quot;accessor-pairs&quot;: 2,
+    // 强制所有控制语句使用一致的括号风格
+    curly: [2, &quot;multi-line&quot;],
+    // 强制在点号之前和之后一致的换行
+    &quot;dot-location&quot;: [2, &quot;property&quot;],
+    // 要求使用 ===和 !==
+    eqeqeq: [2, &quot;allow-null&quot;],
+    // 禁用arguments.caller 或 arguments.callee
+    &quot;no-caller&quot;: 2,
+    // 禁止使用空解构模式
+    &quot;no-empty-pattern&quot;: 2,
+    // 禁止eval()
+    &quot;no-eval&quot;: 2,
+    // 禁止使用类似eval()的方法
+    &quot;no-implied-eval&quot;: 2,
+    // 禁止扩展原生类型
+    &quot;no-extend-native&quot;: 2,
+    // 禁止不必要的.bind()调用
+    &quot;no-extra-bind&quot;: 2,
+    // 禁止case语句落空
+    &quot;no-fallthrough&quot;: 2,
+    // 禁止数字字面量中使用前导和末尾小数点
+    &quot;no-floating-decimal&quot;: 2,
+    // 禁用__iterator__属性
+    &quot;no-iterator&quot;: 2,
+    // 禁用标签语句
+    &quot;no-labels&quot;: [
+      2,
+      {
+        allowLoop: false,
+        allowSwitch: false,
+      },
+    ],
+    // 禁用不必要嵌套块
+    &quot;no-lone-blocks&quot;: 2,
+    // 禁止使用多个空格
+    &quot;no-multi-spaces&quot;: 2,
+    // 禁止使用多行字符串
+    &quot;no-multi-str&quot;: 2,
+    // 禁止对String，Number 和 Boolean 使用new操作符
+    &quot;no-new-wrappers&quot;: 2,
+    // 禁用八进制字面量
+    &quot;no-octal&quot;: 2,
+    // 禁止在字符串中使用八进制转义序列
+    &quot;no-octal-escape&quot;: 2,
+    // 禁止使用__proto__属性
+    &quot;no-proto&quot;: 2,
+    // 禁止多次声明同一变量
+    &quot;no-redeclare&quot;: 2,
+    // 禁止在return语句中使用赋值语句
+    &quot;no-return-assign&quot;: [2, &quot;except-parens&quot;],
+    // 禁止自我赋值
+    &quot;no-self-assign&quot;: 2,
+    // 禁止自我比较
+    &quot;no-self-compare&quot;: 2,
+    // 禁用逗号操作符
+    &quot;no-sequences&quot;: 2,
+    // 禁止抛出异常字面量
+    &quot;no-throw-literal&quot;: 2,
+    // 禁止一成不变的循环条件
+    &quot;no-unmodified-loop-condition&quot;: 2,
+    // 禁止不必要的.call()和.apply()
+    &quot;no-useless-call&quot;: 2,
+    // 禁止不必要的转义字符
+    &quot;no-useless-escape&quot;: 2,
+    // 禁用with语句
+    &quot;no-with&quot;: 2,
+    // 要求IIFE使用括号括起来
+    &quot;wrap-iife&quot;: 2,
+    // 要求或禁止Yoda条件。 if(&quot;red&quot; === color) { //字面量在前，变量在后 }
+    yoda: [2, &quot;never&quot;], //  比较绝不能是Yoda条件（需要变量在前，字面量在后）
+
+    /**
+     * 【================================================ ECMAScript 6 ================================================】
+     * 这些规则只与ES6有关，即通常所说的ES2015。
+     */
+    // 强制箭头函数前后使用一致的空格
+    &quot;arrow-spacing&quot;: [
+      2,
+      {
+        before: true,
+        after: true,
+      },
+    ],
+    // 要求在构造函数中有super()调用
+    &quot;constructor-super&quot;: 2,
+    // 强制generator函数中*号周围使用一致的空格
+    &quot;generator-star-spacing&quot;: [
+      2,
+      {
+        before: true,
+        after: true,
+      },
+    ],
+    // 禁止修改类声明的变量
+    &quot;no-class-assign&quot;: 2,
+    // 禁止修改const声明的变量
+    &quot;no-const-assign&quot;: 2,
+    // 禁止类成员中出现重复的名称
+    &quot;no-dupe-class-members&quot;: 2,
+    // 禁止 Symbolnew 操作符和 new 一起使用
+    &quot;no-new-symbol&quot;: 2,
+    // 禁止在构造函数中，在调用super()之前使用 this 或 super
+    &quot;no-this-before-super&quot;: 2,
+    // 禁止在对象中使用不必要的计算属性
+    &quot;no-useless-computed-key&quot;: 2,
+    // 禁止不必要的构造函数
+    &quot;no-useless-constructor&quot;: 2,
+    // 禁止模板字符串中嵌入表达式周围空格的使用
+    &quot;template-curly-spacing&quot;: [2, &quot;never&quot;],
+    // 强制yield*表达式中的*周围使用空格
+    &quot;yield-star-spacing&quot;: [2, &quot;both&quot;],
+    // 要求使用const声明那些声明后不再被修改的变量
+    &quot;prefer-const&quot;: 2,
+
+    /**
+     * 【================================================ Stylistic Issues ================================================】
+     * 这些规则是关于代码风格的。
+     */
+    // //  获取当前执行环境的上下文时，强制使用一致的命名（此处强制使用 &#39;that&#39;）。
+    // &#39;consistent-this&#39;: [2, &#39;that&#39;],
+    // // 禁止或强制在代码块中开括号前和闭括号后有空格  { return 11 }
+    // &#39;block-spacing&#39;: [2, &#39;always&#39;],
+    // // 强制在代码块中使用一致的大括号风格
+    // &#39;brace-style&#39;: [2, &#39;1tbs&#39;, {
+    //   &#39;allowSingleLine&#39;: true
+    // }],
+    // // 强制使用驼峰拼写法命名规定
+    // &#39;camelcase&#39;: [0, {
+    //   &#39;properties&#39;: &#39;always&#39;
+    // }],
+    // // 要求或禁止末尾逗号
+    // &#39;comma-dangle&#39;: [2, &#39;never&#39;],
+    // // 强制在逗号前后使用一致的空格
+    // &#39;comma-spacing&#39;: [2, {
+    //   &#39;before&#39;: false,
+    //   &#39;after&#39; : true
+    // }],
+    // // 强制在逗号前后使用一致的空格
+    // &#39;comma-style&#39;: [2, &#39;last&#39;],
+    // // 要求或禁止文件末尾存在空行
+    // &#39;eol-last&#39;: 2,
+    // // 强制使用一致的缩进
+    // &#39;indent&#39;: [2, 2, {
+    //   &#39;SwitchCase&#39;: 1
+    // }],
+    // // 强制在JSX属性中一致地使用双引号或单引号
+    // &#39;jsx-quotes&#39;: [2, &#39;prefer-single&#39;],
+    // // 要求构造函数首字母大写
+    // &#39;new-cap&#39;: [2, {
+    //   &#39;newIsCap&#39;: true,
+    //   &#39;capIsNew&#39;: false
+    // }],
+    // // 要求构造无参构造函数时有圆括号
+    // &#39;new-parens&#39;: 2,
+    // // 禁用Array构造函数
+    // &#39;no-array-constructor&#39;: 2,
+    // // 禁止空格和tab的混合缩进
+    // &#39;no-mixed-spaces-and-tabs&#39;: 2,
+    // // 禁止出现多行空行
+    // &#39;no-multiple-empty-lines&#39;: [2, {
+    //   // 最大连续空行数
+    //   max: 2
+    // }],
+    // // 禁止在函数标识符和其调用之间有空格
+    // &#39;func-call-spacing&#39;: 2,
+    // // 禁止行尾空格
+    // &#39;no-trailing-spaces&#39;: 2,
+    // // 禁止可以在有更简单的可替代的表达式时使用三元操作符
+    // &#39;no-unneeded-ternary&#39;: [2, {
+    //   // 允许表达式作为默认的赋值模式
+    //   &#39;defaultAssignment&#39;: true
+    // }],
+    // // 禁止属性前有空白
+    // &#39;no-whitespace-before-property&#39;: 2,
+    // // 强制函数中的变量要么一起声明要么分开声明
+    // &#39;one-var&#39;: [2, {
+    //   &#39;initialized&#39;: &#39;never&#39;
+    // }],
+    // // 强制操作符使用一致的换行符
+    // &#39;operator-linebreak&#39;: [2, &#39;after&#39;, {
+    //   &#39;overrides&#39;: {
+    //     &#39;?&#39;: &#39;before&#39;,
+    //     &#39;:&#39;: &#39;before&#39;
+    //   }
+    // }],
+    // // 要求或禁止块内填充
+    // &#39;padded-blocks&#39;: [2, &#39;never&#39;],
+    // // 强烈使用一致的反勾号``、双引号&quot;&quot;或单引号&#39;&#39;
+    // &#39;quotes&#39;: [2, &#39;single&#39;, {
+    //   // 允许字符串使用单引号或者双引号，只要字符串中包含了一个其他引号，否则需要转义
+    //   &#39;avoidEscape&#39;: true,
+    //   // 允许字符串使用反勾号
+    //   &#39;allowTemplateLiterals&#39;: true
+    // }],
+    // // 禁止使用分号代替ASI(自动分号插入)
+    // &#39;semi&#39;: [&quot;error&quot;, &quot;always&quot;],
+    // // 强制分号之前和之后使用一致的空格
+    // &#39;semi-spacing&#39;: [2, {
+    //   &#39;before&#39;: false,
+    //   &#39;after&#39; : true
+    // }],
+    // // 强制在块之前使用一致的空格
+    // &#39;space-before-blocks&#39;: [2, &#39;always&#39;],
+    // // 强制在圆括号内使用一致的空格
+    // &#39;space-in-parens&#39;: [2, &#39;never&#39;],
+    // // 要求操作符周围有空格
+    // &#39;space-infix-ops&#39;: 2,
+    // // 强制在一元操作符前后使用一致的空格
+    // &#39;space-unary-ops&#39;: [2, {
+    //   &#39;words&#39;   : true,
+    //   &#39;nonwords&#39;: false
+    // }],
+    // // 强制在注释// 或/*使用一致的空格
+    // &#39;spaced-comment&#39;: [1, &#39;always&#39;, {
+    //   &#39;markers&#39;: [&#39;global&#39;, &#39;globals&#39;, &#39;eslint&#39;, &#39;eslint-disable&#39;, &#39;*package&#39;, &#39;!&#39;, &#39;,&#39;]
+    // }],
+    // // 强制在大括号中使用一致的空格
+    // &#39;object-curly-spacing&#39;: [2, &#39;always&#39;, {
+    //   &#39;objectsInObjects&#39;: false
+    // }],
+    // // 禁止或强制在括号内使用空格
+    // &#39;array-bracket-spacing&#39;: [2, &#39;never&#39;],
+    // // 强制要求在对象字面量的属性中键和值之间使用一致的间距
+    // &#39;key-spacing&#39;: [2, {
+    //   &#39;beforeColon&#39;: false,
+    //   &#39;afterColon&#39; : true
+    // }],
+
+    /**
+     * 【================================================ Node.js and CommonJS ================================================】
+     * 这些规则是关于Node.js 或 在浏览器中使用CommonJS的。
+     */
+    // 要求回调函数中有容错处理
+    &quot;handle-callback-err&quot;: [2, &quot;^(err|error)$&quot;],
+    // 禁止调用 require 时使用new操作符
+    &quot;no-new-require&quot;: 2,
+    // 禁止对__dirname和__filename进行字符串连接
+    &quot;no-path-concat&quot;: 1,
+    // 强制在function的左括号之前使用一致的空格
+    &quot;space-before-function-paren&quot;: [2, &quot;never&quot;],
+
+    /**
+     * 【================================================ Possible Errors ================================================】
+     * 这些规则与JavaScript代码中可能的错误或逻辑错误有关。
+     */
+    // 禁止条件表达式中出现赋值操作符
+    &quot;no-cond-assign&quot;: 2,
+    // 禁止在正则表达式中使用控制字符
+    &quot;no-control-regex&quot;: 0,
+    // 禁止在正则表达式中使用空字符集
+    &quot;no-empty-character-class&quot;: 2,
+    // 禁止不必要的布尔转换
+    &quot;no-extra-boolean-cast&quot;: 2,
+    // 禁止不必要的括号
+    &quot;no-extra-parens&quot;: [2, &quot;functions&quot;],
+    // 禁止对function声明重新赋值
+    &quot;no-func-assign&quot;: 2,
+    // 禁止在嵌套块中出现变量声明或function声明
+    &quot;no-inner-declarations&quot;: [2, &quot;functions&quot;],
+    // 禁止RegExp构造函数中存在无效的正则表达式字符串
+    &quot;no-invalid-regexp&quot;: 2,
+    // 禁止在字符串和注释之外不规则的空白
+    &quot;no-irregular-whitespace&quot;: 2,
+    // 禁止把全局对象作为函数调用
+    &quot;no-obj-calls&quot;: 2,
+    // 禁止正则表达式字面量中出现多个空格
+    &quot;no-regex-spaces&quot;: 2,
+    // 禁用稀疏数组
+    &quot;no-sparse-arrays&quot;: 2,
+
+    /**
+     * 【================================================ Variables ================================================】
+     * 这些规则与变量声明有关。
+     */
+    // 禁止删除变量
+    &quot;no-delete-var&quot;: 2,
+    // 不允许标签与变量同名
+    &quot;no-label-var&quot;: 2,
+    // 禁止将标识符定义为受限的名字
+    &quot;no-shadow-restricted-names&quot;: 2,
+    // 禁止未声明的变量，除非它们在/*global */注释中被提到
+    &quot;no-undef&quot;: 2,
+    // 禁止将变量初始化为undefined
+    &quot;no-undef-init&quot;: 2,
+    // 禁止出现未使用的变量
+    &quot;no-unused-vars&quot;: [
+      2,
+      {
+        var: &quot;all&quot;,
+        args: &quot;none&quot;,
+      },
+    ],
+
+    /**
+     * 【================================================ 配置定义在插件中的规则 ================================================】
+     * 格式： 插件名/规则ID
+     */
+    //
+    &quot;vue/no-parsing-error&quot;: [&quot;off&quot;],
+  },
+};
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/141.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

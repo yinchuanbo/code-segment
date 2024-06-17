@@ -58,7 +58,8 @@ body {
   height: 70px;
   display: flex;
   justify-content: center;
-  border: 1px solid #313131;
+  /* border: 1px solid #313131; */
+  background-color: #313131;
   position: relative;
 }
 

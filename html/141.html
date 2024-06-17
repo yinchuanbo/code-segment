@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>超火超实用的 10 个前端工具库</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>超火超实用的 10 个前端工具库</h2>
+                    <p>2024-06-17 21:08:53 · YinHao</p>
+                  </div>
+                  <h2>@logicflow/core</h2>
+<p>LogicFlow 是一款流程图编辑框架，提供了一系列流程图交互、编辑所必需的功能和简单灵活的节点自定义、插件等拓展机制，方便我们快速在业务系统内满足类流程图的需求</p>
+<img src="./imgs/141/01.png" />
+
+<ul>
+<li>🛠 高拓展性</li>
+</ul>
+<p>兼容各种产品自定义的流程编辑需求，绝大部分模块以插件的形式实现，支持各模块自由插拔。</p>
+<ul>
+<li><p>🚀 重执行
+流程图能完备的表达业务逻辑，不受流程引擎限制。</p>
+</li>
+<li><p>🎯 专业
+专注于业务流程图编辑的框架</p>
+</li>
+</ul>
+<img src="./imgs/141/02.png" />
+
+<img src="./imgs/141/03.png" />
+
+<h2>NProgress</h2>
+<p>NProgress 是一个使用起来很方便的进度条工具库</p>
+<img src="./imgs/141/04.png" />
+
+<p>一般在项目中使用它来展示页面加载的进度，或者路由跳转的进度~</p>
+<img src="./imgs/141/05.png" />
+
+<img src="./imgs/141/06.png" />
+
+<h2>tesseract.js</h2>
+<p>tesseract.js 可以识别图片中的文字，并把这些文字转化成文本，返回给你</p>
+<img src="./imgs/141/07.png" />
+
+<p>在识别图片文字，根据搜索过滤图片等这些需求的时候，可以使用 tesseract.js 这个库~</p>
+<img src="./imgs/141/01.gif" />
+
+<img src="./imgs/141/08.png" />
+
+<h2>@zxcvbn-ts/core</h2>
+<p>平时在做注册功能的时候，我们可能得计算用户密码的密码强度，从而去提醒用户</p>
+<img src="./imgs/141/02.gif" />
+
+<p><code>@zxcvbn-ts/core</code> 是 zxcvbn 密码强度估计器的 TypeScript 实现版本，用于帮助开发者评估用户设置密码的复杂度和安全性，计算的依据有：</p>
+<ul>
+<li>密码长度： 越长分数越高</li>
+<li>字符类型： 数字、字母、符号</li>
+<li>词典攻击检测： 内置词典列表，检测密码强度</li>
+<li>评分系统： 0-4 分，分数越高越安全</li>
+<li>熵计算： 评测密码所需尝试次数，熵越高，分数越高</li>
+</ul>
+<img src="./imgs/141/09.png" />
+
+<h2>dayjs</h2>
+<p>dayjs 无疑是当今前端市场上时间工具库的大热门，使用方式跟 momentjs 类似，但是体积是 momentjs 的五分之一！！！格式化、时区设置、按需加载等功能，样样不少~</p>
+<img src="./imgs/141/10.png" />
+
+<h2>qrcode</h2>
+<p>qrcode 被用的最广泛的就是把一个 URL 转换为 一个二维码，可供给用户去扫码~</p>
+<img src="./imgs/141/11.png" />
+
+<img src="./imgs/141/12.png" />
+
+<h2>crypto-js</h2>
+<p>前端加密工具库中当之无愧的王者！！！内置各种加密、解密算法！！！一般用来对密码、缓存等敏感信息进行加密、解密~</p>
+<img src="./imgs/141/13.png" />
+
+<img src="./imgs/141/14.png" />
+
+<h2>sunshine-track</h2>
+<p>sunshine-track 应用于前端监控，s 基于行为上报，实现了用户行为、错误监控、页面跳转、页面白屏检测、页面性能检测等上报功能。适用于 Vue、React、Angular 等框架</p>
+<h3>sunshine-track 具备以下功能：</h3>
+<ul>
+<li>✅ 用户行为上报：包括 点击、跳转页面、跳转页面记录数组、请求 等</li>
+<li>✅ 用户手动上报：提供 Vue 自定义指令 以及 add、report 函数，实现用户手动上报</li>
+<li>✅ 自定义上报：提供 格式化上报数据、自定义上报函数、自定义决定上不上报 等配置项，更灵活地上报数据</li>
+<li>✅ 请求数据上报：提供 检测请求返回、过滤请求 等配置项，让用户决定上报哪些请求数据</li>
+<li>✅ 上报方式：提供 上报方式 配置项，用户可选择 img、http、beacon 三种方式，http 方式又支持 xhr、fetch 两种，且支持 自定义 headers</li>
+<li>✅ 上报数据缓存：可配置 本地缓存、浏览器本地缓存、IndexedDB 三种方式</li>
+<li>✅ 上报数据阈值：可配置上报数据 阈值 ，达到 阈值 后进行上报操作</li>
+<li>✅ 全局点击上报：可通过配置 选择器、元素文本，对全局 DOM 节点进行点击上报</li>
+<li>✅ 页面的性能检测，包括 白屏、FP、FCP、LCP、CLS、TTFB、FID 等</li>
+</ul>
+<img src="./imgs/141/15.png" />
+
+<h2>localforage</h2>
+<p>localforage 用于浏览器本地的缓存操作，并且它的操作都是异步的，这样做的好处是可以降低代码执行阻塞的风险</p>
+<p>localforage 用起来非常方便，因为它提供了一系列的 API ，比如增加、修改、删除、查找等等</p>
+<p>localforage 默认使用的存储方案是 IndexedDB，但是如果浏览器不兼容的话，会自动降级为 storage</p>
+<img src="./imgs/141/16.png" />
+
+<img src="./imgs/141/17.png" />
+
+<h2>lodash-es</h2>
+<p>以前的 lodash 版本不支持按需加载，这导致了打包后整个产物的体积很大，所以后来官方推出了 lodash-es</p>
+<p>lodash-es 支持按需加载，这大大降低了打包的体积</p>
+<p>以前使用 lodash 时</p>
+<img src="./imgs/141/18.png" />
+
+<p>现在使用 lodash-es 可以这么去用了~</p>
+<img src="./imgs/141/19.png" />
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/140.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/142.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
