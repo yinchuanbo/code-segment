@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS has() 选择器：5 个顶级使用案例</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>CSS has() 选择器：5 个顶级使用案例</h2>
+                    <p>2024-06-18 21:23:14 · YinHao</p>
+                  </div>
+                  <p>CSS 中的 <code>:has</code> 选择器打开了一个充满新可能性的世界。现在它已经登陆 <code>Firefox 121</code>，自此所有现代浏览器都支持它。</p>
+<h2>1. 父级选择器</h2>
+<p><code>:has()</code> 选择器的主要用途是作为父选择器。它有用于检查父元素是否存在某个元素。</p>
+<p>例如，考虑一个场景，你想验证按钮中是否存在图标：</p>
+<pre><code class="language-css">button:has(.icon) {
+  display: flex;
+  gap: 10px;
+}
+</code></pre>
+<p>或者，如果你想在包含子菜单的导航栏项上附加下拉箭头，也可以这样做：</p>
+<pre><code class="language-css">nav li:has(ul) &gt; a::after {
+  content: &quot;+&quot;;
+  margin-inline: 10px;
+}
+</code></pre>
+<p><code>:has()</code> 选择器的运行方式与选择器链中的任何其他选择器一样。您可以在其之前、之后或内部包含任何内容。例如，当 .card 元素包含的 <code>&lt;img&gt;</code>, 同时 <code>&lt;img&gt;</code> 后紧跟着 <code>&lt;p&gt;</code> 时，定位该元素：</p>
+<pre><code class="language-css">.card:has(img + p) {
+  flex-direction: row;
+}
+</code></pre>
+<p>这样，我们就可以根据子元素的情况为卡片创建自适应布局：</p>
+<img src="./imgs/148/01.png" />
+
+<p>您还可以在 <code>:has()</code> 内提供用逗号分隔的元素列表，检查它们是否在父元素中：</p>
+<pre><code class="language-css">article:has(video, iframe) {
+  /* 匹配至少包含一个 video 或 iframe 的 &lt;article&gt; */
+}
+</code></pre>
+<p>这可确保 article 至少具有其中一个子元素 - <code>&lt;iframe&gt;</code> 或 <code>&lt;video&gt;</code>。</p>
+<p>此外，您可以将 <code>:has()</code> 与 <code>:not()</code> 结合使用以实现更复杂的场景：</p>
+<pre><code class="language-css">.card:not(:has(img)) {
+  /* 匹配不包含 img 的 .card 元素 */
+}
+.post:has(img:not([alt])) {
+  /* 匹配包含没有 alt 属性的 img 为子元素 的 .post 元素 */
+}
+div:not(:has(:not(img))) {
+  /* 匹配只有 img 子元素的 div 元素 */
+}
+</code></pre>
+<p>正如你所看到的，人们可以使用此选择器让 CSS 变得非常有创意，但请记住，不能嵌套 <code>:has()</code> 选择器，但是，你可以链式使用它们：</p>
+<pre><code class="language-css">.headings:has(.subtitle:has(h2)) {
+  /* 无效 */
+}
+.headings:has(h2):has(.subtitle) h2 {
+  /* 有效 */
+}
+</code></pre>
+<p>最后，还可以检查子元素的状态，以进行表单验证等操作：</p>
+<pre><code class="language-css">form:has(input:invalid) {
+  border: 1px solid red;
+}
+</code></pre>
+<h2>2. 向前兄弟选择器</h2>
+<p><code>:has()</code> 选择器不仅限于针对父元素；它还可以选择前一个的兄弟元素。</p>
+<p>例如，你可以根据标签的下一个相邻兄弟元素（如复选框）的状态来设置标签的样式：</p>
+<pre><code class="language-html">&lt;label for=&quot;checkbox&quot;&gt;We need to target this when input is checked&lt;/label&gt;
+&lt;input id=&quot;checkbox&quot; type=&quot;checkbox&quot; /&gt;
+</code></pre>
+<p>你的 CSS 中：</p>
+<pre><code class="language-css">label:has(+ input:checked) {
+  color: green;
+}
+</code></pre>
+<p>该 CSS 选择器的目标是 <code>&lt;label&gt;</code> 元素，<code>&lt;label&gt;</code> 其后紧跟着选中的 <code>&lt;input&gt;</code>元素。</p>
+<img src="./imgs/148/01.webp" />
+
+<p>我们并不局限于只选择前一个兄弟节点，我们还可以选择所有前面的兄弟节点。考虑一下有面包屑分隔符的情况。在这种情况下，我们不希望在列表中的最后一个项目后出现任何分隔符，因此我们可以使用 <code>:has()</code> 和同辈分隔符 (~) 来实现这一功能：</p>
+<pre><code class="language-css">.breadcrumb-item:has(~ .current)::after {
+  content: &quot;/&quot;;
+}
+</code></pre>
+<p>它针对的是 <code>.breadcrumb-item</code> 元素，这些元素的后面同级元素中有 <code>.current</code> 元素，而不一定是直接相邻的元素。</p>
+<p>但是，如果我们不使用 <code>.current</code> 类，而只想根据 HTML 标签查找元素呢？你也可以使用 <code>:has()</code> 来实现这一目的：</p>
+<pre><code class="language-css">li:has(~ li:not(a))::after {
+  content: &quot;/&quot;;
+  margin-inline-start: 10px;
+}
+</code></pre>
+<p>我们要选择的列表项满足：后面同级列表项中有一个没有 <a> 标签的列表项。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/147.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@property 文本动画效果</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/editor.main.css"/>
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;div class=&#34;text-container&#34;&gt;
+  &lt;div class=&#34;scrolling-text&#34;&gt;
+    &lt;div class=&#34;text&#34;&gt;
+      &lt;ruby&gt;&amp;#22777;&lt;rt&gt;one&lt;/rt&gt;&lt;/ruby&gt; &lt;ruby&gt;&amp;#34560;&lt;rt&gt;two&lt;/rt&gt;&lt;/ruby&gt;
+      &lt;ruby&gt;&amp;#20841;&lt;rt&gt;three&lt;/rt&gt;&lt;/ruby&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">@property --c1 {
+  syntax: &#34;&lt;color&gt;&#34;;
+  inherits: false;
+  initial-value: rgb(224, 236, 236);
+}
+@property --c2 {
+  syntax: &#34;&lt;color&gt;&#34;;
+  inherits: false;
+  initial-value: rgb(92, 198, 162);
+}
+@property --l {
+  syntax: &#34;&lt;length&gt; | &lt;percentage&gt;&#34;;
+  inherits: false;
+  initial-value: 5px;
+}
+@property --angle {
+  syntax: &#34;&lt;angle&gt;&#34;;
+  inherits: false;
+  initial-value: 180deg;
+}
+.scrolling-text {
+  width: min-content;
+  height: 1lh;
+  overflow: hidden;
+  font: bold 120pt &#34;Noto Sans TC&#34;;
+  text-align: center;
+  pointer-events: none;
+}
+.text {
+  background: repeating-linear-gradient(
+    var(--angle),
+    var(--c1),
+    var(--c1) 5px,
+    var(--c2) var(--l),
+    var(--c2) 6px
+  );
+  background-clip: text;
+  color: transparent;
+  background-size: 20% 20%;
+  transition: --l, --angle, --c1, --c2, background-size,
+    transform 2.4s ease-in-out;
+  transition-duration: 2s;
+}
+.text-container:hover .text {
+  --c1: pink;
+  --c2: transparent;
+  --l: 100%;
+  --angle: 90deg;
+  transform: translateY(-2lh);
+  background-size: 50% 100%;
+}
+.text-container {
+  background: rgb(248, 247, 244);
+  padding: 60px;
+  border-radius: 40px;
+}
+.text-container:hover {
+  box-shadow: 2px 2px 16px rgba(117, 154, 198, 0.2);
+}
+
+rt {
+  font: 18px &#34;crimson text&#34;;
+  color: black;
+  margin-bottom: -40px;
+}
+p {
+  width: 200px;
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">if (!CSS.registerProperty) {
+  document.querySelector(&#34;.wrapper&#34;).innerHTML =
+    &#39;&lt;p&gt;This is a demo for &lt;code&gt;@property&lt;/code&gt;, that can not be viewed in this browser yet due to lack of support. To know more, refer &lt;a href=&#34;https://caniuse.com/mdn-css_at-rules_property&#34;&gt;caniuse.com&lt;/a&gt;&lt;/p&gt;&#39;;
+}</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-147-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.min.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

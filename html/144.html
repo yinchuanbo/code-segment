@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>js 闭包的 6 种应用场景</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>js 闭包的 6 种应用场景</h2>
+                    <p>2024-06-18 20:50:10 · YinHao</p>
+                  </div>
+                  <h2>01 什么是闭包?</h2>
+<h3>1.1 闭包的基本定义</h3>
+<p>如果一个函数访问了此函数的父级及父级以上的作用域变量，那么这个函数就是一个闭包。闭包会创建一个包含外部函数作用域变量的环境，并将其保存在内存中，这意味着，即使外部函数已经执行完毕，闭包仍然可以访问和使用外部函数的变量。</p>
+<pre><code class="language-js">//闭包实例代码
+function fn1() {
+  let a = 1;
+  function fn2() {
+    a++;
+    console.log(a);
+  }
+  return fn2;
+}
+const fn2 = fn1();
+//闭包函数执行完后外部作用域变量仍然存在，并保持状态
+fn2(); //2
+fn2(); //3
+</code></pre>
+<h3>1.2 闭包的特性</h3>
+<ol>
+<li><p>函数嵌套：闭包的实现依赖于函数嵌套，即在一个函数内部定义另一个函数。</p>
+</li>
+<li><p>记忆外部变量：闭包可以记住并访问外部函数的变量，即使外部函数已经执行完毕。</p>
+</li>
+<li><p>延长作用域链：闭包将外部函数的作用域链延长到内部函数中，使得内部函数可以访问外部函数的变量。</p>
+</li>
+<li><p>返回函数：闭包通常以函数的形式返回，使得外部函数的变量仍然可以被内部函数引用和使用。</p>
+</li>
+</ol>
+<h3>1.3 闭包的优点</h3>
+<ol>
+<li><p>保护变量：闭包可以将变量封装在函数内部，避免全局污染，保护变量不被外部访问和修改。</p>
+</li>
+<li><p>延长变量生命周期：闭包使得函数内部的变量在函数执行完后仍然存在，可以在函数外部继续使用。</p>
+</li>
+<li><p>实现模块化：闭包可以创建私有变量和私有方法，实现模块化的封装和隐藏，提高代码的可维护性和安全性。</p>
+</li>
+<li><p>保持状态：闭包可以捕获外部函数的变量，并在函数执行时保持其状态。这使得闭包在事件处理、回调函数等场景中非常有用。</p>
+</li>
+</ol>
+<h3>1.4 闭包的缺点</h3>
+<ol>
+<li><p>内存占用：闭包会导致外部函数的变量无法被垃圾回收，从而增加内存占用。如果滥用闭包，会导致内存泄漏问题。</p>
+</li>
+<li><p>性能损耗：闭包涉及到作用域链的查找过程，会带来一定的性能损耗。在性能要求高的场景下，需要注意闭包的使用。</p>
+</li>
+</ol>
+<h2>02 闭包的应用场景</h2>
+<h3>2.1 自执行函数</h3>
+<pre><code class="language-js">let say = (function () {
+  let val = &quot;hello world&quot;;
+  function say() {
+    console.log(val);
+  }
+  return say;
+})();
+</code></pre>
+<h3>2.2 节流防抖</h3>
+<pre><code class="language-js">// 节流函数封装
+function throttle(func, delay) {
+  let timer = null;
+  return function () {
+    if (!timer) {
+      timer = setTimeout(() =&gt; {
+        func.apply(this, arguments);
+        timer = null;
+      }, delay);
+    }
+  };
+}
+// 防抖函数封装
+function debounce(func, delay) {
+  let timer = null;
+  return function () {
+    clearTimeout(timer);
+    timer = setTimeout(() =&gt; {
+      func.apply(this, arguments);
+    }, delay);
+  };
+}
+</code></pre>
+<h3>2.3 函数柯里化</h3>
+<p>函数柯里化（Currying）是一种将多个参数的函数转换为一系列接受单个参数的函数的过程。举个简单的例子，我们有一个原始函数 <code>add(a, b, c)</code>，我们可以将它柯里化为 <code>addCurried(a)(b)(c)</code> 的形式。</p>
+<pre><code class="language-js">//柯里化前
+function add(a, b, c) {
+  return a + b + c;
+}
+console.log(add(1, 2, 3)); //6
+
+//柯里化后
+function addCurried1(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
+}
+//箭头函数简写
+const addCurried2 = (a) =&gt; (b) =&gt; (c) =&gt; a + b + c;
+console.log(addCurried1(1)(2)(3)); //6
+console.log(addCurried2(1)(2)(3)); //6
+</code></pre>
+<h3>2.4 链式调用</h3>
+<p>利用闭包原理封装一个简单的计算器。</p>
+<pre><code class="language-js">function calculator() {
+  let result = 0;
+
+  function add(num) {
+    result += num;
+    return this;
+  }
+
+  function subtract(num) {
+    result -= num;
+    return this;
+  }
+
+  function multiply(num) {
+    result *= num;
+    return this;
+  }
+
+  function divide(num) {
+    result /= num;
+    return this;
+  }
+
+  function getResult() {
+    return result;
+  }
+
+  function clear() {
+    result = 0;
+    return this;
+  }
+
+  return {
+    add,
+    subtract,
+    multiply,
+    divide,
+    getResult,
+    clear,
+  };
+}
+const calc = calculator();
+const result = calc.add(5).subtract(2).divide(3).multiply(6).getResult();
+console.log(result); // 输出：6
+</code></pre>
+<h3>2.5 迭代器</h3>
+<pre><code class="language-js">function createIterator(arr) {
+  let index = 0;
+
+  return {
+    next: function () {
+      if (index &lt; arr.length) {
+        return {
+          value: arr[index++],
+          done: false,
+        };
+      } else {
+        return {
+          done: true,
+        };
+      }
+    },
+  };
+}
+
+const myIterator = createIterator([1, 2, 3]);
+
+console.log(myIterator.next()); // { value: 1, done: false }
+console.log(myIterator.next()); // { value: 2, done: false }
+console.log(myIterator.next()); // { value: 3, done: false }
+console.log(myIterator.next()); // { done: true }
+</code></pre>
+<h3>2.6 发布-订阅模式</h3>
+<pre><code class="language-js">function createPubSub() {
+  // 存储事件及其对应的订阅者
+  const subscribers = {};
+
+  // 订阅事件
+  function subscribe(event, callback) {
+    // 如果事件不存在，则创建一个新的空数组
+    if (!subscribers[event]) {
+      subscribers[event] = [];
+    }
+    // 将回调函数添加到订阅者数组中
+    subscribers[event].push(callback);
+  }
+
+  // 发布事件
+  function publish(event, data) {
+    // 如果事件不存在，则直接返回
+    if (!subscribers[event]) {
+      return;
+    }
+    // 遍历订阅者数组，调用每个订阅者的回调函数
+    subscribers[event].forEach((callback) =&gt; {
+      callback(data);
+    });
+  }
+
+  // 返回订阅和发布函数
+  return {
+    subscribe,
+    publish,
+  };
+}
+
+// 使用示例
+const pubSub = createPubSub();
+
+// 订阅事件
+pubSub.subscribe(&quot;event1&quot;, (data) =&gt; {
+  console.log(&quot;订阅者1收到事件1的数据:&quot;, data);
+});
+
+pubSub.subscribe(&quot;event2&quot;, (data) =&gt; {
+  console.log(&quot;订阅者2收到事件2的数据:&quot;, data);
+});
+
+// 发布事件
+pubSub.publish(&quot;event1&quot;, &quot;Hello&quot;);
+// 输出: 订阅者1收到事件1的数据: Hello
+
+pubSub.publish(&quot;event2&quot;, &quot;World&quot;);
+// 输出: 订阅者2收到事件2的数据: World
+</code></pre>
+<h2>03 闭包造成的内存泄漏怎么解决</h2>
+<p>闭包中的内存泄漏指的是在闭包函数中，由于对外部变量的引用而导致这些变量无法被垃圾回收机制释放的情况。当一个函数内部定义了一个闭包，并且这个闭包引用了外部变量时，如果这个闭包被其他地方持有，就会导致外部变量无法被正常释放，从而造成内存泄漏。</p>
+<p>解决闭包中的内存泄漏问题通常需要注意解除外部变量和闭包函数的引用，以及解绑函数本身的引用，使得闭包中引用的外部变量和闭包函数能够被垃圾回收机制释放。</p>
+<p>以下是使用闭包时解决内存泄漏的示例。</p>
+<pre><code class="language-js">function createClosure() {
+  let value = &quot;Hello&quot;;
+
+  // 闭包函数
+  var closure = function () {
+    console.log(value);
+  };
+
+  // 解绑定闭包函数，并释放资源
+  var releaseClosure = function () {
+    value = null; // 解除外部变量的引用
+    closure = null; // 解除闭包函数的引用
+    releaseClosure = null; // 解除解绑函数的引用
+  };
+
+  // 返回闭包函数和解绑函数
+  return {
+    closure,
+    releaseClosure,
+  };
+}
+
+// 创建闭包
+var closureObj = createClosure();
+
+// 调用闭包函数
+closureObj.closure(); // 输出：Hello
+
+// 解绑闭包并释放资源
+closureObj.releaseClosure();
+
+// 尝试调用闭包函数，此时已解绑，不再引用外部变量
+closureObj.closure(); // 输出：null
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/143.html'">PREV</div>
+                    <div class="nav-next" onclick="location.href='/145.html'">NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
