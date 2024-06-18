@@ -245,18 +245,15 @@ window.onload = () => {
   if (!getBallData) {
     checkBox.innerHTML = "";
   } else {
-    renderHtml();
+    if (getWeekData() == 2 || getWeekData() == 4 || getWeekData() == 7) {
+      const { h, m } = getCurData();
+      if ((h === 21 && m >= 35) || h > 21) {
+        renderHtml();
+      } else {
+        console.log('今天开奖，但是不是最新结果')
+      }
+    } else {
+      console.log('今天不是开奖日')
+    }
   }
 };
-
-// if (getWeekData() == 2 || getWeekData() == 4 || getWeekData() == 7) {
-//   const { h, m } = getCurData();
-//   if ((h === 21 && m >= 35) || h > 21) {
-//     renderHtml();
-//     getLastestData();
-//   } else {
-//
-//   }
-// } else {
-//   M.toast({ html: '今天不是开奖日~~' })
-// }
