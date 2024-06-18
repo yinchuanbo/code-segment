@@ -263,8 +263,8 @@ pre code.hljs {
 }
 
 .home {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   left: calc((100% - 1000px) / 2 - 90px);
   /* border: 1px solid #313131; */
   background-color: #313131;
@@ -272,7 +272,7 @@ pre code.hljs {
   user-select: none;
   color: #fff;
   border-radius: 100%;
-  line-height: 60px;
+  line-height: 55px;
   text-align: center;
   bottom: 50%;
   transform: translateY(50%);
@@ -280,10 +280,10 @@ pre code.hljs {
 
 .nav-prev,
 .nav-next {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 100%;
-  line-height: 60px;
+  line-height: 55px;
   text-align: center;
   font-size: 14px;
   /* border: 1px solid #313131; */
