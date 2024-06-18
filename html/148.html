@@ -3,7 +3,7 @@
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>CSS has() 选择器：5 个顶级使用案例</title>
+                <title>六种浏览器跨窗口通信方案</title>
                 <link rel=icon href="./imgs/code.svg" sizes=32x32>
                 <link rel="stylesheet" href="./css/prism.css">
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
@@ -11,89 +11,148 @@
               <body>
                 <div class="container">
                   <div class="container-header">
-                    <h2>CSS has() 选择器：5 个顶级使用案例</h2>
-                    <p>2024-06-18 21:23:14 · YinHao</p>
+                    <h2>六种浏览器跨窗口通信方案</h2>
+                    <p>2024-06-18 21:41:52 · YinHao</p>
                   </div>
-                  <p>CSS 中的 <code>:has</code> 选择器打开了一个充满新可能性的世界。现在它已经登陆 <code>Firefox 121</code>，自此所有现代浏览器都支持它。</p>
-<h2>1. 父级选择器</h2>
-<p><code>:has()</code> 选择器的主要用途是作为父选择器。它有用于检查父元素是否存在某个元素。</p>
-<p>例如，考虑一个场景，你想验证按钮中是否存在图标：</p>
-<pre><code class="language-css">button:has(.icon) {
-  display: flex;
-  gap: 10px;
-}
-</code></pre>
-<p>或者，如果你想在包含子菜单的导航栏项上附加下拉箭头，也可以这样做：</p>
-<pre><code class="language-css">nav li:has(ul) &gt; a::after {
-  content: &quot;+&quot;;
-  margin-inline: 10px;
-}
-</code></pre>
-<p><code>:has()</code> 选择器的运行方式与选择器链中的任何其他选择器一样。您可以在其之前、之后或内部包含任何内容。例如，当 .card 元素包含的 <code>&lt;img&gt;</code>, 同时 <code>&lt;img&gt;</code> 后紧跟着 <code>&lt;p&gt;</code> 时，定位该元素：</p>
-<pre><code class="language-css">.card:has(img + p) {
-  flex-direction: row;
-}
-</code></pre>
-<p>这样，我们就可以根据子元素的情况为卡片创建自适应布局：</p>
+                  <h2>业务场景</h2>
+<p>一个常规的业务列表页，页面中提供了一个新增功能，由于新增功能的表单项内容比较多，所以交互上使用新开一个窗口来完成。这时问题来了，在新增完成后，如何通知列表页面刷新列表数据，以便展示出刚才新增的那一条数据。</p>
 <img src="./imgs/148/01.png" />
 
-<p>您还可以在 <code>:has()</code> 内提供用逗号分隔的元素列表，检查它们是否在父元素中：</p>
-<pre><code class="language-css">article:has(video, iframe) {
-  /* 匹配至少包含一个 video 或 iframe 的 &lt;article&gt; */
-}
+<p>各位可以先自己在心中简单想想，如果让你实现这个功能，你会使用什么方案。</p>
+<h3>解决方案</h3>
+<h3>window.opener</h3>
+<p>window.opener  代表的是打开当前窗口的那个窗口的引用，例如：在 window A 中打开了 window B，B.opener  返回 A。</p>
+<p>有了这个引用关系，我们就可以实现跨窗口通信：</p>
+<img src="./imgs/148/02.png" />
+
+<ol>
+<li><p>列表页设置刷新列表方法  <code>window.refreshList = () =&gt; {}</code></p>
+</li>
+<li><p>列表页通过  window.open  或者  <code>&lt;a href=&quot;newUrl&quot; target=&quot;_blank&quot; rel=&quot;opener&quot;&gt;新增&lt;/a&gt;</code>  打开新增功能页面。</p>
+</li>
+<li><p>用户完成新增表单填写并提交，通过调用  <code>window.opener.refreshList</code>  方法来刷新列表页面数据，并关闭当前页。</p>
+</li>
+</ol>
+<p>有人可能注意到了，在  a  标签中我们使用到了  <code>rel=&quot;opener&quot;</code>  属性，为什么要设置这个属性呢？</p>
+<p>rel  属性定义了所链接的资源与当前文档的关系，常见的属性值有：</p>
+<ul>
+<li><p>opener: 打开的新页面  <code>window.opener</code>  会指向前一个页面的  window。</p>
+</li>
+<li><p>noopener: 和  opener  相对应， <code>window.opener</code>  为空。</p>
+</li>
+<li><p>noreferrer：打开新页面时请求头不会包含  Referer，比如你未设置  noreferrer  的情况下，从 antd 打开百度，百度页面请求头就有  <code>Referer: https://ant.design/</code></p>
+</li>
+<li><p>nofollow: 主要用于 SEO，告诉搜索引擎忽略该链接。</p>
+</li>
+</ul>
+<p>主要关注  opener  和  noopener  属性，a  标签默认情况下  <code>rel=noopener</code>，这代表打开的新增页面的  window.opener  对象会为空，所以需要设置  <code>rel=opener</code>。</p>
+<p>那么又有一个问题，为什么  a  标签默认是  <code>rel=noopener</code>, 因为  opener  存在安全漏洞，比如你以  opener  的方式打开了一个未知的新页面，这个新页面可以通过  <code>window.opener.location.href = &#39;fake.com&#39;</code>  重定向你的页面。</p>
+<p>而  <code>window.open</code>  默认情况下  <code>rel=opener</code>，故打开的新页面可以拿到  window.opener  对象，不过要是打开第三方未知网站，建议设置为  noopener, 比如  <code>window.open(&#39;https://baidu.com&#39;, &#39;title&#39;, &#39;noopener,noreferrer&#39;)</code>。</p>
+<h3>BroadcastChannel</h3>
+<p>BroadcastChannel API 顾名思义，为“广播频道”，适用于在同一域名下的多个窗口、标签页或  iframe  之间进行实时消息广播。它的使用也非常简单，我们也看下如何通过它来实现上面的业务场景。</p>
+<p>列表页创建一个  BroadcastChannel  实例来监听消息：</p>
+<pre><code class="language-js">// 创建 BroadcastChannel 实例
+const channel = new BroadcastChannel(&quot;myChannel&quot;);
+
+// 监听广播通道的消息
+channel.addEventListener(&quot;message&quot;, (event) =&gt; {
+  console.log(&quot;接收:&quot;, event.data); // { action: &#39;refresh&#39; }
+});
 </code></pre>
-<p>这可确保 article 至少具有其中一个子元素 - <code>&lt;iframe&gt;</code> 或 <code>&lt;video&gt;</code>。</p>
-<p>此外，您可以将 <code>:has()</code> 与 <code>:not()</code> 结合使用以实现更复杂的场景：</p>
-<pre><code class="language-css">.card:not(:has(img)) {
-  /* 匹配不包含 img 的 .card 元素 */
-}
-.post:has(img:not([alt])) {
-  /* 匹配包含没有 alt 属性的 img 为子元素 的 .post 元素 */
-}
-div:not(:has(:not(img))) {
-  /* 匹配只有 img 子元素的 div 元素 */
-}
+<p>新增功能页面同样创建一个  BroadcastChannel  实例，频道名称需要和列表页一致：</p>
+<pre><code class="language-js">// 创建 BroadcastChannel 实例
+const channel = new BroadcastChannel(&quot;myChannel&quot;);
+// 向广播通道发送消息
+channel.postMessage({ action: &quot;refresh&quot; });
+// 关闭频道
+channel.close();
 </code></pre>
-<p>正如你所看到的，人们可以使用此选择器让 CSS 变得非常有创意，但请记住，不能嵌套 <code>:has()</code> 选择器，但是，你可以链式使用它们：</p>
-<pre><code class="language-css">.headings:has(.subtitle:has(h2)) {
-  /* 无效 */
-}
-.headings:has(h2):has(.subtitle) h2 {
-  /* 有效 */
-}
+<p>可以看到  BroadcastChannel  的使用很简单，双方创建同名频道的  BroadcastChannel  实例，然后一方监听  message  事件，一方使用  postMessage  广播内容。</p>
+<h3>postMessage</h3>
+<p>对于  postMessage，我们最常用的方式应该就是当前页面和  iframe  的跨域消息通信了，其实它也能完成跨窗口通信，核心就是能拿到新窗口的  window  对象，这个在  window.opener  方案中我们就知道通过设置  <code>rel=&quot;opener&quot;</code>  就可以办到。</p>
+<p>列表页打开新窗口，并监听  message  事件：</p>
+<pre><code class="language-html">&lt;a href=&quot;./add.html&quot; target=&quot;_blank&quot; rel=&quot;opener&quot;&gt;新增&lt;/a&gt;
+&lt;script&gt;
+  // 不同与 BroadcastChannel，这边是监听 window 上的 message 事件
+  window.addEventListener(&quot;message&quot;, receiveMessage);
+  function receiveMessage(event) {
+    console.log(&quot;接收:&quot;, event.data); // { action: &#39;refresh&#39; }
+  }
+&lt;/script&gt;
 </code></pre>
-<p>最后，还可以检查子元素的状态，以进行表单验证等操作：</p>
-<pre><code class="language-css">form:has(input:invalid) {
-  border: 1px solid red;
-}
+<p>新增功能页面使用  <code>window.opener.postMessage</code>  发送消息：</p>
+<pre><code class="language-js">window.opener?.postMessage({ action: &quot;refresh&quot; }, &quot;*&quot;);
 </code></pre>
-<h2>2. 向前兄弟选择器</h2>
-<p><code>:has()</code> 选择器不仅限于针对父元素；它还可以选择前一个的兄弟元素。</p>
-<p>例如，你可以根据标签的下一个相邻兄弟元素（如复选框）的状态来设置标签的样式：</p>
-<pre><code class="language-html">&lt;label for=&quot;checkbox&quot;&gt;We need to target this when input is checked&lt;/label&gt;
-&lt;input id=&quot;checkbox&quot; type=&quot;checkbox&quot; /&gt;
-</code></pre>
-<p>你的 CSS 中：</p>
-<pre><code class="language-css">label:has(+ input:checked) {
-  color: green;
-}
-</code></pre>
-<p>该 CSS 选择器的目标是 <code>&lt;label&gt;</code> 元素，<code>&lt;label&gt;</code> 其后紧跟着选中的 <code>&lt;input&gt;</code>元素。</p>
+<p>至此我们已经完成了上面的业务需求，postMessage  的优势在于可以跨域。</p>
+<h3>MessageChannel</h3>
+<p>MessageChannel API 允许我们创建一个新的消息通道，并通过它的两个  MessagePort  实例属性发送数据，同时它也可以跨域通信。</p>
+<p>不同于  BroadcastChannel  的广播，MessageChannel  只提供双向通信通道，不过它既可以像  postMessage  一样用于  iframe  通信，也可以用于  Web Worker  之间进行通信。</p>
 <img src="./imgs/148/01.webp" />
 
-<p>我们并不局限于只选择前一个兄弟节点，我们还可以选择所有前面的兄弟节点。考虑一下有面包屑分隔符的情况。在这种情况下，我们不希望在列表中的最后一个项目后出现任何分隔符，因此我们可以使用 <code>:has()</code> 和同辈分隔符 (~) 来实现这一功能：</p>
-<pre><code class="language-css">.breadcrumb-item:has(~ .current)::after {
-  content: &quot;/&quot;;
-}
+<p>要用  MessageChannel  实现跨窗口通信，方式有点类似  postMessage, 打开新页面时需要设置  <code>rel=&quot;opener&quot;</code>。</p>
+<p>列表页初始化  MessageChannel  实例，并在  port1  上监听  message  事件:</p>
+<pre><code class="language-js">// 创建 MessageChannel 实例
+window.messageChannel = new MessageChannel();
+const port1 = window.messageChannel.port1;
+// port1 监听 message 事件
+port1.onmessage = function (event) {
+  console.log(&quot;接收:&quot;, event.data); // { action: &#39;refresh&#39; }
+};
 </code></pre>
-<p>它针对的是 <code>.breadcrumb-item</code> 元素，这些元素的后面同级元素中有 <code>.current</code> 元素，而不一定是直接相邻的元素。</p>
-<p>但是，如果我们不使用 <code>.current</code> 类，而只想根据 HTML 标签查找元素呢？你也可以使用 <code>:has()</code> 来实现这一目的：</p>
-<pre><code class="language-css">li:has(~ li:not(a))::after {
-  content: &quot;/&quot;;
-  margin-inline-start: 10px;
-}
+<p>新增功能页面使用  <code>window.opener.messageChannel</code>  拿到列表的  MessageChannel  实例，并使用  port2  的  postMessage  方法往  port1  通道上发送消息：</p>
+<pre><code class="language-js">// 获取 MessageChannel 实例
+const messageChannel = window.opener.messageChannel;
+const port2 = messageChannel.port2;
+// 往 port1 发送消息
+port2.postMessage({ action: &quot;refresh&quot; });
 </code></pre>
-<p>我们要选择的列表项满足：后面同级列表项中有一个没有 <a> 标签的列表项。</p>
+<p>需要注意的是  MessagePort  对象如果使用  addEventListener  监听  message  事件，就需要调用下  <code>port.start()</code>  方法，使用  onmessage  则可以不需要。</p>
+<h3>storage 事件</h3>
+<p>当  localStorage  或  sessionStorage  被修改时，将触发  storage  事件，利用这个机制，我们也可以完成跨窗口通信。同时因为用的是  localStorage  或  sessionStorage  方式，所以页面必须是同一域名下。</p>
+<p>值得注意的是，sessionStorage  并不能满足上面的业务需求，sessionStorage  要想触发  storage  事件，必须在同一窗口，也就是一般只在当前页和其加载的同域名  iframe  下使用。还有一点就是当前页的  setItem  不会触发当前页的  storage  事件，只会触发其他窗口的。</p>
+<p>列表页监听  storage  事件，判断是否是对应  key  值发生变化:</p>
+<pre><code class="language-js">window.addEventListener(&quot;storage&quot;, () =&gt; {
+  console.log(&quot;发生变化的值：&quot;, event.key);
+  if (event.key === &quot;refresh&quot;) {
+    // 刷新列表
+  }
+});
+</code></pre>
+<p>新增功能页面使用  localStorage  的  setItem  来触发列表的  storage  事件：</p>
+<pre><code class="language-js">window.localStorage.setItem(&quot;fresh&quot;, Date.now());
+</code></pre>
+<h3>SharedWorker</h3>
+<p>SharedWorker  是 Web Workers API 的一种扩展，它允许在多个浏览器上下文中（例如多个页面或多个 iframe ）共享一个 Worker。ShareWorker  遵守同源策略，也就是必须在同一域名下使用  SharedWorker。</p>
+<p>先写个  worker.js  脚本：</p>
+<pre><code class="language-js">const ports = [];
+
+onconnect = function (e) {
+  const port = e.ports[0];
+  ports.push(port);
+  port.onmessage = function (e) {
+    console.log(&quot;worker接收到的消息：&quot;, e.data);
+    ports.forEach((p) =&gt; {
+      p.postMessage(e.data);
+    });
+  };
+};
+</code></pre>
+<p>列表页创建  ShareWorker  实例，然后监听  message  事件：</p>
+<pre><code class="language-js">const sharedWorker = new SharedWorker(&quot;./worker.js&quot;, &quot;test&quot;);
+const port = sharedWorker.port;
+port.onmessage = function (event) {
+  console.log(&quot;接收:&quot;, event.data); // { action: &#39;refresh&#39; }
+};
+</code></pre>
+<p>新增功能页面使用  postMessage  发送消息给  worker，worker  在发送给各个主线程：</p>
+<pre><code class="language-js">const sharedWorker = new SharedWorker(&quot;./worker.js&quot;, &quot;test&quot;);
+const port = sharedWorker.port;
+port.postMessage({ action: &quot;refresh&quot; });
+</code></pre>
+<p>这样我们就完成了上述的业务需求。</p>
+<h2>总结</h2>
+<p>上述的各种方式都可以实现通知列表页去做刷新动作，不过更推荐使用  window.opener  或  BroadcastChannel  来实现，这两种方式相对使用简单并且很符合这个业务场景。</p>
+<p>对于其他需要跨窗口通信的场景，可以根据各个 API 的能力特点来选择使用哪个。</p>
 
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/147.html'">PREV</div>
