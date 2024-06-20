@@ -240,6 +240,20 @@ fs.readdir(mdDir, (err, files) => {
           <div class="container">
             ${itemHtml}
           </div>
+          <div class="menu-box">
+            <div class="menu-button">
+              <div class="line-box">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+              </div>
+            </div>
+            <ul class="menu-list">
+              <b>${files.length}</b>
+              <li onclick="window.open('/tools')">Tools</li>
+              <li onclick="window.open('/cp')">Cp</li>
+            </ul>
+          </div>
           <script src="./js/home.js"></script>
         </body>
       </html>

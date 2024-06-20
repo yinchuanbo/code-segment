@@ -51,6 +51,7 @@ body {
   /* background-color: #181818; */
   /* border-radius: 5px; */
   padding-top: 20px;
+  border-radius: 10px;
   /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
 
@@ -237,6 +238,7 @@ blockquote::before {
   color: #fff;
   font-size: 25px;
   text-shadow: 0 0 20px orange;
+  
 }
 .container-header p {
   font-size: 14px;
