@@ -9,7 +9,7 @@
 }
 
 :root {
-  --color-01: #ff0000;
+  --color-01: #f92672;
 }
 
 html,
@@ -56,7 +56,7 @@ body {
 }
 
 pre[class*="language-"] {
-  margin: 20px 0;
+  /* margin: 20px 0; */
   padding: 0 20px;
   border: 1px solid #313131;
   border-radius: 0;
@@ -71,6 +71,7 @@ pre[class*="language-"] {
 .code-toolbar {
   /* background-color: rgba(0, 0, 0, 0.2); */
   border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
 }
 
 code[class*="language-"],
@@ -80,6 +81,8 @@ pre[class*="language-"] {
   line-height: 2;
   box-shadow: none;
   background-color: transparent;
+  padding: 10px;
+  margin: 0;
 }
 
 h1 {
@@ -175,7 +178,7 @@ table {
 td,
 tr,
 th {
-  border: 1px solid #313131;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 8px 10px;
   border-right: 0;
   border-bottom: 0;
@@ -378,7 +381,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
   padding-bottom: 2px;
 }
 
-.token.constant,
+/* .token.constant,
 .token.deleted,
 .token.property,
 .token.symbol,
@@ -387,7 +390,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
 .token.attr-value,
 .token.keyword {
   color: var(--color-01);
-}
+} */
 
 img {
   margin-bottom: 20px;

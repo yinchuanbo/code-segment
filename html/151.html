@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>js 运算精度丢失，用这个库试试</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>js 运算精度丢失，用这个库试试</h2>
+                    <p>2024-06-20 21:43:50 · YinHao</p>
+                  </div>
+                  <h2>简述</h2>
+<p>当<code>js</code>进行算术运算时，有时候会遇到以下几个问题：</p>
+<pre><code class="language-js">// 控制台可以尝试以下代码
+0.1 + 0.2; // 0.30000000000000004
+0.3 - 0.1; // 0.19999999999999998
+19.9 * 100; // 1989.9999999999998
+</code></pre>
+<p>为什么会遇到这个问题呢？</p>
+<p>由于在计算机运算过程中，十进制的数会被转化为二进制来运算，有些浮点数用二进制表示是无穷的，浮点数运算标准（IEEE 754）64 位双精度的小数部分最多支持 53 位二进制位，运算过程中超出的二进制位会被截断。运算完后再转为十进制。所以产生了精度问题。</p>
+<p>为了解决此问题，整理了一些第三方的<code>js</code>库。</p>
+<h2>相关<code>js</code>库推荐</h2>
+<table>
+<thead>
+<tr>
+<th>js 库名称</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Math.js</td>
+<td>JavaScript 和 Node.js 的扩展数学库</td>
+</tr>
+<tr>
+<td>decimal.js</td>
+<td>javaScript 任意精度的库</td>
+</tr>
+<tr>
+<td>big.js</td>
+<td>一个轻量的任意精度库</td>
+</tr>
+</tbody></table>
+<h2><code>big.js</code></h2>
+<h3>版本介绍</h3>
+<p>本次用的<code>big.js</code>版本为<code>6.2.1</code></p>
+<h3>页面引入</h3>
+<p>下载<code>big.js</code>:</p>
+<ul>
+<li>因为作为本地测试，就不下载压缩版本了: <a href="https://cdn.jsdelivr.net/npm/big.js@6.2.1/big.js">https://cdn.jsdelivr.net/npm/big.js@6.2.1/big.js</a>
+​</li>
+<li>若需要压缩版本: <a href="https://cdn.jsdelivr.net/npm/big.js@6.2.1/big.min.js">https://cdn.jsdelivr.net/npm/big.js@6.2.1/big.min.js</a></li>
+</ul>
+<p>引入到<code>html</code>页面：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Big js&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- 引入页面 --&gt;
+    &lt;script src=&quot;./js/big.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+      // 尝试Big构造方法
+      console.log(&quot;Big&quot;, Big);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>工程化项目</h3>
+<pre><code class="language-sh">npm install big.js
+</code></pre>
+<p>在所需页面引入：</p>
+<pre><code class="language-js">// 现在一般用 es 模块引入
+import Big from &quot;big.js&quot;;
+</code></pre>
+<h3>使用</h3>
+<p>基本演示：</p>
+<pre><code class="language-js">// 加
+let a = new Big(0.1)
+a = a.plus(0.2)
+​
+// 由于运算结果是个对象，所以展示以下值
+console.log(&#39;a&#39;, a) //  {s: 1, e: -1, c: Array(1)}
+// 可以使用 Number || toNumber() 转为我们需要的数值
+console.log(&#39;a&#39;, a.toNumber) || console.log(&#39;a&#39;, Number(a)) // 0.3
+</code></pre>
+<p>可以链式调用：</p>
+<pre><code class="language-js">x.div(y).plus(z).times(9);
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/150.html'">PREV</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>NEXT</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">HOME</div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
