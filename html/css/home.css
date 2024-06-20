@@ -61,6 +61,7 @@ body {
   /* border: 1px solid #313131; */
   background-color: #313131;
   position: relative;
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {

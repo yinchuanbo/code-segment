@@ -56,7 +56,7 @@ body {
 
 pre[class*="language-"] {
   margin: 20px 0;
-  padding: 20px;
+  padding: 0 20px;
   border: 1px solid #313131;
   border-radius: 0;
   font-style: italic;
@@ -68,7 +68,8 @@ pre[class*="language-"] {
   /* border: 1px solid #313131; */
 }
 .code-toolbar {
-  background-color: rgba(0, 0, 0, 0.2);
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 code[class*="language-"],
