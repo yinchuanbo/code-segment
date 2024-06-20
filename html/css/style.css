@@ -5,7 +5,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "hack";
+  font-family: "Fira Code";
 }
 
 :root {
@@ -74,7 +74,7 @@ pre[class*="language-"] {
 code[class*="language-"],
 pre[class*="language-"] {
   font-size: 16px;
-  font-family: "hack";
+  font-family: "Fira Code";
   line-height: 2;
   box-shadow: none;
   background-color: transparent;
