@@ -1,15 +1,16 @@
-const cpTextarea = document.querySelector(".cp__textarea");
-const cpBtn = document.querySelector(".cp__btn");
+const ssqTextarea = document.querySelector("#ssq__textarea");
+const ssqBtn = document.querySelector(".ssq__btn");
 const checkBox = document.querySelector(".check");
 
-cpBtn.onclick = () => {
-  const value = (cpTextarea?.value || "").trim();
+ssqBtn.onclick = () => {
+  const value = (ssqTextarea?.value || "").trim();
   if (!value) {
     alert("请输入号码！！");
     return;
   }
   paichuBall(value);
 };
+
 const paichuBall = (value) => {
   let allRedBalls = [...Array(33).keys()].map((x) => x + 1);
   let allBlueBalls = [...Array(16).keys()].map((x) => x + 1);
@@ -250,10 +251,24 @@ window.onload = () => {
       if ((h === 21 && m >= 35) || h > 21) {
         renderHtml();
       } else {
-        console.log('今天开奖，但是不是最新结果')
+        console.log("今天开奖，但是不是最新结果");
       }
     } else {
-      console.log('今天不是开奖日')
+      console.log("今天不是开奖日");
     }
   }
 };
+
+const items = document.querySelectorAll(".boxs__header_item");
+const contents = document.querySelectorAll(".boxs__content>div");
+
+items.forEach((item, index) => {
+  item.onclick = () => {
+    const active = document.querySelector(".boxs__header_item.active");
+    if (active) active.classList.remove("active");
+    item.classList.add("active");
+    const show = document.querySelector(".boxs__content>div.show");
+    if (show) show.classList.remove("show");
+    contents[index].classList.add("show");
+  };
+});
