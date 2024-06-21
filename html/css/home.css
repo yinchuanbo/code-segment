@@ -14,7 +14,7 @@ body {
 }
 
 body {
-  background-color: #131313;
+  background-color: #1e1e1e;
   color: #444;
 }
 
@@ -46,7 +46,7 @@ body {
   width: 100%;
   display: grid;
   /* grid-template-columns: repeat(3, calc((100% - 40px) / 3)); */
-  grid-template-columns: repeat(5, calc((100% - 60px) / 5));
+  grid-template-columns: repeat(4, calc((100% - 50px) / 4));
   /* grid-gap: 0 50px; */
   gap: 10px;
   place-content: center;
@@ -59,10 +59,10 @@ body {
   height: 100px;
   display: flex;
   justify-content: center;
-  /* border: 1px solid #313131; */
-  background-color: #313131;
+  border: 1px solid #313131;
+  /* background-color: #181818; */
   position: relative;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   overflow: hidden;
   /* border: 1px solid rgba(255, 255, 255, 0.2); */
 }
