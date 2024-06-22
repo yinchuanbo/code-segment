@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>sass 指南</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>sass 指南</h2>
+                    <p>2024-06-22 11:35:31 · YinHao</p>
+                  </div>
+                  <h2>基本语法</h2>
+<h3>嵌套</h3>
+<pre><code class="language-scss">.box {
+  background-color: #fff;
+  .item {
+    background-color: #58a;
+  }
+  p,
+  span {
+    font-size: 16px;
+  }
+}
+</code></pre>
+<h3>父级选择器（&amp;）</h3>
+<pre><code class="language-scss">.box {
+  &amp;::after {
+    content: &quot;&quot;;
+    display: inline-block;
+    width: 100px;
+    height: 3px;
+  }
+  &amp;__item {
+    background-color: #58a;
+    &amp;__title {
+      font-size: 16px;
+    }
+  }
+  &amp;__row {
+    background-color: #f60;
+  }
+}
+</code></pre>
+<p>编译生成：</p>
+<pre><code class="language-css">.box::after {
+  content: &quot;&quot;;
+  display: inline-block;
+  width: 100px;
+  height: 3px;
+}
+
+.box__item {
+  background-color: #58a;
+}
+
+.box__item__title {
+  font-size: 16px;
+}
+
+.box__row {
+  background-color: #f60;
+}
+</code></pre>
+<h3>占位选择器</h3>
+<p>当我们在撰写一些样式库的时候，有些样式我们并不关心具体的样式名，只关心样式的内容，此时可以通过占位选择器（%）来实现。</p>
+<p>占位选择器的好处：</p>
+<ul>
+<li><p>在不通过 @extend 引用的时候不会编译到最终的 css 代码中</p>
+</li>
+<li><p>不用强制外部用户遵循样式库的样式命名。</p>
+</li>
+</ul>
+<pre><code class="language-scss">%ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: no-wrap;
+}
+
+.title {
+  @extend %ellipsis;
+  font-size: 14px;
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: no-wrap;
+}
+
+.title {
+  font-size: 14px;
+}
+</code></pre>
+<h2>变量</h2>
+<p>sass 中定义变量的公式如下：</p>
+<pre><code class="language-scss">$font-size-medium: 32px / 2;
+$font-size-normal: 12px + 2px;
+$font-size-small: 12px;
+</code></pre>
+<blockquote>
+<p>sass 中的变量是命令式的，意味着你在修改变量前后，值可能不相同的。</p>
+</blockquote>
+<pre><code class="language-scss">$font-size: 14px;
+.box {
+  font-size: $font-size; // 14px
+}
+// 修改值
+$font-size: 16px;
+.box {
+  font-size: $font-size; // 16px
+}
+</code></pre>
+<h3>默认变量</h3>
+<p>有时候，我们希望定义一些变量并给默认值，这样外部用户使用的时候，可以重新定义相同的变量，但变量的值由外部用户自己规定，此时可以使用默认变量 <code>!default</code></p>
+<pre><code class="language-scss">$font-size: 14px !default;
+$theme-color: #4093ff !default;
+// 使用默认
+.box {
+  font-size: $font-size; // 14px
+  background-color: $theme-color; // #4093ff
+}
+// 自己定义
+$font-size: 16px;
+$theme-color: #58a;
+.box {
+  font-size: $font-size; // 16px
+  background-color: $theme-color; // #58a
+}
+</code></pre>
+<h3>局部变量</h3>
+<p>因为 sass 允许嵌套规则，所以变量也可以在嵌套规则中，当在嵌套规则中定义一个变量时，此变量的访问范围只存在于此规则内，对外部不可见。</p>
+<pre><code class="language-scss">.box {
+  .item {
+    $font-size: 16px;
+    font-size: $font-size; // 16px
+  }
+  .row {
+    font-size: $font-size; // error
+  }
+}
+</code></pre>
+<p>对于规则中相同命名的变量，内层的变量会遮蔽外层的变量，例如：</p>
+<pre><code class="language-scss">.box {
+  $font-size: 14px;
+  .item {
+    $font-size: 16px;
+    font-size: $font-size; // 16px
+  }
+}
+</code></pre>
+<blockquote>
+<p>在一些流程控制语句中，变量没有遮蔽效果</p>
+</blockquote>
+<pre><code class="language-scss">$is-active: true !default;
+$font-size: 14px;
+$theme-color: #4093ff;
+
+@if $is-active {
+  $font-size: 16px;
+  $theme-color: #f60;
+}
+
+.box {
+  font-size: $font-size; // 16px
+  background-color: $theme-color; // #f60
+}
+</code></pre>
+<h3>list 变量</h3>
+<p>sass 中的列表表示一些列的集合，且定义列表的形式多种多样，例如：</p>
+<pre><code class="language-scss">// 通过逗号分隔
+$themes: primary, warning, danger;
+// 通过空格分隔
+$themes: primary warning danger;
+// 通过中括号包裹
+$themes: [primary, warning, danger];
+// 通过括号包裹
+$themes: (primary warning danger);
+</code></pre>
+<p>list 变量通常使用 <code>@each</code> 进行迭代遍历，例如：</p>
+<pre><code class="language-scss">$themes: primary, warning, danger;
+@each $theme in $themes {
+  .button.is-#{$theme} {
+    background: #58a;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.button.is-primary {
+  background: #58a;
+}
+
+.button.is-warning {
+  background: #58a;
+}
+
+.button.is-danger {
+  background: #58a;
+}
+</code></pre>
+<h3>map 变量</h3>
+<p>sass 中的 map 和 list 变量有些相似，但在定义上有些区别，其格式如下：<code>(&lt;key&gt;:&lt;value&gt;, &lt;key&gt;:&lt;value&gt;, ...)</code>，其中 <code>key</code> 必须唯一，且外部必须用括号包裹起来。</p>
+<p><code>map</code> 同样可以用过 <code>@each</code> 来遍历，甚至可以进行结构：</p>
+<pre><code class="language-scss">$themes: (
+  primary: &quot;#409eff&quot;,
+  warning: &quot;#e6a23c&quot;,
+  danger: &quot;#f56c6c&quot;,
+);
+@each $theme, $color in $themes {
+  .button.is-#{$theme} {
+    background: $color;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.button.is-primary {
+  background: &quot;#409eff&quot;;
+}
+
+.button.is-warning {
+  background: &quot;#e6a23c&quot;;
+}
+
+.button.is-danger {
+  background: &quot;#f56c6c&quot;;
+}
+</code></pre>
+<h3>变量导出</h3>
+<p>sass 中的变量，也可以在 js 中访问，例如：</p>
+<pre><code class="language-scss">// variables.scss
+$font-size: 14px;
+$theme-color: #4093ff;
+
+:export {
+  fontSize: $font-size,
+  themeColor: $theme-color
+}
+</code></pre>
+<p>需要 webpack 等打包工具的 <code>sass-loader</code> 支持，支持以后就可以直接在 js 中使用：</p>
+<pre><code class="language-js">import vars from &quot;variables.scss&quot;;
+
+console.log(vars.fontSize); // 14px
+console.log(vars.themeColor); // #4093ff
+</code></pre>
+<h2>插值语法</h2>
+<p>插值语法，格式是 <code>#{expression}</code>，它几乎可以用在 sass 中任何地方，例如：</p>
+<ol>
+<li>样式规则选择器</li>
+<li>属性名称</li>
+<li>变量</li>
+<li>注释</li>
+<li>其他地方</li>
+</ol>
+<pre><code class="language-scss">@mixin position($name, $position, $topOrBottom, $leftOrRight) {
+  #{$name}.is-#{$position} {
+    position: $position;
+    #{$topOrBottom}: 0;
+    #{$leftOrRight}: 0;
+  }
+}
+
+@include position(&quot;.box&quot;, &quot;absolute&quot;, &quot;top&quot;, &quot;left&quot;);
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.box.is-absolute {
+  position: &quot;absolute&quot;;
+  top: 0;
+  left: 0;
+}
+</code></pre>
+<h2>@规则</h2>
+<h3>@debug、@error、@warn</h3>
+<blockquote>
+<p>sass 中的 @debug、@error、@warn 分别和 js 中的 console.log()、console.error()、console.warn() 类似</p>
+</blockquote>
+<p><code>@debug</code> 可以打印一些信息，在调试一些表达式或变量值的时候非常有用，如下：</p>
+<pre><code class="language-scss">@mixin position($name, $position, $topOrBottom, $leftOrRight) {
+  @debug $name, $position;
+  #{$name}.is-#{$position} {
+    position: $position;
+    #{$topOrBottom}: 0;
+    #{$leftOrRight}: 0;
+  }
+}
+@include position(&quot;.box&quot;, &quot;absolute&quot;, &quot;top&quot;, &quot;left&quot;);
+// 打印内容
+// index.scss:2 Debug: &quot;.box&quot;, &quot;absolute&quot;
+</code></pre>
+<p><code>@warn</code> 和 <code>@error</code> 通常用来对外部传入的值进行校验，看是否符合规范，如果不符合则提示警告信息和报错信息，例如：</p>
+<pre><code class="language-scss">@mixin position($name, $position, $topOrBottom, $leftOrRight) {
+  @if $position != &quot;relative&quot; and $position != &quot;absolute&quot; {
+    @warn &#39;position must be relative or absolute&#39;;
+  }
+  @if $topOrBottom != &quot;top&quot; and $topOrBottom != &quot;bottom&quot; {
+    @error &#39;topOrBottom must be top or bottom&#39;;
+  }
+  #{$name}.is-#{$position} {
+    position: $position;
+    #{$topOrBottom}: 0;
+    #{$leftOrRight}: 0;
+  }
+}
+@include position(&quot;.box&quot;, &quot;fixed&quot;, &quot;top1&quot;, &quot;left&quot;);
+
+// 打印
+// 警告内容
+// Warning: &#39;position must be relative or absolute&#39;
+// Error: &#39;topOrBottom must be top or bottom&#39;
+</code></pre>
+<h3>@if、@else</h3>
+<p>sass 中的 <code>@if/@else</code> 和 js 中的 <code>if/else</code> 规则是一样，例如：</p>
+<pre><code class="language-scss">@mixin triangle($size, $color, $direction) {
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: calc($size / 2);
+  @if $direction == &quot;top&quot; {
+    border-top-color: $color;
+  } @else if ($direction == &quot;bottom&quot;) {
+    border-bottom-color: $color;
+  } @else if ($direction == &quot;left&quot;) {
+    border-left-color: $color;
+  } @else if($direction == &quot;right&quot;) {
+    border-right-color: $color;
+  } @else {
+    @warn &#39;direction must be top, bottom, left or right&#39;;
+  }
+}
+
+.box {
+  @include triangle(10px, &quot;#f60&quot;, &quot;right&quot;);
+}
+</code></pre>
+<p><code>@if</code> 和 <code>@else if</code> 也能使用 sass 中的 <code>not</code>、<code>or</code> 和 <code>and</code>，例如：</p>
+<pre><code class="language-scss">@mixin triangle($size, $color, $direction) {
+  $directions: top, bottom, left, right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: calc($size / 2);
+  @if not index($directions, $direction) {
+    @warn &#39;direction must be top, bottom, left or right&#39;;
+  } @else {
+    border-#{$direction}-color: $color;
+  }
+}
+.box {
+  @include triangle(10px, &quot;#f60&quot;, &quot;right&quot;);
+}
+</code></pre>
+<h3>@each</h3>
+<blockquote>
+<p>sass 中的 @each 和 js 的 forEach() 类似</p>
+</blockquote>
+<p>sass 中的 <code>@each</code> 通常是用来迭代一个 <code>list</code> 或者 <code>map</code> 的，其公式为：<code>@each &lt;variable&gt; in &lt;expression&gt;</code></p>
+<pre><code class="language-scss">// 这是一个 list 列表
+$sizes: 10px, 20px, 30px, 40px;
+
+@each $size in $sizes {
+  .box-#{$size} {
+    width: $size;
+    height: $size;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.box-10px {
+  width: 10px;
+  height: 10px;
+}
+
+.box-20px {
+  width: 20px;
+  height: 20px;
+}
+
+.box-30px {
+  width: 30px;
+  height: 30px;
+}
+
+.box-40px {
+  width: 40px;
+  height: 40px;
+}
+</code></pre>
+<p><code>@each</code> 也可以用来迭代 <code>key/value</code> 形式的 <code>map</code> 结构，例如：</p>
+<pre><code class="language-scss">$sizeMap: (
+  h1: 20px,
+  h2: 16px,
+  h3: 14px,
+);
+@each $el, $size in $sizeMap {
+  #{$el} {
+    font-size: $size;
+  }
+}
+</code></pre>
+<p>甚至可以用来解构，例如：</p>
+<pre><code class="language-scss">$statusList: (text, text, &quot;#333&quot;), (button, pointer, &quot;#ccc&quot;),
+  (div, move, &quot;#000&quot;);
+
+@each $el, $pointer, $color in $statusList {
+  .is_#{$el} {
+    cursor: $pointer;
+    color: $color;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.is_text {
+  cursor: text;
+  color: &quot;#333&quot;;
+}
+
+.is_button {
+  cursor: pointer;
+  color: &quot;#ccc&quot;;
+}
+
+.is_div {
+  cursor: move;
+  color: &quot;#000&quot;;
+}
+</code></pre>
+<h3>@for</h3>
+<blockquote>
+<p>sass 中的索引从 1 开始而不是 0</p>
+</blockquote>
+<p>sass 中的 <code>@for</code> 同样可以用来迭代，但它只能限制在一定的范围内，通常用来重复生成相同或者类似的样式，其公式有如下两种：</p>
+<ol>
+<li><p><code>@for &lt;variable&gt; from &lt;expression&gt; to &lt;expression&gt;</code>，不包含最后一个值，类似于 <code>[)</code>。</p>
+</li>
+<li><p><code>@for &lt;variable&gt; from &lt;expression&gt; through &lt;expression&gt;</code>，包含最后一个值，类似于 <code>[]</code>。</p>
+</li>
+</ol>
+<pre><code class="language-scss">// 不包含 3
+@for $i from 1 to 3 {
+  .item-#{$i} {
+    background-color: #58a;
+    font-size: 12px * $i;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.item-1 {
+  background-color: #58a;
+  font-size: 12px;
+}
+
+.item-2 {
+  background-color: #58a;
+  font-size: 24px;
+}
+</code></pre>
+<h3>@mixin 和 @include</h3>
+<p>sass 中的 <code>@mixin</code> 和 <code>@include</code> 经常配对使用的，<code>@mixin</code> 负责定义，<code>@include</code> 负责使用。</p>
+<p><code>@mixin</code> 一般是用来定义一些经常会用到的代码，例如：<code>ellipsis</code> 和 <code>clearfix</code> 等。</p>
+<pre><code class="language-scss">@mixin ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#mixin clearfix {
+  &amp;::before,
+  &amp;::after {
+    display: table;
+    content: &quot;&quot;;
+  }
+  &amp;::after {
+    clear: both;
+  }
+}
+</code></pre>
+<p><code>@mixin</code> 也可以用来接收参数，甚至参数还可以使用默认值，当给参数定义默认值时，表示此参数为可选参数：</p>
+<pre><code class="language-scss">@mixin pc-center($margin: 0, $width: 1200px) {
+  margin: $margin auto;
+  width: $width;
+}
+
+.box1 {
+  @include pc-center;
+}
+
+.box2 {
+  @include pc-center(10px, 1000px);
+}
+
+.box3 {
+  @include pc-center($width: 2000px);
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.box1 {
+  margin: 0 auto;
+  width: 1200px;
+}
+
+.box2 {
+  margin: 10px auto;
+  width: 1000px;
+}
+
+.box3 {
+  margin: 0 auto;
+  width: 2000px;
+}
+</code></pre>
+<p>在 <code>@mixin</code> 中，也可以接收外部的内容，用 <code>@content</code> 来表示，例如：</p>
+<pre><code class="language-scss">@mixin btn-hover {
+  :not(.is-disabled):hover {
+    @content;
+  }
+}
+.button {
+  @include btn-hover {
+    border-width: 2px;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.button :not(.is-disabled):hover {
+  border-width: 2px;
+}
+</code></pre>
+<h3>@extend</h3>
+<p>个人不建议在项目中使用</p>
+<h3>@function</h3>
+<p>sass 中的 <code>@function</code> 允许我们在值的基础上进行复杂的计算，其格式为 <code>@function &lt;name&gt;(&lt;arguments...&gt;) {...}</code></p>
+<pre><code class="language-scss">@function pow($base, $exponent) {
+  $result: 1;
+  @for $_ from 1 through $exponent {
+    $result: $result * $base;
+  }
+  @return $result;
+}
+.sidebar {
+  float: left;
+  margin-left: pow(4, 3) * 1px;
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.sidebar {
+  float: left;
+  margin-left: 64px;
+}
+</code></pre>
+<p>与 <code>mixin</code> 类似，<code>@function</code> 也支持参数默认值以及 <code>参数收缩</code>，例如：</p>
+<pre><code class="language-scss">@function sum($numbers...) {
+  $result: 0;
+  @each $number in $numbers {
+    $result: $result + $number;
+  }
+  @return $result;
+}
+.sidebar {
+  float: left;
+  width: sum(10px, 20px, 30px);
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.sidebar {
+  float: left;
+  width: 60px;
+}
+</code></pre>
+<h3>@import</h3>
+<p><code>@import</code> 最常见的用法是引入一个 <code>.scss</code> 文件，例如：</p>
+<pre><code class="language-html">&lt;style lang=&quot;scss&quot; scoped&gt;
+  @import &quot;./index.scss&quot;;
+&lt;/style&gt;
+</code></pre>
+<p>当然，也可以在嵌套规则中使用 <code>@import</code>，例如：</p>
+<pre><code class="language-scss">// dark.scss
+div {
+  background-color: #333;
+  color: #fff;
+}
+</code></pre>
+<pre><code class="language-scss">.box.is-dark {
+  @import &quot;./dark.scss&quot;;
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.box.is-dark div {
+  background-color: #333;
+  color: #fff;
+}
+</code></pre>
+<h3>@use</h3>
+<p>sass 中的 <code>@use</code> 可以加载其他 scss 样式表中的 <code>mixin</code>、<code>functions</code>、<code>variables</code>，同时可以对加载的模块做一些其他额外的事情。</p>
+<pre><code class="language-scss">// dark.scss
+div {
+  background-color: #333;
+  color: #fff;
+}
+</code></pre>
+<pre><code class="language-scss">// 此处的 use 仅仅只是把 dark.scss 中的代码合并到当前样式表中，和 @import 的作用一样
+@use &quot;dark&quot;;
+.box {
+  background-color: #58a;
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-scss">div {
+  background-color: #333;
+  color: #fff;
+}
+.box {
+  background-color: #58a;
+}
+</code></pre>
+<p><code>@use</code> 可以在引入的时候可以做一些额外的事情，例如使用自定义命名空间：</p>
+<pre><code class="language-scss">// mixins.scss
+@mixin ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+</code></pre>
+<pre><code class="language-scss">// index.scss
+@use &quot;mixins.scss&quot; as mix; // 默认的命令空间为 mixins
+.box {
+  @include mix.ellipsis;
+}
+</code></pre>
+<p><code>@use</code> 也可以对加载的模块进行配置，例如：</p>
+<pre><code class="language-scss">// mixins.scss
+$defaultLine: 2;
+@mixin multline-ellipsis($line: $defaultLine) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+</code></pre>
+<pre><code class="language-scss">// index.scss
+@use &quot;mixins.scss&quot; as mix with (
+  $defaultLine: 3
+);
+.box {
+  @include mix.multline-ellipsis;
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-scss">.box {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+</code></pre>
+<h3>@at-root</h3>
+<p><code>@at-root</code> 的作用通常使用来把样式置顶到当前样式表文档的根部，这在一些嵌套样式中有时候非常有用，例如：</p>
+<pre><code class="language-scss">.wrapper {
+  .box {
+    @at-root .box-input {
+      font-size: 14px;
+    }
+    .box-input {
+      font-size: 14px;
+    }
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-css">.box-input {
+  font-size: 14px;
+}
+
+.wrapper .box .box-input {
+  font-size: 14px;
+}
+</code></pre>
+<h2>内置模块</h2>
+<h3>math</h3>
+<p>常用的变量有：</p>
+<pre><code class="language-scss">@use &quot;sass:math&quot;;
+@debug math.$pi;
+@debug math.$e;
+</code></pre>
+<p>常用的函数有：</p>
+<ul>
+<li><code>ceil($number) =&gt; number</code>: 向上取整函数，全局函数</li>
+<li><code>floor($number) =&gt; number</code>: 向下取整函数，全局函数</li>
+<li><code>round($number) =&gt; number</code>: 四舍五入函数，全局函数</li>
+<li><code>max($number) =&gt; number</code>: 最大值比较函数，全局函数</li>
+<li><code>min($number) =&gt; number</code>: 最小值比较函数，全局函数</li>
+<li><code>random($number) =&gt; number</code>: 取 <code>0 - 1</code> 之间的随机函数，全局函数</li>
+</ul>
+<pre><code class="language-scss">@debug ceil(4.2); // 5
+@debug floor(4.2); // 4
+@debug round(4.2); // 4
+@debug max(10px, 1px); // 10px
+@debug min(10px, 1px); // 1px
+@debug random(); // 随机 0.7768899209
+</code></pre>
+<p>其他变量和函数，<a href="https://sass-lang.com/documentation/modules/math/">https://sass-lang.com/documentation/modules/math/</a></p>
+<h3>list</h3>
+<p>常用的 <code>list</code> 内置函数有：</p>
+<ul>
+<li><p>append($list, $val, $separator: auto) =&gt; list: 向 list 列表中添加一个新元素，其中 $separator 为可选参数，有三种取值（space 空格，comma 逗号，slash 斜杠），全局函数用。</p>
+</li>
+<li><p>index($list, $val) =&gt; index | null: 返回 list 列表中，$val 元素的索引位置（从 1 开始，而不是 0），没有则返回 null，全局函数。</p>
+</li>
+<li><p>join($list1, $list2, $separator: auto, $bracketed: auto) =&gt; list: 把 list1 和 list2 列表联合起来，返回一个新的列表，全局函数。</p>
+</li>
+<li><p>length($list) =&gt; number: 返回 list 列表的长度，全局函数。</p>
+</li>
+<li><p>nth($list, $index): 在列表中按索引取值 index 取值，全局函数。</p>
+</li>
+<li><p>set-nth($list, $index, $value): 在 list 列表中按索引设置值，全局函数。</p>
+</li>
+</ul>
+<pre><code class="language-scss">$list1: 10px, 20px;
+$list2: 20px, 30px;
+#debug append($list1, 30px);// 10px, 20px, 30px
+#debug append($list1, 30px, &#39;slash&#39;);// 10px / 20px / 30px
+#debug index($list1, 10px);// 1
+#debug index($list1, 21px);// null
+#debug join($list1, $list2, $bracketed: true);// [10px, 20px, 20px, 30px]
+#debug length($list1);// 2
+#debug nth($list1, 1);// 10px
+#debug set-nth($list1, 2, 200px);// 10px 200px
+</code></pre>
+<p>其他函数，<a href="https://sass-lang.com/documentation/modules/list/">https://sass-lang.com/documentation/modules/list/</a></p>
+<h3>map</h3>
+<p>常用的 <code>map</code> 内置函数有：</p>
+<ul>
+<li><code>get($map, $key, $keys...)</code>: 通过<code>key</code>获取<code>value</code>，其中<code>key</code>支持传递多个，既可以深层次获取<code>value</code>，全局访问通过<code>map-get()</code>，命名空间通过<code>map.get()</code>。</li>
+<li><code>set($map, $key, $keys..., $value) =&gt; map</code>: 通过<code>key</code>设置<code>value</code>，其中<code>key</code>支持传递多个，既可以深层次设置<code>key</code>，非全局函数只能通过命名空间<code>map.set()</code>。</li>
+<li><code>keys($map) =&gt; list</code>: 获取<code>map</code>的键，返回是由所有<code>key</code>组成的<code>list</code>，全局访问通过<code>map-keys()</code>，命名空间通过<code>map.keys()</code>。</li>
+<li><code>values($map) =&gt; list</code>: 获取<code>map</code>的值，返回是由所有<code>value</code>组成的<code>list</code>，全局访问通过<code>map-values()</code>，命名空间通过<code>map.values()</code>。</li>
+<li><code>has-key($map, $key, $keys...) =&gt; boolean</code>：判断<code>map</code>是否包含某个键，支持深层次判断，全局访问通过<code>map-has-key()</code>，命名空间通过<code>map.has-key()</code>。</li>
+<li><code>remove($map, $keys...) =&gt; map</code>: 在<code>map</code>中移除一个或者多个<code>key</code>，全局访问通过<code>map-remove()</code>，命名空间通过<code>map.remove()</code>。</li>
+<li><code>deep-remove($map, $key, $keys...) =&gt; map</code>: 在<code>map</code>中深层次移除<code>key</code>，只能通过命名空间<code>map.deep-remove()</code>。</li>
+<li><code>merge($map1, $map2) =&gt; map</code>: 浅层合并<code>map1</code>和<code>map2</code>，相同的键，以<code>map2</code>的值为准，全局访问通过<code>map-merge()</code>，命名空间通过<code>map.merge()</code>。</li>
+<li><code>deep-merge($map1, $map2) =&gt; map</code>: 深层次合并两个<code>map</code>，只能通过命名空间<code>map.deep-merge()</code>。</li>
+</ul>
+<pre><code class="language-scss">@use &quot;sass:map&quot;;
+$map1: (
+  name: &quot;a&quot;,
+  age: 18,
+  sex: 1,
+  job: (
+    name: &quot;FE&quot;,
+    salary: 1000,
+    city: &quot;shanghai&quot;,
+  ),
+);
+$map2: (
+  name: &quot;b&quot;,
+  age: 23,
+  address: &quot;shanghai&quot;,
+  job: (
+    name: &quot;BE&quot;,
+    salary: 1000,
+    email: &quot;admin@gmail.com&quot;,
+  ),
+);
+@debug map-get($map1, &quot;name&quot;); // &#39;a&#39;
+@debug map-get($map1, &quot;job&quot;, &quot;name&quot;); // &#39;FE&#39;
+@debug map.set($map1, &quot;name&quot;, &quot;A&quot;); // (name: &#39;A&#39; ....)
+@debug map-keys($map1); // name, age, sex, job
+@debug map-values($map1); // &#39;a&#39;, 18, 1, ....
+@debug map-has-key($map1, &quot;name&quot;); // true
+@debug map-has-key($map1, &quot;job&quot;, &quot;name&quot;); // true
+@debug map-remove($map1, &quot;name&quot;, &quot;job&quot;); // { age: 18..... }
+@debug map.deep-remove($map1, &quot;job&quot;, &quot;name&quot;); // ....
+@debug map-merge(
+  (
+    name: &quot;A&quot;,
+    age: 18,
+  ),
+  (
+    name: &quot;B&quot;,
+    sex: 1,
+  )
+); // (name: &#39;B&#39;, age: 18, sex: 1)
+@debug map.deep-merge($map1, $map2); // ...
+</code></pre>
+<p>其他函数，<a href="https://sass-lang.com/documentation/modules/map/">https://sass-lang.com/documentation/modules/map/</a></p>
+<h3>meta</h3>
+<p>常用的<code>meta</code>内置函数有：</p>
+<ul>
+<li><code>type-of($value)</code>: 返回值的类型，全局函数。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Argument list</td>
+<td>&quot;arglist&quot;</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>&quot;bool&quot;</td>
+</tr>
+<tr>
+<td>Calculation</td>
+<td>&quot;calculation&quot;</td>
+</tr>
+<tr>
+<td>Color</td>
+<td>&quot;color&quot;</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>&quot;function&quot;</td>
+</tr>
+<tr>
+<td>List</td>
+<td>&quot;list&quot;</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>&quot;map&quot;</td>
+</tr>
+<tr>
+<td>Null</td>
+<td>&quot;null&quot;</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>&quot;number&quot;</td>
+</tr>
+<tr>
+<td>String</td>
+<td>&quot;string&quot;</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>content-exists() =&gt; boolean</code>: 判断在调用<code>mixin</code>的时候，是否撰写了<code>content</code>内容，全局函数。</li>
+<li><code>function-exists($name, $module: null) =&gt; boolean</code>: 判断某个模块或者当前样式表是否存在某个<code>function</code>，全局函数。</li>
+<li><code>mixin-exists($name, $module: null) =&gt; boolean</code>: 判断某个模块或者当前样式表是否存在某个<code>mixin</code>，全局函数。</li>
+<li><code>global-variable-exists($name, $module: null) =&gt; boolean</code>: 判断某个模块或者当前样式表是否存在某个全局变量，全局函数。</li>
+<li><code>variable-exists($name) =&gt; boolean</code>: 判断当前作用域中是否存在某个变量，全局函数。</li>
+</ul>
+<pre><code class="language-scss">@use &quot;sass:meta&quot;;
+
+$theme-color: #409eff;
+@function sum($numbers...) {
+  $result: 0;
+  @each $number in $numbers {
+    $result: $result + $number;
+  }
+  @return $result;
+}
+@mixin ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@debug type-of(10px); // number
+@debug type-of(calc(100% + 10px)); // calculation
+@debug type-of((10px, 20px, 30px)); // list
+@debug function-exists(&quot;sum&quot;); // true
+@debug mixin-exists(&quot;ellipsis&quot;); // true
+@debug global-variable-exists(&quot;theme-color&quot;); // true
+@debug variable-exists(&quot;name&quot;); // false
+</code></pre>
+<p>其他函数，<a href="https://sass-lang.com/documentation/modules/meta/">https://sass-lang.com/documentation/modules/meta/</a></p>
+<h3>selector</h3>
+<p>常用的<code>selector</code>内置函数有：</p>
+<ul>
+<li><code>append($selectors...) =&gt; selector</code>: 把选择器联合成一个，全局访问通过<code>selector-append</code>。</li>
+<li><code>nest($selectors...) =&gt; selector</code>: 把选择器进行嵌套，全局访问通过<code>selector-nest</code>。</li>
+<li><code>replace($selector, $original, $replacement) =&gt; selector</code>: 将选择器中的指定选择器，替换成另外一个，全局访问通过<code>selector-replace</code>。</li>
+<li><code>unify($selector1, $selector2) =&gt; selector || null</code>: 返回两个选择器公共匹配的部分，全局访问通过<code>selector-unify</code>。</li>
+<li><code>simple-selectors($selector) =&gt; list</code>: 将选择器拆分成一系列选择器组成的<code>list</code>列表，全局函数。</li>
+</ul>
+<pre><code class="language-scss">@use &quot;sass:selector&quot;;
+
+@debug selector.append(&quot;a&quot;, &quot;.disabled&quot;); // a.disabled
+@debug selector.append(&quot;.accordion&quot;, &quot;__copy&quot;); // .accordion__copy
+@debug selector.nest(&quot;ul&quot;, &quot;li&quot;); // ul li
+@debug selector.nest(&quot;.alert, .warning&quot;, &quot;p&quot;); // .alert p, .warning p
+@debug selector.nest(&quot;.alert&quot;, &quot;&amp;:hover&quot;); // .alert:hover
+@debug selector.replace(&quot;a.disabled&quot;, &quot;a&quot;, &quot;.link&quot;); // .link.disabled
+@debug selector.unify(&quot;a&quot;, &quot;.disabled&quot;); // a.disabled
+@debug selector.unify(&quot;a.disabled&quot;, &quot;a.outgoing&quot;); // a.disabled.outgoing
+@debug simple-selectors(&quot;main.blog:after&quot;); // main, .blog, :after
+</code></pre>
+<p>其他函数，<a href="https://sass-lang.com/documentation/modules/selector/">https://sass-lang.com/documentation/modules/selector/</a></p>
+<h3>string</h3>
+<p>常用的<code>string</code>内置函数有：</p>
+<ul>
+<li><code>index($string, $substring) =&gt; number</code>: 返回子字符串所在位置的索引(索引从 1 开始，而不是 0)，全局访问通过<code>str-index</code>。</li>
+<li><code>insert($string, $insert, $index) =&gt; string</code>: 向字符串指定索引位置插入一个字符串，全局访问通过<code>str-insert</code>。</li>
+<li><code>length($string) =&gt; number</code>: 返回字符串的长度，全局访问通过<code>str-length</code>。</li>
+<li><code>slice($string, $start, $end: -1) =&gt; string</code>: 通过指定开始位置和结束位置截取字符串，全局访问通过<code>str-slice</code>。</li>
+<li><code>to-upper-case($string) =&gt; string</code>: 将字符串转换成大写形式，全局函数。</li>
+<li><code>to-lower-case($string) =&gt; string</code>: 将字符串转换成小写形式，全局函数。</li>
+<li><code>unique-id() =&gt; string</code>: 随机生成一个在当前编译环境下唯一的一个字符串，全局函数。</li>
+<li><code>unquote($string) =&gt; string</code>: 移除字符串引号，全局函数。</li>
+<li><code>quote($string) =&gt; string</code>: 添加字符串引号，全局函数。</li>
+</ul>
+<pre><code class="language-scss">@use &quot;sass:string&quot;;
+
+@debug str-index(&quot;abc&quot;, &quot;a&quot;); // 1
+@debug str-insert(&quot;abc&quot;, &quot;b&quot;, 2); // abbc
+@debug str-length(&quot;abc ef&quot;); // 6
+@debug str-slice(&quot;abcd&quot;, 2, 4); // bcd
+@debug to-upper-case(&quot;abcd&quot;); // ABCD
+@debug to-lower-case(&quot;ABCD&quot;); // abcd
+@debug unique-id(); // 随机 uxxxxxx
+@debug unquote(&quot;abcd&quot;); // abcd
+@debug quote(abcd); // &#39;abcd&#39;
+</code></pre>
+<p>其他函数，<a href="https://sass-lang.com/documentation/modules/string/">https://sass-lang.com/documentation/modules/string/</a></p>
+<h3>color</h3>
+<ul>
+<li><code>mix($color1, $color2, $weight: 50%) =&gt; color</code>: 表示将两种颜色进行混合，<code>$color1</code>的比重为<code>$weight</code>，<code>$color2</code>的比重为<code>100% - $weigth</code>，全局函数。</li>
+<li><code>opacify($color, $amount) =&gt; color</code>: 设置颜色拓透明度，全局函数。</li>
+<li><code>opacity() =&gt; number</code>: 获取颜色透明度，全局函数。</li>
+</ul>
+<pre><code class="language-scss">@use &quot;sass:color&quot;;
+
+@debug mix(#409eff, #fff, 10%); // #ecf5ff 更接近白色
+@debug mix(#409eff, #fff, 90%); // #53a8ff 更接近蓝色
+@debug opacify(rgba(#036, 0.7), 0.2); // rgba(#036, 0.9)
+@debug opacity(rgba(#036, 0.7)); // 0.7
+</code></pre>
+<p>其他函数，<a href="https://sass-lang.com/documentation/modules/color/">https://sass-lang.com/documentation/modules/color/</a></p>
+<h2>实践案例</h2>
+<h3>封装实用的 mixins</h3>
+<pre><code class="language-scss">// 单行折叠省略
+@mixin ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+// 多行折叠省略
+@mixin multline-ellipsis($line: 2) {
+  @if type-of($line) != &quot;number&quot; {
+    @error &#39;$line must be number&#39;;
+  }
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+// 取消滚动条
+@mixin no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &amp;::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
+// 扩展可点击区域
+@mixin extend-click($extend: -5px) {
+  &amp;::after {
+    content: &quot;&quot;;
+    position: absolute;
+    @each $direction in (top, right, bottom, left) {
+      #{$direction}: $extend;
+    }
+  }
+}
+// 添加浏览器前缀
+@mixin prefix($property, $value, $prefixes: (&quot;webkit&quot;, &quot;moz&quot;, &quot;ms&quot;, &quot;o&quot;)) {
+  @each $prefix in $prefixes {
+    -#{$prefix}-#{$property}: $value;
+  }
+  #{$property}: $value;
+}
+// 清除浮动
+@mixin clearfix {
+  $selector: &amp;;
+
+  @at-root {
+    #{$selector}::before,
+    #{$selector}::after {
+      display: table;
+      content: &quot;&quot;;
+    }
+    #{$selector}::after {
+      clear: both;
+    }
+  }
+}
+</code></pre>
+<h3>响应式设计和屏幕断点</h3>
+<pre><code class="language-scss">// 屏幕断点
+$breakpoints: (
+  &quot;medium&quot;: (
+    min-width: 800px,
+  ),
+  &quot;large&quot;: (
+    min-width: 1000px,
+  ),
+  &quot;huge&quot;: (
+    min-width: 1200px,
+  ),
+);
+
+// 响应式mixin
+@mixin response-to($key, $map: $breakpoints) {
+  @if map-has-key($map, $key) {
+    @media only screen and #{inspect(map-get($map, $key))} {
+      @content;
+    }
+  } @else {
+    @warn &quot;undefeined points: `#{$key}`&quot;;
+  }
+}
+
+.box {
+  @include response-to(&quot;medium&quot;) {
+    width: 100px;
+  }
+  @include response-to(&quot;large&quot;) {
+    width: 200px;
+  }
+  @include response-to(&quot;huge&quot;) {
+    width: 300px;
+  }
+}
+</code></pre>
+<p>编译结果：</p>
+<pre><code class="language-scss">@media only screen and (min-width: 800px) {
+  .box {
+    width: 100px;
+  }
+}
+@media only screen and (min-width: 1000px) {
+  .box {
+    width: 200px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .box {
+    width: 300px;
+  }
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/151.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#ffffff" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#ffffff" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#ffffff" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
