@@ -12,7 +12,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 100px;
+  overflow: hidden;
 }
 
 .cp {
@@ -32,7 +32,7 @@ body {
 }
 
 .check {
-  width: calc(100% - 40px);
+  width: calc(100% - 20px);
   height: 360px;
   background-color: #181818;
   color: #fff;
@@ -42,7 +42,7 @@ body {
   resize: none;
   padding: 20px;
   font-size: 16px;
-  border-radius: 0;
+  border-radius: 25px;
   overflow: auto;
 }
 
@@ -140,6 +140,8 @@ body {
 
 .boxs__header {
   display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 .boxs__header_item {
@@ -149,6 +151,12 @@ body {
   line-height: 50px;
   text-align: center;
   color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  border-radius: 30px;
 }
 
 .boxs__content_ssq,
@@ -162,11 +170,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 .textarea {
-  width: calc(100% - 40px);
+  width: calc(100% - 20px);
   height: 300px;
   background-color: #181818;
   color: #fff;
@@ -184,23 +192,31 @@ body {
 
 .boxs__header_item:not(.active) {
   cursor: pointer;
+  transition: 0.5s;
 }
 
 .boxs__header_item.active {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 0, 0, 0.5);
+  transition: 0.5s;
 }
 
 .boxs__content {
-  width: 500px;
+  width: 600px;
   /* height: 400px; */
-  margin-top: 10px;
+  margin-top: 15px;
   background-color: #313131;
   position: relative;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  border-radius: 30px;
 }
 
 .ssq__btn {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 130px;
   height: 40px;
   /* border-radius: 40px; */
@@ -209,6 +225,16 @@ body {
   color: #fff;
   font-size: 16px;
   cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  border-radius: 30px;
+}
+
+#ssq__textarea {
+  border-radius: 25px;
 }
 
 .ssq__btn:active {
