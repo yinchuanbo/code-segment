@@ -246,6 +246,7 @@ window.onload = () => {
   if (!getBallData) {
     checkBox.innerHTML = "";
   } else {
+    renderHtml();
     if (getWeekData() == 2 || getWeekData() == 4 || getWeekData() == 7) {
       const { h, m } = getCurData();
       if ((h === 21 && m >= 35) || h > 21) {
