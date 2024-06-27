@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>TS 装饰器</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>TS 装饰器</h2>
+                    <p>2024-06-27 17:49:29 · YinHao</p>
+                  </div>
+                  <h2>装饰器介绍</h2>
+<p>在 TS 语法高级特性中，装饰器是一种特殊类型的声明，提供额外的特性来支持标注或修改类及其成员。</p>
+<p>装饰器能够附件到类的本体、方法、属性、访问器或参数的声明上，在实现功能扩展或行为修改的同时能够保证不直接修改类本体。</p>
+<p>TS 装饰器为类及其成员在元编程语法的基础上提供了添加标注的一种方式。</p>
+<p>在使用装饰器时，采用 <code>@expression</code> 这种书写形式。语法中的表达式（Expression）求值后必须为一个函数，并且在运行函数时被调用，被装饰的声明信息作为参数传入。</p>
+<blockquote>
+<p>若要在 TS 代码中启用实验性的装饰器特性，则必须在命令行终端或配置文件 tsconfig.json 中启用 experimentalDecorators 编译器选项。</p>
+</blockquote>
+<p>在命令行终端中启用 experimentalDecorators 编译器选项的写法如下：</p>
+<pre><code class="language-sh">tsc --target ES5 --experimentalDecorators
+</code></pre>
+<p>在配置文件 tsconfig.json 中启用 experimentalDecorators 编译器选项的写法如下：</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES5&quot;,
+    &quot;experimentalDecorators&quot;: true
+  }
+}
+</code></pre>
+<h3>装饰器应用</h3>
+<ul>
+<li>decorators-basic.ts</li>
+</ul>
+<pre><code class="language-ts">function HelloDecorator(target: any) {
+  console.log(&quot;Hello, decorator!&quot;);
+}
+@HelloDecorator
+class DecoratorBasic {}
+</code></pre>
+<p>通过附加到空类 DecoratorBasic 上的装饰器 <code>@HelloDecorator</code>，实现了在没有添加任何实际功能的类上，输出提示信息的功能。</p>
+<h3>类装饰器应用</h3>
+<p>通过类装饰器设计实现为类添加成员属性的应用</p>
+<pre><code class="language-ts">function AddAge(constructor: Function) {
+  constructor.prototype.age = 26;
+}
+
+@AddAge
+class DecoratorClass {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+let dc = new DecoratorClass(&quot;king&quot;);
+console.log(dc); // { name: &quot;king&quot; }
+console.log(dc.age); // 26
+
+dc.name = &quot;tina&quot;;
+dc.age = 18;
+
+console.log(dc); // { name: &quot;tina&quot;, age: 18 }
+</code></pre>
+<p>[未完]</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/167.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#ffffff" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#ffffff" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#ffffff" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

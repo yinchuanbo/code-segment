@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>TS 模块与命名空间</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>TS 模块与命名空间</h2>
+                    <p>2024-06-27 11:31:31 · YinHao</p>
+                  </div>
+                  <p>本节介绍 TS 语法中的模块（Module）与命名空间（Namespace）</p>
+<p>在 TS 语法高级特性中，有模块和命名空间这两个概念，在 TS 1.5 版本中之前，这两个概念被称为模块，仅区分为内部模块和外部模块。自 TS 1.5 版本开始，内部模块被单独命名为命名空间，外部模块被单独命名为模块。</p>
+<p>在 TS 语法的定义，模块执行在其自身的作用域中，而不是执行在全局作用域中。因此，声明在一个模块中的变量、函数、接口、类和类型别名等，在模块外部是不可见的。在 TS 中定义模块时，使用 <strong>module</strong> 关键字来声明。</p>
+<p>当在 TS 代码中定义命名空间时，使用 <code>namespace</code> 关键字来声明，另外，之前使用 module 关键字来声明的内部模块，现在都应该使用 <code>namespace</code> 关键字来替换。</p>
+<h2>模块应用</h2>
+<p>TS 模块时自声明的，多个模块之间的关系是通过在文件级别上使用 <code>import</code> 和 <code>export</code> 关键字来建立的。TS 模块与 ES6 模块一样，任何包含顶级 <code>import</code> 和 <code>export</code> 关键字的文件都被当成一个模块。</p>
+<p>在 TS 内部逻辑中，模块使用模块加载器导入其他的模块，在运行时，模块加载器的作用是在执行模块代码前查找并执行这个模块的所有依赖。</p>
+<p>在 TS 代码中，任何声明（如变量、函数、接口、类或类型别名等）都能够通过 export 关键字进行导出，</p>
+<h3>个人信息类型验证模块的应用 - 个人信息类型验证器接口</h3>
+<ul>
+<li>info-module.ts</li>
+</ul>
+<pre><code class="language-ts">export interface IInfoValidation {
+  isInfoValid(info: string): boolean;
+}
+</code></pre>
+<h3>个人信息类型验证模块的应用 - 用户名类型验证器</h3>
+<ul>
+<li>name-module.ts</li>
+</ul>
+<pre><code class="language-ts">import { IInfoValidation } from &quot;./info-module&quot;;
+
+const infoNameRegexp = /^[A-Za-z][A-Za-z0-9_]+$/;
+
+export default class InfoNameValidator implements IInfoValidation {
+  isInfoValid(info: string) {
+    if (info == &quot;male&quot; || info == &quot;female&quot;) {
+      return false;
+    } else {
+      return info.length &gt;= 3 &amp;&amp; info.length &lt;= 10 &amp;&amp; infoNameRegexp.test(info);
+    }
+  }
+}
+</code></pre>
+<h3>个人信息类型验证模块的应用 - 年龄类型验证器</h3>
+<ul>
+<li>age-module.ts</li>
+</ul>
+<pre><code class="language-ts">import { IInfoValidation } from &quot;./info-module&quot;;
+
+const infoAgeRegexp = /^[0-9][0-9]?$/;
+
+export default class InfoAgeValidator implements IInfoValidation {
+  isInfoValid(info: string) {
+    return infoAgeRegexp.test(info);
+  }
+}
+</code></pre>
+<h3>个人信息类型验证模块的应用 - 性别类型验证器</h3>
+<ul>
+<li>gender-module.ts</li>
+</ul>
+<pre><code class="language-ts">import { IInfoValidation } from &quot;./info-module&quot;;
+
+const infoGenderRegexp = /^male|female$/;
+
+export default class InfoGenderValidator implements IInfoValidation {
+  isInfoValid(info: string) {
+    return infoGenderRegexp.test(info);
+  }
+}
+</code></pre>
+<h3>个人信息类型验证模块的应用 - 测试用例</h3>
+<pre><code class="language-ts">import { IInfoValidation } from &quot;./info-module&quot;;
+import InfoNameValidator from &quot;./name-module&quot;;
+import InfoAgeValidator from &quot;./age-module&quot;;
+import InfoGenderValidator from &quot;./gender-module&quot;;
+
+let strTree = [
+  &quot;king&quot;,
+  &quot;king_88&quot;,
+  &quot;he&quot;,
+  &quot;hello_typescript&quot;,
+  &quot;26&quot;,
+  &quot;123&quot;,
+  &quot;male&quot;,
+  &quot;female&quot;,
+];
+
+let validators: { [s: string]: IInfoValidation } = {};
+
+validators[&quot;Name&quot;] = new InfoNameValidator();
+validators[&quot;Age&quot;] = new InfoAgeValidator();
+validators[&quot;Gender&quot;] = new InfoGenderValidator();
+
+strTree.forEach((s) =&gt; {
+  for (let info in validators) {
+    console.log(
+      `&quot;${s}&quot; - ${
+        validators[info].isInfoValid(s) ? &quot;matches&quot; : &quot;does not match&quot;
+      } ${info}`
+    );
+  }
+});
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/164.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/166.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#ffffff" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#ffffff" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#ffffff" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
