@@ -1,5 +1,6 @@
 const ssqTextarea = document.querySelector("#ssq__textarea");
 const ssqBtn = document.querySelector(".ssq__btn");
+const randomBtn = document.querySelector(".random__btn");
 const checkBox = document.querySelector(".check");
 
 ssqBtn.onclick = () => {
@@ -272,3 +273,39 @@ items.forEach((item, index) => {
     contents[index].classList.add("show");
   };
 });
+
+function generateSSQNumbers(count) {
+  const redBallCount = 6;
+  const maxRedBall = 33;
+  const maxBlueBall = 16;
+  function getRandomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  function generateSingleSSQ() {
+      let redBalls = new Set();
+      while (redBalls.size < redBallCount) {
+          redBalls.add(getRandomNumber(1, maxRedBall));
+      }
+      redBalls = Array.from(redBalls).sort((a, b) => a - b);
+      let blueBall = getRandomNumber(1, maxBlueBall);
+      return {
+          redBalls: redBalls,
+          blueBall: blueBall
+      };
+  }
+  function formatSSQNumbers(ssq) {
+      return ssq.redBalls.join(',') + ' + ' + ssq.blueBall;
+  }
+  let results = [];
+  for (let i = 0; i < count; i++) {
+      let ssq = generateSingleSSQ();
+      results.push(formatSSQNumbers(ssq));
+  }
+  return results;
+}
+
+randomBtn.onclick = () => {
+  let numbers = generateSSQNumbers(6);
+  numbers = numbers.join("\n")
+  ssqTextarea.value = numbers
+};

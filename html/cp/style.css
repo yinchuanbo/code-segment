@@ -220,7 +220,8 @@ body {
   border-radius: 30px;
 }
 
-.ssq__btn {
+.ssq__btn,
+.random__btn {
   margin-top: 10px;
   width: 130px;
   height: 40px;
@@ -242,10 +243,12 @@ body {
   border-radius: 25px;
 }
 
-.ssq__btn:active {
+.ssq__btn:active,
+.random__btn:active {
   opacity: 0.5;
 }
 
-.ssq__btn:hover {
+.ssq__btn:hover,
+.random__btn:hover {
   opacity: 0.8;
 }
