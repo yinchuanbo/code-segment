@@ -1,28 +1,531 @@
 <!DOCTYPE html>
-            <html lang="en">
-              <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title></title>
-                <link rel=icon href="./imgs/code.svg" sizes=32x32>
-                <link rel="stylesheet" href="./css/prism.css">
-                <link rel="stylesheet" type="text/css" href="./css/style.css" />
-              </head>
-              <body>
-                <div class="container">
-                  <div class="container-header">
-                    <h2></h2>
-                    <p>2024-06-29 22:10:56 · YinHao</p>
-                  </div>
-                  
-                  <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/169.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
-                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#ffffff" p-id="2030"></path></svg></div>
-                  </div>
-                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#ffffff" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#ffffff" p-id="6452"></path></svg></div>
-                </div>
-                <script src="./js/prism.min.js"></script>
-                <script src="./js/script.js"></script>
-              </body>
-            </html>
-            
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS 通过二进制格式检测上传文件类型</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/editor.main.css"/>
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;label class=&#34;upload-label&#34;&gt;
+  &lt;input type=&#34;file&#34; id=&#34;upload&#34; /&gt;
+  &lt;button type=&#34;button&#34; id=&#34;upload_btn&#34;&gt;上传文件获取类型&lt;/button&gt;
+&lt;/label&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">.upload-label input {
+  display: none;
+}
+#upload_btn {
+  padding: 15px 20px;
+  outline: none;
+  border: none;
+  border-radius: 30px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+    rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-size: 14px;
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">/**
+ * @description MIME Type与Byte signature映射表
+ * @reference https://mimesniff.spec.whatwg.org/#matching-an-image-type-signature
+ */
+const signatureList = [
+  {
+    mime: &#34;video/mp4&#34;,
+    ext: &#34;mp4&#34;,
+    offset: 4,
+    signature: [0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6f, 0x6d],
+  },
+  {
+    mime: &#34;video/mp4&#34;,
+    ext: &#34;mp4&#34;,
+    offset: 4,
+    signature: [0x66, 0x74, 0x79, 0x70, 0x6d, 0x70, 0x34],
+  },
+  {
+    mime: &#34;image/jpeg&#34;,
+    ext: &#34;jpeg&#34;,
+    signature: [0xff, 0xd8, 0xff],
+  },
+  {
+    mime: &#34;image/png&#34;,
+    ext: &#34;png&#34;,
+    signature: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+  },
+  {
+    mime: &#34;image/gif&#34;,
+    ext: &#34;gif&#34;,
+    signature: [0x47, 0x49, 0x46, 0x38, 0x37, 0x61],
+  },
+  {
+    mime: &#34;image/gif&#34;,
+    ext: &#34;gif&#34;,
+    signature: [0x47, 0x49, 0x46, 0x38, 0x39, 0x61],
+  },
+  {
+    mime: &#34;image/vnd.adobe.photoshop&#34;,
+    ext: &#34;psd&#34;,
+    signature: [0x38, 0x42, 0x50, 0x53],
+  },
+  {
+    mime: &#34;image/webp&#34;,
+    ext: &#34;webp&#34;,
+    signature: [
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      0x57,
+      0x45,
+      0x42,
+      0x50,
+      0x56,
+      0x50,
+    ],
+  },
+  {
+    mime: &#34;image/x-icon&#34;,
+    ext: &#34;ico&#34;,
+    signature: [0x00, 0x00, 0x01, 0x00],
+  },
+  {
+    mime: &#34;image/x-icon&#34;,
+    ext: &#34;cur&#34;,
+    signature: [0x00, 0x00, 0x02, 0x00],
+  },
+  {
+    ext: &#34;tif&#34;,
+    mime: &#34;image/tiff&#34;,
+    signature: [0x4d, 0x4d, 0x0, 0x2a],
+  },
+  {
+    ext: &#34;tif&#34;,
+    mime: &#34;image/tiff&#34;,
+    signature: [0x49, 0x49, 0x2a, 0x00],
+  },
+  {
+    ext: &#34;bpg&#34;,
+    mime: &#34;image/bpg&#34;,
+    signature: [0x42, 0x50, 0x47, 0xfb],
+  },
+  {
+    mime: &#34;application/pdf&#34;,
+    ext: &#34;pdf&#34;,
+    signature: [0x25, 0x50, 0x44, 0x46, 0x2d],
+  },
+  {
+    mime: &#34;application/ogg&#34;,
+    ext: &#34;ogg&#34;,
+    signature: [0x4f, 0x67, 0x67, 0x53],
+  },
+  {
+    mime: &#34;audio/midi&#34;,
+    ext: &#34;midi&#34;,
+    signature: [0x4d, 0x54, 0x68, 0x64],
+  },
+  {
+    mime: &#34;audio/mpeg&#34;,
+    ext: &#34;mp3&#34;,
+    signature: [0x49, 0x44, 0x33],
+  },
+  {
+    ext: &#34;flac&#34;,
+    mime: &#34;audio/x-flac&#34;,
+    signature: [0x66, 0x4c, 0x61, 0x43],
+  },
+  {
+    ext: &#34;mpg&#34;,
+    mime: &#34;video/mpeg&#34;,
+    signature: [0x0, 0x0, 0x1, 0xba],
+  },
+  {
+    ext: &#34;mpg&#34;,
+    mime: &#34;video/mpeg&#34;,
+    signature: [0x0, 0x0, 0x1, 0xb3],
+  },
+  {
+    mime: &#34;video/x-flv&#34;,
+    ext: &#34;flv&#34;,
+    signature: [0x46, 0x4c, 0x56],
+  },
+  {
+    mime: &#34;image/bmp&#34;,
+    ext: &#34;bmp&#34;,
+    signature: [0x42, 0x4d],
+  },
+  {
+    mime: &#34;audio/aiff&#34;,
+    ext: &#34;aiff&#34;,
+    signature: [
+      0x46,
+      0x4f,
+      0x52,
+      0x4d,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      0x41,
+      0x49,
+      0x46,
+      0x46,
+    ],
+  },
+  {
+    mime: &#34;video/vnd.avi&#34;,
+    ext: &#34;avi&#34;,
+    signature: [
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      0x41,
+      0x56,
+      0x49,
+      0x20,
+    ],
+  },
+
+  {
+    mime: &#34;video/webm&#34;,
+    ext: &#34;webm&#34;,
+    signature: [0x1a, 0x45, 0xdf, 0xa3],
+  },
+  {
+    mime: &#34;audio/mpeg&#34;,
+    ext: &#34;mp3&#34;,
+    signature: [0xff, 0xfb],
+  },
+  {
+    mime: &#34;audio/mpeg&#34;,
+    ext: &#34;mp3&#34;,
+    signature: [0xff, 0xf3],
+  },
+  {
+    mime: &#34;audio/mpeg&#34;,
+    ext: &#34;mp3&#34;,
+    signature: [0xff, 0xf2],
+  },
+  {
+    mime: &#34;audio/mpeg&#34;,
+    ext: &#34;mp3&#34;,
+    signature: [0xff, 0xfb],
+  },
+  {
+    mime: &#34;audio/vnd.wave&#34;,
+    ext: &#34;wav&#34;,
+    signature: [
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      0x57,
+      0x41,
+      0x56,
+      0x45,
+    ],
+  },
+  {
+    mime: &#34;audio/qcelp&#34;,
+    ext: &#34;qcp&#34;,
+    signature: [
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      0x51,
+      0x4c,
+      0x43,
+      0x4d,
+    ],
+  },
+  {
+    mime: &#34;font/ttf&#34;,
+    ext: &#34;ttf&#34;,
+    signature: [0x00, 0x01, 0x00, 0x00],
+  },
+  {
+    mime: &#34;font/otf&#34;,
+    ext: &#34;otf&#34;,
+    signature: [0x4f, 0x54, 0x54, 0x4f],
+  },
+  {
+    mime: &#34;font/collection&#34;,
+    ext: &#34;ttcf&#34;,
+    signature: [0x74, 0x74, 0x63, 0x66],
+  },
+  {
+    mime: &#34;font/woff&#34;,
+    ext: &#34;woff&#34;,
+    signature: [0x77, 0x4f, 0x46, 0x46],
+  },
+  {
+    mime: &#34;font/woff2&#34;,
+    ext: &#34;woff2&#34;,
+    signature: [0x77, 0x4f, 0x46, 0x32],
+  },
+  {
+    mime: &#34;application/x-rar-compressed&#34;,
+    ext: &#34;rar&#34;,
+    signature: [0x52, 0x61, 0x72, 0x20, 0x1a, 0x07, 0x00],
+  },
+  {
+    mime: &#34;application/x-msdownload&#34;,
+    ext: &#34;exe&#34;,
+    signature: [0x4d, 0x5a],
+  },
+  {
+    ext: &#34;xz&#34;,
+    mime: &#34;application/x-xz&#34;,
+    signature: [0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00],
+  },
+  {
+    ext: &#34;7z&#34;,
+    mime: &#34;application/x-7z-compressed&#34;,
+    signature: [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c],
+  },
+  {
+    mime: &#34;application/wasm&#34;,
+    ext: &#34;wasm&#34;,
+    signature: [0x00, 0x61, 0x73, 0x6d],
+  },
+  {
+    mime: &#34;application/x-nintendo-nes-rom&#34;,
+    ext: &#34;nes&#34;,
+    signature: [0x4e, 0x45, 0x53, 0x1a],
+  },
+  {
+    ext: &#34;rpm&#34;,
+    mime: &#34;application/x-rpm&#34;,
+    signature: [0xed, 0xab, 0xee, 0xdb],
+  },
+  {
+    ext: &#34;zst&#34;,
+    mime: &#34;application/zstd&#34;,
+    signature: [0x28, 0xb5, 0x2f, 0xfd],
+  },
+  {
+    ext: &#34;alias&#34;,
+    mime: &#34;application/x.apple.alias&#34;,
+    signature: [
+      0x62, 0x6f, 0x6f, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x6d, 0x61, 0x72, 0x6b,
+      0x00, 0x00, 0x00, 0x00,
+    ],
+  },
+  {
+    ext: &#34;deb&#34;,
+    mime: &#34;application/x-deb&#34;,
+    signature: [0x21, 0x3c, 0x61, 0x72, 0x63, 0x68, 0x3e, 0x0a],
+  },
+  {
+    ext: &#34;blend&#34;,
+    mime: &#34;application/x-blender&#34;,
+    signature: [0x42, 0x4c, 0x45, 0x4e, 0x44, 0x45, 0x52],
+  },
+  {
+    ext: &#34;chm&#34;,
+    mime: &#34;application/vnd.ms-htmlhelp&#34;,
+    signature: [
+      0x49, 0x54, 0x53, 0x46, 0x03, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00,
+    ],
+  },
+  {
+    ext: &#34;rtf&#34;,
+    mime: &#34;application/rtf&#34;,
+    signature: [0x7b, 0x5c, 0x72, 0x74, 0x66, 0x31],
+  },
+  {
+    ext: &#34;cab&#34;,
+    mime: &#34;application/vnd.ms-cab-compressed&#34;,
+    signature: [0x4d, 0x53, 0x43, 0x46],
+  },
+  {
+    ext: &#34;cab&#34;,
+    mime: &#34;application/vnd.ms-cab-compressed&#34;,
+    signature: [0x49, 0x53, 0x63, 0x28],
+  },
+  {
+    ext: &#34;crx&#34;,
+    mime: &#34;application/x-google-chrome-extension&#34;,
+    signature: [0x43, 0x72, 0x32, 0x34],
+  },
+  {
+    ext: &#34;nes&#34;,
+    mime: &#34;application/x-nintendo-nes-rom&#34;,
+    signature: [0x4e, 0x45, 0x53, 0x1a],
+  },
+  {
+    ext: &#34;sqlite&#34;,
+    mime: &#34;application/x-sqlite3&#34;,
+    signature: [
+      0x53, 0x51, 0x4c, 0x69, 0x74, 0x65, 0x20, 0x66, 0x6f, 0x72, 0x6d, 0x61,
+      0x74, 0x20, 0x33, 0x00,
+    ],
+  },
+  {
+    ext: &#34;lz&#34;,
+    mime: &#34;application/x-lzip&#34;,
+    signature: [0x4c, 0x5a, 0x49, 0x50],
+  },
+  {
+    ext: &#34;pcap&#34;,
+    mime: &#34;application/vnd.tcpdump.pcap&#34;,
+    signature: [0xd4, 0xc3, 0xb2, 0xa1],
+  },
+  {
+    ext: &#34;pcap&#34;,
+    mime: &#34;application/vnd.tcpdump.pcap&#34;,
+    signature: [0xa1, 0xb2, 0xc3, 0xd4],
+  },
+  {
+    mime: &#34;text/plain&#34;,
+    ext: &#34;txt&#34;,
+    signature: [0xef, 0xbb, 0xbf],
+  },
+  {
+    mime: &#34;text/plain&#34;,
+    ext: &#34;txt&#34;,
+    signature: [0xfe, 0xff],
+  },
+  {
+    mime: &#34;text/plain&#34;,
+    ext: &#34;txt&#34;,
+    signature: [0xff, 0xfe],
+  },
+];
+
+/**
+ * @description 校验给出的字节数据是否符合某种MIME Type的signature
+ * @param {Array} bufferss 字节数据
+ * @param {Object} typeItem 校验项 { signature, offset  }
+ */
+const check = (bufferss, { signature, offset = 0 }) =&gt; {
+  for (let i = 0, len = signature.length; i &lt; len; i++) {
+    // 传入字节数据与文件signature不匹配
+    // 需考虑有offset的情况以及signature中有值为undefined的情况
+    if (bufferss[i + offset] !== signature[i] &amp;&amp; signature[i] !== undefined)
+      return false;
+  }
+  return true;
+};
+
+/**
+ * @description 获取文件二进制数据
+ * @param {File} file 文件对象实例
+ * @param {Object} options 配置项，指定读取的起止范围
+ */
+const getArrayBuffer = (file, { start, end }) =&gt; {
+  return new Promise((reslove, reject) =&gt; {
+    try {
+      const reader = new FileReader();
+      reader.onload = (e) =&gt; {
+        const buffers = new Uint8Array(e.target.result);
+        reslove(buffers);
+      };
+      reader.onerror = (err) =&gt; reject(err);
+      reader.onabort = (err) =&gt; reject(err);
+      reader.readAsArrayBuffer(file.slice(start, end));
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+/**
+ * @description 获取文件的真实类型
+ * @param {File} file 文件对象实例
+ * @param {Object} options 配置项，指定读取的起止范围
+ */
+const getFileType = (file, options = { start: 0, end: 32 }) =&gt;
+  getArrayBuffer(file, options)
+    .then((buffers) =&gt; {
+      // 找出签名列表中定义好的类型，并返回
+      for (let i = 0, len = signatureList.length; i &lt; len; i++) {
+        if (check(buffers, signatureList[i])) {
+          const { mime, ext } = signatureList[i];
+          return { mime, ext };
+        }
+      }
+      // 未找到则返回file对象中的信息
+      return { mime: file.type, ext: &#34;&#34; };
+    })
+    .catch((err) =&gt; err);
+
+const handleFileChange = (e) =&gt; {
+  const file = e.target.files[0];
+  getFileType(file)
+    .then((res) =&gt; {
+      alert(JSON.stringify(res));
+    })
+    .catch(console.error);
+};
+
+const input = document.getElementById(&#34;upload&#34;);
+const btn = document.getElementById(&#34;upload_btn&#34;);
+btn.onclick = () =&gt; {
+  input.click();
+};
+input.addEventListener(&#34;change&#34;, handleFileChange, false);</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-170-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.min.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

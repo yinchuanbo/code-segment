@@ -1,34 +1,71 @@
----
-date: 2024-06-29T22:10:56+08:00
-title: "JS 通过二进制格式检测上传文件类型"
-code: "true"
----
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">.upload-label input {
+  display: none; }
 
-```html
-<label class="upload-label">
-  <input type="file" id="upload" />
-  <button type="button" id="upload_btn">上传文件获取类型</button>
-</label>
-```
-
-```css
-.upload-label input {
-  display: none;
-}
 #upload_btn {
   padding: 15px 20px;
   outline: none;
   border: none;
   border-radius: 30px;
   background-color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
-    rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  font-size: 14px;
-}
-```
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-size: 14px; }
+</style>
+              </head>
+              <body>
+                <label class="upload-label">
+  <input type="file" id="upload" />
+  <button type="button" id="upload_btn">上传文件获取类型</button>
+</label>
 
-```js
-/**
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">/**
  * @description MIME Type与Byte signature映射表
  * @reference https://mimesniff.spec.whatwg.org/#matching-an-image-type-signature
  */
@@ -485,4 +522,7 @@ btn.onclick = () => {
   input.click();
 };
 input.addEventListener("change", handleFileChange, false);
-```
+</script>
+              </body>
+            </html>
+            
