@@ -56,10 +56,10 @@ body {
   cursor: pointer;
   transition: all 0.5s;
   transition: transform 0.3s, box-shadow 0.3s;
-  height: 80px;
+  height: 90px;
   display: flex;
   justify-content: center;
-  border: 1px solid #313131;
+  /* border: 1px solid #313131; */
   background-color: #181818;
   position: relative;
   /* border-radius: 10px; */
@@ -102,14 +102,6 @@ a {
   padding: 0 20px;
   line-height: 1.5;
 }
-
-/* @media (min-width: 769px) {
-  .container ul li:hover {
-    /* background-color: #222; */
-    transform: rotate(-15deg);
-    transition: 0.2s;
-  }
-} */
 
 /* .container ul li:nth-child(4n - 2) {
   border-left: 1px solid #313131;

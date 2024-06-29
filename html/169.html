@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Vue3.x 生态最能打的组合</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Vue3.x 生态最能打的组合</h2>
+                    <p>2024-06-29 21:28:05 · YinHao</p>
+                  </div>
+                  <h3>脚手架</h3>
+<p><code>create-vue</code> 是 Vue 官方推荐的项目初始化工具，用于快速搭建基于 Vue3 的项目，提供了一个简单快捷的方式来创建新的 Vue 项目</p>
+<img src="./imgs/169/01.jpg" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm create vue@latest
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/vuejs/create-vue">https://github.com/vuejs/create-vue</a></p>
+<h3>TypeScript 语法支持</h3>
+<p>Vue3 完全支持 TypeScript，使得开发者可以在项目中享受到 TypeScript 提供的类型安全和开发效率。</p>
+<img src="./imgs/169/01.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm install typescript --save-dev
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/microsoft/TypeScript">https://github.com/microsoft/TypeScript</a></p>
+<h3>路由 vue-router V4</h3>
+<p><code>Vue Router V4</code> 是官方的路由管理器，专为 Vue3 设计。它提供了一种声明式的方式来定义导航和页面路由，使得构建单页面应用（SPA）变得更加容易</p>
+<img src="./imgs/169/02.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm install vue-router@4
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/vuejs/router">https://github.com/vuejs/router</a></p>
+<h3>状态管理 Pinia</h3>
+<p>Pinia 是 Vue 3 的官方状态管理库，它提供了一个直观、类型安全的状态管理方式，并且易于与 TypeScript 集成。</p>
+<img src="./imgs/169/03.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm install pinia
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/vuejs/pinia">https://github.com/vuejs/pinia</a></p>
+<p>另外推荐一款 Pinia 数据持久化插件：<code>pinia-plugin-persistedstate</code>，可以用来对 Store 中的数据做本地持久化存储</p>
+<img src="./imgs/169/04.png" />
+
+<pre><code class="language-sh">npm i pinia-plugin-persistedstate
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/prazdevs/pinia-plugin-persistedstate">https://github.com/prazdevs/pinia-plugin-persistedstate</a></p>
+<h3>构件工具 Vite</h3>
+<p>Vite 是 Vue3 官方推荐的前端构建工具，以其快速的热更新和构建速度而闻名，极大提升了开发体验。</p>
+<img src="./imgs/169/05.png" />
+
+<pre><code class="language-sh">npm create vite@latest
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/vitejs/vite">https://github.com/vitejs/vite</a></p>
+<h3>Hooks 工具函数库 VueUse</h3>
+<p>VueUse 是一个功能强大的 Vue.js 生态系统工具库，它提供了一系列的可重用的 Vue 组件和函数，帮助开发者更轻松地构建复杂的应用程序。</p>
+<img src="./imgs/169/06.png" />
+
+<pre><code class="language-sh">npm i @vueuse/core
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/vueuse/vueuse">https://github.com/vueuse/vueuse</a></p>
+<h3>代码格式化工具 ESLint Prettier</h3>
+<p>ESLint 和 Prettier 的结合使用，帮助开发者维护代码质量和风格一致性。</p>
+<p><strong>ESLint:</strong></p>
+<p>一个开源项目，可帮助你查找和修复 JavaScript 代码中的问题。它内置于大多数文本编辑器中，你也可以在持续集成管道中运行 ESLint。</p>
+<img src="./imgs/169/07.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm init @eslint/config@latest
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/eslint/eslint">https://github.com/eslint/eslint</a></p>
+<p><strong>Prettier:</strong></p>
+<p>一个支持多种编程语言和编辑器的代码格式化工具，可以按保存键时自动格式化代码，节省时间和精力</p>
+<img src="./imgs/169/08.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm install --save-dev --save-exact prettier
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/prettier/prettier">https://github.com/prettier/prettier</a></p>
+<h3>原子化 css UnoCSS</h3>
+<p>UnoCSS 是一个原子化 CSS 引擎，可以自动生成原子 CSS 类，减少 CSS 的冗余并提高开发效率。</p>
+<img src="./imgs/169/09.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm install -D unocss
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/unocss/unocss">https://github.com/unocss/unocss</a></p>
+<h3>组件库</h3>
+<p><strong>Element Plus:</strong></p>
+<p>基于 Vue 3 的 Element UI 组件库，提供了一套完整的 UI 组件。</p>
+<img src="./imgs/169/10.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm install element-plus --save
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/element-plus/element-plus">https://github.com/element-plus/element-plus</a></p>
+<h3>Naive UI:</h3>
+<p>一个风格清新、易于使用的 Vue3 组件库，尤大大力荐。</p>
+<img src="./imgs/169/11.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm i -D naive-ui
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/tusen-ai/naive-ui">https://github.com/tusen-ai/naive-ui</a></p>
+<h3>调试工具</h3>
+<p>相信使用 Vue 的同学应该对 <code>Vue Devtools</code> 浏览器插件并不陌生，但是有些同学由于网络问题无法下载安装插件，所以今天给大家推荐一款更好用的插件</p>
+<p><strong>vite-plugin-vue-devtools</strong></p>
+<p>vite-plugin-vue-devtools 插件，无需浏览器安装，直接使用 npm 安装即可使用，并且界面也很美观，功能更加强大。</p>
+<img src="./imgs/169/12.png" />
+
+<img src="./imgs/169/13.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm add -D vite-plugin-vue-devtools
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/webfansplz/vite-plugin-vue-devtools">https://github.com/webfansplz/vite-plugin-vue-devtools</a></p>
+<h3>混合开发 uniapp</h3>
+<p>uni-app 是一个使用 Vue 语法的跨平台开发框架，可以编译到 iOS、Android、Web（包括 Vue3）等平台。</p>
+<img src="./imgs/169/14.png" />
+
+<img src="./imgs/169/15.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/dcloudio/uni-app">https://github.com/dcloudio/uni-app</a></p>
+<h3>桌面端开发 Vite-electron</h3>
+<p>Vite-electron 是一个基于 Vite 和 Electron 的桌面应用开发框架，允许开发者使用 Vue3 开发桌面应用。</p>
+<img src="./imgs/169/16.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm i electron-vite -D
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/alex8088/electron-vite">https://github.com/alex8088/electron-vite</a></p>
+<h3>静态站点生成 VitePress</h3>
+<p>VitePress 是一个静态站点生成器，基于 Vue3 和 Vite，专为构建快速、以内容为中心的网站而设计。</p>
+<img src="./imgs/169/17.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npm add -D vitepress
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/vuejs/vitepress">https://github.com/vuejs/vitepress</a></p>
+<h3>服务端渲染框架 Nuxt</h3>
+<p>Nuxt 是一个基于 Vue 的框架，提供了服务端渲染（SSR）、静态生成（SSG）和 PWA 等功能，非常适合构建高性能的 Web 应用。</p>
+<img src="./imgs/169/18.png" />
+
+<p>安装：</p>
+<pre><code class="language-sh">npx nuxi@latest init &lt;project-name&gt;
+</code></pre>
+<p>Github 仓库地址：<a href="https://github.com/nuxt/nuxt">https://github.com/nuxt/nuxt</a></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/168.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/170.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#ffffff" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#ffffff" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#ffffff" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
