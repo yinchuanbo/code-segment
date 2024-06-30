@@ -34,9 +34,7 @@ export default function UserStateCountComp() {
 <ul>
 <li>UseStateObjComp.tsx</li>
 </ul>
-<pre><code class="language-tsx">// UseStateObjComp.tsx
-
-import React, { useState } from &quot;react&quot;;
+<pre><code class="language-tsx">import React, { useState } from &quot;react&quot;;
 
 interface UserInfo {
   uname: string;
@@ -72,7 +70,180 @@ export default function UseStateObjComp() {
   );
 }
 </code></pre>
-<p>[未完...]</p>
+<h3>State Hook 页面动态时钟应用</h3>
+<ul>
+<li>UseStateDateComp.tsx</li>
+</ul>
+<pre><code class="language-ts">import React from &quot;react&quot;;
+
+import UseStateDateComp from &quot;./UseStateDateComp&quot;;
+
+function App() {
+  return (
+    &lt;div className=&quot;App&quot;&gt;
+      &lt;UseStateDateComp /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<h3>Effect Hook 计数器应用改进</h3>
+<ul>
+<li>UseEffectCountComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { useState, useEffect } from &quot;react&quot;;
+
+export default function UseEffectCountComp() {
+  const [count, setCount] = useState&lt;number&gt;(0);
+  useEffect(() =&gt; {
+    console.log(`console: you clicked ${count} times.`);
+  });
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;useState &amp; useEffect&lt;/h3&gt;
+      &lt;h3&gt;update state&lt;/h3&gt;
+      &lt;p&gt;You clicked {count} times.&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Click Add Count&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+```
+</code></pre>
+<h3>Effect Hook 页面动态时钟应用改进</h3>
+<ul>
+<li>UseStateDateComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">// UseStateDateComp.tsx
+import React, { useEffect, useState } from &quot;react&quot;;
+
+interface AutoDate {
+  year: number;
+  month: number;
+  date: number;
+  time: string;
+}
+
+export default function UseStateDateComp() {
+  const [ad, setAutoDate] = useState&lt;AutoDate&gt;({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    date: new Date().getDate(),
+    time: new Date().toLocaleTimeString(),
+  });
+
+  useEffect(() =&gt; {
+    const timerId = window.setInterval(() =&gt; {
+      setAutoDate({
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        date: new Date().getDate(),
+        time: new Date().toLocaleTimeString(),
+      });
+    }, 1000);
+    return () =&gt; {
+      window.clearInterval(timerId);
+    };
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;useState: Auto Date&lt;/h3&gt;
+      &lt;p&gt;
+        yyyy-mm-dd: {ad.year} - {ad.month} - {ad.date}
+      &lt;/p&gt;
+      &lt;p&gt;time: {ad.time}&lt;/p&gt;
+      &lt;button
+        onClick={() =&gt;
+          setAutoDate({
+            ...ad,
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
+            date: new Date().getDate(),
+            time: new Date().toLocaleTimeString(),
+          })
+        }
+      &gt;
+        Click to update time
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3>Context Hook 特性应用</h3>
+<ul>
+<li>mathCalculateComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { createContext, useContext, useState } from &quot;react&quot;;
+import MathCountComp from &quot;./mathCountComp&quot;;
+
+// TODO: define type ContextCount
+type ContextCount = {
+  count: number;
+  setCount: React.Dispatch&lt;number&gt;;
+};
+// TODO: create global context
+export const CtC = createContext&lt;ContextCount&gt;({
+  count: 0,
+  setCount: () =&gt; {},
+});
+// TODO: export function component
+export default function MathCalculateComp() {
+  const [count, setCount] = useState&lt;number&gt;(0);
+  // TODO: render
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;useContext &amp; useState(MathCalculateComp)&lt;/h3&gt;
+      &lt;p&gt;You clicked {count} times.&lt;/p&gt;
+      &lt;CtC.Provider value={{ count, setCount }}&gt;
+        &lt;MathCountComp /&gt;
+      &lt;/CtC.Provider&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li>mathCountComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { useContext } from &quot;react&quot;;
+import { CtC } from &quot;./mathCalculateComp&quot;;
+
+// TODO: export function component
+export default function MathCountComp() {
+  const { count, setCount } = useContext(CtC);
+  // TODO: render
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;useContext &amp; useState(MathCountComp)&lt;/h3&gt;
+      &lt;p&gt;You clicked {count} times.&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Click Add Count&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li>App.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React from &quot;react&quot;;
+import MathCalculateComp from &quot;./mathCalculateComp&quot;;
+import &quot;./App.css&quot;;
+
+function App() {
+  return (
+    &lt;div className=&quot;App&quot;&gt;
+      &lt;header className=&quot;App-header&quot;&gt;
+        &lt;MathCalculateComp /&gt;
+      &lt;/header&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<h3>React Hook 使用规则</h3>
+<p>React Hook 本质上也是一种 JavaScript 函数，虽然开发人员可以自由地使用，但是在使用时还需要遵守以下两条规则 - 只在应用顶层使用 Hook 和只在 React 函数组件中调用 Hook。</p>
+<p>【未完】</p>
 
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/178.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>

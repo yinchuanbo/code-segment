@@ -21,7 +21,7 @@ body {
 body {
   background-color: #1e1e1e;
   color: #fff;
-  padding: 10px 0;
+  padding: 20px 0;
   min-height: 100vh;
   height: fit-content;
 }
@@ -47,7 +47,7 @@ body {
   /* border: 1px solid #313131; */
   background-color: #181818;
   /* background-color: #181818; */
-  min-height: calc(100vh - 20px);
+  min-height: calc(100vh - 40px);
   /* border-radius: 32px; */
   /* background-color: #181818; */
   /* border-radius: 5px; */
