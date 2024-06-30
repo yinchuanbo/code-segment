@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>TS React PropTypes 静态类型检查</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>TS React PropTypes 静态类型检查</h2>
+                    <p>2024-06-30 14:41:42 · YinHao</p>
+                  </div>
+                  <blockquote>
+<p>React 框架自带一个 PropTypes 静态类型检查验证器</p>
+</blockquote>
+<p><strong>PropTypes 提供了一些列验证器，用于确保组件接收的数据类型是有效的</strong></p>
+<ul>
+<li><p>React.PropTypes.array: 队列</p>
+</li>
+<li><p>React.PropTypes.bool.isRequired: 布尔类型，必须存在并且通过验证</p>
+</li>
+<li><p>React.PropTypes.func: 函数类型</p>
+</li>
+<li><p>React.PropTypes.number: 数字类型</p>
+</li>
+<li><p>React.PropTypes.object: 对象类型</p>
+</li>
+<li><p>React.PropTypes.stirng: 字符串类型</p>
+</li>
+<li><p>React.PropTypes.node: 任意类型，如数字、字符串、elements 或数组</p>
+</li>
+<li><p>React.PropTypes.element: React 元素</p>
+</li>
+<li><p>React.PropTypes.instanceOf(xxx): 某种 xxx 类型的对象</p>
+</li>
+<li><p>React.PropTypes.oneOf([&quot;foo&quot;, &quot;bar&quot;]): 其中的一个字符串</p>
+</li>
+<li><p>React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]): 其中的一种类型</p>
+</li>
+<li><p>React.PropTypes.arrayOf(React.PropTypes.string): 某种类型的数组（字符串）</p>
+</li>
+<li><p>React.PropTypes.objectOf(React.PropTypes.string): 元素是字符串的对象</p>
+</li>
+<li><p>React.PropTypes.shape({ color: React.PropTypes.string, fontSize: React.PropTypes.number }): 是否符合指定格式的对象</p>
+</li>
+<li><p>React.PropTypes.any.isRequired: 可以是任何格式的，必须存在并通过验证</p>
+</li>
+</ul>
+<h3>类型验证应用</h3>
+<p>通过数字类型验证器和字符串验证器实现类型验证的应用：</p>
+<ul>
+<li>MyCompNum2Str.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { Component } from &quot;react&quot;;
+import PropTypes from &quot;prop-types&quot;;
+
+interface IProps {
+  uname: string;
+  id: number;
+}
+
+interface IState {}
+
+export default class MyCompNum2Str extends Component&lt;IProps, IState&gt; {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {};
+  }
+  static propTypes = {
+    uname: PropTypes.string,
+    id: PropTypes.number,
+  };
+  static defaultProps = {
+    uname: &quot;king&quot;,
+    // Error: 类型不对，这里需要是 number
+    id: &quot;123&quot;,
+  };
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Name is {this.props.uname}&lt;/p&gt;
+        &lt;p&gt;Id is {this.props.id}&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre>
+<h3>属性验证应用</h3>
+<p>通过 isRequired 验证器实现强制父级组件向子组件传递属性的应用</p>
+<ul>
+<li>MyCompIsRequired.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { Component } from &quot;react&quot;;
+
+import PropTypes from &quot;prop-types&quot;;
+
+interface IProps {
+  name?: string;
+}
+
+interface IState {}
+
+export default class MyCompIsRequired extends Component&lt;IProps, IState&gt; {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {};
+  }
+  static propTypes = {
+    name: PropTypes.string.isRequired, // 必须有值，如果没有默认值，就会提示报错
+  };
+  static defaultProps = {
+    name: &quot;king&quot;,
+  };
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Hello, this is {this.props.name}&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre>
+<h3>限制单一子代元素验证应用</h3>
+<ul>
+<li>App.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React from &quot;react&quot;;
+
+import MyCompSingleComp from &quot;./MyCompSingleComp&quot;;
+
+function App() {
+  return (
+    &lt;div className=&quot;App&quot;&gt;
+      &lt;MyCompSingleComp&gt;
+        {/* 这里有问题：这里是两个子元素传入，不是单一元素 */}
+        &lt;h3&gt;PropTypes: Element.isRequired&lt;/h3&gt;
+        &lt;p&gt;This is a PropTypes.element.isRequired test&lt;/p&gt;
+      &lt;/MyCompSingleComp&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<ul>
+<li>MyCompSingleComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { Component } from &quot;react&quot;;
+
+import PropTypes from &quot;prop-types&quot;;
+
+interface IProps {
+  children?: React.ReactNode;
+}
+
+interface IState {}
+
+export default class MyCompSingleComp extends Component&lt;IProps, IState&gt; {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {};
+  }
+  static propTypes = {
+    children: PropTypes.element.isRequired,
+  };
+  render() {
+    const children = this.props.children;
+    return &lt;div&gt;{children}&lt;/div&gt;;
+  }
+}
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/177.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#ffffff" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#ffffff" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#ffffff" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
