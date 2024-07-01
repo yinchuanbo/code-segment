@@ -2,7 +2,7 @@
 @import "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap";
 
 :root {
-  --color-01: #f92672;
+  --color-01: #ff0000;
   --ff: hack;
 }
 
@@ -43,7 +43,7 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: 30px;
-  padding-bottom: 10px;
+  padding-bottom: 0;
   /* border: 1px solid #313131; */
   background-color: #181818;
   /* background-color: #181818; */
@@ -52,6 +52,7 @@ body {
   /* background-color: #181818; */
   /* border-radius: 5px; */
   padding-top: 20px;
+  overflow: hidden;
   /* border-radius: 10px; */
   /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
