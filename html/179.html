@@ -243,7 +243,146 @@ export default App;
 </code></pre>
 <h3>React Hook 使用规则</h3>
 <p>React Hook 本质上也是一种 JavaScript 函数，虽然开发人员可以自由地使用，但是在使用时还需要遵守以下两条规则 - 只在应用顶层使用 Hook 和只在 React 函数组件中调用 Hook。</p>
-<p>【未完】</p>
+<p>在 React 应用中，切记不要在循环句（Loop）、条件语句（if...else...）或嵌套函数中调用 Hook。</p>
+<p>React 框架提供了一个 ESLint 插件 <strong>（eslint-plugin-react-hooks）</strong> 来强制执行上述几项规则</p>
+<ul>
+<li>ESLint 插件配置</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: [
+    //...
+    &quot;reack-hooks&quot;
+  ],
+  &quot;rules&quot;: {
+    //...
+    &quot;react-hooks/rules-of-hooks&quot;: &quot;error&quot;, // 检查 Hook 的规则
+    &quot;react-hooks/exhaustive-deps&quot;: &quot;warn&quot; // 检查 Effect 的规则
+  }
+}
+</code></pre>
+<h3>自定义 Hook 改进计数器应用</h3>
+<ul>
+<li>useCountState.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { useState } from &quot;react&quot;;
+
+export default function useCountState(init: number = 0, step: number = 1) {
+  const [count, setCount] = useState&lt;number&gt;(init);
+  const inc = (): void =&gt; {
+    setCount(count + step);
+  };
+  const dec = (): void =&gt; {
+    setCount(count - step);
+  };
+  const reset = (): void =&gt; {
+    setCount(init);
+  };
+  return {
+    count,
+    inc,
+    dec,
+    reset,
+  };
+}
+</code></pre>
+<ul>
+<li>myCountComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React from &quot;react&quot;;
+
+import useCountState from &quot;./useCountState&quot;;
+
+export default function MyCountComp() {
+  const { count, inc, dec, reset } = useCountState(0, 1);
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;useCountState: self state&lt;/h3&gt;
+      &lt;p&gt;Your count is {count}&lt;/p&gt;
+      &lt;button
+        onClick={() =&gt; {
+          inc();
+        }}
+      &gt;
+        Click Increase Count
+      &lt;/button&gt;
+      &lt;button
+        onClick={() =&gt; {
+          dec();
+        }}
+      &gt;
+        Click Decrease Count
+      &lt;/button&gt;
+      &lt;button
+        onClick={() =&gt; {
+          reset();
+        }}
+      &gt;
+        Click Reset Count
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3>基于自定义 Hook 实现页面动态时钟应用</h3>
+<ul>
+<li>useDateState.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React, { useEffect, useState } from &quot;react&quot;;
+
+interface AutoDate {
+  year: number;
+  month: number;
+  date: number;
+  time: string;
+}
+
+export default function useDateState() {
+  const [ad, setAutoDate] = useState&lt;AutoDate&gt;({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    date: new Date().getDate(),
+    time: new Date().toLocaleTimeString(),
+  });
+
+  useEffect(() =&gt; {
+    const timerId = window.setInterval(() =&gt; {
+      setAutoDate({
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        date: new Date().getDate(),
+        time: new Date().toLocaleTimeString(),
+      });
+    }, 1000);
+    return () =&gt; {
+      window.clearInterval(timerId);
+    };
+  });
+
+  return {
+    ad,
+  };
+}
+</code></pre>
+<ul>
+<li>myDateComp.tsx</li>
+</ul>
+<pre><code class="language-tsx">import React from &quot;react&quot;;
+
+import useDateState from &quot;./useDateState&quot;;
+
+export default function MyDateComp() {
+  const { ad } = useDateState();
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;
+        yyyy-mm-dd: {ad.year} - {ad.month} - {ad.date}
+      &lt;/p&gt;
+      &lt;p&gt;time: {ad.time}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
 
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/178.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#ffffff" p-id="1667"></path></svg></div>
