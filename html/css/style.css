@@ -19,7 +19,7 @@ body {
 }
 
 body {
-  background-color: #1e1e1e;
+  background-color: #252529;
   color: #fff;
   padding: 20px 0;
   min-height: 100vh;
@@ -44,17 +44,10 @@ body {
   margin: 0 auto;
   padding: 30px;
   padding-bottom: 0;
-  /* border: 1px solid #313131; */
-  background-color: #181818;
-  /* background-color: #181818; */
+  background-color: #2e2e32;
   min-height: calc(100vh - 40px);
-  /* border-radius: 32px; */
-  /* background-color: #181818; */
-  /* border-radius: 5px; */
   padding-top: 20px;
   overflow: hidden;
-  /* border-radius: 10px; */
-  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
 
 pre[class*="language-"] {
@@ -72,8 +65,9 @@ pre[class*="language-"] {
 }
 .code-toolbar {
   /* background-color: rgba(0, 0, 0, 0.2); */
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
   margin: 20px 0;
+  background-color: #151515;
 }
 
 code[class*="language-"],
@@ -278,7 +272,7 @@ pre code.hljs {
   height: 55px;
   left: calc((100% - 1000px) / 2 - 90px);
   /* border: 1px solid #313131; */
-  background-color: #181818;
+  background-color: #2e2e32;
   cursor: pointer;
   user-select: none;
   color: #fff;
@@ -303,7 +297,7 @@ pre code.hljs {
   text-align: center;
   font-size: 14px;
   /* border: 1px solid #313131; */
-  background-color: #181818;
+  background-color: #2e2e32;
   cursor: pointer;
   user-select: none;
   color: #fff;

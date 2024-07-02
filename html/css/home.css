@@ -14,7 +14,7 @@ body {
 }
 
 body {
-  background-color: #1e1e1e;
+  background-color: #252529;
   color: #444;
 }
 
@@ -59,8 +59,8 @@ body {
   height: 90px;
   display: flex;
   justify-content: center;
-  border: 1px solid #313131;
-  background-color: #181818;
+  /* border: 1px solid #313131; */
+  background-color: #151515;
   position: relative;
   /* border-radius: 10px; */
   overflow: hidden;
