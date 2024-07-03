@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>迭代器/可迭代对象/生成器</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>迭代器/可迭代对象/生成器</h2>
+                    <p>2024-07-03 21:51:25 · YinHao</p>
+                  </div>
+                  <h2>1. 什么是迭代器？</h2>
+<p>概念(<a href="https://so.csdn.net/so/search?q=%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91&spm=1001.2101.3001.7020">维基百科</a>)： <strong>迭代器</strong>（iterator），是确使用户可在容器对象（container，例如链表或数组）上遍访的对象[1][2][3]，设计人员使用此接口无需关心容器对象的<a href="https://so.csdn.net/so/search?q=%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D&spm=1001.2101.3001.7020">内存分配</a>的实现细节。<br><strong>JS 中的迭代器</strong></p>
+<ul>
+<li>其本质就是一个对象，符合迭代器协议（iterator protocol）</li>
+<li>迭代器协议<ul>
+<li><code>done</code>(完成)，它的值为布尔类型，也就是<code>true/false</code>。 - 如果这个迭代器没有迭代完成即返回<code>{done:false}</code>- 当这个迭代器完成了即返回<code>{done:true}</code></li>
+<li><code>value</code>(值)，它可以返回 js 中的任何值，TS 中表示可为:<code>value:any</code>类型</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>其对象返回一个 next 函数</li>
+<li>调用 next 函数返回一个对象，其对象中包含两个属性</li>
+</ol>
+<h3>1.1 迭代器的基本实现</h3>
+<p>思考以下代码:</p>
+<pre><code class="language-js">let index = 0;
+const bears = [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;];
+
+let iterator = {
+  next() {
+    if (index &lt; bears.length) {
+      return { done: false, value: bears[index++] };
+    }
+
+    return { done: true, value: undefined };
+  },
+};
+
+console.log(iterator.next()); //{ done: false, value: &#39;ice&#39; }
+console.log(iterator.next()); //{ done: false, value: &#39;panda&#39; }
+console.log(iterator.next()); //{ done: false, value: &#39;grizzly&#39; }
+console.log(iterator.next()); //{ done: true, value: undefined }
+</code></pre>
+<ol>
+<li>是一个对象，实现了<code>next</code>方法，<code>next</code>方法返回了一个对象，有<code>done</code>属性和<code>value</code>属性，且<code>key</code>的值类型也为<code>boolean</code>或<code>any</code>，符合迭代器协议，是一个妥妥的迭代器没跑了。</li>
+<li>弊端</li>
+</ol>
+<ul>
+<li>违背了高内聚思想，明明<code>index</code>和<code>iterator</code>对象是属于一个整体，我却使用了全局变量，从 V8 引擎的 GC，可达性(也就是标记清除)来看，如果<code>bears = null</code> ，不手动设置为 null 很有可能会造成内存泄漏，并且内聚性低。</li>
+<li>假如我要创建一百个迭代器对象呢？ 那我就自己定义一百遍吗？肯定错误的，我们要把它封装起来，这样内聚性又高，又能进行复用，一举两得，一石二鸟，真的是<code>very beautiful</code>,<code>very 优雅。</code></li>
+</ul>
+<h3>1.2 迭代器的封装实现</h3>
+<p>思考一下代码：</p>
+<pre><code class="language-js">const bears = [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;];
+
+function createArrIterator(arr) {
+  let index = 0;
+
+  let _iterator = {
+    next() {
+      if (index &lt; arr.length) {
+        return { done: false, value: arr[index++] };
+      }
+
+      return { done: true, value: undefined };
+    },
+  };
+
+  return _iterator;
+}
+
+let iter = createArrIterator(bears);
+
+console.log(iter.next());
+console.log(iter.next());
+console.log(iter.next());
+console.log(iter.next());
+</code></pre>
+<ul>
+<li>内聚性非常高，尽最大可能进行了复用，减少冗余代码</li>
+</ul>
+<h2>2. 什么是可迭代对象</h2>
+<p>迭代器对象和可迭代对象是一个不同的东西，虽然它们存在关联，而且面试的时候经常面这些概念，废话不多说，我们直接进入主题。</p>
+<ul>
+<li>首先就是一个对象，且符合可迭代对象协议(iterable protocol)</li>
+<li>可迭代对象协议</li>
+</ul>
+<ol>
+<li>实现了 [Symbol.iterator] 为 key 的方法，且这个方法返回了一个迭代器对象</li>
+</ol>
+<p>绕了一大圈终于把概念搞明白了，那可迭代对象有什么好处呢？ 有什么应用场景呢？</p>
+<ol>
+<li>for of 的时候，其本质就是调用的这个函数，也就是 [Symbol.iterator] 为 key 的方法</li>
+</ol>
+<h3>2.1 原生可迭代对象(JS 内置)</h3>
+<ol>
+<li>String</li>
+<li>Array</li>
+<li>Set</li>
+<li>NodeList 类数组对象</li>
+<li>Arguments 类数组对象</li>
+<li>Map</li>
+</ol>
+<h4>2.1.1 部分 for of 演示</h4>
+<pre><code class="language-js">let str = &quot;The Three Bears&quot;;
+
+const bears = [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;];
+
+for (let text of str) {
+  console.log(text); //字符串每个遍历打印
+}
+
+for (let bear of bears) {
+  console.log(bear);
+}
+
+//ice panda grizzly
+</code></pre>
+<h4>2.1.2 查看内置的 [Symbol.iterator] 方法</h4>
+<ul>
+<li>上面给大家举例了很多可迭代对象，那它们必定是符合可迭代对象协议的，思考以下代码</li>
+</ul>
+<pre><code class="language-js">const bears = [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;];
+//数组的Symbol.iterator方法
+const iter = bears[Symbol.iterator]();
+
+console.log(iter.next());
+console.log(iter.next());
+console.log(iter.next());
+console.log(iter.next());
+
+const nickName = &quot;ice&quot;;
+//字符串的Symbol.iterator方法
+const strIter = nickName[Symbol.iterator]();
+
+console.log(strIter.next());
+console.log(strIter.next());
+console.log(strIter.next());
+console.log(strIter.next());
+</code></pre>
+<h3>2.2 可迭代对象的实现</h3>
+<pre><code class="language-js">let info = {
+  bears: [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;],
+  [Symbol.iterator]: function () {
+    let index = 0;
+    let _iterator = {
+      //这里一定要箭头函数，或者手动保存上层作用域的this
+      next: () =&gt; {
+        if (index &lt; this.bears.length) {
+          return { done: false, value: this.bears[index++] };
+        }
+
+        return { done: true, value: undefined };
+      },
+    };
+
+    return _iterator;
+  },
+};
+
+let iter = info[Symbol.iterator]();
+console.log(iter.next());
+console.log(iter.next());
+console.log(iter.next());
+console.log(iter.next());
+
+//符合可迭代对象协议 就可以利用 for of 遍历
+for (let bear of info) {
+  console.log(bear);
+}
+//ice panda grizzly
+</code></pre>
+<ul>
+<li>符合可迭代对象协议，是一个对象，有<code>[Symbol.iterator]</code>方法，并且这个方法返回了一个迭代器对象。</li>
+<li>当我利用 for of 遍历，就会自动的调用这个方法。</li>
+</ul>
+<h3>2.3 可迭代对象的应用</h3>
+<ul>
+<li>for of</li>
+<li>展开语法</li>
+<li>解构语法</li>
+<li>promise.all(iterable)</li>
+<li>promise.race(iterable)</li>
+<li>Array.from(iterable)</li>
+<li>…</li>
+</ul>
+<h3>2.4 自定义类迭代实现</h3>
+<pre><code class="language-js">class myInfo {
+  constructor(name, age, friends) {
+    this.name = name;
+    this.age = age;
+    this.friends = friends;
+  }
+
+  [Symbol.iterator]() {
+    let index = 0;
+
+    let _iterator = {
+      next: () =&gt; {
+        const friends = this.friends;
+        if (index &lt; friends.length) {
+          return { done: false, value: friends[index++] };
+        }
+
+        return { done: true, value: undefined };
+      },
+    };
+
+    return _iterator;
+  }
+}
+
+const info = new myInfo(&quot;ice&quot;, 22, [&quot;panda&quot;, &quot;grizzly&quot;]);
+
+for (let bear of info) {
+  console.log(bear);
+}
+
+//panda
+//grizzly
+</code></pre>
+<ul>
+<li>此案例只是简单的对<code>friends</code>进行了迭代，你也可以迭代你想要的一切东西…</li>
+<li>记住此案例，后续我们会对这个案例进行重构，优雅的会让你不能用言语来形容。</li>
+</ul>
+<h2>3. 生成器函数</h2>
+<p>生成器是 ES6 新增的一种可以对函数控制的方案，能灵活的控制函数的暂停执行，继续执行等。</p>
+<p><strong>生成器函数和普通函数的不同</strong></p>
+<ul>
+<li>定义: 普通函数<code>function</code>定义，生成器函数<code>function*</code>，要在后面加<code>*</code></li>
+<li>生成器函数可以通过 <code>yield</code> 来控制函数的执行</li>
+<li>生成器函数返回一个生成器(generator)，<strong>生成器是一个特殊的迭代器</strong></li>
+</ul>
+<h3>3.1 生成器函数基本实现</h3>
+<pre><code class="language-js">function* bar() {
+  console.log(&quot;fn run&quot;);
+}
+
+bar();
+</code></pre>
+<ul>
+<li>我们会发现，这个函数竟然没有执行。我们前面说过，它是一个生成器函数，它的返回值是一个生成器，<strong>同时也是一个特殊的迭代器</strong>，所以跟普通函数相比，好像暂停了，那如何让他执行呢？接下来我们进一步探讨。</li>
+</ul>
+<h3>3.2 生成器函数单次执行</h3>
+<pre><code class="language-js">function* bar() {
+  console.log(&quot;fn run&quot;);
+}
+
+const generator = bar();
+
+console.log(generator.next());
+//fn run
+//{ value: undefined, done: true }
+</code></pre>
+<ul>
+<li>返回了一个生成器，我们调用 next 方法就可以让函数执行，并且 next 方法是有返回值的，我们上面讲迭代器的时候有探讨过，而 value 没有返回值那就是 undefined。那上面说的 yield 关键字在哪，到底是如何控制函数的呢？是如何用的呢？</li>
+</ul>
+<h3>3.3 生成器函数多次执行</h3>
+<pre><code class="language-js">function* bar() {
+  console.log(&quot;fn run start&quot;);
+  yield 100;
+  console.log(&quot;fn run...&quot;);
+  yield 200;
+  console.log(&quot;fn run end&quot;);
+  return 300;
+}
+
+const generator = bar();
+
+//1. 执行到第一个yield，暂停之后，并且把yield的返回值 传入到value中
+console.log(generator.next());
+//2. 执行到第一个yield，暂停之后，并且把yield的返回值 传入到value中
+console.log(generator.next());
+//3. 执行剩余代码
+console.log(generator.next());
+
+//打印结果:
+//fn run start
+//{done:false, value: 100}
+//fn run...
+//{done:false, value: 200}
+//fn run end
+//{done:true, value: 300}
+</code></pre>
+<ul>
+<li>现在我们恍然大悟，每当调用 next 方法的时候，代码就会开始执行，执行到<code>yield x</code>，后就会暂停，等待下一次调用 next 继续往下执行，周而复始，没有了<code>yield</code>关键字，进行最后一次 next 调用返回<code>done:true</code>。</li>
+</ul>
+<h3>3.4 生成器函数的分段传参</h3>
+<p>我有一个需求，既然生成器能控制函数分段执行，我要你实现一个分段传参。<br>思考以下代码:</p>
+<pre><code class="language-js">function* bar(nickName) {
+  const str1 = yield nickName;
+  const str2 = yield str1 + nickName;
+
+  return str2 + str1 + nickName;
+}
+
+const generator = bar(&quot;ice&quot;);
+
+console.log(generator.next());
+console.log(generator.next(&quot;panda &quot;));
+console.log(generator.next(&quot;grizzly &quot;));
+console.log(generator.next());
+
+// { value: &#39;ice&#39;, done: false }
+// { value: &#39;panda ice&#39;, done: false }
+// { value: &#39;grizzly panda ice&#39;, done: true }
+// { value: undefined, done: true }
+</code></pre>
+<ul>
+<li>如果没有接触过这样的代码会比较奇怪<ul>
+<li>当我调用 next 函数的时候，yield 的左侧是可以接受参数的，也并不是所有的 next 方法的实参都能传递到生成器函数内部</li>
+<li>yield 左侧接收的，是第二次调用 next 传入的实参，那第一次传入的就没有 yield 关键字接收，所有只有当我调用 bar 函数的时候传入。</li>
+<li>最后一次 next 调用，传入的参数我也调用不了，因为没有 yield 关键字可以接收了。</li>
+</ul>
+</li>
+<li>很多开发者会疑惑，这样写有什么用呢？ 可读性还差，但是在处理异步数据的时候就非常有用了，后续会在 promise 中文章中介绍。</li>
+</ul>
+<h3>3.5 生成器代替迭代器</h3>
+<p>前面我们讲到，<strong>生成器是一个特殊的迭代器</strong>，那生成器必定是可以代替迭代器对象的，思考以下代码。</p>
+<pre><code class="language-js">let bears = [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;];
+
+function* createArrIterator(bears) {
+  for (let bear of bears) {
+    yield bear;
+  }
+}
+
+const generator = createArrIterator(bears);
+
+console.log(generator.next());
+console.log(generator.next());
+console.log(generator.next());
+console.log(generator.next());
+</code></pre>
+<p>其实这里还有一种<strong>语法糖</strong>的写法<strong>yield</strong>*</p>
+<ul>
+<li><code>yield *</code> 依次迭代这个可迭代对象，相当于遍历拿出每一项 yield item(伪代码)</li>
+</ul>
+<p>思考以下代码:</p>
+<pre><code class="language-js">let bears = [&quot;ice&quot;, &quot;panda&quot;, &quot;grizzly&quot;];
+
+function* createArrIterator(bears) {
+  yield* bears;
+}
+
+const generator = createArrIterator(bears);
+
+console.log(generator.next());
+console.log(generator.next());
+console.log(generator.next());
+console.log(generator.next());
+</code></pre>
+<ul>
+<li>依次迭代这个可迭代对象，返回每个 item 值</li>
+</ul>
+<h2>4. 可迭代对象的终极封装</h2>
+<pre><code class="language-js">class myInfo {
+  constructor(name, age, friends) {
+    this.name = name;
+    this.age = age;
+    this.friends = friends;
+  }
+
+  *[Symbol.iterator]() {
+    yield* this.friends;
+  }
+}
+
+const info = new myInfo(&quot;ice&quot;, 22, [&quot;panda&quot;, &quot;grizzly&quot;]);
+
+for (let bear of info) {
+  console.log(bear);
+}
+
+//panda
+//grizzly
+</code></pre>
+<ul>
+<li>回顾以下可迭代对象协议<ul>
+<li>是一个对象并且有 [Symbol.iterator] 方法</li>
+<li>这个方法返回一个迭代器对象 生成器函数返回一个生成器，是一个特殊的<strong>迭代器</strong></li>
+</ul>
+</li>
+</ul>
+<h2>5. 总结</h2>
+<h3>5.1 迭代器对象</h3>
+<ol>
+<li>本质就是一个对象，要符合迭代器协议</li>
+<li>有自己对应的 next 方法，next 方法则返回一组数据<code>{done:boolean, value:any}</code></li>
+</ol>
+<h3>5.2 可迭代对象</h3>
+<ol>
+<li>本质就是对象，要符合可迭代对象协议</li>
+<li>有<code>[Symbol.iterator]</code>方法，并且调用这个方法返回一个迭代器</li>
+</ol>
+<h3>5.3 生成器函数</h3>
+<ol>
+<li>可以控制函数的暂停执行和继续执行</li>
+<li>通过 function* bar() {} 这种形式定义</li>
+<li>不会立马执行，而是返回一个生成器，<strong>生成器是一个特殊的迭代器对象</strong></li>
+<li>yield 关键字可以控制函数分段执行</li>
+<li>调用返回生成器的 next 方法进行执行</li>
+</ol>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/185.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

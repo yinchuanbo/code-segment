@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>你需要知道的 Symbols</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>你需要知道的 Symbols</h2>
+                    <p>2024-07-03 21:39:04 · YinHao</p>
+                  </div>
+                  <h2>著名 symbol</h2>
+<p>著名 symbol 是一个在不同领域中都相同且未注册的 symbol。如果我们要列出著名 symbol，它们会是：</p>
+<ul>
+<li>Symbol.iterator</li>
+<li>Symbol.toStringTag</li>
+<li>Symbol.toPrimitive</li>
+<li>Symbol.asyncIterator</li>
+<li>Symbol.hasInstance</li>
+<li>Symbol.isConcatSpreadable</li>
+<li>Symbol.species</li>
+<li>Symbol.match</li>
+<li>Symbol.matchall</li>
+<li>Symbol.replace</li>
+<li>Symbol.search</li>
+<li>Symbol.split</li>
+<li>Symbol.unscopables</li>
+<li>Symbol.dispose</li>
+</ul>
+<p>让我们看一些例子来了解其有用性。</p>
+<h3>Symbol.iterator</h3>
+<p><code>Symbol.iterator</code>：该 symbol 被用来为对象定义默认的迭代器。它被用来在<code>for-of</code>循环中实现对对象的迭代，或用于扩展操作符。</p>
+<pre><code class="language-jsx">const obj = { a: 1, b: 2, c: 3 };
+
+obj[Symbol.iterator] = function* () {
+  for (const key of Object.keys(this)) {
+    yield [key, this[key]];
+  }
+};
+
+for (const [key, value] of obj) {
+  console.log(`${key}: ${value}`);
+}
+</code></pre>
+<h3>Symbol.toStringTag</h3>
+<p><code>Symbol.toStringTag</code>：该 symbol 被用来指定在调用<code>Object.prototype.toString</code>方法时返回的字符串值，以便为对象提供自定义的字符串表示形式。</p>
+<pre><code class="language-jsx">class MyClass {
+  static [Symbol.toStringTag] = &quot;MyClass&quot;;
+}
+
+const myInstance = new MyClass();
+
+console.log(myInstance.toString()); // outputs &#39;[object MyClass]&#39;
+</code></pre>
+<h3>Symbol.toPrimitive</h3>
+<p><code>Symbol.toPrimitive</code>：该 symbol 被用来指定对象在隐式调用<code>valueOf</code>和<code>toString</code>方法时的行为。可以用它来为对象提供自定义的字符串和数字表示形式。</p>
+<pre><code class="language-jsx">class Life {
+  valueOf() {
+    return 42;
+  }
+
+  [Symbol.toPrimitive](hint) {
+    switch (hint) {
+      case &quot;number&quot;:
+        return this.valueOf();
+      case &quot;string&quot;:
+        return &quot;Forty Two&quot;;
+      case &quot;default&quot;:
+        return true;
+    }
+  }
+}
+
+const myLife = new Life();
+console.log(+myLife); // 42
+console.log(`${myLife}`); // &quot;Forty Two&quot;
+console.log(myLife + 0); // 42
+</code></pre>
+<h3>Symbol.asyncIterator</h3>
+<p><code>Symbol.asyncIterator</code>：该 symbol 被用来为对象定义一个异步的迭代器。可以用它来为对象启用异步迭代。</p>
+<pre><code class="language-jsx">class MyAsyncIterable {
+  async *[Symbol.asyncIterator]() {
+    for (let i = 0; i &lt; 5; i++) {
+      await new Promise((resolve) =&gt; setTimeout(resolve, 1000));
+      yield i;
+    }
+  }
+}
+
+(async () =&gt; {
+  for await (const value of new MyAsyncIterable()) {
+    console.log(value);
+  }
+})();
+
+// Output after one second:
+// 0
+// Output after two seconds:
+// 1
+// Output after three seconds:
+// 2
+// Output after four seconds:
+// 3
+// Output after five seconds:
+// 4
+</code></pre>
+<h3>Symbol.hasInstance</h3>
+<p><code>Symbol.hasInstance</code>：该 symbol 被用来确认一个对象是否是构造函数的实例。它可以用来更改<code>instanceof</code>操作符的行为。</p>
+<pre><code class="language-jsx">class MyArray {
+  static [Symbol.hasInstance](instance) {
+    return Array.isArray(instance);
+  }
+}
+
+const arr = [1, 2, 3];
+console.log(arr instanceof MyArray); // true
+</code></pre>
+<h3>Symbol.isConcatSpreadable</h3>
+<p><code>Symbol.isConcatSpreadable</code>：该 symbol 被用来确定对象在与其他对象连接时是否应该被展开。它可以用来更改<code>Array.prototype.concat</code>方法的行为。</p>
+<pre><code class="language-jsx">const arr1 = [1, 2, 3];
+const spreadable = {
+  [Symbol.isConcatSpreadable]: true,
+  0: 4,
+  1: 5,
+  2: 6,
+  length: 3,
+};
+
+console.log([].concat(arr1, spreadable)); // [1, 2, 3, 4, 5, 6]
+</code></pre>
+<h3>Symbol.species</h3>
+<p><code>Symbol.species</code>：该 symbol 被用来指定创建派生对象时要使用的构造函数。它可以用来自定义创建新对象的内置方法的行为。</p>
+<pre><code class="language-jsx">class MyArray extends Array {
+  static get [Symbol.species]() {
+    return Array;
+  }
+}
+
+const myArray = new MyArray(1, 2, 3);
+const mappedArray = myArray.map((x) =&gt; x * 2);
+
+console.log(mappedArray instanceof MyArray); // false
+console.log(mappedArray instanceof Array); // true
+</code></pre>
+<blockquote>
+<p>P.S：这一功能在<a href="https://github.com/tc39/proposal-rm-builtin-subclassing">未来</a>可能会被删除。</p>
+</blockquote>
+<h3>Symbol.match</h3>
+<p><code>Symbol.match</code>：该 symbol 被用来在使用<code>String.prototype.match</code>方法时确定要搜索的值。它可以用来更改类似于<code>RegExp</code>对象的<code>match</code>方法的行为。</p>
+<pre><code class="language-jsx">const myRegex = /test/;
+&quot;/test/&quot;.startsWith(myRegex); // Throws TypeError
+
+const re = /foo/;
+re[Symbol.match] = false;
+&quot;/foo/&quot;.startsWith(re); // true
+&quot;/bar/&quot;.endsWith(re); // false
+</code></pre>
+<p>P.S: 这个 symbol 的存在是标志着一个对象是&quot;regex&quot;的原因。</p>
+<pre><code class="language-jsx">const myRegex = /foo/g;
+const str = &quot;How many foos in the the foo foo bar?&quot;;
+
+for (result of myRegex[Symbol.matchAll](str)) {
+  console.log(result); // we will get the matches
+}
+</code></pre>
+<h3>Symbol.replace</h3>
+<p><code>Symbol.replace</code>：该 symbol 被用来在使用<code>String.prototype.replace</code>方法时确定替换值。它可以用来更改类似于<code>RegExp</code>对象的<code>replace</code>方法的行为。</p>
+<pre><code class="language-jsx">const customReplace = (str) =&gt; str.replace(/\d+/g, (match) =&gt; `-${match}-`);
+
+const customString = {
+  [Symbol.replace]: customReplace,
+};
+
+const originalString = &quot;foo123bar456baz&quot;;
+
+const result = originalString.replace(customString, &quot;*&quot;);
+
+console.log(result); // outputs &quot;foo-123-bar-456-baz&quot;
+</code></pre>
+<h3>Symbol.split</h3>
+<p><code>Symbol.split</code>：该 symbol 被用来在使用<code>String.prototype.split</code>方法时确定分隔值。它可以用来更改类似于<code>RegExp</code>对象的<code>split</code>方法的行为。</p>
+<pre><code class="language-jsx">const { Symbol } = require(&quot;es6-symbol&quot;);
+
+const customSplit = (str) =&gt; str.split(/\d+/);
+
+const customRegExp = {
+  [Symbol.split]: customSplit,
+};
+
+const string = &quot;foo123bar456baz&quot;;
+
+string.split(customRegExp); // outputs [ &#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39; ]
+</code></pre>
+<h3>Symbol.unscopables</h3>
+<p><code>Symbol.unscopables</code>：该 symbol 被用于确定应该从<code>with</code>语句的作用域中排除哪些对象属性。它可以用来更改<code>with</code>语句的行为。</p>
+<pre><code class="language-jsx">const person = {
+  age: 42,
+};
+
+person[Symbol.unscopables] = {
+  age: true,
+};
+
+with (person) {
+  console.log(age);
+  // Expected output: Error: age is not defined
+}
+</code></pre>
+<h3>Symbol.dispose</h3>
+<p><code>Symbol.dispose</code>：“显式资源管理”是指用户通过使用命令式方法（如 Symbol.dispose）或声明式方法（如使用块作用域声明）显式地管理“资源”的生命周期的系统。</p>
+<pre><code class="language-jsx">{
+  console.log(1);
+  using {
+    [Symbol.dispose]() {
+      console.log(2);
+     }
+  };
+  console.log(3);
+}
+// will log 1, 3, 2
+</code></pre>
+<h2>总结</h2>
+<p>这篇信息性的博客旨在深入介绍 JavaScript 语言中固有的著名 symbol，例如<code>Symbol.iterator</code>、<code>Symbol.toStringTag</code>和<code>Symbol.for</code>。这些 symbol 代表着复杂而多才多艺的工具，可以用来增强和调节代码的行为。在 JavaScript 环境中全面理解可用 symbol 是开发高性能、可维护和可扩展应用程序的关键。因此，在项目的概念化和实施阶段，建议评估将这些 symbol 纳入其中的可行性，以使代码更加简洁、优雅，达到预期的效果。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/183.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/185.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>十个超级好用的 Js 技巧</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>十个超级好用的 Js 技巧</h2>
+                    <p>2024-07-03 21:36:15 · YinHao</p>
+                  </div>
+                  <blockquote>
+<p>概览：在实际的开发工作过程中，积累了一些常见又超级好用的 Javascript 技巧和代码片段，包括整理的其他大神的 JS 使用技巧，今天筛选了 10 个，以供大家参考。</p>
+</blockquote>
+<h3>动态加载 JS 文件</h3>
+<p>在一些特殊的场景下，特别是一些库和框架的开发中，我们有时会去动态的加载 JS 文件并执行，下面是利用 Promise 进行了简单的封装。</p>
+<pre><code class="language-javascript">function loadJS(files, done) {
+  // 获取head标签
+  const head = document.getElementsByTagName(&quot;head&quot;)[0];
+  Promise.all(
+    files.map((file) =&gt; {
+      return new Promise((resolve) =&gt; {
+        // 创建script标签并添加到head
+        const s = document.createElement(&quot;script&quot;);
+        s.type = &quot;text/javascript&quot;;
+        s.async = true;
+        s.src = file;
+        // 监听load事件，如果加载完成则resolve
+        s.addEventListener(&quot;load&quot;, (e) =&gt; resolve(), false);
+        head.appendChild(s);
+      });
+    })
+  ).then(done); // 所有均完成，执行用户的回调事件
+}
+
+loadJS([&quot;test1.js&quot;, &quot;test2.js&quot;], () =&gt; {
+  // 用户的回调逻辑
+});
+</code></pre>
+<p>上面代码核心有两点，一是利用 Promise 处理异步的逻辑，而是利用 script 标签进行 js 的加载并执行。</p>
+<h3>实现模板引擎</h3>
+<p>下面示例用了极少的代码实现了动态的模板渲染引擎，不仅支持普通的动态变量的替换，还支持包含 for 循环，if 判断等的动态的 JS 语法逻辑，具体实现逻辑在我的另外一篇文章做了非常详详尽的说明，感兴趣的小伙伴戳此链接<a href="https://juejin.cn/post/7207697872706486328">【造轮子系列】面试官问：你能手写一个模板引擎吗？</a></p>
+<pre><code class="language-javascript">// 这是包含了js代码的动态模板
+var template =
+  &quot;My avorite sports:&quot; +
+  &quot;&lt;%if(this.showSports) {%&gt;&quot; +
+  &quot;&lt;% for(var index in this.sports) {   %&gt;&quot; +
+  &quot;&lt;a&gt;&lt;%this.sports[index]%&gt;&lt;/a&gt;&quot; +
+  &quot;&lt;%}%&gt;&quot; +
+  &quot;&lt;%} else {%&gt;&quot; +
+  &quot;&lt;p&gt;none&lt;/p&gt;&quot; +
+  &quot;&lt;%}%&gt;&quot;;
+// 这是我们要拼接的函数字符串
+const code = `with(obj) {
+  var r=[];
+  r.push(&quot;My avorite sports:&quot;);
+  if(this.showSports) {
+    for(var index in this.sports) {   
+      r.push(&quot;&lt;a&gt;&quot;);
+      r.push(this.sports[index]);
+      r.push(&quot;&lt;/a&gt;&quot;);
+    }
+  } else {
+    r.push(&quot;&lt;span&gt;none&lt;/span&gt;&quot;);
+  }
+  return r.join(&quot;&quot;);
+}`;
+// 动态渲染的数据
+const options = {
+  sports: [&quot;swimming&quot;, &quot;basketball&quot;, &quot;football&quot;],
+  showSports: true,
+};
+// 构建可行的函数并传入参数，改变函数执行时this的指向
+result = new Function(&quot;obj&quot;, code).apply(options, [options]);
+console.log(result);
+</code></pre>
+<h3>利用 reduce 进行数据结构的转换</h3>
+<p>有时候前端需要对后端传来的数据进行转换，以适配前端的业务逻辑，或者对组件的数据格式进行转换再传给后端进行处理，而 reduce 是一个非常强大的工具。</p>
+<pre><code class="language-javascript">const arr = [
+  { classId: &quot;1&quot;, name: &quot;张三&quot;, age: 16 },
+  { classId: &quot;1&quot;, name: &quot;李四&quot;, age: 15 },
+  { classId: &quot;2&quot;, name: &quot;王五&quot;, age: 16 },
+  { classId: &quot;3&quot;, name: &quot;赵六&quot;, age: 15 },
+  { classId: &quot;2&quot;, name: &quot;孔七&quot;, age: 16 },
+];
+
+groupArrayByKey(arr, &quot;classId&quot;);
+
+function groupArrayByKey(arr = [], key) {
+  return arr.reduce(
+    (t, v) =&gt; (!t[v[key]] &amp;&amp; (t[v[key]] = []), t[v[key]].push(v), t),
+    {}
+  );
+}
+</code></pre>
+<p>很多很复杂的逻辑如果用 reduce 去处理，都非常的简洁。</p>
+<h3>添加默认值</h3>
+<p>有时候一个方法需要用户传入一个参数，通常情况下我们有两种处理方式，如果用户不传，我们通常会给一个默认值，亦或是用户必须要传一个参数，不传直接抛错。</p>
+<pre><code class="language-javascript">function double() {
+  return value * 2;
+}
+
+// 不传的话给一个默认值0
+function double(value = 0) {
+  return value * 2;
+}
+
+// 用户必须要传一个参数，不传参数就抛出一个错误
+
+const required = () =&gt; {
+  throw new Error(&quot;This function requires one parameter.&quot;);
+};
+function double(value = required()) {
+  return value * 2;
+}
+
+double(3); // 6
+double(); // throw Error
+</code></pre>
+<p>listen 方法用来创建一个 NodeJS 的原生 http 服务并监听端口，在服务的回调函数中创建 context，然后调用用户注册的回调函数并传递生成的 context。下面我们以前看下 createContext 和 handleRequest 的实现。</p>
+<h3>函数只执行一次</h3>
+<p>有些情况下我们有一些特殊的场景，某一个函数只允许执行一次，或者绑定的某一个方法只允许执行一次。</p>
+<pre><code class="language-javascript">export function once(fn) {
+  // 利用闭包判断函数是否执行过
+  let called = false;
+  return function () {
+    if (!called) {
+      called = true;
+      fn.apply(this, arguments);
+    }
+  };
+}
+</code></pre>
+<h3>实现 Curring</h3>
+<p>JavaScript 的柯里化是指将接受多个参数的函数转换为一系列只接受一个参数的函数的过程。这样可以更加灵活地使用函数，减少重复代码，并增加代码的可读性。</p>
+<pre><code class="language-javascript">function curry(fn) {
+  return function curried(...args) {
+    if (args.length &gt;= fn.length) {
+      return fn.apply(this, args);
+    } else {
+      return function (...args2) {
+        return curried.apply(this, args.concat(args2));
+      };
+    }
+  };
+}
+
+function add(x, y) {
+  return x + y;
+}
+
+const curriedAdd = curry(add);
+
+console.log(curriedAdd(1)(2)); // 输出 3
+console.log(curriedAdd(1, 2)); // 输出 3
+</code></pre>
+<p>通过柯里化，我们可以将一些常见的功能模块化，例如验证、缓存等等。这样可以提高代码的可维护性和可读性，减少出错的机会。</p>
+<h3>实现单例模式</h3>
+<p>JavaScript 的单例模式是一种常用的设计模式，它可以确保一个类只有一个实例，并提供对该实例的全局访问点，在 JS 中有广泛的应用场景，如购物车，缓存对象，全局的状态管理等等。</p>
+<pre><code class="language-javascript">let cache;
+class A {
+  // ...
+}
+
+function getInstance() {
+  if (cache) return cache;
+  return (cache = new A());
+}
+
+const x = getInstance();
+const y = getInstance();
+
+console.log(x === y); // true
+</code></pre>
+<h3>实现 CommonJs 规范</h3>
+<p>CommonJS 规范的核心思想是将每个文件都看作一个模块，每个模块都有自己的作用域，其中的变量、函数和对象都是私有的，不能被外部访问。要访问模块中的数据，必须通过导出（exports）和导入（require）的方式。</p>
+<pre><code class="language-javascript">// id：完整的文件名
+const path = require(&quot;path&quot;);
+const fs = require(&quot;fs&quot;);
+function Module(id) {
+  // 用来唯一标识模块
+  this.id = id;
+  // 用来导出模块的属性和方法
+  this.exports = {};
+}
+
+function myRequire(filePath) {
+  // 直接调用Module的静态方法进行文件的加载
+  return Module._load(filePath);
+}
+
+Module._cache = {};
+Module._load = function (filePath) {
+  // 首先通过用户传入的filePath寻址文件的绝对路径
+  // 因为再CommnJS中，模块的唯一标识是文件的绝对路径
+  const realPath = Module._resoleveFilename(filePath);
+  // 缓存优先，如果缓存中存在即直接返回模块的exports属性
+  let cacheModule = Module._cache[realPath];
+  if (cacheModule) return cacheModule.exports;
+  // 如果第一次加载，需要new一个模块，参数是文件的绝对路径
+  let module = new Module(realPath);
+  // 调用模块的load方法去编译模块
+  module.load(realPath);
+  return module.exports;
+};
+
+// node文件暂不讨论
+Module._extensions = {
+  // 对js文件处理
+  &quot;.js&quot;: handleJS,
+  // 对json文件处理
+  &quot;.json&quot;: handleJSON,
+};
+
+function handleJSON(module) {
+  // 如果是json文件，直接用fs.readFileSync进行读取，
+  // 然后用JSON.parse进行转化，直接返回即可
+  const json = fs.readFileSync(module.id, &quot;utf-8&quot;);
+  module.exports = JSON.parse(json);
+}
+
+function handleJS(module) {
+  const js = fs.readFileSync(module.id, &quot;utf-8&quot;);
+  let fn = new Function(
+    &quot;exports&quot;,
+    &quot;myRequire&quot;,
+    &quot;module&quot;,
+    &quot;__filename&quot;,
+    &quot;__dirname&quot;,
+    js
+  );
+  let exports = module.exports;
+  // 组装后的函数直接执行即可
+  fn.call(
+    exports,
+    exports,
+    myRequire,
+    module,
+    module.id,
+    path.dirname(module.id)
+  );
+}
+
+Module._resolveFilename = function (filePath) {
+  // 拼接绝对路径，然后去查找，存在即返回
+  let absPath = path.resolve(__dirname, filePath);
+  let exists = fs.existsSync(absPath);
+  if (exists) return absPath;
+  // 如果不存在，依次拼接.js,.json,.node进行尝试
+  let keys = Object.keys(Module._extensions);
+  for (let i = 0; i &lt; keys.length; i++) {
+    let currentPath = absPath + keys[i];
+    if (fs.existsSync(currentPath)) return currentPath;
+  }
+};
+
+Module.prototype.load = function (realPath) {
+  // 获取文件扩展名，交由相对应的方法进行处理
+  let extname = path.extname(realPath);
+  Module._extensions[extname](this);
+};
+</code></pre>
+<p>上面对 CommonJs 规范进行了简单的实现，核心解决了作用域的隔离，并提供了 Myrequire 方法进行方法和属性的加载，对于上面的实现，我专门有一篇文章进行了详细的说明，感兴趣的小伙伴戳此链接： <a href="https://juejin.cn/post/7212503883263787064">【造轮子系列】38 行代码带你实现 CommonJS 规范</a></p>
+<h3>实现单例模式</h3>
+<p>JavaScript 的单例模式是一种常用的设计模式，它可以确保一个类只有一个实例，并提供对该实例的全局访问点，在 JS 中有广泛的应用场景，如购物车，缓存对象，全局的状态管理等等。</p>
+<pre><code class="language-javascript">let cache;
+class A {
+  // ...
+}
+
+function getInstance() {
+  if (cache) return cache;
+  return (cache = new A());
+}
+
+const x = getInstance();
+const y = getInstance();
+
+console.log(x === y); // true
+</code></pre>
+<h3>递归获取对象属性</h3>
+<p>如果让我挑选一个用的最广泛的设计模式，我会选观察者模式，如果让我挑一个我所遇到的最多的算法思维，那肯定是递归，递归通过将原始问题分割为结构相同的子问题，然后依次解决这些子问题，组合子问题的结果最终获得原问题的答案。</p>
+<pre><code class="language-javascript">const user = {
+  info: {
+    name: &quot;张三&quot;,
+    address: { home: &quot;Shaanxi&quot;, company: &quot;Xian&quot; },
+  },
+};
+
+// obj是获取属性的对象，path是路径，fallback是默认值
+function get(obj, path, fallback) {
+  const parts = path.split(&quot;.&quot;);
+  const key = parts.shift();
+  if (typeof obj[key] !== &quot;undefined&quot;) {
+    return parts.length &gt; 0
+      ? get(obj[key], parts.join(&quot;.&quot;), fallback)
+      : obj[key];
+  }
+  // 如果没有找到key返回fallback
+  return fallback;
+}
+
+console.log(get(user, &quot;info.name&quot;)); // 张三
+console.log(get(user, &quot;info.address.home&quot;)); // Shaanxi
+console.log(get(user, &quot;info.address.company&quot;)); // Xian
+console.log(get(user, &quot;info.address.abc&quot;, &quot;fallback&quot;)); // fallback
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/182.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/184.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

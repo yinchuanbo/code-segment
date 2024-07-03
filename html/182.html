@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>宏任务和微任务</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>宏任务和微任务</h2>
+                    <p>2024-07-03 21:28:53 · YinHao</p>
+                  </div>
+                  <h2>一、前言</h2>
+<p>js 任务分为同步任务和异步任务，异步任务又分为宏任务和微任务，其中异步任务属于耗时的任务。</p>
+<p><img src="./imgs/182/01.png" alt=""></p>
+<h2>二、宏任务和微任务有哪些？</h2>
+<p><strong>宏任务</strong>：整体代码 script、setTimeout、setInterval、setImmediate、i/o 操作（输入输出，比如读取文件操作、网络请求）、ui render（dom 渲染，即更改代码重新渲染 dom 的过程）、异步 ajax 等</p>
+<p><strong>微任务</strong>：Promise（then、catch、finally）、async/await、process.nextTick、Object.observe(⽤来实时监测 js 中对象的变化)、 MutationObserver(监听 DOM 树的变化)</p>
+<h2>三、执行顺序</h2>
+<p>js 代码在执行的时候，会先执行<strong>同步代码</strong>，遇到<strong>异步宏任务</strong>则将异步宏任务放入宏任务队列中，遇到<strong>异步微任务</strong>则将异步微任务放入微任务队列中，当所有同步代码执行完毕后，再将异步微任务从队列中调入主线程执行，微任务执行完毕后，再将异步宏任务从队列中调入主线程执行，一直循环至所有的任务执行完毕（完成一次事件循环 EventLoop）。</p>
+<p>注意：</p>
+<p>每个异步宏任务执行完之后，都会检查是否存在待执行的微任务；如果有，则执行完所有的微任务之后，再继续执行下一个宏任务。</p>
+<p><img src="./imgs/182/02.png" alt=""></p>
+<h2>1、事件循环</h2>
+<p>一次事件循环只能处理一个宏任务，一次事件循环可以将所有的微任务处理完毕。</p>
+<h3>事件循环的六个阶段</h3>
+<p>事件循环是⼀个循环体，在循环体中有 6 个阶段，在每个阶段中，都有⼀个事件队列，不同的事件队列存储了不同类型的异步 API 的回调函数。 事件循环在每次执⾏的时候，都有 6 个阶段的事情要做：</p>
+<p><img src="./imgs/182/03.png" alt=""></p>
+<h2>2、题目练习：</h2>
+<h3>练习一</h3>
+<pre><code class="language-javascript">setTimeout(function () {
+  console.log(&quot;1&quot;);
+});
+new Promise(function (resolve) {
+  console.log(&quot;2&quot;);
+  resolve();
+}).then(function () {
+  console.log(&quot;3&quot;);
+});
+console.log(&quot;4&quot;);
+//打印顺序 2 4 3 1
+</code></pre>
+<p>分析：</p>
+<p>1、遇到 setTimeout，异步宏任务将其放到宏任务列表中，命名为 time1；</p>
+<p>2、new Promise 在实例化过程中所执⾏的代码都是同步执⾏的（ function 中的代码），输出 2 ；</p>
+<p>3、 将 Promise 中注册的回调函数放到微任务队列中，命名为 then1 ；</p>
+<p>4、 执⾏同步任务 console.log(‘4’) ，输出 4 ，⾄此执⾏栈中的代码执⾏完毕；</p>
+<p>5、 从微任务队列取出任务 then1 到主线程中，输出 3 ，⾄此微任务队列为空；</p>
+<p>6、 从宏任务队列中取出任务 time1 到主线程中，输出 1 ，⾄此宏任务队列为空</p>
+<h3>练习二</h3>
+<pre><code class="language-javascript">console.log(1);
+setTimeout(function () {
+  console.log(2);
+  let promise = new Promise(function (resolve, reject) {
+    console.log(3);
+    resolve();
+  }).then(function () {
+    console.log(4);
+  });
+}, 1000);
+setTimeout(function () {
+  console.log(5);
+  let promise = new Promise(function (resolve, reject) {
+    console.log(6);
+    resolve();
+  }).then(function () {
+    console.log(7);
+  });
+}, 0);
+let promise = new Promise(function (resolve, reject) {
+  console.log(8);
+  resolve();
+})
+  .then(function () {
+    console.log(9);
+  })
+  .then(function () {
+    console.log(10);
+  });
+console.log(11);
+//执行顺序：1 8 11 9 10 5 6 7 2 3 4
+</code></pre>
+<p>分析：</p>
+<p>1、 执⾏同步任务 console.log(1) ，输出 1 ；</p>
+<p>2、 遇到 setTimeout 放到宏任务队列中，命名 time1 ；</p>
+<p>3、 遇到 setTimeout 放到宏任务队列中，命名 time2 ；</p>
+<p>4、new Promise 在实例化过程中所执⾏的代码都是同步执⾏的（ function 中的代码），输出 8 ；</p>
+<p>5、 将 Promise 中注册的回调函数放到微任务队列中，命名为 then1 ；</p>
+<p>6、 将 Promise 中注册的回调函数放到微任务队列中，命名为 then2 ；</p>
+<p>7、 执⾏同步任务 console.log(11)， 输出 11 ；</p>
+<p>8、 从微任务队列取出任务 then1 到主线程中，输出 9 ；</p>
+<p>9、 从微任务队列取出任务 then2 到主线程中，输出 10 ，⾄此微任务队列为空；</p>
+<p>10、从宏任务队列中取出 time2( 注意这⾥不是 time1 的原因是 time2 的执⾏时间为 0)；</p>
+<p>11、 执⾏同步任务 console.log(5) ，输出 5 ；</p>
+<p>12、new Promise 在实例化过程中所执⾏的代码都是同步执⾏的（ function 中的代码），输出 6 ；</p>
+<p>13、 将 Promise 中注册的回调函数放到微任务队列中，命名为 then3 ，⾄此宏任务 time2 执⾏完成；</p>
+<p>14、 从微任务队列取出任务 then3 到主线程中，输出 7 ，⾄此微任务队列为空；</p>
+<p>15、 从宏任务队列中取出 time1 ，⾄此宏任务队列为空；</p>
+<p>16、 执⾏同步任务 console.log(2) ，输出 2 ；</p>
+<p>17、new Promise 在实例化过程中所执⾏的代码都是同步执⾏的（ function 中的代码），输出 3 ；</p>
+<p>18、 将 Promise 中注册的回调函数放到微任务队列中，命名为 then4 ，⾄此宏任务 time1 执⾏完成；</p>
+<p>19、 从微任务队列取出任务 then4 到主线程中，输出 4 ，⾄此微任务队列为空。</p>
+<h2>3、宏任务之间的执行顺序</h2>
+<p>宏任务有 setTimeout、setInterval、setImmediate、i/o 操作、异步的 ajax，它们之间的执行也是有先后顺序，它们之间的执行顺序是：<code>setImmediate --&gt; setTimeout --&gt; setInterval --&gt; i/o 操作 --&gt;  异步 ajax</code></p>
+<p>例子：</p>
+<pre><code class="language-javascript">let axios = require(&quot;axios&quot;);
+let fs = require(&quot;fs&quot;);
+console.log(&quot;begin&quot;);
+fs.readFile(&quot;1.txt&quot;, (err, data) =&gt; {
+  console.log(&quot;fs&quot;);
+});
+axios
+  .get(&quot;https://api.muxiaoguo.cn/api/xiaohua?api_key=fd3270a0a9833e20&quot;)
+  .then((res) =&gt; {
+    console.log(&quot;axios&quot;);
+  });
+setTimeout(() =&gt; {
+  console.log(&quot;setTimeout&quot;);
+}, 0);
+setImmediate(() =&gt; {
+  console.log(&quot;setImmediate&quot;);
+});
+(async function () {
+  console.log(&quot;async&quot;);
+})();
+console.log(&quot;end&quot;);
+//执行顺序：begin async end setTimeout setImmediate fs axios
+</code></pre>
+<p><strong>setImmediate</strong> 没有时间参数，它与延迟 0 毫秒的 setTimeout() 回调⾮常相似。所以当 setTimeout 延迟时间也是 0 毫秒时，谁在前面就先执行谁。此外如果 setTimeout 延迟时间不是 0 毫秒，它的执行顺序会在 i/o 操作之后。</p>
+<h2>4、微任务之间的执行顺序</h2>
+<p>微任务有 Promise（then、catch、finally）、process.nextTick 等，它们之间执行的先后顺序是：<code>process.nextTick --&gt; Promise</code></p>
+<p>例子：</p>
+<pre><code class="language-javascript">console.log(&quot;begin&quot;);
+Promise.resolve().then(() =&gt; {
+  console.log(&quot;promise&quot;);
+});
+process.nextTick(() =&gt; {
+  console.log(&quot;nextTick&quot;);
+});
+console.log(&quot;end&quot;);
+//执行顺序：begin end nextTick promise
+</code></pre>
+<h3>process.nextTick()</h3>
+<p>process 表示进程，它是一个对象，对象里面有一个 nextTick。</p>
+<p>nextTick 会在上一次事件循环结束，然后在下一次事件循环开始之前执行。</p>
+<h2>5、vue 中的 nextTick</h2>
+<p><strong>Vue.nextTick()</strong> 是 vue 的全局 api，它主要用来在下次 dom 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 dom。</p>
+<p>由于 vue 的更新机制是异步的，所以当数据修改之后，dom 还停留在更新之前，此时想要获取更新后的 dom，可以使用 nextTick，表示的是下次 dom 更新循环结束后执行的回调。</p>
+<p>应用场景：created 中获取 dom 可以使用 nextTick</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;div id=&quot;app&quot;&gt;
+      &lt;ul ref=&quot;container&quot;&gt;
+        &lt;li v-for=&quot;(item,index) in arr&quot; :key=&quot;index&quot;&gt;{{item}}&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;button @click=&quot;add&quot;&gt;增加&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;script&gt;
+      new Vue({
+        el: &quot;#app&quot;,
+        data() {
+          return {
+            arr: [&quot;zhangsan&quot;, &quot;lisi&quot;, &quot;wangwu&quot;],
+          };
+        },
+        created() {
+          // 使用nextTick可以在created生命周期获取dom节点
+          this.$nextTick(() =&gt; {
+            console.log(this.$refs.container);
+          });
+        },
+        methods: {
+          add() {
+            this.arr.push(parseInt(Math.random() * 10));
+            // 使用nextTick获取数据更新后的dom
+            this.$nextTick(() =&gt; {
+              console.log(this.$refs.container.childNodes);
+            });
+          },
+        },
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/181.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/183.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>JSON.stringify() 的 5 使用场景</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>JSON.stringify() 的 5 使用场景</h2>
+                    <p>2024-07-03 21:41:47 · YinHao</p>
+                  </div>
+                  <p><code>JSON.stringify()</code> 方法将一个 JavaScript 对象或值转换为 JSON 字符串，如果指定了一个 <code>replacer</code> 函数，则可以选择性地替换值，或者指定的 <code>replacer</code> 是数组，则可选择性地仅包含数组指定的属性。</p>
+<p>语法如下：</p>
+<pre><code class="language-js">JSON.stringify(value[, replacer [, space]])
+</code></pre>
+<ul>
+<li>第一个参数 <code>value</code>：将要序列化成 一个 JSON 字符串的值。</li>
+<li>第二个参数 <code>replacer</code>：可选参数，如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为 <code>null</code> 或者未提供，则对象所有的属性都会被序列化。</li>
+<li>第三个参数 <code>space</code>：可选参数，指定缩进用的空白字符串，用于美化输出（<code>pretty-print</code>）；如果参数是个数字，它代表有多少的空格；上限为 <code>10</code>。该值若小于 <code>1</code>，则意味着没有空格；如果该参数为字符串（当字符串长度超过 10 个字母，取其前 10 个字母），该字符串将被作为空格；如果该参数没有提供（或者为 null），将没有空格。</li>
+</ul>
+<h3>第二个参数<code>replacer</code> 为数组</h3>
+<p>是的，<code>JSON.stringify()</code> 函数可以有第二个参数，它是要在控制台中打印的对象的键数组。下面来看看示例：</p>
+<pre><code class="language-js">const arrayData = [
+  {
+    id: &quot;0001&quot;,
+    type: &quot;donut&quot;,
+    name: &quot;Cake&quot;,
+    ppu: 0.55,
+    batters: {
+      batter: [
+        { id: &quot;1001&quot;, type: &quot;Regular&quot; },
+        { id: &quot;1002&quot;, type: &quot;Chocolate&quot; },
+        { id: &quot;1003&quot;, type: &quot;Blueberry&quot; },
+        { id: &quot;1004&quot;, type: &quot;Devil’s Food&quot; },
+      ],
+    },
+    topping: [
+      { id: &quot;5001&quot;, type: &quot;None&quot; },
+      { id: &quot;5002&quot;, type: &quot;Glazed&quot; },
+      { id: &quot;5005&quot;, type: &quot;Sugar&quot; },
+      { id: &quot;5007&quot;, type: &quot;Powdered Sugar&quot; },
+      { id: &quot;5006&quot;, type: &quot;Chocolate with Sprinkles&quot; },
+      { id: &quot;5003&quot;, type: &quot;Chocolate&quot; },
+      { id: &quot;5004&quot;, type: &quot;Maple&quot; },
+    ],
+  },
+];
+console.log(JSON.stringify(arrayData, [&quot;name&quot;])); // [{&quot;name&quot;:&quot;Cake&quot;}]
+</code></pre>
+<p>可以通过在第二个参数中将其作为数组传递仅需要打印的键，而不需要打印整个 JSON 对象。</p>
+<h3>第二个参数<code>replacer</code> 为函数</h3>
+<p>还可以将第二个参数作为函数传递，根据函数中编写的逻辑评估每个键值对。如果返回 <code>undefined</code> 键值对将不会打印。请看下面示例：</p>
+<pre><code class="language-js">const user = {
+  name: &quot;DevPoint&quot;,
+  age: 35,
+};
+
+const result = JSON.stringify(user, (key, value) =&gt;
+  typeof value === &quot;string&quot; ? undefined : value
+);
+console.log(result); // {&quot;age&quot;:35}
+</code></pre>
+<blockquote>
+<p>上述代码的输出，可以用来过滤 JSON 数据的属性值。</p>
+</blockquote>
+<h3>第三个参数为 Number</h3>
+<p>第三个参数控制最终字符串中的间距。如果参数是一个数字，则字符串化中的每个级别都将缩进此数量的空格字符。</p>
+<pre><code class="language-js">const user = {
+  name: &quot;DevPoint&quot;,
+  age: 35,
+  address: {
+    city: &quot;Shenzhen&quot;,
+  },
+};
+
+console.log(JSON.stringify(user, null, 4));
+</code></pre>
+<p>输出打印的字符串格式如下：</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;DevPoint&quot;,
+  &quot;age&quot;: 35,
+  &quot;address&quot;: {
+    &quot;city&quot;: &quot;Shenzhen&quot;
+  }
+}
+</code></pre>
+<h3>第三个参数为 String</h3>
+<p>如果第三个参数是一个字符串，它将被用来代替上面显示的空格字符。</p>
+<pre><code class="language-js">const user = {
+    name: &quot;DevPoint&quot;,
+    age: 35,
+    address: {
+        city: &quot;Shenzhen&quot;,
+    },
+};
+
+console.log(JSON.stringify(user, null, &quot;|---&quot;));`
+</code></pre>
+<p>输出打印的字符串格式如下：</p>
+<pre><code class="language-js">{
+|---&quot;name&quot;: &quot;DevPoint&quot;,
+|---&quot;age&quot;: 35,
+|---&quot;address&quot;: {
+|---|---&quot;city&quot;: &quot;Shenzhen&quot;
+|---}
+}
+</code></pre>
+<h3>toJSON 方法</h3>
+<p>有一个名为 <code>toJSON</code> 的方法，它可以是任何对象的一部分作为其属性。<code>JSON.stringify</code> 返回此函数的结果并将其字符串化，而不是将整个对象转换为字符串。</p>
+<pre><code class="language-js">//Initialize a User object
+const user = {
+  name: &quot;DevPoint&quot;,
+  city: &quot;Shenzhen&quot;,
+  toJSON() {
+    return `姓名：${this.name}，所在城市：${this.city}`;
+  },
+};
+
+console.log(JSON.stringify(user)); // &quot;姓名：DevPoint，所在城市：Shenzhen&quot;
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/184.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/186.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

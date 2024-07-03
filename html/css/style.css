@@ -23,7 +23,7 @@ body {
 body {
   background-color: #f6f5f0;
   color: rgb(75, 83, 97);
-  padding: 20px 0;
+  padding: 10px 0;
   min-height: 100vh;
   height: fit-content;
 }
@@ -46,7 +46,7 @@ body {
   margin: 0 auto;
   padding: 20px;
   padding-bottom: 0;
-  min-height: calc(100vh - 40px);
+  min-height: calc(100vh - 20px);
   overflow: hidden;
   border: 1px solid rgba(75, 83, 97, 0.2);
 }
@@ -85,6 +85,8 @@ pre[class*="language-"] > code {
   background-image: none;
   background-color: rgb(221, 228, 241);
   border: 1px solid rgb(168, 190, 233);
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .token.entity,
@@ -212,7 +214,7 @@ table tbody tr td:nth-child(1) {
 }
 
 blockquote {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(221, 228, 241);
   padding: 20px 0;
   margin-bottom: 20px;
   padding-left: 20px;
@@ -340,7 +342,8 @@ img {
   cursor: pointer;
   background-color: #fff;
   border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(8, 76, 207, 0.07) 4px 4px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(8, 76, 207, 0.07) 4px 4px 0px 0px;
 }
 
 a {
@@ -410,7 +413,7 @@ div.code-toolbar > .toolbar {
 }
 
 div.code-toolbar > .toolbar .toolbar-item + .toolbar-item {
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 div.code-toolbar > .toolbar > .toolbar-item > a,
@@ -442,4 +445,11 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
 
 img {
   margin-bottom: 20px;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  box-shadow: none;
+  text-transform: lowercase;
 }
