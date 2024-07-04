@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>从前端工程师的角度将 SEO 做到极致</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>从前端工程师的角度将 SEO 做到极致</h2>
+                    <p>2024-07-04 20:05:14 · YinHao</p>
+                  </div>
+                  <h2>一、前言</h2>
+<p>SEO 是 Search Engine Optimization 的缩写，即搜索引擎优化。它是一种通过调整网站的内容、结构、外部链接等方面的优化手段，来提高网站在搜索引擎中的自然排名，以求得获得更多的流量，从而达到互联网营销及品牌建设的目标。</p>
+<p>作为一名前端工程师，掌握一些 SEO 的相关知识是很有必要的，本文主要介绍 <code>SEO</code> 的优化手段，分为三大类，全方位的把 SEO 做到极致 🌻！</p>
+<h2>二、优化手段(一)</h2>
+<h3>1. TDK</h3>
+<p>TDK 是 Title(标题)、Description（描述）和 Keywords（关键词）的缩写，TDK 是一个网站 SEO 的核心。</p>
+<p>因为滥用等原因，目前各大主流搜索引擎基本都已经降低甚至移除了 <code>keywords</code> 对排名的影响，TDK 的设置如下：</p>
+<pre><code class="language-html">&lt;title&gt;标题&lt;/title&gt;
+&lt;meta name=&quot;description&quot; content=&quot;描述&quot; /&gt;
+&lt;meta name=&quot;keywords&quot; content=&quot;关键词&quot; /&gt;
+</code></pre>
+<p>当然这三者的内容是有一定要求的，比如字符数长度的限制，想详细了解的小伙伴可以自行查阅，下面看下掘金网站的 TDK：</p>
+<img src="./imgs/188/01.awebp" />
+
+<h3>2. Meta 标签的使用</h3>
+<p>Meta 标签是网页 head 区的辅助性标签，它的作用是经过配置一些参数用以描述页面属性，目前几乎所有搜索引擎都使用网上机器人自动查找 Meta 值来给网页分类。Meta 标签的 name 属性有以下配置项：</p>
+<ul>
+<li>Keywords：逗号分隔的关键词列表</li>
+<li>description：很重要，搜索引擎会把这个描述显示在搜索结果中</li>
+<li>format-detection：格式检测，比如禁止识别电话，邮箱等</li>
+<li>Robots：用来告诉搜索机器人哪些页面需要索引，哪些页面不需要索引</li>
+<li>theme-color：网站主题色</li>
+</ul>
+<h3>3. HTML 语义化</h3>
+<p>我们在开发的时候习惯性的通篇使用 div 和 span，这样其实是不利于 SEO 的，需要慢慢养成使用具有语义化标签的习惯，HTML 语义化有利于 SEO，使得搜索引擎更容易理解语义化页面的内容结构和主题。下面介绍一些常见语义化标签的使用以及注意事项：</p>
+<p><strong>标题标签：</strong> <code>h1、h2、h3、h4、h5 和 h6</code>，一个页面中最好保证只有一个 h1 标签，其他的标签根据实际情况使用</p>
+<p><strong>强调标签：</strong> <code>strong、em</code>，一方面是强调（加粗/斜体），增加了权重；另一方面增强视觉效果</p>
+<p><strong>图片标签：</strong> 使用时加上 <code>alt</code> 属性对图片进行描述，可以帮助蜘蛛快速理解图片的具体内容</p>
+<p><strong>段落标签：</strong> 页面中段落文字可使用 <code>p</code> 标签替代</p>
+<p><strong>列表标签：</strong> <code>ul、ol、li</code>，搜索引擎能够通过这些标签更好地理解信息的层次结构和关联性，从而更准确地评估网页的内容和价值</p>
+<p><strong>布局标签：</strong> <code>header、nav、article、section、aside、footer</code>，根据页面的区域模块划分选择对应的布局标签</p>
+<h3>4. Open Graph 协议</h3>
+<p>Open Graph 协议可以让任何一个网页集成到社交图谱中。例如，你的网页集成了 Open Graph 协议，按照协议加入了网页的标题，描述以及图片信息等，那么在 facebook 中分享这个网页的时候，facebook 就会按照你定义的内容来展示这个网页。</p>
+<p>这个协议其实很简单，主要是通过在 html 中加入一些元数据（meta）标签来实现，property 属性以 og 开头，后面跟着具体属性，content 里面是属性的值，来看个<a href="https://www.imdb.com/title/tt0117500">案例</a>：</p>
+<pre><code class="language-html">&lt;html prefix=&quot;og: http://ogp.me/ns#&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;The Rock (1996)&lt;/title&gt;
+    &lt;meta property=&quot;og:title&quot; content=&quot;The Rock&quot; /&gt;
+    &lt;meta property=&quot;og:type&quot; content=&quot;video.movie&quot; /&gt;
+    &lt;meta property=&quot;og:url&quot; content=&quot;http://www.imdb.com/title/tt0117500/&quot; /&gt;
+    &lt;meta
+      property=&quot;og:image&quot;
+      content=&quot;http://ia.media-imdb.com/images/rock.jpg&quot;
+    /&gt;
+    ...
+  &lt;/head&gt;
+  ...
+&lt;/html&gt;
+</code></pre>
+<img src="./imgs/188/02.awebp" />
+
+<p>总的来说：这个协议主要是 Facebook 提出来的，为了更好的展示用户分享的网页的内容，实现这个协议，有助于 SEO 优化，告诉 google 该网页有哪些内容，以及关键词等。</p>
+<h3>5. HTML lang</h3>
+<p>设置 HTML 标签的 <code>lang</code> 属性主要用于指定网页内容的语言。这个属性对于搜索引擎优化（SEO）是有益的，因为它帮助搜索引擎了解页面内容的语言，从而能够更准确地将页面呈现给搜索特定语言内容的用户。</p>
+<p>对于国际化的项目，设置 <code>lang</code> 属性很有必要，搜索引擎能够将页面准确地展示给搜索相应语言的用户。</p>
+<p>在 Vue3 + Nuxt3 项目中设置 <code>lang</code> 属性，同时页面切换语言时重新设置，代码如下：</p>
+<img src="./imgs/188/03.awebp" />
+
+<h2>三、优化手段(二)</h2>
+<h3>1. 服务端渲染</h3>
+<p>由于爬虫只能抓取到网页的静态源代码，而无法执行其中的 js 脚本，当网站采用 Vue 构建的单页面应用时，实际上是采用客户端渲染的方式，页面上的大部分 DOM 元素是在客户端通过 JavaScript 动态生成的。</p>
+<p>客户端渲染的过程是需要时间的，爬虫不会等你渲染好，因此爬虫能够直接抓取和分析的内容会大幅减少。下面来看下客户端渲染和服务端渲染网页源代码的区别：</p>
+<p>客户端渲染的网页源代码：</p>
+<img src="./imgs/188/04.awebp" />
+
+<p>服务端渲染的网页源代码：</p>
+<img src="./imgs/188/05.awebp" />
+
+<p>通过这两张图很明显可以看出，服务端渲染源代码的 body 里面是有很多标签元素的，这是因为在服务端时已经生成较完整的 html 代码，想深入了解服务端渲染可以参考我的另一篇文章 <a href="https://juejin.cn/post/7308782875011891251">服务端渲染 SSR 、最核心的同构渲染</a></p>
+<p>当网站采用服务端渲染的方式，蜘蛛去爬取网站源代码时，可以获取到更多的内容，有利于 SEO 的优化。现在很多的官网项目都已经采用 Vue + Nuxt 来实现，服务端渲染已经成为了一种趋势！</p>
+<h3>2. sitemap 站点地图</h3>
+<p>Sitemap，即站点地图，它是一个网站的全部 URL 列表，它的作用是向搜索引擎提供关于网站的信息，帮助搜索引擎更好地索引网站内容，提高网站在搜索结果中的排名，为了保证链接的全面性和准确性，应该自动不定期更新 sitemap 站点地图。</p>
+<p>sitemap.xml 文件内容格式大致如下：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
+   &lt;url&gt;
+      &lt;loc&gt;https://www.example.com/&lt;/loc&gt;
+      &lt;lastmod&gt;2023-04-26T18:23:17+00:00&lt;/lastmod&gt;
+      &lt;changefreq&gt;daily&lt;/changefreq&gt;
+      &lt;priority&gt;1.0&lt;/priority&gt;
+   &lt;/url&gt;
+   &lt;url&gt;
+      &lt;loc&gt;https://www.example.com/about&lt;/loc&gt;
+      &lt;lastmod&gt;2023-04-25T10:12:14+00:00&lt;/lastmod&gt;
+      &lt;changefreq&gt;monthly&lt;/changefreq&gt;
+      &lt;priority&gt;0.8&lt;/priority&gt;
+   &lt;/url&gt;
+&lt;/urlset&gt;
+</code></pre>
+<p>在这个示例中，每个 URL 元素代表网站中的一个页面，其中 元素包含页面的 URL 地址， 元素包含页面的最后修改时间，元素包含页面的更新频率，元素包含页面的优先级。</p>
+<p>Sitemap 文件通常位于网站的根目录下，网站管理员可以在各个搜索引擎的站点平台提交 sitemap.xml 文件，以帮助搜索引擎更好地索引网站内容，例如：<a href="https://www.example.com/sitemap.xml">www.example.com/sitemap.xml</a></p>
+<p>搜索引擎通过网络爬虫来索引网站内容，爬虫会首先访问网站的 sitemap.xml 文件，获取网站中所有页面的链接。搜索引擎会根据 sitemap.xml 文件提供的信息来判断页面的更新频率、优先级等，进而决定何时重新爬取网站页面，以保证搜索结果的准确性和时效性。</p>
+<h3>3. robots 文件</h3>
+<p>蜘蛛在访问一个网站时，会首先会检查该网站的根域下是否有一个叫做 robots.txt 的纯文本文件，这个文件用于指定 spider 在您网站上的抓取范围，<a href="https://juejin.cn/robots.txt">掘金的 robots 文件：https://juejin.cn/robots.txt</a></p>
+<p>robots.txt 文件由键值对组成：其中 <code>User-agent</code> 用于描述搜索引擎蜘蛛的名字；<code>Disallow</code> 用于描述不希望被访问到的一个 URL，一个目录或者整个网站，具体的用法如下：</p>
+<pre><code class="language-ruby">*网站目录下所有文件均能被所有搜索引擎蜘蛛访问*
+User-agent: *
+Disallow:
+
+*禁止所有搜索引擎蜘蛛访问网站的任何部分*
+User-agent: *
+Disallow: /
+
+*禁止所有的搜索引擎蜘蛛访问网站的几个目录*
+User-agent: *
+Disallow: /haha/
+
+*只允许某个搜索引擎蜘蛛访问*
+User-agent: Googlebot
+Disallow:
+</code></pre>
+<p>该文件中还可以配置 Sitemap 属性，用于提供网站 sitemap 的 URL 地址，帮助搜索引擎爬虫更有效地发现和索引这些页面：</p>
+<pre><code class="language-ruby">User-Agent: *
+Disallow: /private/
+
+Sitemap: https://xxxx.com/sitemap.xml
+</code></pre>
+<p>在项目中我们只需将 <code>robots.txt</code> 文件上传到网站根目录就行了，注意文件名一定要全小写，然后通过 <code>域名/robots.txt</code> 进行访问。</p>
+<h3>4. 内链和外链</h3>
+<p>在搜索引擎优化领域，有着内链为王、外链为皇的说法，它们都能对提升网站排名有所帮助，尤其是外链的建设。</p>
+<p><strong>内链</strong>：从自己网站的一个页面指向另外一个页面，通过内链让网站内部形成网状结构，让蜘蛛的广度和深度达到最大化。</p>
+<p><strong>外链</strong>：在别的网站导入自己网站的链接，通过外链提升网站权重，提高网站流量，同时需要注意外链的质量，低质量的外链反而会影响到本站的排名。</p>
+<p>另外，在添加内链外链的过程中，要注意 a 标签中 rel 属性（用于指定当前文档与被链接文档的关系）的使用，下面来看下 <code>nofollow</code> 和 <code>external</code> 两个值的用法。</p>
+<pre><code class="language-html">&lt;a rel=&quot;nofollow&quot; href=&quot;http://www.baidu.com/&quot;&gt;百度&lt;/a&gt;
+
+&lt;a rel=&quot;external&quot; href=&quot;http://www.baidu.com/&quot;&gt;百度&lt;/a&gt;
+</code></pre>
+<p><code>nofollow</code>：会告诉搜索引擎忽略这个链接，阻止搜索引擎对该页面进行追踪，从而避免权重分散</p>
+<p><code>external</code>：会告诉搜索引擎这是一个外部链接，非本站的链接</p>
+<h3>5. 网站重定向</h3>
+<p>301 重定向表示本网址永久性转移到另一个地址，302 表示临时重定向。</p>
+<p>301 重定向与网址规范化有着类似的作用，它还具有集中域名权重的作用，比如 url1 重定向到 url2，其实是把 url1 的权重转移到了 url2，从而增加 url2 域名的权重。</p>
+<p>虽然 canonical 标签可以规范化网址，但是以下四种情况必须配置 301 重定向：</p>
+<ol>
+<li>网站替换域名后，旧域名重定向到新域名，弥补流量损失和 SEO</li>
+<li>如果删除掉网站中的一些页面，但是这个页面有一定的流量和权重，可以利用 301 重定向到合适的页面避免流量流失</li>
+<li>网站改版或因为其他原因导致页面地址发生变化，为避免出现死链接，可以通过 301 重定向来解决</li>
+</ol>
+<p>那么如何验证 301 重定向是否生效呢？可以使用站长工具 <a href="https://tool.chinaz.com/pagestatus/">HTTP 状态查询</a> 查看返回的状态码是否为 301：</p>
+<img src="./imgs/188/06.awebp" />
+
+<p>在 Vue3 + Nuxt3 项目中实现 301 永久重定向：</p>
+<pre><code class="language-js">return navigateTo(localePath(`xxxxxxxx`), {
+  redirectCode: 301,
+});
+</code></pre>
+<h3>6. 结构化数据</h3>
+<p>结构化数据是 HTML 中标记数据的方式，有助于搜索引擎理解网站内容并引导更高质量的搜索结果，搜索引擎可以知道您的页面包含哪些信息以及如何将其呈现给用户。</p>
+<p>比如搜索<code>掘金</code>出现的页面，红色框部分就是结构化标记的成果，从框内可以更好的了解该网站的内容，而且占据了大版面也有利于吸引用户注意。</p>
+<img src="./imgs/188/07.awebp" />
+
+<p>JSON-LD 是结构化数据的一种形式，书写形式可以参考下面的这段代码，更多的 JSON-LD 款式可以参考 <a href="https://link.juejin.cn?target=https%3A%2F%2Fdevelopers.google.com%2Fsearch%2Fdocs%2Fappearance%2Fstructured-data%2Fsearch-gallery%3Fhl%3Dzh-cn">JSON-LD</a></p>
+<pre><code class="language-html">&lt;script type=&quot;application/ld+json&quot;&gt;
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;NewsArticle&quot;,
+    &quot;headline&quot;: &quot;Title of a News Article&quot;,
+    &quot;image&quot;: [
+      &quot;https://example.com/photos/1x1/photo.jpg&quot;,
+      &quot;https://example.com/photos/4x3/photo.jpg&quot;,
+      &quot;https://example.com/photos/16x9/photo.jpg&quot;
+    ],
+    &quot;datePublished&quot;: &quot;2015-02-05T08:00:00+08:00&quot;,
+    &quot;dateModified&quot;: &quot;2015-02-05T09:20:00+08:00&quot;,
+    &quot;author&quot;: [
+      {
+        &quot;@type&quot;: &quot;Person&quot;,
+        &quot;name&quot;: &quot;Jane Doe&quot;,
+        &quot;url&quot;: &quot;https://example.com/profile/janedoe123&quot;
+      },
+      {
+        &quot;@type&quot;: &quot;Person&quot;,
+        &quot;name&quot;: &quot;John Doe&quot;,
+        &quot;url&quot;: &quot;https://example.com/profile/johndoe123&quot;
+      }
+    ]
+  }
+&lt;/script&gt;
+</code></pre>
+<h2>四、优化手段(三)</h2>
+<h3>1. 网址规范化</h3>
+<p>如果一个页面有多个不同的 URL 地址，但是返回的都是同一个页面，这就是不规范网址，比如下面三个 url 不同，但是打开后是同一个页面：</p>
+<img src="./imgs/188/08.awebp" />
+
+<p>无论是对搜索引擎还是网站来说，多个 URL 为相同页面，浪费了抓取资源，可能会出现网站重复页面过多一类的因素导致影响收录甚至降权。网页规范化能够解决无意义收录的问题，而且有利于 URL 权重集中。
+那么如何实现网址规范化呢？其实很简单，只需在页面的 head 标签中，加入 canonical 属性：</p>
+<pre><code class="language-html">&lt;link rel=&quot;canonical&quot; href=&quot;https://www.xxxxxx.com/&quot; /&gt;
+</code></pre>
+<p>掘金网站设置的 canonical 属性：</p>
+<img src="./imgs/188/09.awebp" />
+
+<h3>2. 使用 HTTPS</h3>
+<p>谷歌曾发公告表示，使用 HTTPS 是搜索引擎排名的一项参考因素，HTTPS 站点相比于 HTTP 站点，能获得更好的排名。</p>
+<h3>3. 各搜索引擎提交站点收录</h3>
+<p>除了 robots.txt + sitemap.xml 方式增加网址被收录的可能性外，还可以在各搜索引擎站长平台手动提交网址，以缩短爬虫发现网站链接时间，加快爬虫抓取速度，以下提供几个搜索引擎站长平台：</p>
+<p><a href="https://link.juejin.cn?target=https%3A%2F%2Fziyuan.baidu.com%2F">百度</a></p>
+<p><a href="https://link.juejin.cn?target=https%3A%2F%2Fdevelopers.google.com%2Fsearch%3Fhl%3Dzh-cn">谷歌</a></p>
+<p><a href="https://link.juejin.cn?target=https%3A%2F%2Fwww.bing.com%2Fwebmasters%2Fabout">必应</a></p>
+<h3>4. 网站访问数据</h3>
+<p>后期维护需要一定的网站访问数据做分析，比如流量来源，页面点击等，不同的搜索引擎都有自己的一套分析工具，通过这些工具可以帮助我们分析整个网站的流量情况，然后再做出对应的调整。</p>
+<p><a href="https://link.juejin.cn/?target=https%3A%2F%2Ftongji.baidu.com%2Fmain%2Foverview%2Fdemo%2Foverview%2Findex">百度统计</a></p>
+<p><a href="https://link.juejin.cn/?target=https%3A%2F%2Fanalytics.google.com%2Fanalytics%2Fweb%2F%23%2Fp153293282%2Freports%2Fintelligenthome">谷歌分析</a></p>
+<h3>5. 网站性能优化</h3>
+<p>目前谷歌已经将网页加载速度的快慢作为影响排名的重要因素：</p>
+<img src="./imgs/188/10.awebp" />
+
+<p>简单来说，网站性能越好，网站打开速度的就越快，识别效果越好，爬虫会提高对该网站的爬取效率；反之爬虫会认为该网站对用户不友好，降低爬取效率。</p>
+<h3>6. 丰富网站的内容</h3>
+<p>丰富网站的内容其实也是有助于 SEO 的，但不是直接作用，而是长期的累积带来的效果。比如网站的博客页面，我们可以考虑丰富其内容，让其足够的吸引用户，这样可以提高网站的点击率/阅读量，也就是提高网站的曝光率，同时要持续发布更新引流文章。久而久之，搜索引擎会更加青睐我们的网站，最终有助于 SEO。</p>
+<h2>五、SEO 工具推荐</h2>
+<p>给大家推荐一些与 SEO 相关的工具/网站，帮助我们在 SEO 优化的过程中提升效率，解决烦恼！</p>
+<ol>
+<li><a href="https://sitemap.zhetao.com/">生成 sitemap 文件</a></li>
+<li><a href="https://tool.chinaz.com/pagestatus/">HTTP 状态查询</a></li>
+<li><a href="https://seo.chinaz.com/">SEO 综合查询</a></li>
+<li><a href="https://www.xml-sitemaps.com/">Sitemaps Generator</a></li>
+<li><a href="https://chrome.google.com/webstore/detail/meta-seo-inspector/ibkclpciafdglkjkcibmohobjkcfkaef?hl=zh-CN">分析网页 SEO 信息：META SEO inspector</a>，一个谷歌浏览器的扩展，使用它分析掘金网站的 SEO 信息：</li>
+</ol>
+<img src="./imgs/188/11.awebp" />
+
+<img src="./imgs/188/12.awebp" />
+
+<h2>六、总结与参考</h2>
+<p>以上便是我对 SEO 优化手段的总结，如果存在错误的地方，或者还有其他的优化方式，大家可以提出，我会继续修改/补充上去，使得整个 SEO 体系更加的完善。</p>
+<p>本文参考借鉴以下的文章：</p>
+<p><a href="https://www.xingbell.com/db/news-n42.html">解析谷歌将网页加载速度快慢作为影响排名重要因素</a></p>
+<p><a href="https://juejin.cn/post/7241813423460581435">⛳ 前端进阶：SEO 全方位解决方案</a></p>
+<p><a href="https://juejin.cn/post/7300118821532778511">一文带你弄懂 前端 SEO 优化</a></p>
+<p><a href="https://juejin.cn/post/7349752708385816630">【前端进阶】更容易理解的 SEO 全方面优化</a></p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/187.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
