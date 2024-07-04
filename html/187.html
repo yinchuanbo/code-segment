@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>聊聊禁止页面滚动的几种方法</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>聊聊禁止页面滚动的几种方法</h2>
+                    <p>2024-07-04 09:18:26 · YinHao</p>
+                  </div>
+                  <h3>overflow:hidden</h3>
+<p>您可以使用 CSS 的 <code>overflow:hidden</code> 属性来防止页面在弹出浮层时滚动。具体来说，可以通过以下步骤实现：</p>
+<p>在 HTML 的 标签上添加一个类名，例如 <code>no-scroll</code>。</p>
+<p>使用 CSS 将该类名与 <code>overflow:hidden</code> 属性关联，这将防止页面滚动，同时也会隐藏滚动条，例如：</p>
+<pre><code class="language-css">.no-scroll {
+  overflow: hidden;
+}
+</code></pre>
+<p>当弹出浮层时，使用 JavaScript 将该类名添加到 标签中，例如：</p>
+<pre><code class="language-js">document.querySelector(&quot;body&quot;).classList.add(&quot;no-scroll&quot;);
+</code></pre>
+<p>当浮层关闭时，使用 JavaScript 将该类名从 标签中删除，例如：</p>
+<pre><code class="language-js">document.querySelector(&quot;body&quot;).classList.remove(&quot;no-scroll&quot;);
+</code></pre>
+<p>这样，当浮层弹出时，页面将不再滚动，而是保持固定。</p>
+<h3>position: fixed</h3>
+<p>除了 <code>overflow:hidden</code> 还有别的方法吗？</p>
+<p>除了 <code>overflow:hidden</code>，还有一种方法可以防止页面滚动，那就是使用 <code>position: fixed</code>。该方法的实现步骤如下：</p>
+<p>在 HTML 的 标签上添加一个类名，例如 <code>no-scroll</code>。</p>
+<p>使用 CSS 将该类名与以下属性关联：</p>
+<pre><code class="language-css">.no-scroll {
+  position: fixed;
+  width: 100%;
+}
+</code></pre>
+<p>这将使页面固定在原地，同时保持原来的宽度。请注意，如果您使用这种方法，请确保您的弹出浮层具有合适的高度，以避免出现内容截断的情况。</p>
+<p>当弹出浮层时，使用 JavaScript 将该类名添加到 ` 标签中，例如：</p>
+<pre><code class="language-js">document.querySelector(&quot;body&quot;).classList.add(&quot;no-scroll&quot;);
+</code></pre>
+<p>当浮层关闭时，使用 JavaScript 将该类名从 body 标签中删除，例如：</p>
+<pre><code class="language-js">document.querySelector(&quot;body&quot;).classList.remove(&quot;no-scroll&quot;);
+</code></pre>
+<p>使用 <code>position: fixed</code> 可以有效地防止页面滚动，并且可以确保内容不会被截断。然而，如果您的浮层高度不够不合适，使用这种方法可能会导致页面底部的内容被遮盖。因此，建议在实现之前对页面进行测试，以确保该方法适用于您的特定情况。</p>
+<h3>scroll 事件</h3>
+<p>除了上述两种方法，还有一种更为简单的方法，那就是使用 JavaScript 来实现。具体来说，可以在弹出浮层时，禁用 document 对象上的 scroll 事件来防止页面滚动。实现步骤如下：</p>
+<p>在弹出浮层时，使用 JavaScript 将 document 对象上的 scroll 事件禁用：</p>
+<pre><code class="language-js">document.addEventListener(&quot;scroll&quot;, disableScroll);
+function disableScroll() {
+  window.scrollTo(0, 0);
+}
+</code></pre>
+<p>这会将页面滚动到顶部，并阻止进一步滚动。</p>
+<p>当浮层关闭时，使用 JavaScript 将 document 对象上的 scroll 事件重新启用：</p>
+<pre><code class="language-js">document.removeEventListener(&quot;scroll&quot;, disableScroll);
+</code></pre>
+<p>这将允许用户再次滚动页面。</p>
+<p>这种方法的好处是它不需要更改 CSS 样式或将元素的位置设置为固定，因此不会对页面布局产生任何影响。另外，这种方法还可以使用在移动设备上，因为移动设备上的滚动行为可能不同于桌面设备。但是，这种方法需要编写一些 JavaScript 代码来实现，因此可能需要一些编程知识。</p>
+<h3>overscroll-behavior: contain</h3>
+<p><code>overscroll-behavior</code> 属性可以用来控制页面在滚动到边缘时的行为。其中，<code>overscroll-behavior: contain;</code> 可以防止页面滚动，但允许内部元素滚动。实现步骤如下：</p>
+<p>在弹出浮层时，为浮层添加 <code>overscroll-behavior: contain;</code> 属性：</p>
+<pre><code class="language-css">.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overscroll-behavior: contain;
+}
+</code></pre>
+<p>这将禁用页面滚动，但允许浮层内的元素滚动。</p>
+<p>当浮层关闭时，将浮层的 <code>overscroll-behavior</code> 属性移除即可：</p>
+<pre><code class="language-js">document.querySelector(&quot;.popup&quot;).style.overscrollBehavior = &quot;auto&quot;;
+</code></pre>
+<p>这样可以还原页面滚动。</p>
+<p>使用 <code>overscroll-behavior: contain;</code> 方法，不需要更改页面布局和元素的位置，也不需要添加 <code>overflow:hidden</code> 属性或将元素的位置设置为 fixed。此外，这种方法允许浮层内的元素滚动，因此用户仍然可以与浮层进行交互。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/186.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#4b5361" p-id="1667"></path></svg></div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#4b5361" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#4b5361" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#4b5361" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
