@@ -48,7 +48,11 @@ body {
   padding-bottom: 0;
   min-height: calc(100vh - 20px);
   overflow: hidden;
-  border: 1px solid rgba(75, 83, 97, 0.2);
+  /* border: 1px solid rgba(75, 83, 97, 0.2); */
+  border: 1px solid rgba(8, 76, 207, 0.3);
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(8, 76, 207, 0.07) 4px 4px 0px 0px;
 }
 
 :not(pre) > code[class*="language-"],
@@ -60,6 +64,7 @@ pre[class*="language-"] {
   /* border: 1px solid rgba(75, 83, 97, 0.2); */
   /* border-radius: 15px; */
   font-style: italic;
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(8, 76, 207, 0.07) 4px 4px 0px 0px
 }
 
 pre[class*="language-"]:after,
