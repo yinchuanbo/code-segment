@@ -15,7 +15,8 @@ body {
 
 body {
   background-color: #f6f5f0;
-  color: #444;
+  color: rgb(75, 83, 97);
+  background-image: url("https://www.transparenttextures.com/patterns/white-leather.png");
 }
 
 ::-webkit-scrollbar {
