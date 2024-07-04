@@ -249,7 +249,6 @@ const getLastestData = () => {
 
 window.onload = () => {
   const getBallData = localStorage.getItem("shuangseqiu");
-  renderHtml();
   if (!getBallData) {
     checkBox.innerHTML = "";
   } else {
