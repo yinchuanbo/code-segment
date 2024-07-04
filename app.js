@@ -251,7 +251,6 @@ fs.readdir(mdDir, (err, files) => {
             <ul class="menu-list">
               <b>${files.length}</b>
               <li onclick="window.open('/tools')">Tools</li>
-              <li onclick="window.open('/cp')">Cp</li>
             </ul>
           </div>
           <script src="./js/home.js"></script>

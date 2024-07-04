@@ -1,6 +1,7 @@
 const ssqTextarea = document.querySelector("#ssq__textarea");
 const ssqBtn = document.querySelector(".ssq__btn");
 const randomBtn = document.querySelector(".random__btn");
+const clearBtn = document.querySelector(".clear__btn");
 const checkBox = document.querySelector(".check");
 
 ssqBtn.onclick = () => {
@@ -11,6 +12,10 @@ ssqBtn.onclick = () => {
   }
   paichuBall(value);
 };
+
+clearBtn.onclick = () => {
+  localStorage.clear()
+}
 
 const paichuBall = (value) => {
   let allRedBalls = [...Array(33).keys()].map((x) => x + 1);
@@ -244,6 +249,7 @@ const getLastestData = () => {
 
 window.onload = () => {
   const getBallData = localStorage.getItem("shuangseqiu");
+  renderHtml();
   if (!getBallData) {
     checkBox.innerHTML = "";
   } else {
