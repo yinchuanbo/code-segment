@@ -22,7 +22,7 @@ body {
 
 body {
   background-color: #f6f5f0;
-  color: rgb(75, 83, 97);
+  color: #000;
   padding: 10px 0;
   min-height: 100vh;
   height: fit-content;
@@ -252,7 +252,6 @@ blockquote::before {
 
 .container-header h2 {
   margin-bottom: 8px;
-  color: rgb(75, 83, 97);
   font-size: 25px;
 }
 .container-header p {
