@@ -15,7 +15,7 @@ body {
 
 body {
   background-color: #f6f5f0;
-  color: rgb(75, 83, 97);
+  color: #000;
   background-image: url("https://www.transparenttextures.com/patterns/white-leather.png");
 }
 
@@ -100,7 +100,7 @@ body {
 }
 
 a {
-  color: rgb(75, 83, 97);
+  color: #000;
   text-decoration: none;
   display: flex;
   align-items: center;
