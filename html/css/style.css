@@ -84,7 +84,7 @@ pre[class*="language-"] > code {
   box-shadow: none;
   background-image: none;
   background-color: rgba(221, 228, 241, 0.5);
-  border: 1px solid rgb(168, 190, 233);
+  border: 1px solid rgba(168, 190, 233);
   padding-top: 5px;
   padding-bottom: 5px;
 }

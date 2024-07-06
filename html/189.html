@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>TS 项目构成</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>TS 项目构成</h2>
+                    <p>2024-07-06 08:48:18 · YinHao</p>
+                  </div>
+                  <h2>声明空间</h2>
+<p>在 TS 中存在两种声明空间：<strong>类型声明空间</strong>和<strong>变量声明空间</strong>。</p>
+<h3>1. 类型声明空间</h3>
+<p>类型声明空间包含用来当做类型注解的内容</p>
+<pre><code class="language-ts">class Foo {}
+interface Bar {}
+type Bas = {};
+</code></pre>
+<p>可以将 Foo、Bar、Bas 作为类型注解使用，示例如下：</p>
+<pre><code class="language-ts">let foo: Foo;
+let bar: Bar;
+let bas: Bas;
+</code></pre>
+<blockquote>
+<p>注意：尽管定义了 interface Bar，却不能够把它作为一个变量来使用，因为它没有定义在变量声明空间中。</p>
+</blockquote>
+<pre><code class="language-ts">interface Bar {}
+const bar = Bar; // 错误
+</code></pre>
+<h3>2. 变量声明空间</h3>
+<p>变量声明空间包含可用作变量的内容，上文中 <code>class Foo</code> 提供了一个类型 Foo 到类型声明空间，此外它还提供了一个变量 Foo 到变量声明空间，如下：</p>
+<pre><code class="language-ts">class Foo {}
+const someVar = Foo;
+const someOtherVar = 123;
+</code></pre>
+<p>与此类似，一些用 var 声明的变量，也只能在变量声明空间使用，不能用作类型注解，</p>
+<pre><code class="language-ts">const foo = 123;
+let bar: foo; // 错误
+</code></pre>
+<h2>模块</h2>
+<h3>1. 全局模块</h3>
+<p>在默认情况下，当你开始在一个新的 TS 文件中写下代码时，它处于全局命名空间中，如在 foo.ts 里的以下代码：</p>
+<pre><code class="language-ts">const foo = 123;
+</code></pre>
+<p>如果你在相同的项目里创建一个新的文件 bar.ts，TS 类型系统将会允许你使用变量 foo，就像它在全局空间中可用一样。</p>
+<pre><code class="language-ts">const bar = foo; // 允许
+</code></pre>
+<p>使用全局命名空间时危险的，可能会产生代码命名冲突，推荐使用下文中的 “文件模块”。</p>
+<h3>2. 文件模块</h3>
+<p>文件模块也被称为外部模块，如果在 TS 文件的根级别位置含有 import 或 export，那么它会在这个文件中创建一个本地的作用域。银因此需要把上文中的 foo.ts 改成如下方式：</p>
+<pre><code class="language-ts">export const foo = 123;
+</code></pre>
+<p>如果想在 bar.ts 里使用 foo.ts 的内容，必须显示的导入，</p>
+<pre><code class="language-ts">import { foo } from &quot;./foo&quot;;
+const bar = foo; // 允许
+</code></pre>
+<p>(1) 从带有外部模块的 TS 文件中，生成什么样的 JS 文件，是由编译选项 module 决定的：</p>
+<ol>
+<li><p>AMD: (不要使用它)，它只能在浏览器工作</p>
+</li>
+<li><p>SystemJS: 这是一个很好的实验，已经被 ES 模块代替</p>
+</li>
+<li><p>ES 模块</p>
+</li>
+<li><p>commonjs: 将会是一个好主意</p>
+</li>
+</ol>
+<p>(2) ES 模块语法</p>
+<p>使用 export 关键字导出一个变量或类型</p>
+<pre><code class="language-ts">// foo.ts
+export const someVar = 123;
+export type someType = {
+  foo: string;
+};
+</code></pre>
+<p>export 的写法除了上面这种，还有另一种：</p>
+<pre><code class="language-ts">// foo.ts
+const someVar = 123;
+type someType = {
+  foo: string;
+};
+export { someVar, someType };
+</code></pre>
+<p>也可以用重命名变量的方式导出</p>
+<pre><code class="language-ts">// foo.ts
+const someVar = 123;
+export { someVar as aDiffentName };
+</code></pre>
+<p>使用 import 关键字导入一个变量或一个类型：</p>
+<pre><code class="language-ts">// bar.ts
+import { someVar, someType } from &quot;./foo&quot;;
+</code></pre>
+<p>通过重命名的方式导入变量或类型</p>
+<pre><code class="language-ts">// bar.ts
+import { someVar as aDiffentName } from &quot;./foo&quot;;
+</code></pre>
+<p>除了指定加载某个输出值，还可以使用整体加载，即用星号（*）指定一个对象，将所有输出值都加载到这个对象上面。</p>
+<pre><code class="language-ts">// bar.ts
+import * as foo from &quot;./foo&quot;;
+</code></pre>
+<p>只导入模块</p>
+<pre><code class="language-ts">import &quot;core-js&quot;;
+</code></pre>
+<p>从其他模块导入后整体导出</p>
+<pre><code class="language-ts">export * from &quot;./foo&quot;;
+</code></pre>
+<p>从其他模块导入后，部分导出</p>
+<pre><code class="language-ts">export { someVar } from &quot;./foo&quot;;
+</code></pre>
+<p>通过重命名，部分导出从另一个模块导入的项目</p>
+<pre><code class="language-ts">export { someVar as aDiffentName } from &quot;./foo&quot;;
+</code></pre>
+<h3>默认导入/导出</h3>
+<ul>
+<li><p>使用默认导出：export default</p>
+</li>
+<li><p>在一个变量之前，不需要使用 let/const/var</p>
+</li>
+<li><p>在一个函数之前</p>
+</li>
+<li><p>在一个类之前</p>
+</li>
+</ul>
+<pre><code class="language-ts">// 变量
+export default someVar = 123;
+// 函数
+export default function someFunction() {}
+// 类
+export default class someClass {}
+</code></pre>
+<ul>
+<li>使用 import someName from &quot;someModule&quot; 语法导入</li>
+</ul>
+<pre><code class="language-ts">import someLocalNameForThisFile from &quot;./foo&quot;;
+</code></pre>
+<p>(3) 模块路径</p>
+<p>在你的 TS 编译选项中应该包含 <code>moduleResolution: commonjs</code> 选项，<code>module: commonjs</code> 选项自动包含此设置。</p>
+<p>这里存在两种截然不同的模块，它们是由导入语句时不同的路径写法所引起的，例如 <code>import foo from &#39;模块路径&#39;</code>。模块路径的写法主要有以下两种：</p>
+<ul>
+<li><p>相对模块路径，以 “.” 开头，如 ./someFile、或者 ../../someFolder/someFile 等。</p>
+</li>
+<li><p>其他动态查找模块，如 core-js、typescript、react 或 react/core 等。</p>
+</li>
+</ul>
+<p>它们的主要区别来自系统如何解析模块。</p>
+<p><strong>相对路径</strong></p>
+<ul>
+<li><p>如果文件 bar.ts 中含有 import * as foo from &quot;./foo&quot;，那么 foo 文件必须与 bar.ts 文件存在于相同的文件夹下。</p>
+</li>
+<li><p>如果文件 bar.ts 中含有 import * as foo from &quot;../foo&quot;，那么 foo 文件所存在的地方必须是 bar.ts 文件的上一级目录。</p>
+</li>
+<li><p>如果文件 bar.ts 中含有 import * as foo from &quot;../someFolder/foo&quot;，那么 foo 文件所在的文件夹 someFolder 必须与 bar.ts 所在的文件夹在相同的目录下。</p>
+</li>
+</ul>
+<p><strong>动态查找</strong></p>
+<p>当导入路径不是相对路径时，模块解析将会模仿 Node 模块解析策略，下面给出一个简单的例子：</p>
+<ul>
+<li><p>当你使用 import * as foo from &#39;foo&#39; 时，查找模块的顺序如下：</p>
+<ul>
+<li>./node_modules/foo</li>
+<li>../node_modules/foo</li>
+<li>../../node_modules/foo</li>
+<li>一直查到系统的根目录</li>
+</ul>
+</li>
+<li><p>当你使用 import * as foo from &quot;something/foo&quot; 时，查找模块的顺如如下：</p>
+<ul>
+<li>./node_modules/something/foo</li>
+<li>../node_modules/something/foo</li>
+<li>../../node_modules/something/foo</li>
+<li>一直查到系统的根目录</li>
+</ul>
+</li>
+</ul>
+<p><strong>什么是 place</strong></p>
+<p>当我提及被检查的 place 时，我想表达的是这个 place 上，TS 将会检查一下内容（例如一个 foo 的 place）。</p>
+<ul>
+<li>如果这个 place 表示一个文件，如 foo.ts</li>
+<li>或者，这个 place 是一个文件夹，并且存在一个文件 foo/index.ts</li>
+<li>或者，这个 place 是一个文件夹，并且存在一个 foo/package.json 文件，在该文件中指定 types 的文件存在</li>
+<li>也或者，这个 place 是一个文件夹，并且存在一个 package.json 文件，在该文件中指定 main 的文件存</li>
+</ul>
+<p>从文件类型上来说，实际上是指 <code>.ts</code>、<code>.d.ts</code> 或 <code>.js</code></p>
+<p><strong>重写类型的动态查找</strong></p>
+<p>在你的项目中，可以通过使用 <code>declare module &#39;somePaht&#39;</code> 声明一个全局模块的方式，来解决查找模块路径的问题。</p>
+<pre><code class="language-ts">// global.d.ts
+declare module &quot;foo&quot; {
+  export var bar: number;
+}
+</code></pre>
+<pre><code class="language-ts">// anyOtherTsFileInYourProject.ts
+import * as foo from &quot;foo&quot;;
+</code></pre>
+<p>(4) import/require 只是导入了类型</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+</code></pre>
+<p>它实际上只做了两件事：</p>
+<ul>
+<li><p>导入 foo 模块的所有类型信息</p>
+</li>
+<li><p>确定 foo 模块运行时的依赖关系</p>
+</li>
+</ul>
+<p>你可以选择只加载类型信息，而没有运行时的依赖关系</p>
+<p>如果你没有把导入的名称当做变量声明空间来用，那么在编译成 js 时，导入的模块将会被完全移除，</p>
+<p>例 1：</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+</code></pre>
+<p>这将会被编译成一个不含任何代码的 js 文件，并且设置正确的，一个没有被使用的空文件。</p>
+<p>例 2：</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+var bar: foo;
+</code></pre>
+<p>这将会被编译如下：</p>
+<pre><code class="language-js">var bar;
+</code></pre>
+<p>这是因为 foo 没有被当做一个变量使用。</p>
+<p>例 3：</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+const bar = foo;
+</code></pre>
+<p>这将会被编译成（假设是 commonJS）如下：</p>
+<pre><code class="language-ts">const foo = require(&quot;foo&quot;);
+const bar = foo;
+</code></pre>
+<p>这是因为 foo 被当做变量使用了。</p>
+<p><strong>使用示例：懒加载</strong></p>
+<p>类型推断需要提前完成，这意味着，如果你想在 bar 文件里使用从其他文件 foo 导出的类型，你将不得不像下面这样做。</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+let bar: foo.SomeType;
+</code></pre>
+<p>然而，在某些情况下，你可能会想在运行时加载文件 foo，此时你应该在类型注解中使用导入的模块名称，而不是把 foo 当作变量使用。在代码被编译成 js 时，这些将会被移除。接着，你可以手动导入所需要的模块。</p>
+<p>例如，以下基于 CommonJS 的代码，其中我们只在某个函数内加载 foo 模块。</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+
+export function loadFoo() {
+  // 这是加载 foo，原始的加载只被用作类型注解
+  const _foo: typeof foo = require(&quot;foo&quot;);
+  //   现在，你可以用 _foo 代替 foo 来作为一个变量使用了
+}
+</code></pre>
+<p>一个同样简单的 AMD 模块（使用 RequireJS），如下所示：</p>
+<pre><code class="language-ts">import foo = require(&quot;foo&quot;);
+
+export function loadFoo() {
+  // 这是懒加载 foo，原始的加载只被用作类型注解
+  require([&quot;foo&quot;], (_foo: typeof foo) =&gt; {
+    // 现在，你可以用 _foo 代替 foo 来作为一个变量使用了
+  });
+}
+</code></pre>
+<p>这些通常在以下情景中使用：</p>
+<ul>
+<li><p>在 webApp 里，当你在特定路由上加载 JS 时，</p>
+</li>
+<li><p>在 Node 应用里，当你只想加载特定模块，用来加快启动速度时。</p>
+</li>
+</ul>
+<p><strong>使用实例：确保导入</strong></p>
+<p>有时你加载一个模块，只是想引入其附加的作用，例如，该模块可能会注册一些库，如 CodeMirroraddons 插件等，然而，如果你只是执行 import/require，经过 TS 编译后，转换后的 JS 将不包含对模块的依赖关系；而你的模块加载器（如 webpack），将会完全忽视它们。在这种情况下，你可以使用一个 ensureImport 变量，来确保编译后的 js 代码依赖于模块，示例如下：</p>
+<pre><code class="language-ts">import foo = require(&quot;./foo&quot;);
+import bar = require(&quot;./bar&quot;);
+import bas = require(&quot;./bas&quot;);
+
+const ensureImport: any = foo || bar || bas;
+</code></pre>
+<h2>命名空间</h2>
+<p>当你 JS 中使用命名空间时，有一个常用的、方便的语法</p>
+<pre><code class="language-ts">(function (something) {
+  something.foo = 123;
+})(somehing || (something = {}));
+</code></pre>
+<p><code>somehing || (something = {})</code> 允许匿名函数 <code>function(something){}</code> 像现有对象添加内容，或者创建一个新对象，然后向该对象添加内容，这意味着你可以拥有两个由某些边界拆成的块。</p>
+<pre><code class="language-ts">var something;
+
+(function (something) {
+  something.foo = 123;
+})(something || (something = {}));
+
+console.log(something); //  {foo: 123}
+
+(function (something) {
+  something.bar = 456;
+})(something || (something = {}));
+
+console.log(something); // {foo: 123, bar: 456}
+</code></pre>
+<p>在确保创建的变量不会泄露到全局命名空间时，这种方式在 js 中很常见。当基于文件模块使用时，无须担心这点，但是该模式仍然适用于一组函数的逻辑分组。因此 TS 提供了 namespace 关键字来描述这种分组。</p>
+<pre><code class="language-ts">namespace Utility {
+  export function log(msg: string) {
+    console.log(msg);
+  }
+  export function error(msg: string) {
+    console.log(msg);
+  }
+}
+// 用例
+Utility.log(&quot;Call me&quot;);
+Utility.error(&quot;mayme&quot;);
+</code></pre>
+<p>编译后代码：</p>
+<pre><code class="language-js">var Utility;
+(function (Utility) {
+  function log(msg) {
+    console.log(msg);
+  }
+  Utility.log = log;
+  function error(msg) {
+    console.log(msg);
+  }
+  Utility.error = error;
+})(Utility || (Utility = {}));
+// 用例
+Utility.log(&quot;Call me&quot;);
+Utility.error(&quot;mayme&quot;);
+</code></pre>
+<h2>动态导入表示式</h2>
+<p>动态导入表示式是 ECMScript 的一个新功能，它允许你在程序的任意位置异步加载一个模块，</p>
+<p>此外，webpack bundler 有一个拆分代码的功能，它允许你将代码拆分为许多块，这些块在将来可以被异步下载。因此，你可以在程序中首先提供一个最小的程序启动包，并在将来异步加载其他模块。</p>
+<p>TS 动态导入表达式将自动生成包块，并自动对最终生成的 js 代码进行拆分。但是这似乎不容易实现，因为它依赖于 tsconfig.json 配置文件。</p>
+<p><strong>事实上，webpack 实现代码分割的方式有两种：</strong></p>
+<ul>
+<li><p>使用 import()（首选，这是 ECMAScript 的提案）</p>
+</li>
+<li><p>require.ensure()（最后考虑，这是 webpack 的具体实现）</p>
+</li>
+</ul>
+<p>因此，我们期望 TS 的输出保留 import() 语句，而不是将其转化为其他任何代码。</p>
+<p>在下面代码中，希望懒加载 moment 库，同时也希望使用代码分割的功能，这意味这 moment 会被分割到一个单独的 js 文件理，当它被使用时，会被异步加载。</p>
+<pre><code class="language-js">import(/* webpackChunkName: &quot;moment.js&quot; */ &quot;moment&quot;)
+  .then((moment) =&gt; {
+    const time = moment().format();
+    console.log(&quot;TypeScript &gt;= 2.4.0 Dynamic Import Expression&quot;);
+    console.log(time);
+  })
+  .catch((err) =&gt; {
+    console.log(&quot;Failed to load moment&quot;, err);
+  });
+</code></pre>
+<p>这是 tsconfig.json 的配置文件：</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;es5&quot;,
+    &quot;module&quot;: &quot;esnext&quot;,
+    &quot;lib&quot;: {
+      &quot;dom&quot;,
+      &quot;es5&quot;,
+      &quot;scripthost&quot;,
+      &quot;es2015.promise&quot;
+    },
+    &quot;jsx&quot;: &quot;react&quot;,
+    &quot;declaration&quot;: false,
+    &quot;sourceMap&quot;: true,
+    &quot;outDir&quot;: &quot;./dist/js&quot;,
+    &quot;strict&quot;: true,
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;typeRoots&quot;: [
+      &quot;./node_modules/@types&quot;
+    ],
+    &quot;types&quot;: [
+      &quot;node&quot;,
+      &quot;react&quot;,
+      &quot;react-dom&quot;
+    ]
+  }
+}
+</code></pre>
+<p><strong>重要提示如下：</strong> 使用 <code>&quot;module&quot;: &quot;esnext&quot;</code> 选项，TS 生成模拟的 <code>import()</code> 语句，该语句将被输入以便 webpack 进行代码拆分。</p>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/188.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#000" p-id="1667"></path></svg></div>
+                    <div class="nav-next" onclick="location.href='/190.html'"><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#000" p-id="2030"></path></svg></div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
