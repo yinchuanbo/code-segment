@@ -97,6 +97,203 @@ name = {
 </code></pre>
 <p>内联类型能为你快速提供一个类型注解，他可以帮你省去为类型起名的麻烦，然而，如果你发现需要多次使用相同的内联注解，那么可以考虑把它重构为一个接口。</p>
 <h3>6. 特殊类型</h3>
+<p>除了一些基本类型，在 TS 中，还存在一些特殊的类型，它们是 any、null、undefined、void。</p>
+<ol>
+<li>any</li>
+</ol>
+<p>any 在 TS 类型中占有特殊的地位，它为你提供了一个类型系统的 “后门”，TS 将会把类型检查关闭。在类型系统中，any 能够兼容所有的类型（包括它自己）。因此，所有类型的数据都能被赋值给它，它也能被赋值给其他任何类型，示例：</p>
+<pre><code class="language-ts">let power: any;
+
+// 被赋值任意类型
+power = &quot;123&quot;;
+power = 123;
+
+// 它也兼容任何类型
+let num: number;
+power = num;
+num = power;
+</code></pre>
+<ol start="2">
+<li>null 和 undefined</li>
+</ol>
+<p>在类型系统中，JS 中的 null 和 undefined 字面量和其他被标注为 any 的变量一样，都能被赋值给任意类型的变量，示例如下：</p>
+<pre><code class="language-ts">let num: number;
+let str: string;
+
+// 这些类型能被赋值为 null 和 undefined
+num = null;
+str = undefined;
+</code></pre>
+<ol start="3">
+<li>:void</li>
+</ol>
+<p>表示一个函数没有返回值</p>
+<pre><code class="language-ts">function log(message: string): void {
+  console.log(message);
+}
+</code></pre>
+<h3>7. 泛型</h3>
+<pre><code class="language-ts">function reverse&lt;T&gt;(items: T[]): T[] {
+  const toreturn = [];
+  for (let i = items.length - 1; i &gt;= 0; i--) {
+    toreturn.push(items[i]);
+  }
+  return toreturn;
+}
+
+const sample = [1, 2, 3];
+const reversed = reverse(sample);
+
+console.log(reversed); // 3, 2, 1
+
+reversed[0] = &quot;1&quot;; // 错误
+reversed = [&quot;1&quot;, &quot;2&quot;]; // 错误
+
+reversed[0] = 1; // 正确
+reversed = [1, 2]; // 正确
+</code></pre>
+<p>函数 reverse 接收一个类型为 T 的数组 items: T[]，返回一个类型为 T 的数组。</p>
+<p>事实上，JS 数组已经拥有了 reverse 方法，TS 也确实使用了泛型来定义其结构。</p>
+<pre><code class="language-ts">interface Array&lt;T&gt; {
+  reverse(): T[];
+}
+</code></pre>
+<p>这意味着，当你在数组上调用 reverse 方法时，将会获得类型安全。</p>
+<pre><code class="language-ts">let numArr = [1, 2];
+let reversedNums = numArr.reverse();
+reversedNums = [&quot;1&quot;, &quot;2&quot;]; // 错误
+</code></pre>
+<h3>8. 联合类型注解</h3>
+<p>在 JS 中，你可能希望属性为多种类型之一，如字符串或数组。这正是 TS 的联合类型能排上用场的地方，联合类型使用 | 作为类型注解，如 string | number。</p>
+<pre><code class="language-ts">function formatCommandline(command: string[] | string) {
+  let line = &quot;&quot;;
+  if (typeof command === &quot;string&quot;) {
+    line = command.trim();
+  } else {
+    line = command.join(&quot;&quot;).trim();
+  }
+}
+</code></pre>
+<h3>9. 交叉类型</h3>
+<p>在 JS 中，extends 是一种非常常见的模式，在这种模式下，你可以根据两个对象创建一个新对象，新对象拥有两个对象所有的功能，TS 的交叉类型可以安全的使用此种模式。</p>
+<pre><code class="language-ts">function extend&lt;T, U&gt;(first: T, second: U): T &amp; U {
+  const result = &lt;T &amp; U&gt;{};
+  for (let id in first) {
+    (&lt;T&gt;result)[id] = first[id];
+  }
+  for (let id in second) {
+    (&lt;U&gt;result)[id] = second[id];
+  }
+  return result;
+}
+const x = extend({ a: &quot;hello&quot; }, { b: 42 });
+
+// 现在 x 拥有了 a 属性和 b 属性
+const a = x.a;
+const b = x.b;
+</code></pre>
+<h3>10. 元组类型</h3>
+<p>JS 不支持元组，但是 TS 支持，使用 <code>[typeofmember1, typeofmember2]</code> 能够为元组添加类型注解，元组可以包含任意数量的成员，示例如下：</p>
+<pre><code class="language-ts">let nameNumber: [string, number];
+// 正确
+nameNumber = [&quot;Jenny&quot;, 221345];
+// 错误
+nameNumber = [&quot;Jenny&quot;, &quot;221345&quot;];
+</code></pre>
+<p>可以将其与 TS 中的解构一起使用，示例如下：</p>
+<pre><code class="language-ts">let nameNumber: [string, number];
+nameNumber = [&quot;Jenny&quot;, 221345];
+// 错误
+const [name, num] = nameNumber;
+</code></pre>
+<h3>11. 类型别名</h3>
+<p>TS 提供了为类型注解设置别名的便捷语法，</p>
+<pre><code class="language-ts">type StrOrNum = string | number;
+let sample: StrOrNum;
+sample = 123;
+sample = &quot;123&quot;;
+// 检查类型
+sample = true; // 错误
+</code></pre>
+<p>与接口不同，你可以为任意的类型注解提供类型别名，这在联合类型和交叉类型中比较实用，</p>
+<pre><code class="language-ts">type Text = string | { text: string };
+type Coordinates = [number, number];
+type Callback = (data: string) =&gt; void;
+</code></pre>
+<blockquote>
+<p>提示：如果你需要使用类型注解的层次结构，请使用接口，它能使用 implements 和 extends。</p>
+</blockquote>
+<h2>迁移 JS 代码至 TS</h2>
+<p>首先，假设如下</p>
+<ul>
+<li><p>你了解 Js</p>
+</li>
+<li><p>你了解在项目中常用的方式和构建工具（如，webpack）</p>
+</li>
+</ul>
+<p>有了以上假设，一般来说，将 Js 代码迁移至 TS 包括以下步骤：</p>
+<ul>
+<li><p>添加一个 tsconfig.json 文件</p>
+</li>
+<li><p>把文件扩展名从 .js 改成 .ts，开始使用 any 来减少错误</p>
+</li>
+<li><p>开始在 TS 中写代码，尽可能减少 any 的使用</p>
+</li>
+<li><p>回到旧代码，开始添加类型注解，并修复已识别的错误</p>
+</li>
+<li><p>为第三方 JS 代码定义环境声明</p>
+</li>
+</ul>
+<h3>1. 减少错误</h3>
+<p>代码迁移到 TS 后，TS 会立即对代码进行类型检查，因此可能会收到一些报错信息，这时，可以使用 any 来解决大部分的报错问题。</p>
+<pre><code class="language-ts">let foo = 123;
+let bar = &quot;hey&quot;;
+
+bar = foo; // 错误，不能把 number 类型的数据赋值给 string 类型
+</code></pre>
+<p>在这里，你可以使用类型断言来减少此类错误，</p>
+<pre><code class="language-ts">let foo = 123;
+let bar = &quot;hey&quot;;
+bar = foo as any; // 正确
+</code></pre>
+<p>从另一方面来说，你可能想用 any 来做类型注解</p>
+<pre><code class="language-ts">function foo() {
+  return 1;
+}
+let bar = &quot;hey&quot;;
+bar = foo(); // 错误，不能把一个 number 类型的数据赋值给 string 类型
+</code></pre>
+<p>不要像下面这样，</p>
+<pre><code class="language-ts">function foo(): any {
+  return 1;
+}
+let bar = &quot;hey&quot;;
+bar = foo();
+</code></pre>
+<h3>2. 第三方 JS 代码</h3>
+<p>你可以将你的 JS 代码改成 TS 代码，但是你不能让整个世界都使用 TS。这正是 TS 环境声明所支持的地方，建议创建一个 vendor.d.ts 文件作为开始（.d.ts 文件扩展名指定这个文件是一个声明文件），然后向文件里添加东西，或者，也可以创建一个针对特定库的声明文件，如为 jQuery 创建 jquery.d.ts 文件。</p>
+<p>根据 jQuery 的使用情况，可以非常简单、快速地为它创建一个定义</p>
+<pre><code class="language-ts">declare var $: any;
+</code></pre>
+<p>有时，你可能想在某些内容（如 jQuery）上添加显式的注解，并且你会在类型声明空间中使用它，这时，可以通过 type 关键字来快速实现它。</p>
+<pre><code class="language-ts">declare type JQuery = any;
+declare var $: JQuery;
+</code></pre>
+<h3>3. 第三方 npm 模块</h3>
+<p>与全局变量的声明相似，你可以快速定义一个全局模块，例如，对于 jQuery，如果你想把它作为一个模块来使用，可以通过以下方式实现。</p>
+<pre><code class="language-ts">declare module &quot;jquery&quot;;
+</code></pre>
+<p>然后，可以在必要时导入它，</p>
+<pre><code class="language-ts">import * as $ from &quot;jquery&quot;;
+</code></pre>
+<h3>4. 额外的非 JS 资源</h3>
+<p>在 TS 中，可以允许你导入任何文件，例如 .css 文件，如果你使用的是 webpack 样式加载器或 css 模块的话，你只需要在 globals.d.ts 中添加如下代码即可。</p>
+<pre><code class="language-ts">declare module &quot;*.css&quot;;
+</code></pre>
+<p>现在可以使用 <code>import * as foo from &quot;./some/file.css</code> 语句了。</p>
+<p>以此相似，如果你想使用 HTML 模块，如 Angular，你可以这样做，</p>
+<pre><code class="language-ts">declare module &quot;*.html&quot;;
+</code></pre>
 <p>[未完待续]</p>
 
                   <div class="nav">

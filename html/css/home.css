@@ -121,9 +121,8 @@ a {
   /* padding: 0 20px; */
   line-height: 1.5;
   transition: 0.5s;
-  /* font-size: 18px; */
   color: rgb(8, 76, 207);
-  line-height: 24px;
+  line-height: 20px;
   flex-shrink: 0;
   flex: 1;
   cursor: pointer;
