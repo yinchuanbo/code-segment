@@ -70,7 +70,7 @@ body {
   list-style: none;
   display: flex;
   justify-content: space-between;
-  gap: 150px;
+  gap: 100px;
 }
 
 .container ul li p {
@@ -255,7 +255,7 @@ iframe {
 .menu-box {
   position: fixed;
   top: 30px;
-  left: calc((100% - 770px) / 2 - 200px);
+  left: calc((100% - 770px) / 2 - 150px);
 }
 
 .menu-box h3 {
