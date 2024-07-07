@@ -9,6 +9,7 @@
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
+                <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
                     <h2>快速创建 TS 项目</h2>
@@ -53,11 +54,175 @@
 <li><p>ts-node 通过 Node.js 运行输出 Js</p>
 </li>
 </ul>
-<p>【未完待续...】</p>
+<p>当你准备好部署 js 应用程序时，运行 <code>npm run build</code>。</p>
+<h2>在浏览器中使用 TS</h2>
+<p>如果使用 TS 来创建一个 web 应用，我的建议是，使用 TS + React 来获得一个快速的项目设置，</p>
+<ol>
+<li>通用设置</li>
+</ol>
+<ul>
+<li><p>安装 Node.js</p>
+</li>
+<li><p>安装 Git</p>
+</li>
+</ul>
+<ol start="2">
+<li>快速开始</li>
+</ol>
+<pre><code class="language-sh">git clone https://github.com/basarat/react-typescript.git
+cd react-typescript
+npm i
+</code></pre>
+<ol start="3">
+<li>项目设置详解</li>
+</ol>
+<p>为了能了解项目是如何创建的，请看下面的步骤：</p>
+<p>(1) 创建文件夹</p>
+<pre><code class="language-sh">mkdir your-project
+cd your-project
+</code></pre>
+<p>(2) 创建 tsconfig.json</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;sourceMap&quot;: true,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;esModuleInterop&quot;: true,
+    &quot;resolveJsonModule&quot;: true,
+    &quot;experimentalDecorators&quot;: true,
+    &quot;target&quot;: &quot;es5&quot;,
+    &quot;jsx&quot;: &quot;react&quot;,
+    &quot;lib&quot;: [&quot;dom&quot;, &quot;es6&quot;]
+  },
+  &quot;include&quot;: [&quot;src&quot;],
+  &quot;compileOnSave&quot;: false
+}
+</code></pre>
+<p>(3) 创建 package.json</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;react-typescript&quot;,
+  &quot;version&quot;: &quot;0.0.0&quot;,
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;repository&quot;: {
+    &quot;type&quot;: &quot;git&quot;,
+    &quot;ulr&quot;: &quot;https://github.com/basarat/react-typescript.git&quot;
+  },
+  &quot;scripts&quot;: {
+    &quot;build&quot;: &quot;webpack -p&quot;,
+    &quot;start&quot;: &quot;webpack-dev-server -d --content-base ./public&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;@types/react&quot;: &quot;16.4.10&quot;,
+    &quot;@types/react-dom&quot;: &quot;16.0.7&quot;,
+    &quot;clean-webpack-plugin&quot;: &quot;0.1.19&quot;,
+    &quot;html-webpack-plugin&quot;: &quot;3.2.0&quot;,
+    &quot;react&quot;: &quot;16.4.2&quot;,
+    &quot;react-dom&quot;: &quot;16.4.2&quot;,
+    &quot;ts-loader&quot;: &quot;4.4.2&quot;,
+    &quot;typescript&quot;: &quot;3.0.1&quot;,
+    &quot;webpack&quot;: &quot;4.16.5&quot;,
+    &quot;webpack-cli&quot;: &quot;3.1.0&quot;,
+    &quot;webpack-dev-server&quot;: &quot;3.1.5&quot;
+  }
+}
+</code></pre>
+<p>(4) 创建一个 webpack.config.js</p>
+<p>将你的模块打包至一个包含所有资源文件的 app.js 中</p>
+<pre><code class="language-js">const CleanWebpackPlugin = require(&quot;clean-webpack-plugin&quot;);
+const HtmlWebpackPlugin = require(&quot;html-webpack-plugin&quot;);
+
+module.export = {
+  entry: &quot;./src/app/app.tsx&quot;,
+  plugins: [
+    new CleanWebpackPlugin([&quot;public/build&quot;]),
+    new HtmlWebpackPlugin({
+      template: &quot;src/templates/index.html&quot;,
+    }),
+  ],
+  output: {
+    path: __dirname + &quot;/public&quot;,
+    filename: &quot;build/[name].[contenthash].js&quot;,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: &quot;ts-loader&quot;,
+      },
+    ],
+  },
+};
+</code></pre>
+<p><code>src/templates/index.html</code> 文件将被用作 webpack 生成的 HTML 模板。生成的文件将会位于 public 文件夹中</p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>(5) src/app/app.ts 是前端应用的入口处</p>
+<pre><code class="language-tsx">import * as React from &quot;react&quot;;
+import * as ReactDOM from &quot;react-dom&quot;;
+const Hello: React.FC&lt;{ compiler: string; framework: string }&gt; = (props) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;div&gt;{props.compiler}&lt;/div&gt;
+      &lt;div&gt;{props.framework}&lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+ReactDOM.render(
+  &lt;Hello compiler=&quot;TypeScript&quot; framework=&quot;React&quot; /&gt;,
+  document.getElementById(&quot;root&quot;)
+);
+</code></pre>
+<ol start="4">
+<li>发布应用</li>
+</ol>
+<p>通过执行命令 <code>npm install typescript@latest react@latest react-dom@latest @types/react@latest @types/react-dom@latest webpack@latest webpack-dev-server@latest webpack-cli@latest ts-loader@latest clean-webpack-plugin@latest html-webpack-plugin@latest --save-dev</code> 可以获取最新的安装包</p>
+<ul>
+<li><p>通过执行命令 npm run start 进行实时开发</p>
+</li>
+<li><p>访问 <a href="http://localhost:8080">http://localhost:8080</a></p>
+</li>
+<li><p>编辑 src/app/app.tsx，或被 src/app/app.tsx 使用的其他 ts/tsx 文件，应用将会实时重新记载这些文件。</p>
+<ul>
+<li>编辑 src/templates/index.html，服务将会重新加载</li>
+<li>通过运行 npm run build 构建生成环境的资源文件</li>
+<li>在服务器上使用 public 文件夹，它包含打包的资源文件</li>
+</ul>
+</li>
+</ul>
+<h2>创建一个 TS 模块</h2>
+<p>创建一个高质量的 TS 模块非常简单，假设你的包所需的文件夹结构如下：</p>
+<pre><code class="language-bash">packeage
+|--package.json
+|--tsconfig.json
+|--src
+|  |-- All your source files
+|  |-- index.ts
+|  |-- foo.ts
+|  |-- ...
+|--lib
+|  |-- All your compiled files
+|  |-- index.d.ts
+|  |-- index.js
+|  |-- foo.d.ts
+|  |-- foo.js
+|  |-- ...
+</code></pre>
+<p><strong>在你的 tsconfig.json 里，需要拥有如下文件:</strong></p>
+<p>在 compilerOptions 下，要有 <code>outDir: lib</code> 和 <code>declaration: true</code> 选项，这会在 lib 文件夹中生成声明和 js 文件。</p>
+<p>要有 <code>include: [&#39;./src/**/*&#39;]</code>，这将会包含 src 目录下的所有文件</p>
+<p><strong>在你的 package.json 文件中，需要拥有如下文件:</strong></p>
+<p><code>&quot;main&quot;: &quot;lib/index&quot;</code>，这告诉 Node.js 需要加载 <code>lib/index.js</code></p>
+<p><code>&quot;types&quot;:&quot;lib/index&quot;</code>，这告诉 TS 需要加载 <code>lib.index.d.ts</code></p>
+<p><strong>示例如下：</strong></p>
+<p><code>npm install typestyle</code></p>
+<p>使用 <code>import { style } from &#39;typestyle&#39;;</code>，将会获得类型安全</p>
 
                   <div class="nav">
-                    <div class="nav-prev" onclick="location.href='/189.html'"><svg t="1718969043615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1666" width="30" height="30"><path d="M896 309.12v405.76c0 98.986667-107.562667 160.512-192.896 110.336l-344.874667-202.88c-84.138667-49.493333-84.138667-171.178667 0-220.672l344.874667-202.88c85.333333-50.176 192.896 11.349333 192.896 110.336z m-64 0a64 64 0 0 0-91.477333-57.813333l-4.992 2.645333-344.874667 202.88a64 64 0 0 0-5.248 106.922667l5.248 3.413333 344.874667 202.88a64 64 0 0 0 96.213333-49.536l0.256-5.632v-405.76zM138.666667 213.333333v597.333334a32 32 0 0 0 64 0V213.333333a32 32 0 1 0-64 0z" fill="#000" p-id="1667"></path></svg></div>
-                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'><svg t="1718969061843" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2029" id="mx_n_1718969061843" width="30" height="30"><path d="M128 309.12c0-96.554667 102.4-157.482667 186.624-113.792l6.272 3.456 344.874667 202.88c81.664 48.042667 84.053333 164.096 7.210666 216.106667l-7.210666 4.565333-344.874667 202.88c-83.242667 48.938667-187.648-8.405333-192.725333-103.168L128 714.88v-405.76z m64 0v405.76a64 64 0 0 0 96.426667 55.168l344.917333-202.88a64 64 0 0 0 0-110.336L288.426667 253.952A64 64 0 0 0 192 309.12zM885.333333 213.333333v597.333334a32 32 0 0 1-64 0V213.333333a32 32 0 1 1 64 0z" fill="#000" p-id="2030"></path></svg></div>
+                    <div class="nav-prev" onclick="location.href='/189.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/191.html'">→ Next<div>
                   </div>
                   <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
                 </div>
