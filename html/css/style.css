@@ -29,7 +29,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  /* background-image: url("https://www.transparenttextures.com/patterns/leather.png"); */
+  background-image: url("https://www.transparenttextures.com/patterns/leather.png");
 }
 
 ::-webkit-scrollbar {
@@ -266,9 +266,8 @@ blockquote::before {
 }
 
 .container-header h2 {
-  margin-bottom: 8px;
+  margin-bottom: 20px;
   font-size: 50px;
-  font-weight: 400;
   color: #084ccf;
 }
 .container-header p {
