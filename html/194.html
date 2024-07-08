@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Eslint 和 Prettier 的配置与冲突处理</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container-back" onclick="location.href='/'">← Back to Home</div>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>Eslint 和 Prettier 的配置与冲突处理</h2>
+                    <p>2024-07-08 16:40:46 · YinHao</p>
+                  </div>
+                  <h3>前言</h3>
+<p>统一的前端开发规范，可有助于代码质量提升与团队协作效率提高。通常做法是 eslint 与 prettier 的配合进行实现。</p>
+<ul>
+<li>eslint 中包含三类规则：代码质量检查、代码错误检查、代码风格检查</li>
+<li>prettier 包含：代码风格检查</li>
+</ul>
+<p>代码风格部分会冲突，我们会对冲突部分进行处理</p>
+<img src="./imgs/194/01.awebp" />
+
+<h3>Eslint</h3>
+<ol>
+<li>安装</li>
+</ol>
+<pre><code class="language-bash">npm i eslint -D
+npm init @eslint/config
+</code></pre>
+<img src="./imgs/194/02.awebp" />
+
+<p>按照提示完成初始配置，生成<code>.eslintrc.json</code>配置文件</p>
+<img src="./imgs/194/03.awebp" />
+
+<ol start="2">
+<li>使用</li>
+</ol>
+<ul>
+<li>通过命令的形式修复代码</li>
+</ul>
+<pre><code class="language-bash">npx eslint . --fix
+</code></pre>
+<ul>
+<li>vscode 插件，使得 vscode 调用 eslint 能力，实现实时问题提示，以及保存触发修复</li>
+</ul>
+<p>插件安装后，修改 vscode 配置文件 setting.json</p>
+<pre><code class="language-json">{
+  //...
+  &quot;editor.formatOnSave&quot;: true,
+  &quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;
+}
+</code></pre>
+<h3>Prettier</h3>
+<p>eslint 的代码格式做的不够彻底，需要 prettier 进行增强。并且 prettier 支持更多的文件格式的格式化。</p>
+<ol>
+<li>安装</li>
+</ol>
+<pre><code class="language-bash">npm i prettier -D
+</code></pre>
+<p>配置<code>.prettierrc.json</code></p>
+<img src="./imgs/194/04.awebp" />
+
+<ul>
+<li>通过命令的形式修复代码</li>
+</ul>
+<pre><code class="language-bash">npx prettier --write.
+</code></pre>
+<ul>
+<li>vscode 插件，使得 vscode 调用 prettier 能力，实现保存触发修复</li>
+</ul>
+<p>插件安装后，修改 vscode 配置文件 setting.json</p>
+<pre><code class="language-json">{
+  //...
+  &quot;editor.formatOnSave&quot;: true,
+  &quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;
+}
+</code></pre>
+<h3>冲突处理</h3>
+<p>在进行上述配置后，vscode 中保存后，出现风格规则不一致，eslint 报错问题，现在来解决冲突</p>
+<ol>
+<li>关掉与 Prettier 产生冲突的 ESlint 格式相关配置</li>
+</ol>
+<p>使用<code>eslint-config-prettier</code>这个规则集，关闭 eslint 和 prettier 冲突的规则设置</p>
+<pre><code class="language-bash">npm i eslint-config-prettier -D
+</code></pre>
+<p>在<code>.eslintrc.json</code>加入<code>perttier</code>规则集</p>
+<pre><code class="language-json">{
+  &quot;extends&quot;: [
+    &quot;eslint:recommended&quot;,
+    &quot;plugin:@typescript-eslint/recommended&quot;,
+    &quot;prettier&quot; // 覆盖eslint格式配置,写在最后
+  ]
+}
+</code></pre>
+<ol start="2">
+<li>不再单独运行 prettier，将 prettier 集成到 eslint 中，作为一项 rule 进行提示与修复</li>
+</ol>
+<p>使用<code>eslint-plugin-prettier</code>这个插件</p>
+<pre><code class="language-bash">npm i eslint-plugin-prettier -D
+</code></pre>
+<p>在<code>.eslintrc.json</code>加入<code>perttier</code>插件</p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: [&quot;@typescript-eslint&quot;, &quot;prettier&quot;], // 注册插件
+  &quot;rules&quot;: {
+    &quot;prettier/perttier&quot;: &quot;error&quot; // 加入prettier规则
+  }
+}
+</code></pre>
+<ol start="3">
+<li>将上面两个步骤合在一起就是下面的配置，也是官方的推荐配置</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]
+}
+</code></pre>
+<p>而<code>plugin:prettier/recommended</code>帮我们做了如下事情：</p>
+<pre><code class="language-json">{
+  &quot;extends&quot;: [&quot;prettier&quot;], // 使用eslinst-config-prettier中的配置项
+  &quot;plugins&quot;: [&quot;prettier&quot;], // 注册该prettier插件
+  &quot;rules&quot;: {
+    &quot;prettier/prettier&quot;: &quot;error&quot;, // 在eslint中运行prettier，并启用该插件提供的规则
+    &quot;arrow-body-style&quot;: &quot;off&quot;, // 关闭规则
+    &quot;prefer-arrow-callback&quot;: &quot;off&quot; // 关闭规则
+  }
+}
+</code></pre>
+<h3>总结</h3>
+<p>eslint 和 prettier 配置使用需要进行如下操作：</p>
+<ol>
+<li>首先下载 eslint, prettier, eslint-config-prettier, eslint-plugin-prettier</li>
+</ol>
+<pre><code class="language-bash">npm install --save-dev eslint prettier eslint-config-prettier eslint-plugin-prettier
+</code></pre>
+<ol start="2">
+<li>项目根目录添加 .eslintrc.js 和 .prettierrc</li>
+</ol>
+<pre><code class="language-json">// .eslintrc.json
+{
+  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]
+}
+</code></pre>
+<pre><code class="language-json">// .prettierrc.json
+{
+  &quot;singleQuote&quot;: true // 根据需要配置
+}
+</code></pre>
+<ol start="3">
+<li>补充 ESLint 从 v8.53.0 起，将弃用代码风格相关规则</li>
+</ol>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/193.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/195.html'">→ Next<div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

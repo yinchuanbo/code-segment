@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>前端版本管理工具 - volta</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container-back" onclick="location.href='/'">← Back to Home</div>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>前端版本管理工具 - volta</h2>
+                    <p>2024-07-08 16:21:58 · YinHao</p>
+                  </div>
+                  <p>只要在 package.json 配置以下代码即可轻松<code>切换node版本</code>而无需<code>手动切换</code></p>
+<pre><code class="language-json">{
+  &quot;volta&quot;: { &quot;node&quot;: &quot;18.xx.x&quot; }
+}
+</code></pre>
+<h2>特点</h2>
+<ul>
+<li>速度快：快速无缝地安装和运行任何 JS 工具，按项目版本切换</li>
+<li>跨平台：包括<code>Windows</code>和 <code>macOS linux</code></li>
+<li>多管理器：<code>（npm、yarm、pnpm、cnpm）</code></li>
+</ul>
+<h2>volta 安装</h2>
+<ul>
+<li>在包括 macOS 在内的大多数 linux 系统上，只需一个命令即可安装 Volta：</li>
+</ul>
+<pre><code class="language-bash">curl https://get.volta.sh | bash
+</code></pre>
+<p>对于 bash、zsh 和 fish，此安装程序将自动更新控制台启动脚本。如果希望防止修改控制台启动脚本，请参阅跳过 Volta 安装程序。要手动将 shell 配置为使用 Volta，请编辑控制台启动脚本以：</p>
+<ul>
+<li>将 <code>VOLTA_HOME</code>变量设置为<code>$HOME/.VOLTA</code></li>
+<li>将<code>$VOLTA_HOME/bin</code>添加到<code>PATH</code>变量的开头</li>
+</ul>
+<h2>Windows 安装</h2>
+<ul>
+<li>对于 Windows，<a href="https://github.com/volta-cli/volta/releases/download/v1.1.1/volta-1.1.1-windows-x86_64.msi">点击下载 volta</a>， 然后按照说明进行操作。</li>
+</ul>
+<p>Volta 的功能取决于创建符号链接，因此您必须： - 启用 <strong>开发人员模式</strong>（推荐）</p>
+<img src="./imgs/193/01.awebp" />
+
+<p>下载过后打开安装包，一直点<code>next</code>即可完成安装</p>
+<img src="./imgs/193/02.awebp" />
+
+<p>我们打开<code>cmd</code>或者<code>powershell</code>执行</p>
+<pre><code class="language-bash"># 默认安装最新的LTS稳定版可通过@xxx的方式安装对应版本
+volta install node
+</code></pre>
+<p>下载完成后放到 <code>C:\\Users\\pc\\AppData\\Local\\Volta\\tools\\inventory\\node</code> 目录中（<code>通过 uninstall 删除不了已下载的 node 版本及包管理工具，如果需要删除请直接删除上述路径下要删除的东西，或者整个包删除，重新下载</code>）</p>
+<img src="./imgs/193/03.awebp" />
+
+<p>安装完成后每个 node 版本中都有对应的 npm，你也可以安装 yarn 和 pnpm</p>
+<pre><code class="language-bash"># yarn版本推荐1.22.22 最新版本yarn 使用过程中有问题（具体还在探索中）
+volta install yarn@x.xx.xx
+</code></pre>
+<pre><code class="language-bash"># 安装pnpm推荐node版本18及以上  低版本会报版本不兼容
+volta install pnpm
+</code></pre>
+<p>管理项目的 node 版本(在项目根目录中安装依赖前先在终端执行再安装项目依赖)</p>
+<pre><code class="language-bash">volta pin node@xx.xx.xx
+# 程序包管理器 cnpm yarn pnpm 等
+volta pin npm@xx.xx.xx
+</code></pre>
+<p>Volta 会把这个放在你的 package.json，这样你就可以把你选择的工具提交到版本控制:</p>
+<img src="./imgs/193/04.awebp" />
+
+<p>查看当前已安装 node 版本及包管理工具</p>
+<pre><code class="language-bash">volta list
+</code></pre>
+<img src="./imgs/193/05.awebp" />
+
+<p>其他相关指令</p>
+<pre><code class="language-bash">volta fetch # 将工具缓存到本地机器以供离线使用
+volta install # 设置工具的默认版本
+volta uninstall # 从工具链中卸载工具
+volta pin # 固定项目的运行时或包管理器
+volta list # 显示当前工具链
+volta list all # 显示所有工具链
+volta completions # 命令补全
+volta which # 查看 volta 安装的工具的目录
+volta setup # 为当前用户/shell 启用 volta
+volta run # 运行带有自定义Node、npm、pnpm和/或Yarn版本的命令
+volta help # 输出帮助信息
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/192.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/194.html'">→ Next<div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

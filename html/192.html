@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>reduce 的高级用法</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container-back" onclick="location.href='/'">← Back to Home</div>
+                <div class="container">
+                  <div class="container-header">
+                    <h2>reduce 的高级用法</h2>
+                    <p>2024-07-08 16:10:00 · YinHao</p>
+                  </div>
+                  <h2>用例 1：对数字求和</h2>
+<p>reduce() 最直接的用例之一是对一堆数字求和。假设您有一个整数数组，并且您想要找到总和。</p>
+<pre><code class="language-ts">const numbers: number[] = [1, 2, 3, 4, 5];
+const sum: number = numbers.reduce((acc, curr) =&gt; acc + curr, 0);
+console.log(sum); // Output: 15
+</code></pre>
+<p>只需一行代码，您就可以计算出数组中所有元素的总和。累加器的初始值设置为 0，并且在每次迭代中，我们将当前元素添加到累加器中。</p>
+<h2>用例 2：展平数组</h2>
+<p>您是否曾经发现自己有一个数组数组并想：“我希望我可以将其扁平化为一个数组”？</p>
+<pre><code class="language-ts">const nestedArray: number[][] = [
+  [1, 2],
+  [3, 4],
+  [5, 6],
+];
+const flattenedArray: number[] = nestedArray.reduce(
+  (acc, curr) =&gt; acc.concat(curr),
+  []
+);
+console.log(flattenedArray); // Output: [1, 2, 3, 4, 5, 6]
+</code></pre>
+<p>我知道您也可以使用 Array.flat() 来做到这一点。然而，了解如何使用 reduce 很重要，以防您想对每个项目执行额外的操作。</p>
+<h2>用例 3：对对象进行分组</h2>
+<p>假设您有一个对象数组，并且您希望根据特定属性对它们进行分组。 reduce() 是完成这项工作的完美工具。</p>
+<pre><code class="language-ts">interface Person {
+  name: string;
+  age: number;
+}
+const people: Person[] = [
+  { name: &quot;Alice&quot;, age: 25 },
+  { name: &quot;Bob&quot;, age: 30 },
+  { name: &quot;Charlie&quot;, age: 25 },
+  { name: &quot;Dave&quot;, age: 30 },
+];
+const groupedByAge: { [key: number]: Person[] } = people.reduce((acc, curr) =&gt; {
+  if (!acc[curr.age]) {
+    acc[curr.age] = [];
+  }
+  acc[curr.age].push(curr);
+  return acc;
+}, {});
+console.log(groupedByAge);
+/* Output: {   &#39;25&#39;: [{ name: &#39;Alice&#39;, age: 25 }, { name: &#39;Charlie&#39;, age: 25 }],   &#39;30&#39;: [{ name: &#39;Bob&#39;, age: 30 }, { name: &#39;Dave&#39;, age: 30 }] } */
+</code></pre>
+<h2>用例 4：创建查找映射</h2>
+<p>我个人最喜欢的是使用 reduce()从数组创建查找映射。在性能和代码可读性方面，它改变了游戏规则。停止使用那些缓慢的 find() 或 filter() 调用。</p>
+<p>做了映射之后时间复杂度为 O(1)。</p>
+<pre><code class="language-ts">interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+const products: Product[] = [
+  { id: 1, name: &quot;Laptop&quot;, price: 999 },
+  { id: 2, name: &quot;Phone&quot;, price: 699 },
+  { id: 3, name: &quot;Tablet&quot;, price: 499 },
+];
+const productMap: { [key: number]: Product } = products.reduce((acc, curr) =&gt; {
+  acc[curr.id] = curr;
+  return acc;
+}, {});
+console.log(
+  productMap
+); /* Output: {   &#39;1&#39;: { id: 1, name: &#39;Laptop&#39;, price: 999 },   &#39;2&#39;: { id: 2, name: &#39;Phone&#39;, price: 699 },   &#39;3&#39;: { id: 3, name: &#39;Tablet&#39;, price: 499 } } */ // Accessing a product by ID const laptop: Product = productMap[1]; console.log(laptop); // Output: { id: 1, name: &#39;Laptop&#39;, price: 999 }
+</code></pre>
+<h2>用例 5：计数出现次数</h2>
+<p>曾经需要计算数组中元素的出现次数吗？ reduce() 已经帮你解决了。</p>
+<pre><code class="language-ts">const fruits: string[] = [
+  &quot;apple&quot;,
+  &quot;banana&quot;,
+  &quot;apple&quot;,
+  &quot;orange&quot;,
+  &quot;banana&quot;,
+  &quot;apple&quot;,
+];
+const fruitCounts: { [key: string]: number } = fruits.reduce((acc, curr) =&gt; {
+  acc[curr] = (acc[curr] || 0) + 1;
+  return acc;
+}, {});
+console.log(
+  fruitCounts
+); /* Output: {   &#39;apple&#39;: 3,   &#39;banana&#39;: 2,   &#39;orange&#39;: 1 } */
+</code></pre>
+<h2>用例 6：组合函数</h2>
+<p>函数式编程爱好者一定会喜欢这个。 reduce() 是一个强大的函数组合工具。您可以使用它来创建逐步转换数据的函数管道。</p>
+<pre><code class="language-ts">const add5 = (x: number): number =&gt; x + 5;
+const multiply3 = (x: number): number =&gt; x * 3;
+const subtract2 = (x: number): number =&gt; x - 2;
+const composedFunctions: ((x: number) =&gt; number)[] = [
+  add5,
+  multiply3,
+  subtract2,
+];
+const result: number = composedFunctions.reduce((acc, curr) =&gt; curr(acc), 10);
+console.log(result); // Output: 43
+</code></pre>
+<h2>用例 7：实现简单的类似 Redux 的状态管理</h2>
+<p>如果您使用过 Redux，您就会知道它在管理应用程序中的状态方面有多么强大。你猜怎么了？你可以使用 reduce()来实现一个简单的类似 Redux 的状态管理系统。</p>
+<pre><code class="language-ts">interface State {
+  count: number;
+  todos: string[];
+}
+interface Action {
+  type: string;
+  payload?: any;
+}
+const initialState: State = { count: 0, todos: [] };
+const actions: Action[] = [
+  { type: &quot;INCREMENT_COUNT&quot; },
+  { type: &quot;ADD_TODO&quot;, payload: &quot;Learn Array.reduce()&quot; },
+  { type: &quot;INCREMENT_COUNT&quot; },
+  { type: &quot;ADD_TODO&quot;, payload: &quot;Master TypeScript&quot; },
+];
+const reducer = (state: State, action: Action): State =&gt; {
+  switch (action.type) {
+    case &quot;INCREMENT_COUNT&quot;:
+      return { ...state, count: state.count + 1 };
+    case &quot;ADD_TODO&quot;:
+      return { ...state, todos: [...state.todos, action.payload] };
+    default:
+      return state;
+  }
+};
+const finalState: State = actions.reduce(reducer, initialState);
+console.log(
+  finalState
+); /* Output: {   count: 2,   todos: [&#39;Learn Array.reduce()&#39;, &#39;Master TypeScript&#39;] } */
+</code></pre>
+<h2>用例 8：生成唯一值</h2>
+<p>有时，您可能有一个包含重复值的数组，并且您需要仅提取唯一的值。 reduce() 可以帮助您轻松实现这一点。</p>
+<pre><code class="language-ts">const numbers: number[] = [1, 2, 3, 2, 4, 3, 5, 1, 6];
+const uniqueNumbers: number[] = numbers.reduce((acc, curr) =&gt; {
+  if (!acc.includes(curr)) {
+    acc.push(curr);
+  }
+  return acc;
+}, []);
+console.log(uniqueNumbers); // Output: [1, 2, 3, 4, 5, 6]
+</code></pre>
+<h2>用例 9：计算平均值</h2>
+<pre><code class="language-ts">const grades: number[] = [85, 90, 92, 88, 95];
+const average: number = grades.reduce((acc, curr, index, array) =&gt; {
+  acc += curr;
+  if (index === array.length - 1) {
+    return acc / array.length;
+  }
+  return acc;
+}, 0);
+console.log(average); // Output: 90
+</code></pre>
+<h2>性能考虑</h2>
+<p>虽然 Array.reduce() 非常强大且用途广泛，但了解潜在的性能缺陷非常重要，尤其是在处理大型数组或复杂操作时。一个常见的陷阱是在每次 reduce()迭代中创建新的对象或数组，这可能导致过多的内存分配并影响性能。 例如，考虑以下代码：</p>
+<pre><code class="language-ts">const numbers: number[] = [1, 2, 3, 4, 5];
+const doubledNumbers: number[] = numbers.reduce((acc, curr) =&gt; {
+  return [...acc, curr * 2];
+}, []);
+console.log(doubledNumbers); // Output: [2, 4, 6, 8, 10]
+</code></pre>
+<p>在本例中，我们使用展开运算符 (...) 在每次迭代中创建一个新数组，这可能效率低下。相反，我们可以通过直接改变累加器数组来优化代码：</p>
+<pre><code class="language-ts">const numbers: number[] = [1, 2, 3, 4, 5];
+const doubledNumbers: number[] = numbers.reduce((acc, curr) =&gt; {
+  acc.push(curr * 2);
+  return acc;
+}, []);
+console.log(doubledNumbers); // Output: [2, 4, 6, 8, 10]
+</code></pre>
+
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/191.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/193.html'">→ Next<div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -225,7 +225,7 @@ fs.readdir(mdDir, (err, files) => {
         const curUrl = `./iframes/${params}-iframe.html`;
         const htmlP = `<div class="preview__click" data-url="${curUrl}" title="点击查看效果"></div>`
         itemHtml += `<li class="${ code === "true" ? 'preview_eye' : '' }">
-           <a href="/${filename}">${_idx + 1}. ${title}</a>
+           <a href="/${filename}">${files.length - _idx}. ${title}</a>
            ${ code === "true" ? htmlP : '' }
            <p>${getTime2(date)}</p>
         </li>`;
