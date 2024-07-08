@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">body {
+  flex-direction: column;
+  background-color: #fff; }
+
+#content {
+  width: 400px;
+  height: 300px;
+  overflow: auto;
+  background: #f2f2f2;
+  margin-top: 20px; }
+</style>
+              </head>
+              <body>
+                <input type="file" id="upload" accept=".docx" />
+<div id="content"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">document.getElementById("upload").addEventListener("change", function (event) {
+  var reader = new FileReader();
+  reader.onload = function (event) {
+    var arrayBuffer = reader.result;
+    mammoth
+      .extractRawText({ arrayBuffer: arrayBuffer })
+      .then(function (result) {
+        var text = result.value;
+        var contentDiv = document.getElementById("content");
+        contentDiv.textContent = text;
+      })
+      .catch(function (err) {
+        console.log("Error extracting text: ", err);
+      });
+  };
+  reader.readAsArrayBuffer(this.files[0]);
+});
+</script>
+              </body>
+            </html>
+            
