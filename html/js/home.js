@@ -12,7 +12,7 @@ const html = (url = "") => {
   ></iframe><div class="preview__click_close"></div></div>`;
 };
 const menu_box = document.querySelector(".menu-box");
-const menu_button = document.querySelector(".menu-button");
+// const menu_button = document.querySelector(".menu-button");
 window.addEventListener("DOMContentLoaded", () => {
   const previewclicks = document.querySelectorAll(".preview__click");
   previewclicks.forEach((item) => {
@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
       };
     };
   });
-  menu_button.addEventListener("click", function () {
-    menu_box.classList.toggle("active");
-  });
+  // menu_button.addEventListener("click", function () {
+  //   menu_box.classList.toggle("active");
+  // });
 });

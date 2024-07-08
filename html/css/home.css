@@ -69,8 +69,8 @@ body {
   padding-bottom: 1rem;
   list-style: none;
   display: flex;
-  justify-content: space-between;
-  gap: 100px;
+  /* justify-content: space-between; */
+  gap: 20px;
 }
 
 .container ul li p {
@@ -124,7 +124,7 @@ a {
   color: rgb(8, 76, 207);
   line-height: 20px;
   flex-shrink: 0;
-  flex: 1;
+  /* flex: 1; */
   cursor: pointer;
 }
 
