@@ -48,7 +48,7 @@ body {
   padding: 20px 10px;
   padding-bottom: 0;
   min-height: calc(100vh - 40px);
-  overflow: hidden;
+  /* overflow: hidden; */
   /* border: 1px solid rgba(75, 83, 97, 0.2); */
   /* background-color: #fff ; */
 }
@@ -128,23 +128,21 @@ h1 {
 }
 
 h2 {
-  font-size: 32px;
+  font-size: 27px;
   margin-bottom: 20px;
   position: relative;
-  font-weight: 400;
   color: #084ccf;
 }
 
 h3 {
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 20px;
   position: relative;
-  font-weight: 400;
   color: #084ccf;
 }
 
 h4 {
-  font-size: 20px;
+  font-size: 18px;
   margin-bottom: 20px;
 }
 
@@ -178,9 +176,9 @@ ol > li::marker {
 }
 
 strong {
-  font-weight: 400;
-  color: #fff;
-  background-color: rgb(194, 28, 28);
+  font-weight: 600;
+  font-size: 18px;
+  /* color: #fff; */
 }
 
 ul > li + li {
@@ -240,13 +238,13 @@ table tbody tr td:nth-child(1) {
 }
 
 blockquote {
-  background-color: #fff;
-  padding: 20px 0;
+  /* background-color: #fff; */
+  /* padding: 20px 0;
   margin-bottom: 20px;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 20px; */
   position: relative;
-  color: rgb(75, 83, 97);
+  /* color: rgb(75, 83, 97); */
 }
 
 blockquote p {
@@ -258,7 +256,7 @@ blockquote::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
+  left: -30px;
   width: 5px;
   height: 100%;
   background-color: var(--color-01);
@@ -271,8 +269,8 @@ blockquote::before {
 }
 
 .container-header h2 {
-  margin-bottom: 20px;
-  font-size: 50px;
+  margin-bottom: 5px;
+  font-size: 30px;
   color: #084ccf;
 }
 .container-header p {
@@ -376,15 +374,14 @@ img {
 }
 
 a:not(.token) {
-  color: #fff;
-  background-color: rgba(0, 0, 255, 0.6);
-  text-decoration: none;
+  /* color: #fff; */
+  /* text-decoration: none; */
+  color: #000;
   transition: 0.3s;
 }
 
 a:not(.token):hover {
-  /* color: rgba(8, 76, 207, 1); */
-  text-decoration: underline;
+  color: blue;
   transition: 0.3s;
 }
 
