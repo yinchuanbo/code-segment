@@ -294,7 +294,128 @@ declare var $: JQuery;
 <p>以此相似，如果你想使用 HTML 模块，如 Angular，你可以这样做，</p>
 <pre><code class="language-ts">declare module &quot;*.html&quot;;
 </code></pre>
-<p>[未完待续]</p>
+<h2>@types</h2>
+<h3>1.使用 @types</h3>
+<p>你可以通过 npm 来安装和使用 @types，例如为 jQuery 添加声明文件。</p>
+<pre><code class="language-bash">npm i @types/jquery --save-dev
+</code></pre>
+<p>@types 支持全局和模块类型定义。</p>
+<h3>2.全局 @types</h3>
+<p>在默认情况下，TS 会自动包含支持全局使用的任何定义。例如，对于 jQuery，你应该能够在项目中全局使用 $。</p>
+<h3>3.模块 @types</h3>
+<p>对于 jQuery 来说，通常建议使用模块。安装模块 @types 之后，不需要进行特别的配置，你就可以像使用模块一样使用它了。</p>
+<pre><code class="language-ts">import * as $ from &quot;jquery&quot;;
+</code></pre>
+<h3>4.控制全局</h3>
+<p>可以看出，对于团队而言，拥有允许全局泄露的定义可能是一个问题，因此，你可以通过配置 tsconfig.json 的 compilerOptions.types 选项，引入有意义的类型。</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;types&quot;: {
+      &quot;jquery&quot;
+    }
+  }
+}
+</code></pre>
+<p>如上，在配置 <code>compilerOptions.types:[&quot;jquery&quot;]</code> 之后，只允许使用 jQuery 的 @types 包。即使安装了另一个声明文件，如 <code>npm install @types/node</code>，它的全局变量（如 process）也不会泄露到你的代码中，直到你将它们添加到 tsconfig.json 类型选项中。</p>
+<h2>环境声明</h2>
+<h3>1.声明文件</h3>
+<p>你可以通过 declare 关键字来告诉 TS，你正在试图表达一个在其他地方已经存在的代码，如写在 JavaScript、CoffeeScript、浏览器或 Node.js 运行时环境里的代码，示例如下：</p>
+<pre><code class="language-js">foo = 123; // 错误，foo 未被定义
+</code></pre>
+<p>或者如下：</p>
+<pre><code class="language-js">declare var foo: any;
+foo = 123; // 允许
+</code></pre>
+<p>你可以选择把这些声明放入 .ts 或 .d.ts 里，在实际项目中，强烈建议把声明放入独立的 .d.ts 里，你可以从一个命名为 globals.d.ts 或 vendor.d.ts 的文件开始。</p>
+<p>如果一个文件有扩展名 .d.ts，这意味着每个根级别的声明都必须以 declare 关键字作为前缀。这可以让开发者清楚地知道，在这里，TS 不会把它编译为任何代码，</p>
+<h3>2.变量</h3>
+<p>当你想告诉 TS 编辑器关于 process 变量的消息时，你可以这么做。</p>
+<pre><code class="language-ts">declare let process: any;
+</code></pre>
+<p>其实，你并不需要为 process 做这些，因为这已经存在于社区维护的 node.d.ts 中了，这允许你使用 process，并能成功通过 TS 的编译。</p>
+<pre><code class="language-ts">process.exit();
+</code></pre>
+<p>这里建议你尽可能使用接口，示例如下：</p>
+<pre><code class="language-ts">interface Process {
+  exit(code?: number): void;
+}
+
+declare let process: Process;
+</code></pre>
+<p>因为这允许其他人扩充这些全局变量，并且告诉 TS 有关这些变量的修改。例如，添加一个 exitWithLogging 函数至 process，如下所示：</p>
+<pre><code class="language-ts">interface Process {
+  exitWithLogging(code?: number): void;
+}
+process.exitWithLogging = function () {
+  process.exit.apply(process, arguments);
+};
+</code></pre>
+<h3>接口</h3>
+<p>接口运行时的影响为 0，在 TS 接口中有很多方式来声明变量的结构。</p>
+<p>下面这两个是等效的声明，示例 A 使用内联注解，示例 B 使用接口。</p>
+<pre><code class="language-ts">// 示例 A
+declare const myPoint: { x: number; y: number };
+</code></pre>
+<pre><code class="language-ts">// 示例 B
+interface Point {
+  x: number;
+  y: number;
+}
+declare const myPoint: Point;
+</code></pre>
+<p>示例 B 的好处在于，如果有人创建了一个基于 myPoint 的库来添加新成员，那么，他可以轻松地将此成员添加到 myPoint 的现有声明中。</p>
+<pre><code class="language-ts">// a.d.ts 库
+interface Point {
+  x: number;
+  y: number;
+}
+declare const myPoint: Point;
+</code></pre>
+<pre><code class="language-ts">// b.d.ts 库
+interface Point {
+  z: number;
+}
+let myPoint.z; // 允许
+</code></pre>
+<p><strong>1.类可以实现接口</strong></p>
+<p>如果你希望在类中使用必须要被遵循的接口（类）或别人定义的对象结构，可以使用 implements 关键字来确保其兼容性。</p>
+<pre><code class="language-ts">interface Point {
+  x: number;
+  y: number;
+}
+class MyPoint implements Point {
+  x: number;
+  y: number;
+}
+</code></pre>
+<p>基本上，在 implements 存在的情况下，外部 Point 接口的任何更改都将导致代码库中的编译错误，因此可以轻松地使其保持同步。</p>
+<pre><code class="language-ts">interface Point {
+  x: number;
+  y: number;
+  z: number;
+}
+class MyPoint implements Point {
+  // 错误，缺少成员 z
+  x: number;
+  y: number;
+}
+</code></pre>
+<p>注意，implements 限制了类实例的结构，如下所示：</p>
+<pre><code class="language-ts">let foo: Point = new MyPoint();
+</code></pre>
+<h2>枚举</h2>
+<pre><code class="language-ts">enum CardSuit {
+  Clubs,
+  Diamonds,
+  Hearts,
+  Spades,
+}
+
+let Card = CardSuit.Clubs;
+// 类型安全
+Card = &quot;not a member of card suit.&quot;; // 错误：string 类型的数据不能赋值给 CardSuit 类型
+</code></pre>
+<p>【未完】</p>
 </div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/190.html'">← Prev</div>
