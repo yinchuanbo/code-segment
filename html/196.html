@@ -9,14 +9,13 @@
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
-                <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
                     <span onclick="location.href='/'"></span>
                     <h2>基于 Tensorflow.js 在浏览器实现图像识别</h2>
                     <p>2024-07-08 17:08:13 · YinHao</p>
                   </div>
-                  <div class="container-main"><h2>1. 使用预训练模型</h2>
+                  <div class="container-main"><h2>1.使用预训练模型</h2>
 <p>预训练模型是预先在大量数据上进行训练得到的机器学习模型，这些模型可以直接使用或经过微调后用于特定的任务。</p>
 <p>一种流行的<a href="https://so.csdn.net/so/search?q=%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B&spm=1001.2101.3001.7020">图像分类模型</a>称为  <code>MobileNet</code>，可作为带有 Tensorflow.js 的预训练模型使用。</p>
 <p>我们先在项目中引入 tensorflow.js 和预训练模型 mobilenet</p>
@@ -34,7 +33,7 @@ import * as mobilenet from &#39;@tensorflow-models/mobilenet&#39; #导入模块
  }
 </code></pre>
 <p>注意：如果你想看看 MobileNet 模型还能分类什么，你可以在  <a href="https://github.com/tensorflow/tfjs-examples/blob/master/mobilenet/imagenet_classes.js">Github 上找到可用的不同类的列表</a>。</p>
-<h2>2. 项目效果</h2>
+<h2>2.项目效果</h2>
 <blockquote>
 <p>预测西伯利亚雪橇犬的概率为 36%，预测阿拉斯加雪橇犬的概率为 6%，预测蛮成功的</p>
 </blockquote>
@@ -52,7 +51,7 @@ import * as mobilenet from &#39;@tensorflow-models/mobilenet&#39; #导入模块
 </blockquote>
 <img src="./imgs/196/03.awebp" />
 
-<h2>3 为什么浏览器要使用预训练模型</h2>
+<h2>3.为什么浏览器要使用预训练模型</h2>
 <ol>
 <li><p><strong>效率和性能</strong>：预训练模型已经在大规模数据集上进行了长时间的训练，因此它们已经具备了强大的特征提取和表示能力。当这些模型被迁移到新的任务或数据集上时，它们通常只需要进行少量的微调（Fine-tuning）就可以达到很好的效果，这大大减少了训练时间和计算资源的需求。对于浏览器这样的实时交互环境来说，效率和性能是非常重要的。</p>
 </li>
@@ -66,7 +65,7 @@ import * as mobilenet from &#39;@tensorflow-models/mobilenet&#39; #导入模块
 </div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/195.html'">← Prev</div>
-                    <div class="nav-next" onclick="location.href='/197.html'">→ Next<div>
+                    <div class="nav-next" onclick="location.href='/197.html'">→ Next</div>
                   </div>
                   <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
                 </div>

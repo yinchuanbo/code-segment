@@ -108,7 +108,6 @@ fs.readdir(mdDir, (err, files) => {
                 <link rel="stylesheet" type="text/css" href="./css/style.css" />
               </head>
               <body>
-                <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
                     <span onclick="location.href='/'"></span>
@@ -118,7 +117,7 @@ fs.readdir(mdDir, (err, files) => {
                   <div class="container-main">${htmlContent}</div>
                   <div class="nav">
                     <div class="nav-prev" ${preLink}>← Prev</div>
-                    <div class="nav-next" ${nextLink}>→ Next<div>
+                    <div class="nav-next" ${nextLink}>→ Next</div>
                   </div>
                   <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
                 </div>
@@ -226,7 +225,7 @@ fs.readdir(mdDir, (err, files) => {
         const curUrl = `./iframes/${params}-iframe.html`;
         const htmlP = `<div class="preview__click" data-url="${curUrl}" title="点击查看效果"></div>`
         itemHtml += `<li class="${ code === "true" ? 'preview_eye' : '' }">
-           <a href="/${filename}">${files.length - _idx}. ${title}</a>
+           <a href="/${filename}">${title}</a>
            ${ code === "true" ? htmlP : '' }
            <p>${getTime2(date)}</p>
         </li>`;
@@ -253,10 +252,6 @@ fs.readdir(mdDir, (err, files) => {
           </div>
           <div class="container">
             ${itemHtml}
-          </div>
-          <div class="menu-box">
-            <h3>目录</h3>
-            <p onclick="window.open('/tools')">1. Tools</p>
           </div>
           <script src="./js/home.js"></script>
         </body>
