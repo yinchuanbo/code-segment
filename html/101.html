@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>加载注意事项</h2>
                     <p>2024-06-08 14:25:12 · YinHao</p>
                   </div>
-                  <h3>首屏加载</h3>
+                  <div class="container-main"><h3>首屏加载</h3>
 <p>对于首屏上的内容就不应当进行延迟加载，而应该使用正常的加载方式。</p>
 <p>此外，若将首屏视窗边界线作为延迟加载触发的阈值，其实并非最贱的性能考虑，更理想的做法是，在延迟加载的媒体资源到达首屏边界之前设置一个缓冲区，以便媒体资源在进入视窗之前就开始进行加载。</p>
 <p>代码如下：</p>
@@ -103,7 +104,7 @@ newImage.onload = () =&gt; {
   display: none;
 }
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/100.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/102.html'">→ Next<div>

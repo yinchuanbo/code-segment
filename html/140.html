@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>FLIP 动画</h2>
                     <p>2024-06-16 15:21:50 · YinHao</p>
                   </div>
-                  <p>有一种能够快速实现复杂动画交互的动画思维 <strong>FLIP</strong>，为了介绍这个动画思维，我准备了三个案例，大家可以在上面的视频中观看。</p>
+                  <div class="container-main"><p>有一种能够快速实现复杂动画交互的动画思维 <strong>FLIP</strong>，为了介绍这个动画思维，我准备了三个案例，大家可以在上面的视频中观看。</p>
 <h3><strong>0、FLIP</strong></h3>
 <p>FLIP 是四个单词的首字母，<code>First、Last、Invert、Play</code>，这四个单词给我们提供了完成动画的具体思路。</p>
 <p><strong>First</strong> 表示元素<strong>初始时</strong>的具体信息，在 html 环境中，这个事情是比较容易就能做到的，我们可以利用 <code>getBoundingClientRect</code> 或者 <code>getComputedStyle</code> 来拿到元素的初始信息</p>
@@ -294,7 +295,7 @@ all.forEach((item, i) =&gt; {
 <h3><strong>4、共享元素动画扩展思考</strong></h3>
 <p>如果我们要结合路由切换转场来实现共享元素动画，其实实现原理也是一样的，非常的简单，我们只需要在路由切换时，把共享元素的初始位置信息记录下来并作为参数传递给下一个页面即可。</p>
 <p>也就是说，我们只需要把这里的两个点击事件，结合路由事件和参数传递，就能做到跟小红书一样的共享元素路由转场效果。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/139.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/141.html'">→ Next<div>

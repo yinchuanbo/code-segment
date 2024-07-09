@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>Proxy 与 Reflect</h2>
                     <p>2024-06-16 14:04:45 · YinHao</p>
                   </div>
-                  <p><strong>引言：</strong> 在 JavaScript 的世界里，<code>Proxy</code>  和  <code>Reflect</code>  如同蝙蝠侠与罗宾，总是并肩作战。但你是否想过，为什么每个前端开发者在使用 Proxy 时都应掌握 Reflect？Proxy 真的不够强大，需要 Reflect 来助力吗？</p>
+                  <div class="container-main"><p><strong>引言：</strong> 在 JavaScript 的世界里，<code>Proxy</code>  和  <code>Reflect</code>  如同蝙蝠侠与罗宾，总是并肩作战。但你是否想过，为什么每个前端开发者在使用 Proxy 时都应掌握 Reflect？Proxy 真的不够强大，需要 Reflect 来助力吗？</p>
 <h2>Proxy 的力量</h2>
 <p><code>Proxy</code>  对象是 JavaScript 中的一项强大特性，它允许我们为任何目标对象创建一个代理，从而拦截和定义对该对象的基本操作的自定义行为。这包括属性查找、赋值、枚举、函数调用等。通过代理，我们可以完全控制对内部对象的访问，并可以按照需要自定义行为。</p>
 <p>基本语法</p>
@@ -283,7 +284,7 @@ console.timeEnd(&quot;Direct&quot;); // 1.714111328125 ms
 <p>在多数情况下，<code>Proxy</code> 和 <code>Reflect</code> 的性能足以满足需求，但在性能敏感的场景中，仍需谨慎使用。</p>
 <h2>总结</h2>
 <p><code>Proxy</code> 用于创建对象的代理，可以拦截和自定义对对象的操作。<code>Reflect</code>提供了一组与 JavaScript 语言内部操作相对应的方法，方便开发者更标准和简洁地操作对象。通过结合 <code>Proxy</code> 和 <code>Reflect</code>，可以编写出更简洁、易维护的代码。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/137.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/139.html'">→ Next<div>

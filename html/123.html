@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>js 如何监听一个变量改变</h2>
                     <p>2024-06-09 16:53:05 · YinHao</p>
                   </div>
-                  <h2>需求和背景</h2>
+                  <div class="container-main"><h2>需求和背景</h2>
 <p>在业务中，由于项目采用微前端架构，需要通过 A 应用的某个值的变化对 B 应用中的 DOM 进行改变（如弹出一个 Modal），第一个想到的可能是发布订阅模式，其实不如将问题缩小化，采用原生的能力去解决。</p>
 <p>下面给出两种解决方案，同时也是尤大写<code>Vue</code>时的思路</p>
 <ul>
@@ -211,7 +212,7 @@ console.log(window.obj.showModal); // true
 </ul>
 <p>而<code>Proxy</code>除了兼容性不足以外，其他方面的表示都优于<code>Object.defineProperty</code>。</p>
 <p>所以，建议使用 <code>Proxy</code> 监测变量变化</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/122.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/124.html'">→ Next<div>

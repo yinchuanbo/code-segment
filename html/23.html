@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>视频录制，音频实时更新且视频画面固定唯一</h2>
                     <p>2024-06-05 15:44:02 · YinHao</p>
                   </div>
-                  <pre><code class="language-html">&lt;button id=&quot;startButton&quot;&gt;开始&lt;/button&gt; &lt;audio src=&quot;&quot; id=&quot;audio&quot;&gt;&lt;/audio&gt;
+                  <div class="container-main"><pre><code class="language-html">&lt;button id=&quot;startButton&quot;&gt;开始&lt;/button&gt; &lt;audio src=&quot;&quot; id=&quot;audio&quot;&gt;&lt;/audio&gt;
 </code></pre>
 <pre><code class="language-js">const startButton = document.getElementById(&quot;startButton&quot;);
 const stopButton = document.getElementById(&quot;stopButton&quot;);
@@ -119,7 +120,7 @@ startButton.onclick = async () =&gt; {
   document.body.appendChild(stopButton);
 };
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/22.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/24.html'">→ Next<div>

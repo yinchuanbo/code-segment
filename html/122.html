@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>看《浏览器基本原理与实践》后，36点总结</h2>
                     <p>2024-06-09 16:46:57 · YinHao</p>
                   </div>
-                  <h4>前言</h4>
+                  <div class="container-main"><h4>前言</h4>
 <p>作为一名前端，日常工作打交道最多（之一）的莫过于熟悉而又陌生的浏览器了，熟悉是每天都会基于浏览器的应用层面之上码业务，陌生是很多人可能跟我一样不熟悉其内部运行原理，比如 js 是怎样运行的呢？精美样式页面是怎样渲染到电脑屏幕的呢？在开放的互联网它又是怎样保证我们个人信息安全的呢？带着种种疑云开始肝李兵老师的《浏览器基本原理与实践》，不得不说，大家之作，通俗易懂，层层拨开云雾见青天，下面就（非常非常）简单总结一下。</p>
 <h4>Chrome 架构：仅仅打开了 1 个页面，为什么有 4 个进程</h4>
 <p><strong>线程和进程区别</strong>：多线程可以并行处理任务，线程不能单独存在，它是由进程来启动和管理的。一个进程是一个程序的运行实例。</p>
@@ -349,7 +350,7 @@
 <li>数字签名过程：CA 使用 Hash 函数技术明文信息，得出信息摘要，然后 CA 使用私钥对信息摘要进行加密，加密后的秘文就是数字签名；</li>
 <li>验证数字签名：读取证书明文信息，使用相同 Hash 函数计算得到信息摘要 A，再利用 CA 的公钥解密得到 B，对比 A 和 B，如果一致，则确认证书合法；</li>
 </ul>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/121.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/123.html'">→ Next<div>

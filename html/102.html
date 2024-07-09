@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>原生的延迟加载支持</h2>
                     <p>2024-06-08 14:31:27 · YinHao</p>
                   </div>
-                  <p>从 Chrome 75 版本开始，已经可以通过 <code>&lt;img&gt;</code> 和 <code>&lt;iframe&gt;</code> 标签的 loading 属性原生支持延迟加载了，loading 属性包含以下三种取值：</p>
+                  <div class="container-main"><p>从 Chrome 75 版本开始，已经可以通过 <code>&lt;img&gt;</code> 和 <code>&lt;iframe&gt;</code> 标签的 loading 属性原生支持延迟加载了，loading 属性包含以下三种取值：</p>
 <ol>
 <li><p>lazy: 进行延迟加载</p>
 </li>
@@ -51,7 +52,7 @@
 </code></pre>
 <pre><code class="language-html">&lt;img data-src=&quot;photo.jpg&quot; loading=&quot;lazy&quot; class=&quot;lazyload&quot; alt=&quot;&quot; /&gt;
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/101.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/103.html'">→ Next<div>

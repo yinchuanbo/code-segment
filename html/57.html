@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>reduce的高级用法</h2>
                     <p>2024-06-08 00:00:31 · YinHao</p>
                   </div>
-                  <h2>用例 1：对数字求和</h2>
+                  <div class="container-main"><h2>用例 1：对数字求和</h2>
 <p>reduce() 最直接的用例之一是对一堆数字求和。假设您有一个整数数组，并且您想要找到总和。</p>
 <pre><code class="language-ts">const numbers: number[] = [1, 2, 3, 4, 5];
 const sum: number = numbers.reduce((acc, curr) =&gt; acc + curr, 0);
@@ -209,7 +210,7 @@ const doubledNumbers: number[] = numbers.reduce((acc, curr) =&gt; {
 }, []);
 console.log(doubledNumbers); // Output: [2, 4, 6, 8, 10]
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/56.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/58.html'">→ Next<div>

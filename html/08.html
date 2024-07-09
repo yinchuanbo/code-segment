@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>js 接口限制并发</h2>
                     <p>2024-06-03 22:04:08 · YinHao</p>
                   </div>
-                  <ul>
+                  <div class="container-main"><ul>
 <li>当有大量请求需要发起时，往往需求限制并发数量保证其他请求能优先返回。</li>
 </ul>
 <pre><code class="language-js">async function asyncPool(poolLimit, iterable, iteratorFn) {
@@ -47,7 +48,7 @@ asyncPool(2, [1000, 5000, 3000, 2000], timeout).then((results) =&gt; {
   console.log(results);
 });
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/07.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/09.html'">→ Next<div>

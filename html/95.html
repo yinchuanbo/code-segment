@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>渲染优化</h2>
                     <p>2024-06-08 14:13:53 · YinHao</p>
                   </div>
-                  <blockquote>
+                  <div class="container-main"><blockquote>
 <p>如果把浏览器呈现页面的整个过程一分为二，前面讨论的的诸如图像资源优化、加载优化，以及构建中如何压缩资源大小等，都可视为浏览器为呈现页面请求所需资源的部分，本章主要关注浏览器获取资源后，进行渲染部分的相关优化内容。</p>
 </blockquote>
 <h3>页面渲染性能</h3>
@@ -523,7 +524,7 @@ box-shadow: 0 8px rgba(255, 0, 0, 0.5);
 </tr>
 </tbody></table>
 <p>在使用 opacity 和 transform 实现相应的动画效果时，需要注意动画元素应当位于独立的绘图层上，以避免影响其他绘制区域，这就需要将动画元素提升至一个新的绘图层。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/94.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/96.html'">→ Next<div>

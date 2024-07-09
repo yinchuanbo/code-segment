@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>window.open 弹窗被阻止解决方案</h2>
                     <p>2024-06-05 15:43:02 · YinHao</p>
                   </div>
-                  <pre><code class="language-html">&lt;button type=&quot;button&quot; id=&quot;btn&quot;&gt;CLICK&lt;/button&gt;
+                  <div class="container-main"><pre><code class="language-html">&lt;button type=&quot;button&quot; id=&quot;btn&quot;&gt;CLICK&lt;/button&gt;
 </code></pre>
 <pre><code class="language-js">function windowOpen(callback = function () {}) {
   let winRef = window.open(&quot;&quot;, &quot;_blank&quot;);
@@ -32,7 +33,7 @@ btn.onclick = function () {
   });
 };
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/21.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/23.html'">→ Next<div>

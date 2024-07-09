@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>利用 Performance API 分析网站性能</h2>
                     <p>2024-06-08 13:31:40 · YinHao</p>
                   </div>
-                  <p><img src="./imgs/74/01.png" alt=""></p>
+                  <div class="container-main"><p><img src="./imgs/74/01.png" alt=""></p>
 <p><code>window.performace.timing</code> 对象包含了完整的网页加载性能数据，</p>
 <p>页面加载的第一个时间点就是 <code>navigationStart</code>，表示上一个页面的 unload 事件触发，接下来的时间点是 <code>fetchStart</code>，表示开始获取当前页面内容。<code>fetchStart</code> 时间点和 <code>navigationStart</code> 时间点之间的时间差是浏览器内核为加载新页面做的一些准备工作耗时。</p>
 <p>获取页面内容的第一步是查询是否有跟页面相关的资源缓存，查询完毕后，会触发开始 DNS 解析的时间点 <code>domainLookupStart</code>。<code>domainLookupStart</code> 时间点和 <code>fetchStart</code> 时间点之间的时间差就是查询缓存所消耗的时间。</p>
@@ -28,7 +29,7 @@
 <p>开发者注册的 <code>DOMContentLoaded</code> 事件执行完毕之后，会触发 <code>domContentLoadedEnd</code> 时间点。</p>
 <p>当依赖的外部资源全部加载并解析之后，会触发 <code>domComplete</code> 时间点，同时会触发暴露给开发者的 <code>load</code> 事件。<code>loadEventStart</code> 时间点表示 <code>load</code> 事件开始触发，<code>loadEventEnd</code> 时间点表示所有开发者注册在 <code>load</code> 事件上所有脚本执行完毕。</p>
 <p><img src="./imgs/74/02.png" alt=""></p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/73.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/75.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>前端的网络状态</h2>
                     <p>2024-06-09 16:08:53 · YinHao</p>
                   </div>
-                  <h2><code>online</code>  和  <code>offline</code>  事件</h2>
+                  <div class="container-main"><h2><code>online</code>  和  <code>offline</code>  事件</h2>
 <p><code>online</code> 和 <code>offline</code> 事件是浏览器自带的两个事件，可以通过添加事件监听器来检测当前网络连接状态。当浏览器的网络连接发生变化，比如从在线状态切换到离线状态，或者从离线状态切换到在线状态时，这两个事件就会被触发。以下是示例代码：</p>
 <pre><code class="language-js">window.addEventListener(&quot;online&quot;, () =&gt; {
   console.log(&quot;Online&quot;);
@@ -68,7 +69,7 @@ window.addEventListener(&quot;offline&quot;, () =&gt; {
 </code></pre>
 <h2>总结</h2>
 <p><code>navigator.connection</code> API 是一种用于获取用户设备当前的网络连接状态信息的 JavaScript 接口，能够提供多种有助于优化网络应用程序的关键性能指标，如带宽、往返时间等。通过该 API 您可以针对用户当前的网络环境进行优化，从而提高应用程序的性能和用户体验。值得注意的是，由于不同浏览器兼容性问题的存在，需要在使用前进行检测以保证代码正常运行。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/115.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/117.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>20 个 JS 工具函数助力高效开发</h2>
                     <p>2024-06-08 13:54:41 · YinHao</p>
                   </div>
-                  <h2>1.校验数据类型</h2>
+                  <div class="container-main"><h2>1.校验数据类型</h2>
 <pre><code class="language-js">export const typeOf = function (obj) {
   return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
 };
@@ -540,7 +541,7 @@ foreachTree(data, (item) =&gt; {
 })
 console.log(&#39;result&#39;, result)  // {id: 9,label: &quot;三级 1-1-1&quot;}
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/85.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/87.html'">→ Next<div>

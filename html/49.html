@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>HTML - 无限可能</h2>
                     <p>2024-06-07 18:49:25 · YinHao</p>
                   </div>
-                  <h2>位置元素</h2>
+                  <div class="container-main"><h2>位置元素</h2>
 <p>HTML5 引入的语义化标签（<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;section&gt;</code>）提供了更明确的方式来描述网页内容的结构和含义。</p>
 <p><code>&lt;main&gt;</code>：表示文档或应用的主体内容。它应该包含文档中大部分内容，且该内容应该与文档的其余部分（如侧边栏、导航栏、页脚等）有所区分。每个文档只能有一个<code>&lt;main&gt;</code>元素，并且它不能被包含在<code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;header&gt;</code>, 或 <code>&lt;nav&gt;</code>元素内。</p>
 <p><code>&lt;nav&gt;</code>：表示页面中的导航链接区域。它通常包含指向文档中其他部分或网站中其他页面的链接。虽然<code>&lt;nav&gt;</code>元素主要用于链接，但它也可以包含描述这些链接的标题或其他内容。</p>
@@ -409,7 +410,7 @@ window.customElements.define(&quot;my-custom-element&quot;, MyCustomElement);
 <h2>CustomElementRegistry</h2>
 <p>CustomElementRegistry 是一个对象，它提供了向 HTML/DOM 添加具有自定义逻辑的自己元素的方法。这个对象的主要作用是给页面注册一个自定义标签，并获取已注册的 Custom Elements 的相关信息。</p>
 <p>CustomElementRegistry 对象包含了一些方法，如 <code>define()</code>，可以用来注册新的自定义元素。你可以通过 window.customElements 属性来获取 CustomElementRegistry 对象的实例。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/48.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/50.html'">→ Next<div>

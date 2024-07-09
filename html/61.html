@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>高精度实现定时器</h2>
                     <p>2024-06-08 11:22:20 · YinHao</p>
                   </div>
-                  <ul>
+                  <div class="container-main"><ul>
 <li>setTimeout 高精度实现</li>
 </ul>
 <pre><code class="language-js">function preciseTimeout(callback, delay) {
@@ -61,7 +62,7 @@ preciseSetInterval(() =&gt; {
   console.log(&quot;This runs every 2 seconds with higher precision&quot;);
 }, 2000);
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/60.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/62.html'">→ Next<div>

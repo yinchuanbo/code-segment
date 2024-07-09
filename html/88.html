@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>浏览器渲染性能分析技巧</h2>
                     <p>2024-06-08 13:58:49 · YinHao</p>
                   </div>
-                  <h2>渲染流程</h2>
+                  <div class="container-main"><h2>渲染流程</h2>
 <p>许多原因都会触发浏览器进行渲染，例如用户交互、CSS 动画、以 JavaScript 修改 CSS 等，不过整体上可以将渲染分为 5 个阶段：</p>
 <blockquote>
 <p>JavaScript -&gt; Style Calculation -&gt; Layout -&gt; Paint -&gt; Composite</p>
@@ -188,7 +189,7 @@ for (let box of boxes) {
 <h2>Composite 阶段</h2>
 <p>到了 Composite 阶段，能够思考的手段就是尽可能减少图层的数量，</p>
 <p>值得一提的是，Composite 阶段会在另一个线程中进行，不会占用主线程的资源，由此可以发现一个有趣的现象：即使主线程被占满，单击、输入等操作都没有反应，页面还是能够滚动，这是因为页面滚动是在 Composite 阶段进行的。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/87.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/89.html'">→ Next<div>

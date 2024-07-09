@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>内存泄漏排查</h2>
                     <p>2024-06-15 08:07:58 · YinHao</p>
                   </div>
-                  <h2>使用 Chrome devTools 查看内存情况</h2>
+                  <div class="container-main"><h2>使用 Chrome devTools 查看内存情况</h2>
 <p>打开 Chrome 的无痕模式，以屏蔽 Chrome 插件对我们之后测试内存占用情况的影响。然后打开开发者工具，找到 Performance 栏，可以看到一些功能按钮，如开始录制按钮、刷新页面按钮、清空记录按钮、记录并可视化 js 内存、节点、事件监听器按钮、触发垃圾回收机制按钮等。</p>
 <p><img src="./imgs/135/01.awebp" alt=""></p>
 <p>请简单录制一下百度页面，观察我们能够获取到什么信息，如下动图所示：</p>
@@ -216,7 +217,7 @@ if (isDev) {
 <p><img src="./imgs/135/19.awebp" alt=""></p>
 <p>这里需要澄清一下，图中最初出现的蓝色柱形是因为我在录制后刷新了页面，可以忽略；接着我们点击了按钮，看到又出现了一个蓝色柱形，这时是为<code>fn1</code>函数中的变量<code>largeObj</code>分配了内存，<code>3s</code>后该内存被释放，变成了灰色柱形。因此可以得出结论，这段代码没有内存泄漏问题。</p>
 <p>简要总结一下：在使用定时器时，务必在不需要定时器时清除，否则可能出现类似本例的情况。除了<code>setTimeout</code>和<code>setInterval</code>，浏览器还提供了<code>API</code>，如<code>requestAnimationFrame</code>，也可能存在这种问题。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/134.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/136.html'">→ Next<div>

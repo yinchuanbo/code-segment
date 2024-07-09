@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>写 H5 页面真的要了解 meta 标签</h2>
                     <p>2024-06-07 18:51:18 · YinHao</p>
                   </div>
-                  <h2>前言</h2>
+                  <div class="container-main"><h2>前言</h2>
 <p>事情的起因是这样的，由于 小 A 需要负责开发一个 H5 移动端的项目，需要分别在 微信环境和企微环境中去使用，于是小 A 使用 Vite + Vue3 来进行开发，然后测试提出如下问题。</p>
 <h2>软键盘弹出，视图放大</h2>
 <p>IOS 系统 中在 <strong>微信环境</strong> 和 <strong>企微环境</strong> 中表现一致，具体如下：</p>
@@ -183,7 +184,7 @@
 <pre><code class="language-html">&lt;meta data-n-head=&quot;ssr&quot; name=&quot;theme-color&quot; content=&quot;#ffffff&quot; /&gt;
 &lt;meta data-n-head=&quot;ssr&quot; name=&quot;msapplication-TileColor&quot; content=&quot;#da532c&quot; /&gt;
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/49.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/51.html'">→ Next<div>

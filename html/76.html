@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>Set 和 WeakSet 的用法和区别</h2>
                     <p>2024-06-08 13:35:44 · YinHao</p>
                   </div>
-                  <p>Set 和 WeakSet 是 ES6 中新增的两种数据结构，它们都用于存储一组不重复的值。但是它们之间有一些区别，下面我会简要介绍它们的用法和区别，以及相应的应用场景。</p>
+                  <div class="container-main"><p>Set 和 WeakSet 是 ES6 中新增的两种数据结构，它们都用于存储一组不重复的值。但是它们之间有一些区别，下面我会简要介绍它们的用法和区别，以及相应的应用场景。</p>
 <h2>Set 的用法和特点：</h2>
 <p>Set 是一个类似数组的数据结构，它的成员值都是唯一的，不会重复。 你可以向 Set 中添加值，并且它会自动去重。 Set 中的值可以是任何类型的数据，包括原始类型和对象引用。</p>
 <p>下面是 Set 常见的操作方法：</p>
@@ -126,7 +127,7 @@ console.log(set.has(obj1)); // true
 <p>在第二个示例中，我们展示了使用 WeakSet 来避免内存泄漏。我们在 body 里面创建了一个 button 按钮元素，并且向 button 按钮绑定了一个点击监听事件，然后用了一个弱引用容器 disableElements 存放按钮标签，在我们点击 button 按钮时，会触发监听事件，将 button 按钮从页面中移除。由于  disableElements  中存储的是弱引用，所以当 button 按钮被移除页面后，垃圾回收器会自动回收内存，避免了内存泄漏的问题。而如果我们的 disableElements 是用 Set 创建的容器，那么当执行按钮点击事件后，按钮被移除页面后，则会因为 button 对象被 disableElements 所引用依旧保留在内存中，不会被垃圾回收器自动回收内存，造成内存泄漏。所以，在这种应用场景下使用 WeakSet 容器，就解决了内存泄漏的问题。</p>
 <h2>总结：</h2>
 <p>Set 和 WeakSet 都是用于存储一组不重复的值，但它们的用法和特点有所不同。Set 可以存储任何类型的值且自动去重，适用于数据去重和快速查找。WeakSet 是一种弱引用的集合，只能存储对象引用，并且不会阻止对象被垃圾回收器回收，适用于需要跟踪对象存活状态或执行一些特定操作的场景。 上面两个示例展示了 WeakSet 的使用场景，即跟踪对象的存活状态和避免内存泄漏。使用 WeakSet 可以更加高效和安全地管理对象引用，确保对象的生命周期和内存资源的正确管理。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/75.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/77.html'">→ Next<div>

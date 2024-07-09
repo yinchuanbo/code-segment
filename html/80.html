@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>文本描边完美实现</h2>
                     <p>2024-06-08 13:42:43 · YinHao</p>
                   </div>
-                  <h2>背景</h2>
+                  <div class="container-main"><h2>背景</h2>
 <p>最近在公司做画布相关的内容，涉及到了字体描边的方案选择，在三种方案对比和尝试下，最终选用了 SVG 作为字体描边的方案，今天就来讲讲这些方案的优缺点。</p>
 <h2>字体描边方案对比</h2>
 <h3>1. text-stroke</h3>
@@ -106,7 +107,7 @@
 <li>整体上来看，通过 SVG 实现字体描边比其他三种方案效果都要好，并且兼容性也不错；</li>
 <li>同时，<code>tspan</code> 可以控制 <code>text</code> 中的文本换行，通过 <code>tspan</code> 可以解决字体被描边覆盖的问题</li>
 </ul>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/79.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/81.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>js 运算精度丢失，用这个库试试</h2>
                     <p>2024-06-20 21:43:50 · YinHao</p>
                   </div>
-                  <h2>简述</h2>
+                  <div class="container-main"><h2>简述</h2>
 <p>当<code>js</code>进行算术运算时，有时候会遇到以下几个问题：</p>
 <pre><code class="language-js">// 控制台可以尝试以下代码
 0.1 + 0.2; // 0.30000000000000004
@@ -95,7 +96,7 @@ console.log(&#39;a&#39;, a.toNumber) || console.log(&#39;a&#39;, Number(a)) // 0
 <p>可以链式调用：</p>
 <pre><code class="language-js">x.div(y).plus(z).times(9);
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/150.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/152.html'">→ Next<div>

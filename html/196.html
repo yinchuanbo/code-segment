@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>基于 Tensorflow.js 在浏览器实现图像识别</h2>
                     <p>2024-07-08 17:08:13 · YinHao</p>
                   </div>
-                  <h2>1. 使用预训练模型</h2>
+                  <div class="container-main"><h2>1. 使用预训练模型</h2>
 <p>预训练模型是预先在大量数据上进行训练得到的机器学习模型，这些模型可以直接使用或经过微调后用于特定的任务。</p>
 <p>一种流行的<a href="https://so.csdn.net/so/search?q=%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B&spm=1001.2101.3001.7020">图像分类模型</a>称为  <code>MobileNet</code>，可作为带有 Tensorflow.js 的预训练模型使用。</p>
 <p>我们先在项目中引入 tensorflow.js 和预训练模型 mobilenet</p>
@@ -62,7 +63,7 @@ import * as mobilenet from &#39;@tensorflow-models/mobilenet&#39; #导入模块
 <li><p><strong>改进用户体验</strong>：预训练模型可以应用于各种浏览器功能中，以改进用户体验。例如，它们可以用于图像识别、语音识别、自然语言处理等领域，以提供更智能、更个性化的搜索、推荐和交互功能。此外，预训练模型还可以用于提高网页加载速度和渲染效果，从而进一步提升用户体验。</p>
 </li>
 </ol>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/195.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/197.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>TS 迭代器与生成器</h2>
                     <p>2024-06-27 10:46:28 · YinHao</p>
                   </div>
-                  <p>在 TS 语法中，如果一个对象实现了 <code>Symbol.iterator</code> 属性方法，则认为其是可迭代的，也就是该对象具有迭代器功能。</p>
+                  <div class="container-main"><p>在 TS 语法中，如果一个对象实现了 <code>Symbol.iterator</code> 属性方法，则认为其是可迭代的，也就是该对象具有迭代器功能。</p>
 <p>在 TS 语言所内置的类型，如 Array、Map、Set、String 等中，均已经实现了各自的 <code>Symbol.iterator</code> 属性方法，在对象上调用 <code>Symbol.iterator</code> 属性方法，可以返回可供迭代的值。</p>
 <p>生成器是一种能够中途停止，并从停止的位置继续运行的函数。借助 yield 或 return 命令可以停止执行函数。TS 通过 <code>function *</code> 语法来创建一个生成器函数，在调用生成器函数后不会立即执行函数中的代码，而是返回一个迭代器对象，调用迭代器对象的方法 <code>next()</code> 可以获得 <code>yield / return</code> 的返回值。</p>
 <h2>迭代器应用</h2>
@@ -120,7 +121,7 @@ for (let j of jsons) {
   console.log(j);
 }
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/163.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/165.html'">→ Next<div>

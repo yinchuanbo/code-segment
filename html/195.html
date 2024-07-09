@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>前端图片压缩 js-image-compressor</h2>
                     <p>2024-07-08 16:54:57 · YinHao</p>
                   </div>
-                  <h3>前言</h3>
+                  <div class="container-main"><h3>前言</h3>
 <p>通常我们上传图片尤其是用于 web/移动端展示，需要考虑到图片的尺寸大小，前端可以使用一些工具对于较大图片进行压缩，尽量控制图片大小在 200kb 内，这样移动端在展示图片时较快加载，避免出现图片加载白屏问题。</p>
 <p>对于这类问题，处理的思路有以下几种：</p>
 <ol>
@@ -86,7 +87,7 @@ if (size &gt; 200 &amp;&amp; size &lt;= 512) {
 </code></pre>
 <h3>总结</h3>
 <p>js-image-compressor 压缩图片就是改变图片的 quality 或者调整 size（width、height）；但是注意对于一些图片需要分情况处理，比如对于 size 较小的图如果固定 width 后可能会增大；最后，处理图片需要注意保证图片清晰度的情况下去压缩。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/194.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/196.html'">→ Next<div>

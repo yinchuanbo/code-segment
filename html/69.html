@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>统一 Node 版本</h2>
                     <p>2024-06-08 13:24:48 · YinHao</p>
                   </div>
-                  <h3>1. package.json 的 engines 字段</h3>
+                  <div class="container-main"><h3>1. package.json 的 engines 字段</h3>
 <p>在项目的 <code>package.json</code> 文件中，可以使用 <code>engines</code> 字段来指定所需的 <code>Node</code> 版本，在该字段中，可以定义一个范围或者具体的版本号来限制 <code>Node</code> 的版本。</p>
 <pre><code class="language-json">// 指定特定版本号
 {
@@ -65,7 +66,7 @@ engine-strict=true
 v14.17.5
 </code></pre>
 <p>此时，执行 <code>nvm use</code> 自动就切换到项目执行的 <code>Node</code> 版本。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/68.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/70.html'">→ Next<div>

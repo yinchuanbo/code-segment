@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>JSON.stringify() 的 5 使用场景</h2>
                     <p>2024-07-03 21:41:47 · YinHao</p>
                   </div>
-                  <p><code>JSON.stringify()</code> 方法将一个 JavaScript 对象或值转换为 JSON 字符串，如果指定了一个 <code>replacer</code> 函数，则可以选择性地替换值，或者指定的 <code>replacer</code> 是数组，则可选择性地仅包含数组指定的属性。</p>
+                  <div class="container-main"><p><code>JSON.stringify()</code> 方法将一个 JavaScript 对象或值转换为 JSON 字符串，如果指定了一个 <code>replacer</code> 函数，则可以选择性地替换值，或者指定的 <code>replacer</code> 是数组，则可选择性地仅包含数组指定的属性。</p>
 <p>语法如下：</p>
 <pre><code class="language-js">JSON.stringify(value[, replacer [, space]])
 </code></pre>
@@ -124,7 +125,7 @@ const user = {
 
 console.log(JSON.stringify(user)); // &quot;姓名：DevPoint，所在城市：Shenzhen&quot;
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/184.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/186.html'">→ Next<div>

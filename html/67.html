@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>如何让 cookie 有 session 的特性</h2>
                     <p>2024-06-08 12:08:38 · YinHao</p>
                   </div>
-                  <p>可以将 cookie 的过期时间设置为会话 cookie，这样它将在浏览器会话结束时自动过期。在设置 cookie 时，不设置过期时间参数即可实现这一点。例如，在 JavaScript 中：</p>
+                  <div class="container-main"><p>可以将 cookie 的过期时间设置为会话 cookie，这样它将在浏览器会话结束时自动过期。在设置 cookie 时，不设置过期时间参数即可实现这一点。例如，在 JavaScript 中：</p>
 <pre><code class="language-js">document.cookie = &quot;cookieName=cookieValue; path=/&quot;;
 </code></pre>
 <p>要判断 cookie 是否过期，您可以通过检查 cookie 的过期时间来实现。在 JavaScript 中，您可以使用以下代码来获取特定 cookie 的过期时间并进行比较：</p>
@@ -57,7 +58,7 @@ if (isCookieExpired(cookieName)) {
 var cookieName = &quot;cookieName&quot;;
 deleteCookie(cookieName);
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/66.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/68.html'">→ Next<div>

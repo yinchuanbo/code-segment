@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>will-change</h2>
                     <p>2024-06-05 20:13:07 · YinHao</p>
                   </div>
-                  <h2>一、什么是 will-change？</h2>
+                  <div class="container-main"><h2>一、什么是 will-change？</h2>
 <p><code>will-change</code>是一个 CSS 属性，它可以告诉浏览器某个元素将要发生的变化。通过明确指定这些变化，浏览器可以事先分配和优化相应的资源，从而提升渲染的性能。</p>
 <h2>二、will-change 的使用方法</h2>
 <p>要使用<code>will-change</code>，只需将它应用于你要进行性能优化的元素上。</p>
@@ -83,7 +84,7 @@
 <p>1. 不要给大量的元素添加 will-change，这会导致创建大量的复合层</p>
 <p>2. 注意使用的时机，在需要进行重绘/重排行为的时候，才考虑加上 will-change，使用完后需要再适当的时机移除，释放浏览器资源</p>
 <p>3. 是否真的需要 will-change，如果页面在性能方面没什么问题，没有必要放个 will-change 来换取那微乎其微的收益，如果收益客观，可加，如果加与不加，差别不大，没必要</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/34.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/36.html'">→ Next<div>

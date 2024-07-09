@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>普通的文本输入框实现敏感词文字高亮</h2>
                     <p>2024-06-08 13:45:10 · YinHao</p>
                   </div>
-                  <h3>实现思路</h3>
+                  <div class="container-main"><h3>实现思路</h3>
 <blockquote>
 <p>实现标红就需要给文字加上 html 标签和样式，但是输入框会将 html 都转为字符串，既然输入框无法实现，那么我们换一种思路，通过 div 代替输入框来显示输入的文本，那我们是不是就可以实现文本标红了？</p>
 </blockquote>
@@ -88,7 +89,7 @@ textarea.onkeydown = (e) =&gt; {
 </code></pre>
 <h3>最终实现效果</h3>
 <p><img src="./imgs/81/01.awebp" alt=""></p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/80.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/82.html'">→ Next<div>

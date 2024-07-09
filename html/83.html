@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>性能优化-时间分片渲染简单做法</h2>
                     <p>2024-06-08 13:49:16 · YinHao</p>
                   </div>
-                  <p>在经典的面试题中：”<strong>如果后端返回了十万条数据要你插入到页面中，你会怎么处理？</strong>”</p>
+                  <div class="container-main"><p>在经典的面试题中：”<strong>如果后端返回了十万条数据要你插入到页面中，你会怎么处理？</strong>”</p>
 <p>除了像 <a href="https://ahooks.gitee.io/zh-CN/hooks/use-virtual-list">useVirtualList</a> 这样的虚拟列表来处理外，我们还可以通过 <code>时间分片</code> 来处理</p>
 <h3>通过 setTimeout</h3>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -166,7 +167,7 @@
 <blockquote>
 <p><code>requestAnimationFrame</code> 会在浏览器每次进行页面渲染时执行回调函数，保证了每次任务的执行间隔是稳定的，避免了丢帧现象。所以在处理大量 DOM 插入操作时，推荐使用 <code>requestAnimationFrame</code> 来拆分任务，以获得更流畅的渲染效果</p>
 </blockquote>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/82.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/84.html'">→ Next<div>

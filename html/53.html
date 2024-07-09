@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>提升 JavaScript 代码质量的最佳实践</h2>
                     <p>2024-06-07 19:00:28 · YinHao</p>
                   </div>
-                  <h2>1. 避免嵌套循环</h2>
+                  <div class="container-main"><h2>1. 避免嵌套循环</h2>
 <p>嵌套循环会增加代码的复杂度，使其难以阅读和维护。我们可以通过将内部循环提取为一个单独的函数来优化代码。</p>
 <p>优化前：</p>
 <pre><code class="language-js">for (let i = 0; i &lt; array1.length; i++) {
@@ -231,7 +232,7 @@ numbers.length = 2;
 console.log(numbers); // 输出：[&#39;1&#39;, &#39;2&#39;]
 </code></pre>
 <p>这个方法简单而直接，能够有效地减少数组的长度，而无需使用额外的函数或方法，尤其在你确切知道需要的数组长度时。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/52.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/54.html'">→ Next<div>

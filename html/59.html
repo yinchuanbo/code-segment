@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>Fetch API 发起的请求可以被暂停吗</h2>
                     <p>2024-06-08 09:43:17 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">// 定义一个名为 _request 的异步函数，它返回一个 Promise，3 秒后返回数字 123。
+                  <div class="container-main"><pre><code class="language-js">// 定义一个名为 _request 的异步函数，它返回一个 Promise，3 秒后返回数字 123。
 function _request() {
   return new Promise((res) =&gt;
     setTimeout(() =&gt; {
@@ -94,7 +95,7 @@ myRequest.then((result) =&gt; {
   console.log(result); // 123
 });
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/58.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/60.html'">→ Next<div>

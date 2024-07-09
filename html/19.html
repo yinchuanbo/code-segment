@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>将二进制图片格式数据展示在页面中</h2>
                     <p>2024-06-05 09:57:14 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">fetch(
+                  <div class="container-main"><pre><code class="language-js">fetch(
   &quot;https://api-test.vidnoz.com/ai/source/proxy?target_url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FACg8ocKQnQl_9bOoZIHkBcABRC0qX-1E3QmUE5FzEmAVXSTAdNfB%3Ds96-c&quot;
 )
   .then(async (res) =&gt; {
@@ -28,7 +29,7 @@
     document.body.appendChild(img);
   });
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/18.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/20.html'">→ Next<div>

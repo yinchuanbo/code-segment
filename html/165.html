@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>TS 模块与命名空间</h2>
                     <p>2024-06-27 11:31:31 · YinHao</p>
                   </div>
-                  <p>本节介绍 TS 语法中的模块（Module）与命名空间（Namespace）</p>
+                  <div class="container-main"><p>本节介绍 TS 语法中的模块（Module）与命名空间（Namespace）</p>
 <p>在 TS 语法高级特性中，有模块和命名空间这两个概念，在 TS 1.5 版本中之前，这两个概念被称为模块，仅区分为内部模块和外部模块。自 TS 1.5 版本开始，内部模块被单独命名为命名空间，外部模块被单独命名为模块。</p>
 <p>在 TS 语法的定义，模块执行在其自身的作用域中，而不是执行在全局作用域中。因此，声明在一个模块中的变量、函数、接口、类和类型别名等，在模块外部是不可见的。在 TS 中定义模块时，使用 <strong>module</strong> 关键字来声明。</p>
 <p>当在 TS 代码中定义命名空间时，使用 <code>namespace</code> 关键字来声明，另外，之前使用 module 关键字来声明的内部模块，现在都应该使用 <code>namespace</code> 关键字来替换。</p>
@@ -110,7 +111,7 @@ strTree.forEach((s) =&gt; {
   }
 });
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/164.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/166.html'">→ Next<div>

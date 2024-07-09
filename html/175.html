@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>TS React 错误边界</h2>
                     <p>2024-06-30 10:43:32 · YinHao</p>
                   </div>
-                  <p>错误边界其实也是一种 React 组件，可以捕获发生在其子组件树任何位置的 JavaScript 错误，并打印输出这些错误。</p>
+                  <div class="container-main"><p>错误边界其实也是一种 React 组件，可以捕获发生在其子组件树任何位置的 JavaScript 错误，并打印输出这些错误。</p>
 <p>错误边界组件在支持展示降级 UI 的同时，不渲染那些发生错误的子组件树，错误边界可以捕获发生在整个子组件的渲染期间、生命周期方法及构造函数中的错误。</p>
 <h3>错误边界应用</h3>
 <ul>
@@ -117,7 +118,7 @@ export default class ErrorCounter extends Component&lt;IProps, IState&gt; {
   }
 }
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/174.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/176.html'">→ Next<div>

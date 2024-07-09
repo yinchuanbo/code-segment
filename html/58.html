@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>javascript 奇葩行为大赏</h2>
                     <p>2024-06-08 09:14:28 · YinHao</p>
                   </div>
-                  <h2>parseInt(0.0000005)</h2>
+                  <div class="container-main"><h2>parseInt(0.0000005)</h2>
 <ul>
 <li>答案：5</li>
 </ul>
@@ -153,7 +154,7 @@ Math.min(); // Infinity
 <p>JavaScript 的 Number 类型是基于 IEEE 754 标准 （也称为 64 位浮点数）实现的，这意味着它有一些限制，特别是关于可以精确表示的数字的范围和精度。在 IEEE 754 标准中，最大的安全整数（即可以精确表示的最大整数）是 <code>Number.MAX_SAFE_INTEGER</code>，其值为 9007199254740991（2 的 53 次方减 1）。</p>
 <p>当尝试使用大于 <code>Number.MAX_SAFE_INTEGER</code> 的整数时，JavaScript 会尝试将其存储为一个近似的浮点数，这可能会导致精度损失。在这个例子中，9007199254740992 和 9007199254740993 都会被转换为近似的浮点数，但由于精度限制，这两个数字可能会表示为相同的浮点数值。</p>
 <p>因此，如果需要在 JavaScript 中表示大数字时，建议使用字符串来存储大数，以避免精度丢失。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/57.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/59.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>一个全新的 JavaScript 事件</h2>
                     <p>2024-06-09 16:37:51 · YinHao</p>
                   </div>
-                  <p>今天给大家介绍一个新的 JavaScript 事件：<code>scrollend</code>。</p>
+                  <div class="container-main"><p>今天给大家介绍一个新的 JavaScript 事件：<code>scrollend</code>。</p>
 <p>不知道大家在网页开发的过程中有没有遇到过关于滚动事件的痛点，我们可以通过 <code>onscroll</code> 事件来监听浏览器是否发生了滚动，但是我们却很难知道滚动会在什么时候完成，我们可能会写出下面的代码：</p>
 <pre><code class="language-js">document.onscroll = (event) =&gt; {
   clearTimeout(window.scrollEndTimer);
@@ -95,7 +96,7 @@ document.onscrollend = callback;
 <li><a href="https://github.com/argyleink/scrollyfills">https://github.com/argyleink/scrollyfills</a></li>
 <li><a href="https://developer.chrome.com/en/blog/scrollend-a-new-javascript-event/">https://developer.chrome.com/en/blog/scrollend-a-new-javascript-event/</a></li>
 </ul>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/119.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/121.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>获取上传进度的几种方式</h2>
                     <p>2024-06-08 13:34:42 · YinHao</p>
                   </div>
-                  <h3>前端使用 axios 实现监听上传进度</h3>
+                  <div class="container-main"><h3>前端使用 axios 实现监听上传进度</h3>
 <blockquote>
 <p>咱们先使用<code>axios</code>实现监听上传进度如下：</p>
 </blockquote>
@@ -172,7 +173,7 @@ const timer = setInterval(() =&gt; {
 }, 500);
 </code></pre>
 <p><strong>有一个点需要注意你要告诉服务端你得切片索引，后面服务端还要合并切片呢！！！</strong>。还有如果你们是按照大小切割的比如<code>1M</code>，你还要再上传完成给<strong>服务端发送一个合并切片的通知</strong>。 如果你们是以份额切分的每次就分为 10 等份，那么这个上传完成的请求你不再通知服务端也能判断上。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/74.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/76.html'">→ Next<div>

@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>缓存 http 错误，避免多次报错提示</h2>
                     <p>2024-06-09 15:55:44 · YinHao</p>
                   </div>
-                  <h3>前言</h3>
+                  <div class="container-main"><h3>前言</h3>
 <p>先解释一下标题，最近在开发一个老项目时发现一个非常影响用户体验的场景：</p>
 <p><img src="./imgs/112/01.awebp" alt=""></p>
 <p>因为项目性质问题，我们给项目设置了较短的登录有效时间，而当登录过期时用户在某一页面进行操作，如果该操作同时请求了多个请求，则会得到多条登录过期的报错提示。作为一个专业的前端，怎么可以允许这种情况发生呢，于是就有了今天文章的内容。</p>
@@ -102,7 +103,7 @@ export default isCacheError;
   return Promise.reject(error);
 };
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/111.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/113.html'">→ Next<div>

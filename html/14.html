@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>格式化货币</h2>
                     <p>2024-06-04 21:00:27 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const formatMoney = (money) =&gt; {
+                  <div class="container-main"><pre><code class="language-js">const formatMoney = (money) =&gt; {
   return money.toLocaleString();
 };
 
@@ -23,7 +24,7 @@ formatMoney(123456789); // &#39;123,456,789&#39;
 formatMoney(123456789.123); // &#39;123,456,789.123&#39;
 formatMoney(123); // &#39;123&#39;
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/13.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/15.html'">→ Next<div>

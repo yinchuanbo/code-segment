@@ -12,17 +12,18 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>获取当前页面滚动距离</h2>
                     <p>2024-06-04 20:59:34 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const getScrollPosition = (el = window) =&gt; ({
+                  <div class="container-main"><pre><code class="language-js">const getScrollPosition = (el = window) =&gt; ({
   x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
   y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop,
 });
 
 getScrollPosition(); // { x: 0, y: 215 }
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/11.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/13.html'">→ Next<div>

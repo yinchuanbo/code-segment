@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>如何使用 Promise 去控制并发请求</h2>
                     <p>2024-06-08 13:52:09 · YinHao</p>
                   </div>
-                  <h3>明确概念</h3>
+                  <div class="container-main"><h3>明确概念</h3>
 <ul>
 <li><p>并发：并发是多个任务同时交替的执行（因为 cpu 执行指令的速度非常之快，它可以不必按顺序一段代码一段代码的执行，这样效率反而更加低下），这样看起来就是一起执行的，所以叫并行。</p>
 </li>
@@ -150,7 +151,7 @@
 <li><p>for await 里其实 已经在此轮宏任务当中并发执行了，await 后面的代码被挂起来，等前一个 promise 转变状态–&gt;移出 pool–&gt;将下一个 promise 捞起加入 pool 当中 –&gt;下一个 await 等待最快的 promise，如此往复。</p>
 </li>
 </ol>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/84.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/86.html'">→ Next<div>

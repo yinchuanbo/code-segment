@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>使用 Web Worker 优化前端大文件上传</h2>
                     <p>2024-06-14 18:42:33 · YinHao</p>
                   </div>
-                  <h3>1. 分析任务</h3>
+                  <div class="container-main"><h3>1. 分析任务</h3>
 <p>上传大文件时，为防止长时间占用主线程，可以将文件分割成多个小片段（chunks），每个片段独立上传。利用 Web Workers 可以并行处理文件的读取、分片、上传等任务。</p>
 <h3>2. 设置 Web Worker 环境</h3>
 <p>首先，你需要创建一个 Worker 脚本。例如，<code>uploadWorker.js</code>，该脚本将用来处理文件的读取及上传逻辑。</p>
@@ -75,7 +76,7 @@ document
     handleFileUpload(file);
   });
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/132.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/134.html'">→ Next<div>

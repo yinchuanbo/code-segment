@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>TS 类型别名应用</h2>
                     <p>2024-06-23 21:35:28 · YinHao</p>
                   </div>
-                  <p>使用类型别名替代联合类型的应用：</p>
+                  <div class="container-main"><p>使用类型别名替代联合类型的应用：</p>
 <pre><code class="language-ts">type AliasStrNum = string | number;
 
 let snAlias: AliasStrNum;
@@ -76,7 +77,7 @@ let agNum: aliasGeneric&lt;number&gt; = {
 
 getXY(agNum);
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/158.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/160.html'">→ Next<div>

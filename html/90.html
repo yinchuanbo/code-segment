@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>内存占用量</h2>
                     <p>2024-06-08 14:01:39 · YinHao</p>
                   </div>
-                  <p>“网页性能” 除了受到 JavaScript 执行和浏览器绘制页面的时间影响之外，还与内存的占用量有关系，且内存的占用量造成的性能问题通常对用户的影响非常明显。</p>
+                  <div class="container-main"><p>“网页性能” 除了受到 JavaScript 执行和浏览器绘制页面的时间影响之外，还与内存的占用量有关系，且内存的占用量造成的性能问题通常对用户的影响非常明显。</p>
 <p>网页性能随着使用时间拉长变得越来越差就是典型的例子，其原因是 JavaScript 使用垃圾回收机制来管理内存，但是垃圾回收时在主线程上进行的，会占用其他任务的时间，当内存占用量过多时，会让垃圾回收的执行效率上升，进而影响网页性能。</p>
 <h3>垃圾回收</h3>
 <p>“垃圾回收” 可以简单理解为每次新建对象、DOM 时，浏览器都会分配内存空间去存储这些对象，然而，当执行垃圾回收时，只要没有任何方式可以存取到某个对象，该对象所占用的内存就会被释放。</p>
@@ -97,7 +98,7 @@ logoData(); // 打印出 [1,2,3]，此函数被释放之前，都无法释放 da
 <li><p>整体网页性能都不如预期：大部分操作都会造成画面延迟，可能是垃圾回收过于频繁，除了内存占用量过多之外，设备内存空间过小也容易出现这种问题。</p>
 </li>
 </ul>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/89.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/91.html'">→ Next<div>

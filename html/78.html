@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>聊聊图片预加载</h2>
                     <p>2024-06-08 13:38:46 · YinHao</p>
                   </div>
-                  <h2>如何进行图片的预加载</h2>
+                  <div class="container-main"><h2>如何进行图片的预加载</h2>
 <p>前端实现图片的预加载，其实是利用了浏览器的缓存，我们通过 a 标签来提前加载图片，如下：</p>
 <pre><code class="language-js">const img = new Image();
 img.src = &quot;链接&quot;;
@@ -88,7 +89,7 @@ function genetateTasks(list, pageSize, pageNum) {
 <h2>推荐</h2>
 <p><a href="https://github.com/desandro/imagesloaded">imagesloaded</a> - 用来判断当前页面图片是否加载好</p>
 <p><a href="https://github.com/CreateJS/PreloadJS">preloadJS</a> - 用来预加载一些文件，除了图片，还有 js、css 等</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/77.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/79.html'">→ Next<div>

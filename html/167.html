@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>TS 模块解析</h2>
                     <p>2024-06-27 17:09:17 · YinHao</p>
                   </div>
-                  <p>TS 模块解析是基于 Node.js 运行时的解析策略在编译阶段定位模块来定位文件的。</p>
+                  <div class="container-main"><p>TS 模块解析是基于 Node.js 运行时的解析策略在编译阶段定位模块来定位文件的。</p>
 <p>TS 模块解析在 Node.js 解析的逻辑基础上，增加了 TS 源文件的相关扩展（.ts、.tsx 和 .d.ts）。另外，TS 在配置文件（package.json）中使用 types 字段来表示类似 main 字段的功能。</p>
 <p>先举一个例子，假如有一个 <code>import</code> 关键字在 <code>/root/src/moduleB.ts</code> 文件中，具体为 <code>import { a } from &quot;./moduleA&quot;</code>，那么 TS 编译器会按照下面的路径流程来定位 <code>./moduleA</code> 的位置。</p>
 <ol>
@@ -53,7 +54,7 @@
 <li>/node_modules/moduleB/index.tsx</li>
 <li>/node_modules/moduleB/index.d.ts</li>
 </ol>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/166.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/168.html'">→ Next<div>

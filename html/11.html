@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>平滑滚动至页面顶部</h2>
                     <p>2024-06-04 20:59:09 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const scrollToTop = () =&gt; {
+                  <div class="container-main"><pre><code class="language-js">const scrollToTop = () =&gt; {
   const c = document.documentElement.scrollTop || document.body.scrollTop;
   if (c &gt; 0) {
     window.requestAnimationFrame(scrollToTop);
@@ -23,7 +24,7 @@
   }
 };
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/10.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/12.html'">→ Next<div>

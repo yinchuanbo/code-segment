@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>六种浏览器跨窗口通信方案</h2>
                     <p>2024-06-18 21:41:52 · YinHao</p>
                   </div>
-                  <h2>业务场景</h2>
+                  <div class="container-main"><h2>业务场景</h2>
 <p>一个常规的业务列表页，页面中提供了一个新增功能，由于新增功能的表单项内容比较多，所以交互上使用新开一个窗口来完成。这时问题来了，在新增完成后，如何通知列表页面刷新列表数据，以便展示出刚才新增的那一条数据。</p>
 <img src="./imgs/148/01.png" />
 
@@ -154,7 +155,7 @@ port.postMessage({ action: &quot;refresh&quot; });
 <h2>总结</h2>
 <p>上述的各种方式都可以实现通知列表页去做刷新动作，不过更推荐使用  window.opener  或  BroadcastChannel  来实现，这两种方式相对使用简单并且很符合这个业务场景。</p>
 <p>对于其他需要跨窗口通信的场景，可以根据各个 API 的能力特点来选择使用哪个。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/147.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/149.html'">→ Next<div>

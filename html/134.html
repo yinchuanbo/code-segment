@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>纯前端怎么实现检测版本更新</h2>
                     <p>2024-06-14 18:46:16 · YinHao</p>
                   </div>
-                  <h2>背景</h2>
+                  <div class="container-main"><h2>背景</h2>
 <p>单页应用（Single Page Application，简称 SPA）是一种现代 Web 应用程序架构，通过动态重载页面中的部分内容来提供更流畅和更响应式的用户体验。由于 SPA 在客户端（用户的浏览器）运行大量的 JavaScript 代码，并且与传统的多页应用不同，它不会每次操作都从服务器重新加载整个页面内容，因此在性能和用户体验上有显著优势。然而这种应用也存在一定弊端，譬如当服务端更新时（接口请求体和响应体结构发生变化），用户所使用的网页静态资源没有同步更新，就有可能导致报错。</p>
 <h2>前言</h2>
 <p>在传统的多页 Web 应用中，每次用户访问页面时，都会从服务器获取最新的页面和资源，因此版本更新相对简单，用户总是能获取到最新的版本。然而，SPA 在首次加载后，前端的静态资源会缓存在浏览器内存中，且在整个使用过程中通常不会自动重新加载。这种特性意味着如果应用有新的版本发布，用户可能仍在使用旧版本，无法立即获得最新的功能、修复或安全更新。</p>
@@ -141,7 +142,7 @@ const compareTag = async () =&gt; {
 timer = setInterval(compareTag, 60000);
 </code></pre>
 <p><img src="./imgs/134/05.awebp" alt=""></p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/133.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/135.html'">→ Next<div>

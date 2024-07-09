@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>git cherry-pick</h2>
                     <p>2024-06-07 18:35:16 · YinHao</p>
                   </div>
-                  <blockquote>
+                  <div class="container-main"><blockquote>
 <p>应用场景对于多分支的代码库，将代码从一个分支转移到另一个分支是常见需求。这时分两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（git merge）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。</p>
 </blockquote>
 <h2>基本用法</h2>
@@ -55,7 +56,7 @@ $ git cherry-pick f
 <p>注意，使用上面的命令，提交 A 将不会包含在 Cherry pick 中。如果要包含提交 A，可以使用下面的语法。</p>
 <pre><code class="language-sh">git cherry-pick A^..B
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/45.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/47.html'">→ Next<div>

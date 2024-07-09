@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>将内容复制到剪贴板</h2>
                     <p>2024-06-04 21:01:42 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">const copyToClipboard = (content) =&gt; {
+                  <div class="container-main"><pre><code class="language-js">const copyToClipboard = (content) =&gt; {
   const textarea = document.createElement(&quot;textarea&quot;);
   textarea.value = content;
   document.body.appendChild(textarea);
@@ -24,7 +25,7 @@
   textarea.remove();
 };
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/15.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/17.html'">→ Next<div>

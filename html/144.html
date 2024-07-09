@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>js 闭包的 6 种应用场景</h2>
                     <p>2024-06-18 20:50:10 · YinHao</p>
                   </div>
-                  <h2>01 什么是闭包?</h2>
+                  <div class="container-main"><h2>01 什么是闭包?</h2>
 <h3>1.1 闭包的基本定义</h3>
 <p>如果一个函数访问了此函数的父级及父级以上的作用域变量，那么这个函数就是一个闭包。闭包会创建一个包含外部函数作用域变量的环境，并将其保存在内存中，这意味着，即使外部函数已经执行完毕，闭包仍然可以访问和使用外部函数的变量。</p>
 <pre><code class="language-js">//闭包实例代码
@@ -281,7 +282,7 @@ closureObj.releaseClosure();
 // 尝试调用闭包函数，此时已解绑，不再引用外部变量
 closureObj.closure(); // 输出：null
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/143.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/145.html'">→ Next<div>

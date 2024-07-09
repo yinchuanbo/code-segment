@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>资源优先级</h2>
                     <p>2024-06-08 14:20:00 · YinHao</p>
                   </div>
-                  <h3>优先级</h3>
+                  <div class="container-main"><h3>优先级</h3>
 <p>浏览器基于自身的启发式算法，会对资源的重要性进行判断来划分优先级，通常从低到高为：<code>Lowest、Low、High、Highest</code>。</p>
 <p>比如，在 <code>&lt;head&gt;</code> 标签中，CSS 文件通常具有最高的优先级 <code>Highest</code>，其次是 <code>&lt;script&gt;</code> 标签所请求的脚本文件，但当 <code>&lt;script&gt;</code> 标签带有 <code>defer</code> 或 <code>async</code> 的异步属性时，其优先级又会降为 <code>Low</code>。我们呢通过浏览器的控制台可以看到浏览器对资源进行的优先级划分。</p>
 <p><img src="./imgs/99/01.jpg" alt=""></p>
@@ -74,7 +75,7 @@
 <p>可能你会觉得对 style.css 的预提取声明，会降低接下来的 <code>&lt;link ref=&quot;stylesheel&quot; href=&quot;style.css&quot; /&gt;</code> 的优先级，但其真实情况是，该文件会被提取两次，第二次可能会使用缓存。</p>
 <p><img src="./imgs/99/02.jpg" alt=""></p>
 <p>显然两次提取对用户体验来说非常糟糕，因为这样不但需要等待阻塞渲染的 css，而且如果第二次提取没有命中缓存，必然会产生带宽的浪费。所以应该充分考虑。</p>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" onclick="location.href='/98.html'">← Prev</div>
                     <div class="nav-next" onclick="location.href='/100.html'">→ Next<div>

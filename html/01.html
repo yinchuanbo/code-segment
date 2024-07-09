@@ -12,10 +12,11 @@
                 <div class="container-back" onclick="location.href='/'">← Back to Home</div>
                 <div class="container">
                   <div class="container-header">
+                    <span onclick="location.href='/'"></span>
                     <h2>js 中类型检测</h2>
                     <p>2024-06-03 21:52:01 · YinHao</p>
                   </div>
-                  <pre><code class="language-js">function typeOf(obj) {
+                  <div class="container-main"><pre><code class="language-js">function typeOf(obj) {
   var _toString = Object.prototype.toString; // 引用 Object 的原型方法 toString()
   var _type = {
     undefined: &quot;undefined&quot;,
@@ -38,7 +39,7 @@
 var _abs = Math.abs;
 console.log(typeOf(_abs)); // &quot;function&quot;
 </code></pre>
-
+</div>
                   <div class="nav">
                     <div class="nav-prev" style='opacity: 0.5;pointer-events: none'>← Prev</div>
                     <div class="nav-next" onclick="location.href='/02.html'">→ Next<div>
