@@ -111,7 +111,7 @@ h1 {
 }
 
 h2 {
-  font-size: 25px;
+  font-size: 24px;
   margin-bottom: 20px;
   position: relative;
   color: #fff;
@@ -125,7 +125,7 @@ h3 {
 }
 
 h4 {
-  font-size: 18px;
+  font-size: 20px;
   margin-bottom: 20px;
 }
 
@@ -180,15 +180,18 @@ ul > li::before {
 }
 
 p {
-  margin: 20px 0;
+  margin-bottom: 20px;
   line-height: 2;
 }
 
 p code {
-  background-color: rgba(255, 0, 0, 0.2);
-  padding-left: 0.25em;
-  padding-right: 0.25em;
-  /* border-radius: 3px; */
+  background-color: rgba(255, 0, 0, 0.5);
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 5px;
+  padding-bottom: 1px;
 }
 
 table {
