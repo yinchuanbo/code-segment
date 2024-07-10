@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>fetch 与 pull 的区别与运用</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>fetch 与 pull 的区别与运用</h2>
+                    <p>2024-07-10 22:46:10 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>在 Git 的版本控制系统中，fetch 和 pull 是两个常见的命令，它们都与从远程仓库获取数据有关。但是，它们之间的功能和用法有着显著的区别。本文将通过代码案例详细解析 fetch 和 pull 的区别，并阐述它们在实际开发中的应用。</p>
+<h2>一、fetch 与 pull 的基本概念</h2>
+<p>在 Git 中，fetch 和 pull 都是用于从远程仓库获取数据的命令。但是，它们在处理方式和结果上有所不同。</p>
+<ol>
+<li>fetch：</li>
+</ol>
+<p>fetch 命令用于从远程仓库下载最新的数据到本地仓库，但它不会自动合并或修改当前的工作。fetch 会将远程仓库中的最新数据拉取到本地仓库的远程跟踪分支上，但不会改变当前工作分支的内容。</p>
+<p>示例代码：</p>
+<pre><code class="language-bash"># 切换到本地仓库
+cd my-local-repo
+
+# 从远程仓库（origin）获取最新数据，但不合并
+git fetch origin
+
+# 查看所有分支的最新状态（包括远程跟踪分支）
+git branch -a
+</code></pre>
+<p>执行 git fetch origin 后，你可以通过 git branch -a 查看所有分支的最新状态，包括本地分支和远程跟踪分支（通常以 remotes/origin/开头）。</p>
+<ol start="2">
+<li>pull：</li>
+</ol>
+<p>pull 命令不仅从远程仓库下载最新的数据，还会自动尝试将这些数据合并到当前工作分支中。换句话说，pull 命令是 fetch 和 merge 两个命令的组合。</p>
+<p>示例代码：</p>
+<pre><code class="language-bash"># 切换到本地仓库
+cd my-local-repo
+
+# 切换到要更新的分支（例如：master）
+git checkout master
+
+# 从远程仓库（origin）获取最新数据，并尝试合并到当前分支
+git pull origin master
+</code></pre>
+<p>执行 <code>git pull origin master</code> 后，Git 会首先执行 fetch 命令从远程仓库获取 master 分支的最新数据，然后尝试将这些数据合并到本地的 master 分支中。如果合并过程中出现冲突，Git 会提示你手动解决这些冲突。</p>
+<h2>二、fetch 与 pull 的区别</h2>
+<ol>
+<li>操作对象不同：</li>
+</ol>
+<ul>
+<li>fetch 操作的是远程跟踪分支。</li>
+<li>pull 操作的是当前工作分支。</li>
+</ul>
+<ol start="2">
+<li>合并方式不同：</li>
+</ol>
+<ul>
+<li>fetch 不会自动合并远程仓库的数据到当前工作分支中。</li>
+<li>pull 会尝试将远程仓库的数据合并到当前工作分支中。</li>
+</ul>
+<ol start="3">
+<li>提交历史不同：</li>
+</ol>
+<ul>
+<li><p>使用 fetch 更新代码时，本地的库中对应远程跟踪分支的 commit ID 会更新，但当前分支的 commit ID 不会改变。</p>
+</li>
+<li><p>使用 pull 更新代码时，如果合并成功，本地的库中当前分支的 commit ID 会发生变化，因为 pull 实际上会创建一个新的合并提交。</p>
+</li>
+</ul>
+<h2>三、fetch 与 pull 的实际应用</h2>
+<ol>
+<li>使用 fetch 查看远程仓库的最新更改：</li>
+</ol>
+<p>当你想要查看远程仓库的最新更改而不希望这些更改立即影响你的工作时，可以使用 fetch 命令。通过查看远程跟踪分支的更改，你可以决定是否将这些更改合并到你的工作分支中。</p>
+<ol start="2">
+<li>使用 pull 同步远程仓库的更改：</li>
+</ol>
+<p>当你确定要将远程仓库的更改合并到你的工作分支中时，可以使用 pull 命令。这将自动从远程仓库下载最新的数据并尝试将它们合并到你的工作分支中。如果合并过程中出现冲突，你需要手动解决这些冲突。</p>
+<h2>总结</h2>
+<p>fetch 和 pull 是 Git 中用于从远程仓库获取数据的两个重要命令。它们在处理方式和结果上有所不同，因此在实际开发中需要根据具体需求选择使用哪个命令。通过深入理解这两个命令的区别和应用场景，你可以更好地利用 Git 进行版本控制和管理。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/206.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/208.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

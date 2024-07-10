@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS 实现倾斜按钮</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>CSS 实现倾斜按钮</h2>
+                    <p>2024-07-10 22:27:59 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>有时候，在菜单里面会出现倾斜的按钮</p>
+<img src="./imgs/206/01.jpg" />
+
+<p>可以使用背景图片的方式，也可以使用纯 css 的方式，从效率上来说 css 效率更高，这里使用 css 的方式来实现这个倾斜按钮</p>
+<h2>初始化基本的样式</h2>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;style&gt;
+      button {
+        width: 180px;
+        height: 60px;
+        border: none;
+        background: #000;
+        outline: none;
+        color: #fff;
+        font-size: 18px;
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body style=&quot;text-align: center;&quot;&gt;
+    &lt;button&gt;
+      &lt;span&gt;倾斜按钮&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>效果:</p>
+<img src="./imgs/206/02.jpg" />
+
+<h2>步骤</h2>
+<ol>
+<li>设置圆角</li>
+</ol>
+<p>圆角不能四个角都设置，设置左上和右下就可以了</p>
+<pre><code class="language-css">/* 设置左上和右下 15px 右上和左下为0 */
+border-radius: 15px 0;
+</code></pre>
+<p>效果如下:</p>
+<img src="./imgs/206/03.jpg" />
+
+<ol start="2">
+<li>设置左下和右上的两个角</li>
+</ol>
+<p>首先设置两个方块，这两个方块肯定是绝对定位，所以要将按钮设置为相对定位，然后给这个按钮加上一个<code>::before</code>，其中一个方块就把它设置成绝对定位，然后设置宽高，设置背景颜色</p>
+<pre><code class="language-css">button::before {
+  content: &quot;&quot;;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #f40;
+}
+</code></pre>
+<p>效果:</p>
+<img src="./imgs/206/04.jpg" />
+
+<p>目前这个方块在这个位置，需要把这个位置调整到左下角</p>
+<pre><code class="language-css">bottom: 0;
+left: -20px;
+</code></pre>
+<p>调整后效果如下:</p>
+<img src="./imgs/206/05.jpg" />
+
+<p>调整之后需要改变一下背景，这个背景不是一个纯色背景，而是一个渐变背景；圆心点在中间，中间向四周扩散；蓝色从最开始扩散 5px，然后再红色从 5px 扩散到结束</p>
+<pre><code class="language-css">/* 镜像渐变背景 */
+background: radial-gradient(circle at 50% 50%, blue 0 5px, red 5px);
+</code></pre>
+<p>效果:</p>
+<img src="./imgs/206/06.jpg" />
+
+<p>这跟最终效果的关系是：可以去设置扩散的圆心，不让它在中心了，而是让它在左上角，设置为<code>0 0</code>，</p>
+<img src="./imgs/206/01.png" />
+
+<p>可以看到这个蓝色就是以左上角为圆心，向四周扩散，然后生效的是红色。
+然后将蓝色区域放大，放大到 20px，然后把蓝色变成透明，红色变成黑色，这样左下角就出来了</p>
+<pre><code class="language-css">background: radial-gradient(circle at 0 0, transparent 0 20px, #000 5px);
+</code></pre>
+<img src="./imgs/206/07.jpg" />
+
+<p>用同样的方式可以实现右上角</p>
+<pre><code class="language-css">button::after {
+  content: &quot;&quot;;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  /* 镜像渐变背景 */
+  background: radial-gradient(circle at 0 0, transparent 0 20px, #000 5px);
+  top: 0;
+  right: -20px;
+}
+</code></pre>
+<img src="./imgs/206/08.jpg" />
+
+<p>发现右上角的位置不对，就要改变它的扩散圆心点，把它从左上的扩散变成右下的扩散，改变圆心点即可</p>
+<pre><code class="language-css">background: radial-gradient(circle at 100% 100%, transparent 0 20px, #000 5px);
+</code></pre>
+<img src="./imgs/206/09.jpg" />
+
+<p>这样整个效果就差不多了，然后就把整个按钮倾斜。</p>
+<h2>倾斜按钮</h2>
+<p>将按钮倾斜 20deg</p>
+<pre><code class="language-css">/* 倾斜 -20deg */
+transform: skew(-20deg);
+</code></pre>
+<img src="./imgs/206/10.jpg" />
+
+<p>效果实现了，发现文字也倾斜了</p>
+<h2>扶正文字</h2>
+<p>只需要将文字扶正，反向倾斜 20deg 就可以了</p>
+<pre><code class="language-css">button span {
+  display: block;
+  transform: skew(20deg);
+}
+</code></pre>
+<p>这样最终效果就实现了</p>
+<img src="./imgs/206/11.jpg" />
+
+<h2>全部代码</h2>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;style&gt;
+      button {
+        position: relative;
+        width: 180px;
+        height: 60px;
+        border: none;
+        background: #000;
+        outline: none;
+        color: #fff;
+        font-size: 18px;
+        /* 设置左上和右下 15px 右上和左下为0 */
+        border-radius: 15px 0;
+        /* 倾斜 -20deg */
+        transform: skew(-20deg);
+      }
+
+      button::before {
+        content: &quot;&quot;;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        /* 镜像渐变背景 */
+        background: radial-gradient(
+          circle at 0 0,
+          transparent 0 20px,
+          #000 5px
+        );
+        bottom: 0;
+        left: -20px;
+      }
+
+      button::after {
+        content: &quot;&quot;;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        /* 镜像渐变背景 */
+        background: radial-gradient(
+          circle at 100% 100%,
+          transparent 0 20px,
+          #000 5px
+        );
+        top: 0;
+        right: -20px;
+      }
+
+      button span {
+        display: block;
+        transform: skew(20deg);
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body style=&quot;text-align: center;&quot;&gt;
+    &lt;button&gt;
+      &lt;span&gt;倾斜按钮&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/205.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/207.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

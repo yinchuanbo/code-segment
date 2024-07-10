@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>EventSource</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>EventSource</h2>
+                    <p>2024-07-10 21:51:04 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>EventSource 是一个用于接收服务器发送的事件流的接口，通常用于实现服务器端推送（Server-Sent Events，SSE）。通过 EventSource，客户端可以与服务器建立持久的连接，服务器可以随时向客户端发送事件数据，而客户端则可以通过监听这些事件来实时获取数据更新。</p>
+<p>以下是 EventSource 的基本用法：</p>
+<h2>1.创建 EventSource 实例：</h2>
+<pre><code class="language-js">const eventSource = new EventSource(url);
+</code></pre>
+<p>其中 url 是服务器端提供事件流的 URL。</p>
+<h2>2.监听事件：</h2>
+<pre><code class="language-js">eventSource.onmessage = function (event) {
+  console.log(&quot;Received message:&quot;, event.data);
+};
+
+eventSource.onerror = function (event) {
+  console.error(&quot;Error occurred:&quot;, event);
+};
+</code></pre>
+<p>通过 onmessage 事件处理程序可以监听服务器发送的消息事件，而 onerror 事件处理程序则用于处理错误事件。</p>
+<h2>3.关闭连接：</h2>
+<pre><code class="language-js">eventSource.close();
+</code></pre>
+<p>通过调用 close() 方法可以关闭 EventSource 实例，断开与服务器的连接。</p>
+<p>下面是一个简单的示例，演示了如何使用 EventSource 从服务器端接收事件流：</p>
+<pre><code class="language-js">const eventSource = new EventSource(&quot;server-events.php&quot;);
+
+eventSource.onmessage = function (event) {
+  console.log(&quot;Received message:&quot;, event.data);
+};
+
+eventSource.onerror = function (event) {
+  console.error(&quot;Error occurred:&quot;, event);
+};
+
+// 在需要的时候关闭连接
+// eventSource.close();
+</code></pre>
+<p>在这个示例中，客户端通过 EventSource 建立了与服务器的连接，并监听来自服务器的事件。当服务器发送事件时，客户端会收到消息，并通过 onmessage 处理程序处理事件数据。如果发生错误，客户端可以通过 onerror 处理程序进行处理。最后，如果不再需要连接，可以通过调用 close() 方法来关闭连接。</p>
+<p>使用 EventSource 和 WebSocket 在前端都可以实现实时数据传输，但它们之间有一些关键区别：</p>
+<p><strong>EventSource：</strong></p>
+<ul>
+<li>单向通信：EventSource 是一种单向通信协议，只能从服务器向客户端发送数据。</li>
+<li>基于 HTTP：EventSource 基于 HTTP 协议，使用长轮询（long-polling）机制来实现服务器向客户端的推送。</li>
+<li>自动重连：EventSource 在连接中断时会自动尝试重新连接服务器，不需要手动处理重连逻辑。</li>
+<li>自动解析数据：EventSource 可以自动解析服务器发送的数据，数据格式为纯文本或 JSON 格式。</li>
+</ul>
+<p><strong>WebSocket：</strong></p>
+<ul>
+<li>双向通信：WebSocket 是一种双向通信协议，客户端和服务器之间可以进行双向实时通信。</li>
+<li>持久连接：WebSocket 使用持久连接，可以在客户端和服务器之间保持长期连接，实现实时双向通信。</li>
+<li>二进制数据支持：WebSocket 支持传输二进制数据，不仅限于文本数据。</li>
+<li>自定义协议：WebSocket 可以使用自定义协议，而不仅仅局限于 HTTP 协议。</li>
+</ul>
+<p>根据需求，你可以选择使用 EventSource 或 WebSocket 来实现实时数据传输。如果只需要从服务器向客户端推送数据，并且不需要双向通信，可以使用 EventSource。如果需要双向实时通信，传输二进制数据，或者使用自定义协议，那么 WebSocket 是更好的选择。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/201.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/203.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>通过视频地址，获取指定帧做封面</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>通过视频地址，获取指定帧做封面</h2>
+                    <p>2024-07-10 23:01:14 · YinHao</p>
+                  </div>
+                  <div class="container-main"><pre><code class="language-js">// 测试地址
+const mockMp4 =
+  &quot;https://sf1-cdn-tos.huoshanstatic.com/obj/media-fe/xgplayer_doc_video/mp4/xgplayer-demo-360p.mp4&quot;;
+/*
+ * 根据视频地址获取视频的某一帧做封面
+ * url 视频地址
+ * time 获取视频的第几秒，默认第一秒,首帧
+ */
+const captureVideoFrame = async (url, time = 1) =&gt; {
+  return new Promise((resolve) =&gt; {
+    const video = document.createElement(&quot;video&quot;);
+    video.crossOrigin = &quot;anonymous&quot;;
+    video.currentTime = time;
+    video.muted = true;
+    video.autoplay = true;
+    video.src = url;
+    video.addEventListener(&quot;loadedmetadata&quot;, function () {
+      video.oncanplay = function () {
+        const canvas = document.createElement(&quot;canvas&quot;);
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext(&quot;2d&quot;);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL(&quot;image/png&quot;);
+        canvas.toBlob((blob) =&gt; {
+          // blob 用于上传服务器
+          // dataUrl 用于前端展示
+          const res = {
+            blob,
+            dataUrl,
+          };
+          resolve(res);
+        });
+      };
+    });
+  });
+};
+
+// 注意：画面帧的时间，单位为秒，默认为 1
+captureVideoFrame(mockMp4).then((res) =&gt; {
+  const img = document.createElement(&quot;img&quot;);
+  img.src = res.dataUrl;
+  document.body.appendChild(img);
+});
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/208.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/210.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

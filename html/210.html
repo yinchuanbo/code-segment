@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>CSS 中的 var() 函数</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>CSS 中的 var() 函数</h2>
+                    <p>2024-07-10 23:03:22 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>基础定义</h2>
+<pre><code class="language-css">property: var(--variable-name, fallback-value);
+</code></pre>
+<ol>
+<li><p>property: 这是要应用值的 CSS 属性。</p>
+</li>
+<li><p>--variable-name: 这是使用 <code>--</code> 前缀定义的 CSS 变量的名称。</p>
+</li>
+<li><p>fallback-value: 这是可选的，表示当变量 <code>--variable-name</code> 无效或未定义时的备用值。</p>
+</li>
+</ol>
+<p>CSS 中的 var() 函数允许你使用自定义属性（CSS 变量）来指定属性值。它特别适用于定义可重用的值，比如颜色、字体大小或者任何你希望在整个样式表中重复使用的属性值。以下是一个基本示例：</p>
+<pre><code class="language-css">:root {
+  --main-color: #3498db;
+}
+
+.element {
+  color: var(--main-color);
+  background-color: var(--main-color);
+}
+</code></pre>
+<ol>
+<li><p><code>--main-color</code> 在 <code>:root</code> 中全局定义。</p>
+</li>
+<li><p><code>var(--main-color)</code> 用于将颜色应用到 <code>.element</code> 类中。</p>
+</li>
+</ol>
+<p>使用带有 var() 的变量有助于保持一致性，并且通过更改一个变量值即可轻松更新整个样式表中的样式。</p>
+<p><strong>在 JavaScript 中，你可以访问和操作使用 CSS 中 var() 函数定义的 CSS 变量：</strong></p>
+<p><strong>访问 JavaScript 中的 CSS 变量</strong></p>
+<p>可以使用 getComputedStyle 函数与 getPropertyValue 方法来访问 CSS 变量。假设你有相同的 <code>--main-color</code> 变量定义</p>
+<pre><code class="language-js">// 获取元素的计算样式
+const element = document.querySelector(&quot;.element&quot;);
+const styles = getComputedStyle(element);
+
+// 访问 --main-color 变量的值
+const mainColor = styles.getPropertyValue(&quot;--main-color&quot;);
+
+console.log(mainColor); // 输出：#3498db
+</code></pre>
+<p><strong>设置 JavaScript 中的 CSS 变量</strong></p>
+<p>也可以使用 JavaScript 动态更改 CSS 变量的值：</p>
+<pre><code class="language-js">// 设置 --main-color 变量的值
+document.documentElement.style.setProperty(&quot;--main-color&quot;, &quot;#ff6347&quot;);
+</code></pre>
+<p><strong>在 JavaScript 中使用 CSS 变量</strong></p>
+<p>CSS 变量可以用于 JavaScript 中的各种样式操作，它们提供了一种强大的方式来在你的 Web 应用程序中保持一致性并动态更新样式。</p>
+<p>CSS 中的 var() 函数用于定义和访问自定义属性，通常称为 CSS 变量。这些变量作用域限定在文档树中，允许在整个样式表中重复使用数值。它们特别有利于通过集中数值于一处，在 Web 设计中保持一致性并简化更新。这一定义突显了 CSS 变量如何优化样式管理，并增强在 Web 项目中的可维护性。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/209.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
