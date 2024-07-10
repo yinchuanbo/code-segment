@@ -6,6 +6,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: hack;
+  text-shadow: none;
 }
 
 :root {
@@ -26,6 +27,7 @@ body {
   color: var(--color02);
   font-size: var(--fs01);
   overflow: hidden;
+  text-shadow: none;
 }
 
 ::-webkit-scrollbar {
@@ -99,6 +101,10 @@ h4 {
   padding-right: calc((100% - 975px) / 2);
 }
 
+.container-main p {
+  line-height: 2;
+}
+
 .container-main > * {
   margin-bottom: 20px !important;
 }
@@ -118,6 +124,7 @@ code[class*="language-"] {
 
 pre[class*="language-"] {
   background: initial;
+  margin: 0;
 }
 
 .code-toolbar {

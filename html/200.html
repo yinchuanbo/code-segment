@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>React 如何优雅的使用 TypeScript</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>React 如何优雅的使用 TypeScript</h2>
+                    <p>2024-07-10 11:26:36 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>在 React 项目中使用 TypeScript 可以显著提高代码的可维护性和可读性，并提供强大的类型检查功能，减少运行时错误。以下是一些优雅地将 TypeScript 集成到 React 项目中的最佳实践和技巧。</p>
+<h2>1. 创建 React TypeScript 项目</h2>
+<p>你可以使用 Create React App 来创建一个 TypeScript 项目：</p>
+<pre><code class="language-bash">npx create-react-app my-app --template typescript
+</code></pre>
+<h2>2. 配置 TypeScript</h2>
+<p>确保你的<code>tsconfig.json</code>文件配置正确。以下是一个常见的<code>tsconfig.json</code>配置：</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;es5&quot;,  // 将编译后的代码目标设置为 ECMAScript 5，确保生成的代码可以在较老的浏览器或环境中运行。
+    &quot;lib&quot;: [&quot;dom&quot;, &quot;dom.iterable&quot;, &quot;esnext&quot;],  // 指定要包含在编译中的库，包含DOM、DOM可迭代对象和最新的ECMAScript特性。
+    &quot;allowJs&quot;: true,  // 允许编译JavaScript文件。
+    &quot;skipLibCheck&quot;: true,  // 跳过类型声明文件的类型检查，加快编译速度。
+    &quot;esModuleInterop&quot;: true,  // 启用对ES模块互操作性的支持，允许CommonJS和ES模块之间更好地兼容。
+    &quot;allowSyntheticDefaultImports&quot;: true,  // 允许从没有默认导出的模块中导入默认导入（synthetic default imports）。
+    &quot;strict&quot;: true,  // 启用所有严格类型检查选项，确保代码更健壮。
+    &quot;forceConsistentCasingInFileNames&quot;: true,  // 强制文件名中的大小写一致，避免在不同操作系统上出现问题。
+    &quot;noFallthroughCasesInSwitch&quot;: true,  // 在switch语句中禁止case语句贯穿，确保每个case块末尾都有break语句。
+    &quot;module&quot;: &quot;esnext&quot;,  // 使用最新的ES模块语法。
+    &quot;moduleResolution&quot;: &quot;node&quot;,  // 使用Node.js的模块解析策略，方便在Node.js项目中使用。
+    &quot;resolveJsonModule&quot;: true,  // 允许导入JSON文件。
+    &quot;isolatedModules&quot;: true,  // 将每个文件作为单独的模块进行编译，增强代码隔离性。
+    &quot;jsx&quot;: &quot;react-jsx&quot;  // 使用React JSX变换，支持新的JSX转换特性。
+  },
+  &quot;include&quot;: [&quot;src&quot;]  // 指定要包含在编译中的文件或文件夹，这里是src文件夹。
+}
+</code></pre>
+<h2>3. 基本类型注解</h2>
+<p>使用 TypeScript 来定义组件的 props 和 state。以下是一个简单的例子：</p>
+<h3>函数组件</h3>
+<pre><code class="language-tsx">import React from &quot;react&quot;;
+
+interface GreetingProps {
+  name: string;
+}
+
+const Greeting: React.FC&lt;GreetingProps&gt; = ({ name }) =&gt; {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+};
+
+export default Greeting;
+</code></pre>
+<h3>类组件</h3>
+<pre><code class="language-ts">import React, { Component } from &quot;react&quot;;
+
+interface GreetingProps {
+  name: string;
+}
+
+interface GreetingState {
+  count: number;
+}
+
+class Greeting extends Component&lt;GreetingProps, GreetingState&gt; {
+  constructor(props: GreetingProps) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Hello, {this.props.name}!&lt;/h1&gt;
+        &lt;p&gt;Count: {this.state.count}&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+export default Greeting;
+</code></pre>
+<h2>4. 使用 Hooks</h2>
+<p>使用 TypeScript 来类型化 Hooks：</p>
+<h3>useState</h3>
+<pre><code class="language-tsx">import React, { useState } from &quot;react&quot;;
+
+const Counter: React.FC = () =&gt; {
+  const [count, setCount] = useState&lt;number&gt;(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+export default Counter;
+</code></pre>
+<h3>useReducer</h3>
+<pre><code class="language-tsx">import React, { useReducer } from &quot;react&quot;;
+
+interface State {
+  count: number;
+}
+
+type Action = { type: &quot;increment&quot; } | { type: &quot;decrement&quot; };
+
+const initialState: State = { count: 0 };
+
+const reducer = (state: State, action: Action): State =&gt; {
+  switch (action.type) {
+    case &quot;increment&quot;:
+      return { count: state.count + 1 };
+    case &quot;decrement&quot;:
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const Counter: React.FC = () =&gt; {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{state.count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: &quot;increment&quot; })}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: &quot;decrement&quot; })}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;
+</code></pre>
+<h2>5. Context API</h2>
+<p>使用 TypeScript 来类型化 Context：</p>
+<pre><code class="language-tsx">import React, { createContext, useContext, useState, ReactNode } from &quot;react&quot;;
+
+interface AuthContextType {
+  user: string | null;
+  login: (username: string) =&gt; void;
+  logout: () =&gt; void;
+}
+
+const AuthContext = createContext&lt;AuthContextType | undefined&gt;(undefined);
+
+export const AuthProvider: React.FC&lt;{ children: ReactNode }&gt; = ({
+  children,
+}) =&gt; {
+  const [user, setUser] = useState&lt;string | null&gt;(null);
+
+  const login = (username: string) =&gt; {
+    setUser(username);
+  };
+
+  const logout = () =&gt; {
+    setUser(null);
+  };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};
+
+export const useAuth = (): AuthContextType =&gt; {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error(&quot;useAuth must be used within an AuthProvider&quot;);
+  }
+  return context;
+};
+</code></pre>
+<h2>6. 高阶组件（HOC）</h2>
+<p>定义高阶组件时，需要正确地处理传递的 props 和增强的 props。</p>
+<pre><code class="language-tsx">import React, { ComponentType } from &quot;react&quot;;
+
+interface WithLoadingProps {
+  loading: boolean;
+}
+
+const withLoading =
+  &lt;P extends object&gt;(
+    WrappedComponent: ComponentType&lt;P&gt;
+  ): React.FC&lt;P &amp; WithLoadingProps&gt; =&gt;
+  ({ loading, ...props }) =&gt; {
+    if (loading) {
+      return &lt;div&gt;Loading...&lt;/div&gt;;
+    }
+    return &lt;WrappedComponent {...(props as P)} /&gt;;
+  };
+
+export default withLoading;
+</code></pre>
+<h2>7. 类型声明文件</h2>
+<p>如果你使用的库没有类型定义文件，可以创建类型声明文件。例如，可以在 <code>src/types</code> 文件夹中添加一个 <code>custom.d.ts</code> 文件：</p>
+<pre><code class="language-ts">// src/types/custom.d.ts
+declare module &quot;my-library&quot; {
+  export function myFunction(): string;
+}
+</code></pre>
+<h2>8. 使用第三方库的类型</h2>
+<p>安装并使用第三方库的类型定义。例如，对于<code>lodash</code>库：</p>
+<pre><code class="language-bash">yarn add lodash
+yarn add @types/lodash --dev
+# or
+npm install lodash
+npm install @types/lodash --save-dev
+</code></pre>
+<p>然后在代码中使用：</p>
+<pre><code class="language-tsx">import _ from &quot;lodash&quot;;
+const result = _.chunk([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;], 2);
+</code></pre>
+<h2>9. 配置 ESLint 和 Prettier</h2>
+<p>使用 ESLint 和 Prettier 进行代码质量和风格检查：</p>
+<h3>安装 ESLint 和 Prettier</h3>
+<pre><code class="language-bash">yarn add eslint eslint-plugin-react @typescript-eslint/parser @typescript-eslint/eslint-plugin --dev
+yarn add prettier eslint-config-prettier eslint-plugin-prettier --dev
+# or
+npm install eslint eslint-plugin-react @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
+npm install prettier eslint-config-prettier eslint-plugin-prettier --save-dev
+</code></pre>
+<h3>配置 ESLint</h3>
+<p>在项目根目录创建 <code>.eslintrc.js</code> 文件：</p>
+<pre><code class="language-js">module.exports = {
+  parser: &quot;@typescript-eslint/parser&quot;,
+  extends: [
+    &quot;plugin:react/recommended&quot;,
+    &quot;plugin:@typescript-eslint/recommended&quot;,
+    &quot;prettier&quot;,
+    &quot;prettier/@typescript-eslint&quot;,
+    &quot;prettier/react&quot;,
+  ],
+  plugins: [&quot;@typescript-eslint&quot;, &quot;react&quot;, &quot;prettier&quot;],
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: &quot;module&quot;,
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  settings: {
+    react: {
+      version: &quot;detect&quot;,
+    },
+  },
+  rules: {
+    &quot;prettier/prettier&quot;: &quot;error&quot;,
+  },
+};
+</code></pre>
+<h3>配置 Prettier</h3>
+<p>在项目根目录创建 <code>.prettierrc</code> 文件：</p>
+<pre><code class="language-json">{
+  &quot;singleQuote&quot;: true,
+  &quot;trailingComma&quot;: &quot;all&quot;,
+  &quot;printWidth&quot;: 80
+}
+</code></pre>
+<h2>总结</h2>
+<p>通过使用 TypeScript，结合 React 的功能，可以大幅度提升代码的健壮性和可维护性。上述的实践包括基本类型注解、使用 Hooks、Context API、高阶组件等。良好的工具和配置（如 ESLint 和 Prettier）也可以确保代码风格一致，并帮助发现潜在的问题。通过这些措施，可以优雅地在 React 项目中使用 TypeScript，提高开发效率和代码质量。</p>
+<h3>追问：常见的在 React 中使用的 TS 方法有哪些？</h3>
+<p>在 React 中使用 TypeScript 时，有许多常见的模式和技巧，可以帮助你更高效地管理类型和组件。以下是一些常见的在 React 中使用 TypeScript 的方法和最佳实践：</p>
+<h2>1. 基本类型注解</h2>
+<h3>函数组件</h3>
+<p>为函数组件的 props 定义接口，并使用<code>React.FC</code>来定义函数组件：</p>
+<pre><code class="language-tsx">import React from &quot;react&quot;;
+
+interface GreetingProps {
+  name: string;
+}
+
+const Greeting: React.FC&lt;GreetingProps&gt; = ({ name }) =&gt; {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+};
+
+export default Greeting;
+</code></pre>
+<h3>类组件</h3>
+<p>为类组件的 props 和 state 定义接口，并使用它们在类组件中：</p>
+<pre><code class="language-tsx">import React, { Component } from &quot;react&quot;;
+
+interface GreetingProps {
+  name: string;
+}
+
+interface GreetingState {
+  count: number;
+}
+
+class Greeting extends Component&lt;GreetingProps, GreetingState&gt; {
+  constructor(props: GreetingProps) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Hello, {this.props.name}!&lt;/h1&gt;
+        &lt;p&gt;Count: {this.state.count}&lt;/p&gt;
+        &lt;button onClick={() =&gt; this.setState({ count: this.state.count + 1 })}&gt;
+          Increment
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+export default Greeting;
+</code></pre>
+<h2>2. 使用 Hooks</h2>
+<h3>useState</h3>
+<p>为 useState 定义初始值和类型：</p>
+<pre><code class="language-tsx">import React, { useState } from &quot;react&quot;;
+
+const Counter: React.FC = () =&gt; {
+  const [count, setCount] = useState&lt;number&gt;(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;
+</code></pre>
+<h3>useEffect</h3>
+<p>为 useEffect 定义类型和依赖项：</p>
+<pre><code class="language-tsx">import React, { useEffect, useState } from &quot;react&quot;;
+
+const Timer: React.FC = () =&gt; {
+  const [time, setTime] = useState&lt;Date&gt;(new Date());
+
+  useEffect(() =&gt; {
+    const timer = setInterval(() =&gt; {
+      setTime(new Date());
+    }, 1000);
+    return () =&gt; clearInterval(timer);
+  }, []);
+
+  return &lt;div&gt;{time.toLocaleTimeString()}&lt;/div&gt;;
+};
+
+export default Timer;
+</code></pre>
+<h3>useReducer</h3>
+<p>为 useReducer 定义状态和动作类型：</p>
+<pre><code class="language-tsx">import React, { useReducer } from &quot;react&quot;;
+
+interface State {
+  count: number;
+}
+
+type Action = { type: &quot;increment&quot; } | { type: &quot;decrement&quot; };
+
+const initialState: State = { count: 0 };
+
+const reducer = (state: State, action: Action): State =&gt; {
+  switch (action.type) {
+    case &quot;increment&quot;:
+      return { count: state.count + 1 };
+    case &quot;decrement&quot;:
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const Counter: React.FC = () =&gt; {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{state.count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: &quot;increment&quot; })}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: &quot;decrement&quot; })}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;
+</code></pre>
+<h2>3. 使用 Context API</h2>
+<p>为 Context 定义类型和默认值：</p>
+<pre><code class="language-tsx">import React, { createContext, useContext, useState, ReactNode } from &quot;react&quot;;
+
+interface AuthContextType {
+  user: string | null;
+  login: (username: string) =&gt; void;
+  logout: () =&gt; void;
+}
+
+const AuthContext = createContext&lt;AuthContextType | undefined&gt;(undefined);
+
+export const AuthProvider: React.FC&lt;{ children: ReactNode }&gt; = ({
+  children,
+}) =&gt; {
+  const [user, setUser] = useState&lt;string | null&gt;(null);
+
+  const login = (username: string) =&gt; {
+    setUser(username);
+  };
+
+  const logout = () =&gt; {
+    setUser(null);
+  };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};
+
+export const useAuth = (): AuthContextType =&gt; {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error(&quot;useAuth must be used within an AuthProvider&quot;);
+  }
+  return context;
+};
+</code></pre>
+<h2>4. 使用高阶组件（HOC）</h2>
+<p>定义高阶组件的 props 和类型：</p>
+<pre><code class="language-tsx">import React, { ComponentType } from &quot;react&quot;;
+
+interface WithLoadingProps {
+  loading: boolean;
+}
+
+const withLoading =
+  &lt;P extends object&gt;(
+    WrappedComponent: ComponentType&lt;P&gt;
+  ): React.FC&lt;P &amp; WithLoadingProps&gt; =&gt;
+  ({ loading, ...props }) =&gt; {
+    if (loading) {
+      return &lt;div&gt;Loading...&lt;/div&gt;;
+    }
+    return &lt;WrappedComponent {...(props as P)} /&gt;;
+  };
+
+export default withLoading;
+</code></pre>
+<h2>5. 使用 refs</h2>
+<p>为 refs 定义类型：</p>
+<pre><code class="language-tsx">import React, { useRef, useEffect } from &quot;react&quot;;
+
+const FocusInput: React.FC = () =&gt; {
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+  useEffect(() =&gt; {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  return &lt;input ref={inputRef} type=&quot;text&quot; /&gt;;
+};
+
+export default FocusInput;
+</code></pre>
+<h2>6. 定义复杂对象和枚举</h2>
+<p>定义复杂对象类型和使用枚举：</p>
+<pre><code class="language-tsx">interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+enum UserRole {
+  Admin = &quot;admin&quot;,
+  User = &quot;user&quot;,
+  Guest = &quot;guest&quot;,
+}
+
+const UserProfile: React.FC&lt;{ user: User; role: UserRole }&gt; = ({
+  user,
+  role,
+}) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{user.name}&lt;/h1&gt;
+      &lt;p&gt;Email: {user.email}&lt;/p&gt;
+      &lt;p&gt;Role: {role}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default UserProfile;
+</code></pre>
+<h2>7. 类型推断和联合类型</h2>
+<p>使用 TypeScript 的类型推断和联合类型：</p>
+<pre><code class="language-tsx">type Status = &quot;loading&quot; | &quot;success&quot; | &quot;error&quot;;
+
+interface LoadingState {
+  status: &quot;loading&quot;;
+}
+
+interface SuccessState {
+  status: &quot;success&quot;;
+  data: string;
+}
+
+interface ErrorState {
+  status: &quot;error&quot;;
+  error: string;
+}
+
+type State = LoadingState | SuccessState | ErrorState;
+
+const FetchData: React.FC = () =&gt; {
+  const [state, setState] = useState&lt;State&gt;({ status: &quot;loading&quot; });
+
+  useEffect(() =&gt; {
+    // 模拟数据请求
+    setTimeout(() =&gt; {
+      setState({ status: &quot;success&quot;, data: &quot;Hello World&quot; });
+    }, 1000);
+  }, []);
+
+  if (state.status === &quot;loading&quot;) {
+    return &lt;div&gt;Loading...&lt;/div&gt;;
+  }
+
+  if (state.status === &quot;error&quot;) {
+    return &lt;div&gt;Error: {state.error}&lt;/div&gt;;
+  }
+
+  return &lt;div&gt;Data: {state.data}&lt;/div&gt;;
+};
+
+export default FetchData;
+</code></pre>
+<h2>总结</h2>
+<p>通过使用这些常见的 TypeScript 方法，可以更优雅地管理 React 应用中的类型和组件。通过正确使用 TypeScript 的类型注解、类型推断和高级类型特性，可以显著提高代码的可维护性、可读性和安全性。以下是一些关键点：</p>
+<ul>
+<li><strong>函数组件和类组件的基本类型注解</strong></li>
+<li><strong>使用 Hooks（如 useState、useEffect、useReducer）的类型定义</strong></li>
+<li><strong>Context API 的类型定义</strong></li>
+<li><strong>高阶组件（HOC）的类型定义</strong></li>
+<li><strong>使用 refs 的类型定义</strong></li>
+<li><strong>复杂对象和枚举的使用</strong></li>
+<li><strong>类型推断和联合类型的使用</strong></li>
+</ul>
+<p>通过这些方法，可以充分利用 TypeScript 在 React 中的强大功能，编写出更健壮、更可靠的代码。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/199.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

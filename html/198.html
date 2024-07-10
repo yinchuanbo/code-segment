@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>跨站脚本攻击（XSS）示例与解决方案</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>跨站脚本攻击（XSS）示例与解决方案</h2>
+                    <p>2024-07-10 10:49:23 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>跨站脚本攻击（Cross-Site Scripting，通常缩写为 XSS）是一种常见的网络安全漏洞，它允许攻击者将恶意脚本注入到其他用户会浏览的页面中。</p>
+<h2>XSS 攻击通常分为三种类型</h2>
+<p><strong>1. 反射型 XSS</strong>：攻击者诱使用户点击一个链接，该链接包含恶意脚本，当用户点击时，恶意脚本被发送到服务器，然后立即反射回用户的浏览器执行。</p>
+<p><strong>2. 存储型 XSS</strong>：恶意脚本被存储在目标服务器上（例如在数据库中），当其他用户访问存储了恶意脚本的页面时，脚本会被执行。</p>
+<p><strong>3. DOM-based XSS</strong>：当页面的 Document Object Model（DOM）被恶意脚本修改，并且这些修改导致浏览器执行了恶意操作时发生的 XSS 攻击。</p>
+<h2>XSS 示例</h2>
+<p><strong>1. 反射型 XSS 示例：</strong></p>
+<p>反射型 XSS 通常发生在应用程序接收输入并将其作为响应的一部分返回给用户时，而没有进行适当的处理。</p>
+<p>假设有一个搜索功能的 URL 如下：</p>
+<pre><code class="language-bash">http://example.com/search?query=&lt;script&gt;alert(&quot;XSS&quot;);&lt;/script&gt;
+</code></pre>
+<p>如果网站没有对输入进行适当的过滤和转义，那么当用户点击这个链接时，<code>&lt;script&gt;</code> 标签内的 JavaScript 代码就会在用户的浏览器中执行。</p>
+<p>易受攻击的服务器端代码示例（伪代码）:</p>
+<pre><code class="language-js">$query = $_GET[&#39;search&#39;];
+$result = doSearchQuery($query); // 执行搜索
+echo &quot;Search results for: &quot; . $query;
+</code></pre>
+<p><strong>2. 存储型 XSS 示例：</strong></p>
+<p>如果一个网站允许用户在留言板上发布消息，并且没有对用户输入进行过滤，攻击者可以发布如下消息：</p>
+<pre><code class="language-html">&lt;script&gt;
+  alert(&quot;XSS&quot;);
+&lt;/script&gt;
+</code></pre>
+<p>这条消息被存储在数据库中，之后每当有其他用户访问留言板页面时，这条消息中的 JavaScript 代码就会被执行。</p>
+<p>易受攻击的服务器端存储和显示代码示例（伪代码）:</p>
+<pre><code class="language-js">$comment = $_POST[&#39;comment&#39;];
+saveCommentToDatabase($comment); // 存储评论到数据库
+// 其他用户查看评论
+$comment = getCommentFromDatabase(); // 从数据库获取评论
+echo &quot;Comment: &quot; . $comment;
+</code></pre>
+<p><strong>3. DOM-based XSS 示例：</strong></p>
+<p>如果一个网页有一个 JavaScript 函数，它使用 document.location 来获取当前页面的 URL，并且没有对 URL 进行适当的处理，那么攻击者可以通过修改页面的 URL 来执行恶意脚本：</p>
+<pre><code class="language-html">&lt;a href=&quot;javascript:alert(&#39;XSS&#39;)&quot;&gt;Click me&lt;/a&gt;
+</code></pre>
+<p>如果原始页面的 JavaScript 代码是这样的：</p>
+<pre><code class="language-js">var currentUrl = document.location;
+</code></pre>
+<p>攻击者可以通过修改页面 URL 来注入 JavaScript 代码。</p>
+<p>易受攻击的 JavaScript 代码示例:</p>
+<pre><code class="language-js">var userContent = document.getElementById(&quot;userInput&quot;).value;
+document.getElementById(&quot;content&quot;).innerHTML = userContent;
+</code></pre>
+<p>攻击者可以通过以下方式利用这个漏洞：</p>
+<pre><code class="language-html">&lt;span id=&quot;userInput&quot;&gt;&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;&lt;/span&gt;
+</code></pre>
+<p><code>了解了攻击，那需要如何防御 XSS 攻击呢，作为有经验的程序员是必须要懂滴。</code></p>
+<h2>XSS 解决方案</h2>
+<ol>
+<li>输入过滤：对所有用户输入进行过滤，不允许<code>&lt;script&gt;</code>、<code>&lt;iframe&gt;</code>等潜在危险的 HTML 标签被输入。</li>
+<li>输出编码：在将用户输入的数据输出到页面时，进行 HTML 编码，将<code>&lt;、&gt;</code>等字符转换成 HTML 实体。</li>
+<li>使用 HTTP-only Cookies：设置 HTTP-only 标志，使得 Cookie 不能通过客户端脚本访问。</li>
+<li>内容安全策略（CSP）：通过 CSP 可以限制网页可以加载哪些资源，减少 XSS 攻击的机会。</li>
+<li>使用安全的框架和库：现代 Web 框架和库通常提供了自动的 XSS 防护。</li>
+<li>避免直接内联 JavaScript：尽量避免在 HTML 中直接内联 JavaScript 代码，使用外部 JavaScript 文件可以更容易地管理权限和内容。</li>
+<li>使用自动化工具：使用自动化工具来检测和修复 XSS 漏洞。</li>
+<li>错误处理：确保错误信息不会暴露敏感信息，并且不执行用户输入的脚本。</li>
+</ol>
+<p>通过这些措施，可以显著降低 XSS 攻击的风险，保护用户和网站的数据安全。</p>
+<p><strong>下面是防御 XSS 攻击的代码示例</strong></p>
+<p>以下是一些基本的防御措施，用于防止 XSS 攻击。</p>
+<p>输入过滤示例（HTML 特殊字符编码）:</p>
+<pre><code class="language-js">$safeQuery = htmlspecialchars($_GET[&#39;search&#39;], ENT_QUOTES, &#39;UTF-8&#39;);
+echo &quot;Search results for: &quot; . $safeQuery;
+</code></pre>
+<p>输出编码示例（HTML 特殊字符编码）:</p>
+<pre><code class="language-js">echo &quot;Comment: &quot; . htmlspecialchars($comment, ENT_QUOTES, &#39;UTF-8&#39;);
+</code></pre>
+<p>使用内容安全策略（CSP）:</p>
+<pre><code class="language-html">&lt;meta
+  http-equiv=&quot;Content-Security-Policy&quot;
+  content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;
+/&gt;
+</code></pre>
+<p>使用现代 Web 框架的自动转义功能:</p>
+<pre><code class="language-js">{{ user_input|escape }}
+</code></pre>
+<p>JavaScript 中避免直接插入 HTML:</p>
+<pre><code class="language-js">var userContent = document.getElementById(&quot;userInput&quot;).value;
+// 使用textContent而不是innerHTML来防止HTML注入
+document.getElementById(&quot;content&quot;).textContent = userContent;
+</code></pre>
+<p>请记住，这些示例仅用于说明目的，实际应用中需要根据具体情况选择合适的防御策略。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/197.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/199.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

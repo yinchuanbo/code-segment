@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>学好 TS 高级类型 Partial</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>学好 TS 高级类型 Partial</h2>
+                    <p>2024-07-10 11:12:09 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>TS 项目开发中，或多或少会遇到一些 TS 类型与类型之间需转换之处，这时你会怎么做。强大 TS 类型系统贴心的为开发者提供了部分常用的内置全局工具类型。</p>
+<p>接下来的一系列文章我们将来学习一些这些内置的全局工具类型，首先登场的是：Partial。</p>
+<h2>什么是 Partial</h2>
+<p>Partial 是 TypeScript 提供的一个实用工具类型（Utility Type），用于将对象类型中的所有属性变为可选属性。它的定义如下：</p>
+<p>它的应用场景主要有以下几个方面：</p>
+<ol>
+<li>处理部分更新：当你只需要更新对象的部分属性时，Partial 可以帮助你避免必须提供完整的对象。</li>
+<li>默认值：在某些场景下，你可以先创建一个包含默认值的对象，然后使用 Partial 类型来覆盖特定属性。</li>
+<li>可选配置对象：当函数参数是一个配置对象时，使用 Partial 可以让所有配置项都是可选的。</li>
+</ol>
+<h2>基本使用</h2>
+<p>假设我们原来定义了一个类型接口，原本的全部都是必选的，但是我们是处理部分更新，那么它必然是全部都是可选的，那么这个时候就可以使用到 Partial 了</p>
+<pre><code class="language-ts">interface User {
+  id: number;
+  name: string;
+  age: number;
+}
+
+// 原始用户对象
+const user: User = {
+  id: 1,
+  name: &quot;Moment&quot;,
+  age: 18,
+};
+
+// 更新用户信息，只修改部分属性
+function updateUser(user: User, updatedProperties: Partial&lt;User&gt;): User {
+  return { ...user, ...updatedProperties };
+}
+
+const updatedUser = updateUser(user, { age: 20 });
+console.log(updatedUser); // { id: 1, name: &#39;Moment&#39;, age: 20 }
+</code></pre>
+<p>最终代码正常输出：</p>
+<img src="./imgs/199/01.awebp" />
+
+<h2>实现原理</h2>
+<p>Partial 的实现基于 TypeScript 的映射类型（Mapped Types）和索引类型（Index Types）。</p>
+<p>映射类型允许你创建一个新类型，这个新类型通过对旧类型的每个属性应用某种转换来生成。Partial 类型的实现如下：</p>
+<pre><code class="language-ts">type Partial&lt;T&gt; = {
+  [P in keyof T]?: T[P];
+};
+</code></pre>
+<p>这里 P 是旧类型 T 的每个属性键，通过 keyof T 获取。对于每个属性键 P，新类型将其设为可选（通过 ?:），并且类型保持不变（T[P]）。</p>
+<p>索引类型允许你获取对象类型的键，并使用这些键来索引对象类型。例如：</p>
+<pre><code class="language-ts">interface User {
+  id: number;
+  name: string;
+  age: number;
+}
+
+type UserKeys = keyof User; // &#39;id&#39; | &#39;name&#39; | &#39;age&#39;
+type UserIdType = User[&quot;id&quot;]; // number
+</code></pre>
+<p>结合映射类型和索引类型，Partial 就可以实现将所有属性变为可选。</p>
+<h2>Partial 进阶使用</h2>
+<p>Partial 类型可以应用于更多复杂的场景，尤其是在结合其他 TypeScript 特性和工具类型时。例如，可以将其与递归类型、联合类型和条件类型结合使用，以处理更复杂的数据结构。</p>
+<h3>嵌套对象的 Partial</h3>
+<p>默认情况下，Partial 只会使第一层的属性变为可选。如果你有嵌套对象，需要让所有嵌套属性也变为可选，可以使用递归类型。</p>
+<pre><code class="language-ts">interface Address {
+  street: string;
+  city: string;
+  zipcode: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+  address: Address;
+}
+
+// 递归地将所有嵌套属性变为可选
+type DeepPartial&lt;T&gt; = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial&lt;T[P]&gt; : T[P];
+};
+
+const user: DeepPartial&lt;User&gt; = {
+  id: 1,
+  address: {
+    city: &quot;西安&quot;,
+  },
+};
+</code></pre>
+<img src="./imgs/199/02.awebp" />
+
+<h3>与联合类型结合使用</h3>
+<p>处理联合类型时，Partial 可以与条件类型结合使用，以确保所有可能的类型都变为可选。</p>
+<pre><code class="language-ts">interface Admin {
+  id: number;
+  name: string;
+  role: &quot;admin&quot;;
+}
+
+interface RegularUser {
+  id: number;
+  name: string;
+  role: &quot;user&quot;;
+}
+
+type UserType = Admin | RegularUser;
+
+type PartialUserType&lt;T&gt; = T extends any ? Partial&lt;T&gt; : never;
+
+const partialAdmin: PartialUserType&lt;Admin&gt; = {
+  name: &quot;Moment&quot;,
+};
+
+const partialUser: PartialUserType&lt;RegularUser&gt; = {
+  role: &quot;user&quot;,
+};
+</code></pre>
+<h3>与映射类型和条件类型结合使用</h3>
+<p>可以创建更复杂的类型转换，通过条件类型和映射类型来处理不同类型的属性。</p>
+<pre><code class="language-ts">type RequiredKeys&lt;T&gt; = {
+  [K in keyof T]-?: {} extends { [P in K]: T[K] } ? never : K;
+}[keyof T];
+
+type OptionalKeys&lt;T&gt; = {
+  [K in keyof T]-?: {} extends { [P in K]: T[K] } ? K : never;
+}[keyof T];
+
+type DeepPartial&lt;T&gt; = T extends object
+  ? { [K in keyof T]?: DeepPartial&lt;T[K]&gt; }
+  : T;
+
+type DeepPartialOptional&lt;T&gt; = {
+  [K in RequiredKeys&lt;T&gt;]: DeepPartial&lt;T[K]&gt;;
+} &amp; {
+  [K in OptionalKeys&lt;T&gt;]?: DeepPartial&lt;T[K]&gt;;
+};
+
+interface Profile {
+  username: string;
+  email: string;
+  contact?: {
+    phone: string;
+    address?: {
+      street: string;
+      city: string;
+    };
+  };
+}
+
+type PartialProfile = DeepPartialOptional&lt;Profile&gt;;
+
+const example1: PartialProfile = {
+  username: &quot;Moment&quot;,
+  email: &quot;moment@qq.com&quot;,
+};
+
+const example2: PartialProfile = {
+  username: &quot;Moment&quot;,
+  email: &quot;moment@qq.com&quot;,
+  contact: {
+    phone: &quot;123-456-7890&quot;,
+  },
+};
+
+const example3: PartialProfile = {
+  username: &quot;Moment&quot;,
+  email: &quot;moment@qq.com&quot;,
+  contact: {
+    phone: &quot;098-765-4321&quot;,
+    address: {
+      street: &quot;中山大道&quot;,
+      city: &quot;西安&quot;,
+    },
+  },
+};
+
+const example4: PartialProfile = {
+  username: &quot;Moment&quot;,
+  email: &quot;moment@qq.com&quot;,
+  contact: {
+    address: {
+      city: &quot;西安&quot;,
+    },
+  },
+};
+
+const example5: PartialProfile = {
+  username: &quot;Moment&quot;,
+  email: &quot;moment@qq.com&quot;,
+  contact: {
+    address: {
+      street: &quot;中山大道&quot;,
+    },
+  },
+};
+</code></pre>
+<p>在上述的代码中主要实现了以下四个功能：</p>
+<ol>
+<li>提取必需属性 (<code>RequiredKeys&lt;T&gt;</code>): 确定哪些属性是必需的。</li>
+<li>提取可选属性 (<code>OptionalKeys&lt;T&gt;</code>): 确定哪些属性是可选的。</li>
+<li>递归处理属性 (<code>DeepPartial&lt;T&gt;</code>): 对于嵌套的对象，递归地将所有属性设为可选。</li>
+<li>组合处理结果 (<code>DeepPartialOptional&lt;T&gt;</code>): 将必需属性保持原状并递归处理，将可选属性变为递归可选。</li>
+</ol>
+<p>通过这些技术组合，可以灵活地处理复杂类型，使得对象类型中的可选属性在多层嵌套中都能正确地处理。</p>
+<h3>与实用工具类型结合</h3>
+<p>你可以将 Partial 与其他实用工具类型一起使用，以实现更复杂的数据结构操作。例如，结合 Required 类型将某些属性变为必需，其他属性保持可选。</p>
+<pre><code class="language-ts">interface Product {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+}
+
+type PartiallyRequired&lt;T, K extends keyof T&gt; = Required&lt;Pick&lt;T, K&gt;&gt; &amp;
+  Partial&lt;Omit&lt;T, K&gt;&gt;;
+
+const product: PartiallyRequired&lt;Product, &quot;id&quot; | &quot;name&quot;&gt; = {
+  id: 1,
+  name: &quot;Moment&quot;,
+};
+</code></pre>
+<p>在这个例子中，id 和 name 属性变为必需，其他属性保持可选。</p>
+<h2>总结</h2>
+<p>这些更复杂的场景展示了 Partial 类型在处理嵌套对象、联合类型和条件类型时的强大功能。通过结合 TypeScript 的其他特性和工具类型，Partial 可以帮助你更灵活地处理各种复杂的数据结构和需求。</p>
+<p>在实际应用中，通过使用这些高级类型可以更好地优化代码质量，让你的代码让人看得神清气爽。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/198.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/200.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
