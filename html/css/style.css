@@ -10,7 +10,7 @@
 }
 
 :root {
-  --color01: #658147;
+  --color01: #454545;
   --color02: #fff;
   --fs01: 18px;
   --fs02: 17px;
@@ -97,8 +97,8 @@ h4 {
   padding-top: 70px;
   margin: 0 auto;
   overflow: auto;
-  padding-left: calc((100% - 975px) / 2);
-  padding-right: calc((100% - 975px) / 2);
+  padding-left: calc((100% - 900px) / 2);
+  padding-right: calc((100% - 900px) / 2);
 }
 
 .container-main p {
@@ -268,4 +268,8 @@ p code {
 code[class*=language-] a[href], pre[class*=language-] a[href] {
   color: #fff;
   pointer-events: none;
+}
+
+.token.cr:before, .token.lf:before, .token.space:before, .token.tab:not(:empty):before {
+  opacity: 0;
 }
