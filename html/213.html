@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>TypeScript 组件开发中的常见问题</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>TypeScript 组件开发中的常见问题</h2>
+                    <p>2024-07-11 22:18:49 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>类型复用不足</h2>
+<p>在代码审查过程中，我发现大量重复的类型定义，这大大降低了代码的复用性。</p>
+<p>在进一步沟通后，了解到许多团队成员不清楚如何在 TypeScript 中复用类型。TypeScript 允许我们使用 <code>type</code> 和 <code>interface</code> 来定义类型。</p>
+<p>当问他们 <code>type</code> 和 <code>interface</code> 之间的区别时，大多数人表示困惑，难怪他们不知道如何有效地复用类型。</p>
+<p>通过交叉类型（<code>&amp;</code>）可以复用 <code>type</code> 定义的类型，而通过继承（<code>extends</code>）可以复用 <code>interface</code> 定义的类型。值得注意的是，<code>type</code> 和 <code>interface</code> 定义的类型也可以互相复用。以下是一些简单的示例：</p>
+<h2>复用 type 定义的类型：</h2>
+<pre><code class="language-ts">type Point = {
+  x: number;
+  y: number;
+};
+
+type Coordinate = Point &amp; {
+  z: number;
+};
+</code></pre>
+<h2>复用 interface 定义的类型：</h2>
+<pre><code class="language-ts">interface Point {
+  x: number;
+  y: number;
+}
+
+interface Coordinate extends Point {
+  z: number;
+}
+</code></pre>
+<h2>用 interface 复用 type 定义的类型：</h2>
+<pre><code class="language-ts">type Point = {
+  x: number;
+  y: number;
+};
+
+interface Coordinate extends Point {
+  z: number;
+}
+</code></pre>
+<h2>用 type 复用 interface 定义的类型：</h2>
+<pre><code class="language-ts">interface Point {
+  x: number;
+  y: number;
+}
+
+type Coordinate = Point &amp; {
+  z: number;
+};
+</code></pre>
+<h2>复用时仅添加新属性定义</h2>
+<p>我还注意到，在复用类型时，团队成员通常只是简单地在现有类型上添加新属性，而忽略了更高效的复用方法。</p>
+<p>例如，现有类型 <code>Props</code> 需要复用，但不需要属性 <code>c</code>。在这种情况下，团队成员会重新定义 <code>Props1</code>，只包含 <code>Props</code> 中的属性 <code>a</code> 和 <code>b</code>，并添加新属性 <code>e</code>。</p>
+<pre><code class="language-ts">interface Props {
+  a: string;
+  b: string;
+  c: string;
+}
+
+interface Props1 {
+  a: string;
+  b: string;
+  e: string;
+}
+</code></pre>
+<p>我们可以使用 TypeScript 提供的工具类型 <code>Omit</code> 更高效地实现这种复用。</p>
+<pre><code class="language-ts">interface Props {
+  a: string;
+  b: string;
+  c: string;
+}
+
+interface Props1 extends Omit&lt;Props, &quot;c&quot;&gt; {
+  e: string;
+}
+</code></pre>
+<p>同样，工具类型 <code>Pick</code> 也可以用来实现这种复用。</p>
+<pre><code class="language-ts">interface Props {
+  a: string;
+  b: string;
+  c: string;
+}
+
+interface Props1 extends Pick&lt;Props, &quot;a&quot; | &quot;b&quot;&gt; {
+  e: string;
+}
+</code></pre>
+<p><code>Omit</code> 和 <code>Pick</code> 用于在类型中排除和选择属性，具体选择取决于具体需求。</p>
+<h2>组件库中基本类型的使用不一致</h2>
+<p>在开发组件库时，我们经常面临类似功能组件属性命名不一致的问题。例如，用于指示组件是否显示的属性可能命名为 <code>show</code>、<code>open</code> 或 <code>visible</code>。这不仅影响组件库的可用性，还降低了其可维护性。</p>
+<p>为了解决这个问题，定义一套统一的基本类型至关重要。这些基本类型为组件库的发展提供了坚实的基础，并确保所有组件的命名一致性。</p>
+<p>以表单控件为例，我们可以定义以下基本类型：</p>
+<pre><code class="language-ts">import { CSSProperties } from &quot;react&quot;;
+
+type Size = &quot;small&quot; | &quot;middle&quot; | &quot;large&quot;;
+
+type BaseProps&lt;T&gt; = {
+  /**
+   * 自定义样式类名
+   */
+  className?: string;
+  /**
+   * 自定义样式对象
+   */
+  style?: CSSProperties;
+  /**
+   * 控制组件是否可见
+   */
+  visible?: boolean;
+  /**
+   * 定义组件的大小，可选值为 &#39;small&#39;、&#39;middle&#39; 或 &#39;large&#39;
+   */
+  size?: Size;
+  /**
+   * 是否禁用组件
+   */
+  disabled?: boolean;
+  /**
+   * 组件是否为只读状态
+   */
+  readOnly?: boolean;
+  /*
+   * 组件的默认值
+   */
+  defaultValue?: T;
+  /*
+   * 组件的当前值
+   */
+  value?: T;
+  /*
+   * 组件值变化时的回调函数
+   */
+  onChange: (value: T) =&gt; void;
+};
+</code></pre>
+<p>基于这些基本类型，定义特定组件的属性类型变得很简单：</p>
+<pre><code class="language-ts">interface WInputProps extends BaseProps&lt;string&gt; {
+  /**
+   * 输入内容的最大长度
+   */
+  maxLength?: number;
+  /**
+   * 是否显示输入内容计数
+   */
+  showCount?: boolean;
+}
+</code></pre>
+<p>通过使用 <code>type</code> 关键字定义基本类型，我们可以避免意外修改类型，从而增强代码的稳定性和可维护性。</p>
+<h2>处理包含不同类型元素的数组</h2>
+<p>在审查自定义 <code>Hooks</code> 时，我发现团队成员倾向于返回对象，即使 <code>Hook</code> 只返回两个值。</p>
+<p>虽然这并没有错，但它违背了自定义 <code>Hook</code> 的一个常见约定：当 <code>Hook</code> 返回两个值时，应该使用数组作为返回值。</p>
+<p>团队成员解释说，他们不知道如何定义包含不同类型元素的数组，通常会选择使用 <code>any[]</code>，但这可能会导致类型安全问题，因此他们选择返回对象。</p>
+<p>元组是处理这种情况的理想选择。使用元组，我们可以在一个数组中包含不同类型的元素，同时保持对每个元素类型的清晰定义。</p>
+<pre><code class="language-ts">function useMyHook(): [string, number] {
+  return [&quot;示例文本&quot;, 42];
+}
+
+function MyComponent() {
+  const [text, number] = useMyHook();
+  console.log(text); // 输出字符串
+  console.log(number); // 输出数字
+  return null;
+}
+</code></pre>
+<p>在这个例子中，useMyHook 函数返回一个显式类型的元组，包含一个字符串和一个数字。在 MyComponent 组件中使用这个 Hook 时，我们可以解构获取这两个不同类型的值，同时保持类型安全。</p>
+<h2>处理具有可变数量和类型参数的函数</h2>
+<p>在审查团队成员封装的函数时，我发现当函数的参数数量不固定、类型不同或返回值类型不同，他们往往会使用 any 来定义参数和返回值。</p>
+<p>他们解释说，他们只知道如何定义具有固定数量和相同类型参数的函数，对于复杂情况感到束手无策，也不愿意将函数拆分成多个。</p>
+<p>这正是函数重载的用武之地。通 过函数重载，我们可以根据不同的参数类型、数量或返回类型定义同一个函数名下的多个实现。</p>
+<pre><code class="language-ts">function greet(name: string): string;
+function greet(age: number): string;
+function greet(value: any): string {
+  if (typeof value === &quot;string&quot;) {
+    return `你好，${value}`;
+  } else if (typeof value === &quot;number&quot;) {
+    return `你今年 ${value} 岁了`;
+  }
+}
+</code></pre>
+<p>在这个例子中，我们提供了两种调用 greet 函数的方式，使函数的使用更加灵活，同时保持类型安全。</p>
+<p>对于箭头函数，虽然它们不直接支持函数重载，但我们可以通过定义函数签名来实现类似的效果。</p>
+<pre><code class="language-ts">type GreetFunction = {
+  (name: string): string;
+  (age: number): string;
+};
+
+const greet: GreetFunction = (value: any): string =&gt; {
+  if (typeof value === &quot;string&quot;) {
+    return `你好，${value}`;
+  } else if (typeof value === &quot;number&quot;) {
+    return `你今年 ${value} 岁了。`;
+  }
+  return &quot;&quot;;
+};
+</code></pre>
+<p>这种方法利用类型系统提供编译时类型检查，模拟函数重载的效果。</p>
+<h2>组件属性定义：使用 type 还是 interface？</h2>
+<p>在审查代码时，我发现团队成员同时使用 <code>type</code> 和 <code>interface</code> 来定义组件属性。</p>
+<p>当被问及原因时，他们提到两者都可以用来定义组件属性，没有显著差异。</p>
+<p>由于同名接口会自动合并，而同名类型别名会冲突，我建议使用 <code>interface</code> 来定义组件属性。这样，用户可以通过 <code>declare module</code> 语句自由扩展组件属性，增强代码的灵活性和可扩展性。</p>
+<pre><code class="language-ts">interface UserInfo {
+  name: string;
+}
+interface UserInfo {
+  age: number;
+}
+
+const userInfo: UserInfo = { name: &quot;张三&quot;, age: 23 };
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/212.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

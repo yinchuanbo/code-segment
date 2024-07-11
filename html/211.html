@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Map</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>Map</h2>
+                    <p>2024-07-11 21:52:39 · YinHao</p>
+                  </div>
+                  <div class="container-main"><pre><code class="language-js">// 创建一个Map对象
+const formMap = new Map();
+
+formMap.set(&quot;username&quot;, &quot;xxx&quot;);
+formMap.set(&quot;password&quot;, &quot;123456&quot;);
+
+const username = formMap.get(&quot;username&quot;);
+const password = formMap.get(&quot;password&quot;);
+
+console.log(username); // &#39;xxx&#39;
+console.log(password); // &#39;123456&#39;
+
+if (formMap.has(&quot;username&quot;)) {
+  console.log(&quot;Username exists in the map&quot;);
+}
+
+formMap.delete(&quot;password&quot;);
+console.log(formMap.get(&quot;password&quot;)); // undefined
+
+formMap.clear();
+console.log(formMap.size); // 0
+</code></pre>
+<h2>分享原因</h2>
+<p>这段代码展示了如何使用 Map 对象来存储和访问键值对。</p>
+<p>相比于使用普通对象，Map 提供了一些优点：</p>
+<p><strong>键的类型:</strong> 在 Map 中，键可以是任何类型，包括对象、函数和基本数据类型，而在普通对象中，键只能是字符串或符号。</p>
+<p><strong>迭代顺序:</strong> Map 按插入顺序迭代键值对，而普通对象则没有保证迭代顺序。</p>
+<p><strong>内置方法:</strong> Map 提供了一些内置方法，如 set、get、has、delete 和 clear，使得操作更加便捷。</p>
+<h2>代码解析</h2>
+<ol>
+<li>formMap.set(&#39;username&#39;, &#39;xxx&#39;);</li>
+</ol>
+<p>添加表单元素的值到 Map 中。</p>
+<ol start="2">
+<li>formMap.get(&#39;username&#39;);</li>
+</ol>
+<p>获取表单元素的值。</p>
+<ol start="3">
+<li>formMap.has(&#39;username&#39;)</li>
+</ol>
+<p>检查是否包含某个键。</p>
+<ol start="4">
+<li>formMap.delete(&#39;password&#39;);</li>
+</ol>
+<p>删除某个键值对。</p>
+<ol start="5">
+<li>formMap.clear();</li>
+</ol>
+<p>清空整个 Map。</p>
+<ol start="6">
+<li>formMap.size</li>
+</ol>
+<p>查看键值对的数量。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/210.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/212.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

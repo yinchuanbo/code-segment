@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>TypeScript 中的装饰器：简化你的代码</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>TypeScript 中的装饰器：简化你的代码</h2>
+                    <p>2024-07-11 22:15:16 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>什么是装饰器？</h2>
+<p>装饰器是一种特殊类型的声明，可以附加到类的声明、方法、访问器、属性或参数上，以修改其行为。它们通过@decorator 这样的语法来使用，可以看作是一种元编程的技术，允许在不修改原始代码的情况下动态地扩展或修改类的行为。</p>
+<h3>类装饰器</h3>
+<pre><code class="language-ts">function Logger(target: Function) {
+  console.log(&quot;Logging...&quot;);
+}
+@Logger
+class MyClass {
+  // class implementation
+}
+</code></pre>
+<h3>方法装饰器</h3>
+<pre><code class="language-ts">function LogMethod(
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor
+) {
+  console.log(`Logging method ${propertyKey}`);
+}
+class MyService {
+  @LogMethod
+  processData(data: any) {
+    // method implementation
+  }
+}
+</code></pre>
+<h3>属性装饰器</h3>
+<pre><code class="language-ts">function FormatString(target: any, propertyKey: string) {
+  let value = target[propertyKey];
+  const getter = function () {
+    return value;
+  };
+  const setter = function (newVal: string) {
+    value = newVal.trim();
+  };
+  Object.defineProperty(target, propertyKey, {
+    get: getter,
+    set: setter,
+    enumerable: true,
+    configurable: true,
+  });
+}
+class User {
+  @FormatString
+  name: string;
+}
+</code></pre>
+<h2>应用：</h2>
+<p><strong>日志记录</strong></p>
+<p>通过方法装饰器，在每个方法执行前后记录日志，方便调试和性能分析。</p>
+<p><strong>输入验证</strong></p>
+<p>利用参数装饰器，对方法的输入参数进行验证，确保传入的数据符合预期。</p>
+<p><strong>缓存控制</strong></p>
+<p>使用属性装饰器，在获取某些属性时检查缓存是否有效，从而减少不必要的重复计算。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/211.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/213.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'"><svg t="1718968866110" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6450" width="30" height="30"><path d="M922.24 531.2c-8.32 0-16.64-3.2-22.4-9.6L568.32 190.08c-26.24-26.24-69.12-26.24-95.36 0L142.08 521.6c-12.8 12.8-32.64 12.8-45.44 0s-12.8-32.64 0-45.44l331.52-331.52c51.2-51.2 134.4-51.2 186.24 0l331.52 331.52c12.8 12.8 12.8 32.64 0 45.44-7.04 6.4-15.36 9.6-23.68 9.6z" fill="#000" p-id="6451"></path><path d="M723.84 938.88H310.4c-80 0-144.64-65.28-144.64-144.64V426.24c0-17.92 14.08-32 32-32s32 14.08 32 32v368c0 44.8 36.48 80.64 80.64 80.64h413.44c44.8 0 80.64-36.48 80.64-80.64V586.24c0-17.92 14.08-32 32-32s32 14.08 32 32v208c0 80-64.64 144.64-144.64 144.64z" fill="#000" p-id="6452"></path></svg></div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
