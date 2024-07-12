@@ -1,20 +1,19 @@
 @import "https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css";
 @import "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap";
 
+:root {
+  --color01: #445c3c;
+  --color02: #fff;
+  --fs01: 17px;
+  --ff: "hack";
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: hack;
+  font-family: var(--ff);
   text-shadow: none;
-}
-
-:root {
-  --color01: #658147;
-  --color02: #fff;
-  --fs01: 18px;
-  --fs02: 17px;
-  --ff: hack;
 }
 
 html,
@@ -26,8 +25,9 @@ body {
   background-color: var(--color01);
   color: var(--color02);
   font-size: var(--fs01);
-  overflow: hidden;
+  /* overflow: hidden; */
   text-shadow: none;
+  padding-top: 30px;
 }
 
 ::-webkit-scrollbar {
@@ -43,24 +43,28 @@ body {
 
 .container {
   width: 100%;
-  height: 100vh;
+  height: fit-content;
 }
 
 .container-header {
   width: 100%;
-  height: 50px;
+  /* height: 50px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  line-height: 50px;
-  background-color: var(--color01);
-  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 50px; */
+  /* background-color: var(--color01);
+  display: flex; */
+  padding-left: calc((100% - 900px) / 2);
+  padding-right: calc((100% - 900px) / 2);
 }
 
 .container-header p {
-  display: none;
+  /* display: none; */
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 h2 {
@@ -76,8 +80,10 @@ h4 {
 }
 
 .container-header h2 {
-  font-weight: 400;
-  font-size: var(--fs01);
+  font-size: 30px;
+  margin-bottom: 20px;
+  /* font-weight: 400;
+  font-size: var(--fs01); */
 }
 
 .container-header span {
@@ -94,9 +100,10 @@ h4 {
 .container-main {
   width: 100%;
   height: 100%;
-  padding-top: 70px;
+  padding-top: 50px;
+  padding-bottom: 10px;
   margin: 0 auto;
-  overflow: auto;
+  /* overflow: auto; */
   padding-left: calc((100% - 900px) / 2);
   padding-right: calc((100% - 900px) / 2);
 }
@@ -117,7 +124,7 @@ code[class*="language-"] {
   background: initial;
   box-shadow: initial;
   font-family: var(--ff);
-  font-size: var(--fs02);
+  font-size: var(--fs01);
   font-style: italic;
   line-height: 2;
 }
@@ -128,14 +135,17 @@ pre[class*="language-"] {
 }
 
 .code-toolbar {
-  /* border: 1px solid rgba(255, 255, 255, 0.5); */
+  border-radius: 32px;
   background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  /* box-shadow: 8px 8px 16px 0 rgba(0, 0, 0, 25%),
+    inset -8px -8px 16px 0 rgba(0, 0, 0, 25%),
+    inset 8px 8px 16px 0 hsla(0deg, 0%, 100%, 20%) !important; */
 }
 
-div.code-toolbar>.toolbar {
-  right: 10px;
+div.code-toolbar > .toolbar {
+  right: 25px;
+  top: 10px;
 }
 
 .container-main img {
@@ -183,16 +193,20 @@ a:not(.token)::before {
   margin-left: 10px;
 }
 
-.home {
-  display: none;
-}
-
 .nav {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
   right: 100px;
   gap: 20px;
+}
+
+.home {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 100px;
+  cursor: pointer;
 }
 
 .nav-prev {
@@ -207,7 +221,8 @@ a:not(.token)::before {
 }
 
 .nav-prev:hover,
-.nav-next:hover {
+.nav-next:hover,
+.home:hover {
   text-decoration: underline;
   transition: 0.5s;
 }
@@ -272,11 +287,15 @@ p code {
   transition: 0.5s;
 }
 
-code[class*=language-] a[href], pre[class*=language-] a[href] {
+code[class*="language-"] a[href],
+pre[class*="language-"] a[href] {
   color: #fff;
   pointer-events: none;
 }
 
-.token.cr:before, .token.lf:before, .token.space:before, .token.tab:not(:empty):before {
+.token.cr:before,
+.token.lf:before,
+.token.space:before,
+.token.tab:not(:empty):before {
   opacity: 0;
 }

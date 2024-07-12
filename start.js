@@ -17,12 +17,8 @@ const commandToExecute = "node app.js"; // 要执行的命令
 
 // 监听目录变化
 fs.watch(directoryToWatch, (eventType, filename) => {
+  console.log('filename', filename)
   if (filename && filename.endsWith(".md")) {
-    console.log(
-      `File ${filename} changed. Executing command: ${commandToExecute}`
-    );
-
-    // 执行命令
     exec(commandToExecute, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error executing command: ${error.message}`);
