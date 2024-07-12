@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>ESLint 忽略检查行和文件总结</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>ESLint 忽略检查行和文件总结</h2>
+                    <p>2024-07-12 21:46:06 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>eslint 忽略某一行代码校验</h2>
+<p>如果你想让 ESLint 忽略特定行代码的校验，你可以使用行内注释来实现。</p>
+<h3>有以下两种方式：</h3>
+<p><strong>单行忽略：</strong></p>
+<p>在你想要忽略的特定行代码之前，添加 <code>// eslint-disable-line rule-name</code> 注释。</p>
+<p>如果你只想临时禁用所有规则，可以省略 <code>rule-name</code>。</p>
+<pre><code class="language-js">// 这一行将会被 ESLint 忽略校验
+someCode(); // eslint-disable-line no-unused-expressions
+</code></pre>
+<p>或者，如果要忽略所有规则：</p>
+<pre><code class="language-js">// 这一行将会被 ESLint 完全忽略校验
+someCode(); // eslint-disable-line
+</code></pre>
+<p><strong>下一行忽略</strong></p>
+<p>如果你想忽略紧接在注释后面的那一行代码，可以使用 <code>// eslint-disable-next-line rule-name</code>。</p>
+<pre><code class="language-js">// eslint-disable-next-line no-unused-expressions
+someCode(); // 这一行将不会被 no-unused-expressions 规则检查
+</code></pre>
+<p>同样，如果要忽略所有规则：</p>
+<pre><code class="language-js">// eslint-disable-next-line
+someCode(); // 这一行将不会被任何规则检查
+</code></pre>
+<p>请注意，这些注释只会影响它们直接指定的行。</p>
+<p>如果你需要在一个代码块或多行上禁用规则，可以使用区块级别的禁用注释：</p>
+<pre><code class="language-js">/* eslint-disable rule-name */
+// 这里的一段代码都将不受 rule-name 规则的约束
+someCode();
+moreCode();
+/* eslint-enable rule-name */
+</code></pre>
+<p>或者，禁用所有规则：</p>
+<pre><code class="language-js">/* eslint-disable */
+// 这里的一段代码都将不受任何规则的约束
+var ignoredVar = &quot;This variable declaration won&#39;t be checked.&quot;;
+/* eslint-enable */
+</code></pre>
+<p>使用这些注释时，请确保你有充分的理由忽略特定规则的检查，因为这可能隐藏潜在的问题。</p>
+<h2>注释方式</h2>
+<ul>
+<li>注释忽略 —— 块注释</li>
+</ul>
+<pre><code class="language-js">/* eslint-disable */
+console.log(&quot;test&quot;);
+/* eslint-enable */
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略指定规则项</li>
+</ul>
+<pre><code class="language-js">/* eslint-disable no-alert, no-console */
+alert(&quot;test&quot;);
+console.log(&quot;test&quot;);
+/* eslint-enable no-alert, no-console */
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略整个文件</li>
+</ul>
+<pre><code class="language-js">/* eslint-disable */
+alert(&quot;test&quot;);
+alert(&quot;test&quot;);
+alert(&quot;test&quot;);
+alert(&quot;test&quot;);
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略整个文件中指定规则项</li>
+</ul>
+<pre><code class="language-js">/* eslint-disable no-alert */
+// Disables no-alert for the rest of the file
+alert(&quot;test&quot;);
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略当前行</li>
+</ul>
+<pre><code class="language-js">alert(&quot;test&quot;); // eslint-disable-line
+alert(&quot;test&quot;); /* eslint-disable-line */
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略当前行中指定规则项（多个规则项用逗号隔开）</li>
+</ul>
+<pre><code class="language-js">alert(&quot;test&quot;); // eslint-disable-line no-alert, quotes
+alert(&quot;test&quot;); /* eslint-disable-line no-alert */
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略当前行中指定规则项（多个规则项用逗号隔开）</li>
+</ul>
+<pre><code class="language-js">alert(&quot;test&quot;); // eslint-disable-line no-alert, quotes
+alert(&quot;test&quot;); /* eslint-disable-line no-alert */
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略下一行</li>
+</ul>
+<pre><code class="language-js">// eslint-disable-next-line
+alert(&quot;test&quot;);
+/* eslint-disable-next-line */
+alert(&quot;test&quot;);
+</code></pre>
+<ul>
+<li>注释忽略 —— 忽略下一行中指定规则项（多个规则项用逗号隔开）</li>
+</ul>
+<pre><code class="language-js">// eslint-disable-next-line no-alert, quotes
+alert(&quot;test&quot;);
+/* eslint-disable-next-line no-alert */
+alert(&quot;test&quot;);
+</code></pre>
+<h2>eslintignore 方式（推荐）</h2>
+<p>在根目录新建 <code>.eslintignore</code> 文件</p>
+<ul>
+<li>忽略单个文件</li>
+</ul>
+<pre><code class="language-bash">test.js
+</code></pre>
+<ul>
+<li>忽略以 <code>.test.js </code>结尾的文件</li>
+</ul>
+<pre><code class="language-js">*.test.js
+</code></pre>
+<ul>
+<li>忽略某路径下所有的文件</li>
+</ul>
+<pre><code class="language-js">test/*
+</code></pre>
+<h2>vue eslint 语法检查报错忽略</h2>
+<p>在 Vue 项目中，如果你遇到了 ESLint 语法检查报错，并且希望忽略某些特定的规则或文件，你可以采取以下几种方式来配置 ESLint 以忽略这些报错：</p>
+<ul>
+<li>使用 <code>.eslintignore</code> 文件</li>
+</ul>
+<p>全局忽略文件或文件夹：在项目的根目录下创建或修改.eslintignore 文件，然后添加你希望忽略的文件或文件夹路径。例如，要忽略整个 <code>build</code> 文件夹和 <code>src/assets</code> 文件夹下的所有文件，可以这样写：</p>
+<pre><code class="language-bash">build
+src/assets
+</code></pre>
+<p>忽略特定类型的文件：如果你想忽略特定文件夹内的特定类型文件，可以使用通配符，例如：</p>
+<pre><code class="language-bash">build/*.js
+</code></pre>
+<ul>
+<li>在代码中临时禁用 ESLint 检查</li>
+</ul>
+<p>禁用整个文件：在文件的顶部添加注释来禁用整个文件的 ESLint 检查：</p>
+<pre><code class="language-js">/* eslint-disable */
+// ...你的代码...
+</code></pre>
+<p>禁用特定行：在需要忽略的代码行上方添加单行注释来禁用该行的检查：</p>
+<pre><code class="language-js">// eslint-disable-next-line
+console.log(&quot;这条语句将不会被 ESLint 检查&quot;);
+</code></pre>
+<p>禁用特定规则：如果你只想针对某个特定规则进行禁用，可以在注释中指定规则名：</p>
+<pre><code class="language-js">// eslint-disable-next-line no-console
+console.log(&quot;这条console.log语句将不会因no-console规则而报错&quot;);
+</code></pre>
+<p>恢复 ESLint 检查：如果你在某个范围内禁用了 ESLint，可以用以下注释来恢复检查：</p>
+<pre><code class="language-js">/* eslint-enable */
+</code></pre>
+<ul>
+<li>修改 <code>.eslintrc</code> 配置</li>
+</ul>
+<p>在项目的 .eslintrc.js 或 .eslintrc.json 配置文件中，你可以通过修改 rules 属性来改变特定规则的错误等级，甚至关闭它。例如，关闭 no-console 规则：</p>
+<pre><code class="language-json">{
+  &quot;rules&quot;: {
+    &quot;no-console&quot;: &quot;off&quot;
+  }
+}
+</code></pre>
+<p>你还可以在配置文件中添加 ignorePatterns 属性来忽略特定的文件或目录：</p>
+<pre><code class="language-json">{
+  &quot;ignorePatterns&quot;: [&quot;dist/*&quot;, &quot;*.test.js&quot;]
+}
+</code></pre>
+<p>请根据你的具体需求选择合适的方法来忽略 ESLint 报错。在进行配置时，务必谨慎，避免过度放宽规则，从而保持代码的一致性和高质量。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/213.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/215.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    Home
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>一文搞懂 TypeScript 泛型</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>一文搞懂 TypeScript 泛型</h2>
+                    <p>2024-07-12 22:27:07 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>一. TypeScript 泛型（generics）是什么？</h2>
+<p>在 TypeScript 中，泛型是一种创建可复用组件或函数的方法，能够处理多种类型。它们允许我们在编译时构建数据结构，而不需要在编译时设置特定的类型。</p>
+<p>泛型的作用是编写可复用的、类型安全的代码，变量的类型在编译时是已知的。这意味着我们可以动态定义参数或函数的类型，而这些类型会在编译之前声明。这在我们需要在应用程序中使用某些逻辑时非常有用；通过这些可复用的逻辑片段，我们可以创建接受和返回自己类型的函数。</p>
+<p>我们可以使用泛型在编译时进行检查，消除类型转换，并在整个应用程序中实现其他泛型函数。没有泛型，我们的应用程序代码可能会在某个时候编译成功，但我们可能得不到预期的结果，这可能会将错误推到生产环境中。</p>
+<p>通过使用泛型，我们可以参数化类型。这一强大的功能可以帮助我们创建可复用、通用和类型安全的类、接口和函数。</p>
+<h3>泛型的优势</h3>
+<ul>
+<li>类型安全：泛型确保在编译时进行类型检查，这样可以防止在运行时出现类型错误。</li>
+<li>代码复用：使用泛型，我们可以编写一次代码，适用于多种数据类型，从而提高代码的复用性。</li>
+<li>可读性和可维护性：泛型使代码更具可读性和可维护性，因为它们使我们能够明确地表达数据结构的意图和用途。</li>
+</ul>
+<h2>二. 泛型示例</h2>
+<h3>创建没有使用泛型的函数</h3>
+<p>让我们先来看一个简单的例子。下面是一个简单的函数，它将为对象数组添加新的属性。我们定义了一个接口 MyObject，该接口包含一个 id 和一个 pet 属性：</p>
+<pre><code class="language-ts">interface MyObject {
+  id: number;
+  pet: string;
+}
+
+const myArray: MyObject[] = [
+  { id: 1, pet: &quot;dog&quot; },
+  { id: 2, pet: &quot;cat&quot; },
+];
+
+const newPropertyKey = &quot;checkup&quot;;
+const newPropertyValue: string = &quot;2023-12-03&quot;;
+const newPropertyAddition = myArray.map((obj) =&gt; ({
+  ...obj,
+  [newPropertyKey]: newPropertyValue,
+}));
+console.log(newPropertyAddition);
+</code></pre>
+<p>在这个例子中，我们为数组中的每个对象添加了一个新的属性 checkup。但假设我们有一个接受字符串的属性，并且我们希望添加一个接受数字的新属性，而不想重新编写另一个函数，这时泛型就派上用场了！</p>
+<h3>使用泛型创建函数</h3>
+<pre><code class="language-ts">type MyArray&lt;T&gt; = Array&lt;T&gt;;
+type AddNewProperty&lt;T&gt; = {
+  [K in keyof T]: T[K];
+} &amp; { newProperty: string };
+
+interface MyObject {
+  id: number;
+  pet: string;
+}
+
+const myArray: MyArray&lt;MyObject&gt; = [
+  { id: 1, pet: &quot;dog&quot; },
+  { id: 2, pet: &quot;cat&quot; },
+];
+
+const newPropertyAddition: MyArray&lt;AddNewProperty&lt;MyObject&gt;&gt; = myArray.map(
+  (obj) =&gt; ({
+    ...obj,
+    newProperty: &quot;New value&quot;,
+  })
+);
+console.log(newPropertyAddition);
+</code></pre>
+<p>在这里，我们定义了一个名为的类型，使其更具通用性。它将持有由函数本身接收的数据类型。这意味着函数的类型现在是参数化的。</p>
+<p>首先，我们定义一个表示对象数组的泛型类型 MyArray，并创建另一个类型 AddNewProperty，该类型向数组中的每个对象添加一个新属性。</p>
+<p>为了提高清晰度，我们可以创建一个函数，该函数接受一个泛型作为参数并返回一个泛型：</p>
+<pre><code class="language-ts">function genericsPassed&lt;T&gt;(arg: T): [T] {
+  console.log(typeof arg);
+  return [arg];
+}
+
+// 传递了一个数字
+genericsPassed(3);
+
+// 传递了一个日期对象
+genericsPassed(new Date());
+
+// 传递了一个正则表达式
+genericsPassed(new RegExp(&quot;/([A-Z])w+/g&quot;));
+</code></pre>
+<h3>使用泛型创建 TypeScript 类</h3>
+<p>让我们来看一个在类中使用泛型的例子：</p>
+<pre><code class="language-ts">class MyObject&lt;T&gt; {
+  id: number;
+  pet: string;
+  checkup: T;
+  constructor(id: number, pet: string, additionalProperty: T) {
+    this.id = id;
+    this.pet = pet;
+    this.checkup = additionalProperty;
+  }
+}
+
+const myArray: MyObject&lt;string&gt;[] = [
+  new MyObject(1, &quot;cat&quot;, &quot;false&quot;),
+  new MyObject(2, &quot;dog&quot;, &quot;true&quot;),
+];
+
+const newPropertyAddition: MyObject&lt;number | boolean&gt;[] = myArray.map((obj) =&gt; {
+  return new MyObject(obj.id, obj.pet, obj.id % 2 === 0);
+});
+console.log(newPropertyAddition);
+</code></pre>
+<p>在这个例子中，我们创建了一个名为 MyObject 的简单类，该类包含一个数组变量 id、pet 和 checkup。我们还定义了一个泛型类 MyObject，表示具有 id、pet 和类型为 T 的附加属性 additionalProperty 的对象。构造函数接受这些属性的值。</p>
+<h2>三. 泛型接口的使用</h2>
+<p>泛型不仅限于函数和类，我们也可以在 TypeScript 中的接口内使用泛型。泛型接口使用类型参数作为占位符来表示未知的数据类型。当我们使用泛型接口时，可以用具体的类型填充这些占位符，从而定制结构以满足我们的需求。</p>
+<h3>示例：泛型接口的使用</h3>
+<p><strong>基本示例</strong></p>
+<p>假设我们有一个函数 currentlyLoggedIn，它接收一个对象并返回包含 online 状态的扩展对象。以下是没有泛型的实现：</p>
+<pre><code class="language-ts">const currentlyLoggedIn = (obj: object): object =&gt; {
+  let isOnline = true;
+  return { ...obj, online: isOnline };
+};
+
+const user = currentlyLoggedIn({ name: &quot;Ben&quot;, email: &quot;ben@mail.com&quot; });
+
+const currentStatus = user.online; // Error: Property &#39;online&#39; does not exist on type &#39;object&#39;.
+</code></pre>
+<p>上面的代码会报错，因为 currentlyLoggedIn 函数不知道它接收到的对象类型。我们可以使用泛型来解决这个问题：</p>
+<pre><code class="language-ts">const currentlyLoggedIn = &lt;T extends object&gt;(obj: T) =&gt; {
+  let isOnline = true;
+  return { ...obj, online: isOnline };
+};
+const user = currentlyLoggedIn({
+  name: &quot;Benny barks&quot;,
+  email: &quot;benny@mail.com&quot;,
+});
+user.online = false; // No error
+</code></pre>
+<p>在这个例子中，我们用声明了一个泛型参数 T，函数可以处理任何对象类型，并且返回的对象包含 online 属性。</p>
+<p><strong>使用泛型接口</strong></p>
+<p>我们可以在接口中使用泛型来定义更复杂的数据结构。例如：</p>
+<pre><code class="language-ts">interface User&lt;T&gt; {
+  name: string;
+  email: string;
+  online: boolean;
+  skills: T;
+}
+
+const newUser: User&lt;string[]&gt; = {
+  name: &quot;Benny barks&quot;,
+  email: &quot;ben@mail.com&quot;,
+  online: false,
+  skills: [&quot;chewing&quot;, &quot;barking&quot;],
+};
+
+const brandNewUser: User&lt;number[]&gt; = {
+  name: &quot;Benny barks&quot;,
+  email: &quot;benny@mail.com&quot;,
+  online: false,
+  skills: [2456234, 243534],
+};
+</code></pre>
+<p>在这个例子中，是类型参数，可以在使用接口时替换为任何有效的 TypeScript 类型。</p>
+<p>下面是一个现实世界中的例子，展示了如何使用泛型接口。我们创建了一个 ILogger 接口，定义了一个 log 方法，该方法接受消息和任意类型的数据（T）：</p>
+<pre><code class="language-ts">interface ILogger&lt;T&gt; {
+  log(message: string, data: T): void;
+}
+</code></pre>
+<p>ILogger 接口可以用于任何数据类型，使我们的代码更适应不同的场景，并确保记录的数据类型正确。</p>
+<p><strong>实现 FileLogger 类</strong></p>
+<p>接下来，我们创建一个实现 ILogger 接口的 FileLogger 类，将消息记录到文件中：</p>
+<pre><code class="language-ts">class FileLogger implements ILogger&lt;string&gt; {
+  private filename: string;
+
+  constructor(filename: string) {
+    this.filename = filename;
+  }
+
+  log(message: string, data: string): void {
+    console.log(`Writing to file: ${this.filename}`);
+    // ... write logEntry to file ...
+  }
+}
+
+const fileLogger = new FileLogger(&quot;userlog.txt&quot;);
+fileLogger.log(&quot;User information&quot;, JSON.stringify(user));
+</code></pre>
+<p>通过使用泛型接口 ILogger，我们可以实现一个通用的日志记录类，处理任何数据类型，使我们的代码更加灵活。</p>
+<h2>四. 为泛型传递默认值</h2>
+<p>在 TypeScript 中，我们可以为泛型传递默认类型值。这在某些情况下非常有用，例如当我们不希望强制传递函数处理的数据类型时。通过设置默认类型，我们可以让泛型在没有明确指定类型时使用默认值。</p>
+<p><strong>示例：设置默认泛型类型</strong></p>
+<p>下面是一个示例，我们将泛型类型默认为 number：</p>
+<pre><code class="language-ts">function removeRandomArrayItem&lt;T = number&gt;(arr: Array&lt;T&gt;): Array&lt;T&gt; {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr.splice(randomIndex, 1);
+}
+console.log(removeRandomArrayItem([45345, 3453, 356753, 3562345, 3567235]));
+</code></pre>
+<p>在这个代码片段中，我们使用了默认泛型类型 number 来实现 removeRandomArrayItem 函数。如果调用时不提供具体的类型参数，TypeScript 将使用默认类型 number。</p>
+<p><strong>为什么使用默认泛型类型</strong></p>
+<ul>
+<li>简化调用：默认泛型类型使函数调用更简单，不需要每次都指定类型参数。</li>
+<li>提高灵活性：在某些情况下，用户可能不关心类型参数是什么，通过提供默认类型，我们可以让代码更灵活。减少冗余：在某些常见情况下，指定类型是多余的，通过默认值可以减少代码的冗余。</li>
+</ul>
+<h2>五. 传递多个泛型值</h2>
+<p>如果我们希望函数能够接受多个泛型参数，可以这样做：</p>
+<pre><code class="language-ts">function removeRandomAndMultiply&lt;T = number, Y = number&gt;(
+  arr: Array&lt;T&gt;,
+  multiply: Y
+): [T[], Y] {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  const multipliedVal = arr.splice(randomIndex, 1);
+  return [multipliedVal, multiply];
+}
+console.log(
+  removeRandomAndMultiply([45345, 3453, 356753, 3562345, 3567235], 608)
+);
+</code></pre>
+<p>在这个例子中，我们修改了之前的函数，引入了另一个泛型参数 Y。我们用字母 Y 表示，并将其默认类型设置为 number，因为它将用于乘以从数组中挑选的随机数。因为我们在处理数字，所以可以传递默认的泛型类型 number。</p>
+<h2>六. 传递条件值给泛型</h2>
+<p>有时，我们可能希望传递符合某个条件的特定数量的值。我们可以通过定义一个带有条件泛型类型参数的类来实现这一点：</p>
+<pre><code class="language-ts">class MyNewClass&lt;T extends { id: number }&gt; {
+  petOwner: T[];
+
+  constructor(pets: T[]) {
+    this.petOwner = pets;
+  }
+
+  processPets&lt;X&gt;(callback: (pet: T) =&gt; X): X[] {
+    return this.petOwner.map(callback);
+  }
+}
+
+interface MyObject {
+  id: number;
+  pet: string;
+}
+
+const myArray: MyObject[] = [
+  { id: 1, pet: &quot;Dog&quot; },
+  { id: 2, pet: &quot;Cat&quot; },
+];
+
+const myClass = new MyNewClass(myArray);
+const whichPet = myClass.processPets((item) =&gt; {
+  // 根据 item 属性添加条件逻辑
+  if (item.pet === &quot;Dog&quot;) {
+    return &quot;You have a dog as a pet!&quot;;
+  } else {
+    return &quot;You have a cat as a pet!&quot;;
+  }
+});
+
+console.log(whichPet);
+</code></pre>
+<p>在上述代码中，我们定义了一个类 MyNewClass，它扩展了包含 id 属性且类型为 number 的对象。该类有一个空数组属性 petOwner，类型为 T，用于存放项目。</p>
+<p>MyNewClass 的 processPets 方法接受一个回调函数，该回调函数遍历每个项目并检查定义的条件。whichPet 的返回值将是一个基于回调函数中提供的条件的值数组。我们可以添加条件并定义逻辑，以根据需求和具体情况进行调整。</p>
+<h2>七. 为泛型添加约束</h2>
+<p>泛型允许我们处理作为参数传递的任何数据类型。然而，我们可以为泛型添加约束，以将其限制为特定类型。这样可以确保我们不会获取不存在的属性。</p>
+<p>添加约束的示例 一个类型参数可以被声明为受限于另一个类型参数。这将帮助我们在对象上添加约束，确保我们不会获取不存在的属性：</p>
+<pre><code class="language-ts">function getObjProperty&lt;Type, Key extends keyof Type&gt;(obj: Type, key: Key) {
+  return obj[key];
+}
+
+let x = {
+  name: &quot;Benny barks&quot;,
+  address: &quot;New York&quot;,
+  phone: 7245624534534,
+  admin: false,
+};
+
+console.log(getObjProperty(x, &quot;name&quot;)); // Benny barks
+console.log(getObjProperty(x, &quot;admin&quot;)); // false
+console.log(getObjProperty(x, &quot;loggedIn&quot;)); // Error: Property &#39;loggedIn&#39; does not exist on type &#39;{ name: string; address: string; phone: number; admin: boolean; }&#39;
+</code></pre>
+<p>在上面的例子中，我们创建了一个函数 getObjProperty，它接受两个参数：一个对象 obj 和一个键 key。我们为第二个参数添加了一个约束 <code>Key extends keyof Type</code>，确保传递的键必须是对象类型中的一个有效键。</p>
+<p><strong>为什么要添加约束</strong></p>
+<p>添加约束可以帮助我们在编译时捕获错误，而不是在运行时。这种方法提供了更高的类型安全性，防止了试图访问对象中不存在的属性。</p>
+<h2>八. 动态数据类型的泛型实现</h2>
+<p>泛型允许我们在定义函数和数据结构时使用各种数据类型，并同时保持类型安全。当类型在运行时才确定时，我们可以使用泛型来定义函数；这些泛型类型将在运行时被具体的类型替换。通过传递泛型类型参数，我们可以处理包含多种数据类型的数组，反序列化 JSON 数据，或处理动态的 HTTP 响应数据。</p>
+<p><strong>使用泛型构建 API 客户端</strong></p>
+<p>假设我们正在构建一个与 API 交互的 Web 应用程序。我们需要创建一个能够处理不同 API 响应和各种数据结构的 API 客户端。我们可以定义一个 API 服务如下：</p>
+<pre><code class="language-ts">interface ApiResponse&lt;T&gt; {
+  data: T;
+}
+
+class ApiService {
+  private readonly baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  public async get&lt;T&gt;(url: string): Promise&lt;ApiResponse&lt;T&gt;&gt; {
+    const response = await fetch(`${this.baseUrl}${url}`);
+    const data = (await response.json()) as T;
+    return { data };
+  }
+}
+</code></pre>
+<p>在这里，我们定义了一个 ApiResponse 接口，它表示一个通用的 API 响应结构。该接口包含一个类型为 T 的 data 属性，还可以扩展其他属性（例如，状态、错误信息）。接着，我们创建了一个 ApiService 类，其中包括一个泛型函数，该函数接受一个 URL 路径并返回一个<code>Promise&lt;ApiResponse&gt;</code>。该函数从提供的 URL 获取数据，解析并断言 JSON 响应（<code>data as T</code>）。</p>
+<p>使用泛型类型，ApiService 类可以通过改变 get 函数中的类型参数 T，在不同的 API 端点间重用。如下例所示，我们可以使用相同的 apiClient 来调用两个端点，分别获取客户端和产品：</p>
+<pre><code class="language-ts">interface Client {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+const apiClient = new ApiService(&quot;https://api.example.com&quot;);
+
+async function getClient(id: number): Promise&lt;Client&gt; {
+  const response = await apiClient.get&lt;Client&gt;(`/clients/${id}`);
+  return response.data;
+}
+
+async function getProducts(): Promise&lt;Product[]&gt; {
+  const response = await apiClient.get&lt;Product[]&gt;(&quot;/products&quot;);
+  return response.data;
+}
+
+// 示例调用
+getClient(1).then((client) =&gt; console.log(client));
+getProducts().then((products) =&gt; console.log(products));
+</code></pre>
+<p>在这个例子中，getClient 函数和 getProducts 函数使用相同的 apiClient 来调用不同的端点，并获取不同类型的数据。通过使用泛型，我们能够在编译时确保类型安全，并在运行时根据实际需求处理不同的数据类型。</p>
+<p>通过泛型，我们可以编写更加灵活和可复用的代码，特别是在处理动态数据类型时。泛型在 API 客户端的实现中尤为有用，它允许我们在不同的 API 端点间共享代码，同时保持类型安全。掌握这些技巧，可以帮助我们构建更加健壮和高效的应用程序。</p>
+<h2>九. 关于泛型的一些注意事项</h2>
+<p>TypeScript 的泛型是一种强大的工具，但在大型代码库中使用它们时，需要了解一些最佳实践。</p>
+<p><strong>1. 使用描述性名称</strong></p>
+<p>在定义泛型接口或函数时，使用清晰和描述性的类型参数名称。这样可以更准确地反映预期的数据类型，使代码更易读和可维护。</p>
+<p>例如，我们定义一个 doubleValue 函数。这个泛型函数表达了函数的预期类型和意图，使代码更易于理解和维护：</p>
+<pre><code class="language-ts">function doubleValue&lt;T extends number&gt;(value: T): T {
+  return value * 2;
+}
+</code></pre>
+<p><strong>2. 必要时应用约束</strong></p>
+<p>使用类型约束（extends 关键字）来限制可以与泛型一起使用的类型，确保只接受兼容的类型。</p>
+<p>在下面的示例中，定义了一个泛型接口并将其应用为参数约束，因此 findById 函数只接受实现特定接口的对象：</p>
+<pre><code class="language-ts">interface Identifiable&lt;T&gt; {
+  id: T;
+}
+
+function findById&lt;T, U extends Identifiable&lt;T&gt;&gt;(collection: U[], id: T) {
+  return collection.find((item) =&gt; item.id === id);
+}
+</code></pre>
+<p><strong>3. 利用实用类型</strong></p>
+<p>TypeScript 提供了一些实用类型（如 Partial、Readonly 和<code>Pick&lt;T, K&gt;</code>），以便于常见的数据操作。这些类型可以增强代码的可读性和可维护性。</p>
+<p>例如，Partial 创建一个可选属性的类型：</p>
+<pre><code class="language-ts">interface User {
+  id: number;
+  name: string;
+  email?: string;
+}
+
+// Partial 创建一个可选属性的类型
+type UserPartial = Partial&lt;User&gt;;
+const userData: UserPartial = { name: &quot;Alice&quot; }; // 只给出部分属性
+</code></pre>
+<p><strong>4. 使用泛型默认值</strong></p>
+<p>在某些情况下，可以为泛型参数提供默认值，以减少使用泛型时的复杂性。</p>
+<pre><code class="language-ts">interface ApiResponse&lt;T = any&gt; {
+  data: T;
+  status: number;
+  message: string;
+}
+
+// 默认情况下，T 是 `any`
+const response: ApiResponse = {
+  data: { name: &quot;Alice&quot; },
+  status: 200,
+  message: &quot;Success&quot;,
+};
+</code></pre>
+<p><strong>5. 避免过度泛型化</strong></p>
+<p>不要过度使用泛型。虽然泛型很强大，但不必要的泛型化会使代码复杂化并难以理解。只在需要的地方使用泛型。</p>
+<p><strong>6. 文档化和注释</strong></p>
+<p>在代码中使用泛型时，确保有良好的文档和注释，解释泛型参数的用途和限制。这有助于其他开发人员理解和使用你的代码。</p>
+<h2>十. TypeScript 泛型常见问题</h2>
+<p>在使用 TypeScript 泛型时，我们经常会遇到类似 <code>“type is not generic”</code> 的问题。解决这些问题需要系统的方法和对泛型在 TypeScript 中工作原理的理解。以下是一些常见问题及其解决策略。</p>
+<p><strong>常见问题及解决策略</strong></p>
+<ol>
+<li>“Type is not generic” / “Generic typerequirestypeargument”</li>
+</ol>
+<p>这个错误通常发生在使用泛型类型而没有提供必要的类型参数时，或者在使用非泛型类型时使用了类型参数。解决方法是指定数组应该包含的元素类型。例如，在下面的代码片段中，修正的方法是添加类型参数，如 <code>const foo:Array= [1, 2, 3]</code>：</p>
+<pre><code class="language-ts">interface User {
+  id: number;
+}
+
+// 尝试将 User 用作泛型参数
+const user: User&lt;number&gt; = {}; // Type is not generic
+
+const foo: Array = [1, 2, 3]; // Generic type &#39;Array&#39; requires 1 type argument(s).
+</code></pre>
+<p>解决方法:</p>
+<p>确保你在使用泛型类型时提供了必要的类型参数：</p>
+<pre><code class="language-ts">interface User {
+  id: number;
+}
+
+// 正确使用 User 类型
+const user: User = { id: 1 };
+
+const foo: Array&lt;number&gt; = [1, 2, 3]; // 正确添加类型参数
+</code></pre>
+<ol start="2">
+<li>“Cannot Find Name &#39;T&#39;”</li>
+</ol>
+<p>这个错误通常发生在使用未声明或不在作用域内的类型参数（T）时。要解决此问题，请正确声明类型参数或检查其使用中的拼写错误：</p>
+<pre><code class="language-ts">// 尝试在未声明类型参数的情况下使用 T 作为泛型类型参数
+function getValue(value: T): T {
+  // Cannot find name &#39;T&#39;.
+  return value;
+}
+
+// 通过声明 T 作为泛型类型参数修复错误
+function getValue&lt;T&gt;(value: T): T {
+  return value;
+}
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/214.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    Home
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
