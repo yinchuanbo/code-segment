@@ -2,7 +2,7 @@
 @import "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap";
 
 :root {
-  --color01: #445c3c;
+  --color01: #597445;
   --color02: #fff;
   --fs01: 17px;
   --ff: "hack";
@@ -81,9 +81,8 @@ h4 {
 
 .container-header h2 {
   font-size: 30px;
-  margin-bottom: 20px;
-  /* font-weight: 400;
-  font-size: var(--fs01); */
+  margin-bottom: 40px;
+  text-shadow: 0 .075em rgba(0, 0, 0, .25);
 }
 
 .container-header span {
@@ -100,7 +99,7 @@ h4 {
 .container-main {
   width: 100%;
   height: 100%;
-  padding-top: 50px;
+  padding-top: 30px;
   padding-bottom: 10px;
   margin: 0 auto;
   /* overflow: auto; */
@@ -135,7 +134,7 @@ pre[class*="language-"] {
 }
 
 strong {
-  color:yellowgreen
+  color: yellowgreen;
 }
 
 .code-toolbar {
@@ -216,10 +215,8 @@ a:not(.token)::before {
 
 .home svg {
   display: block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  margin-top: -4px;
+  width: 30px;
+  height: 30px;
 }
 
 .nav-prev {
@@ -312,4 +309,29 @@ pre[class*="language-"] a[href] {
 .token.space:before,
 .token.tab:not(:empty):before {
   opacity: 0;
+}
+
+table {
+  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px -50px 36px -28px inset;
+}
+
+table thead tr {
+  border-bottom: 1px solid #fff;
+  height: 50px;
+}
+
+table thead tr th {
+  text-align: center;
+}
+
+table tbody tr td {
+  text-align: center;
+  padding: 10px;
+  /* border-bottom: 1px solid #fff; */
+  line-height: 1.5;
+}
+
+table tbody tr {
+  border-bottom: 1px solid #fff;
 }

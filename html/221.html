@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>15 个你不知道的 CSS 属性</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>15 个你不知道的 CSS 属性</h2>
+                    <p>2024-07-13 22:24:02 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h3>1.backdrop-filter:</h3>
+<p>此属性将图形效果（例如模糊或色移）应用于元素内容后面的区域。它非常适合创建磨砂玻璃效果或为元素添加微妙的视觉增强效果。</p>
+<pre><code class="language-css">.element {
+  backdrop-filter: blur(5px);
+}
+</code></pre>
+<h3>2.clip-path：</h3>
+<p>剪切路径允许您定义剪切区域以有选择地显示元素的一部分，从而实现简单矩形之外的复杂且富有创意的形状。</p>
+<pre><code class="language-js">
+.element {
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+</code></pre>
+<h3>3.mix-blend-mode:</h3>
+<p>此属性控制元素的内容与其背景混合的方式，提供与图形设计软件中类似的各种混合模式。</p>
+<pre><code class="language-css">.element {
+  mix-blend-mode: screen;
+}
+</code></pre>
+<h3>4.text-overflow:</h3>
+<p>文本溢出允许您控制溢出其容器的文本的显示方式，提供省略号或自定义溢出指示器的选项。</p>
+<pre><code class="language-css">.element {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</code></pre>
+<h3>5.scroll-behavior:</h3>
+<p>该属性定义了溢出元素的滚动行为，只需简单的声明即可实现平滑的滚动动画。</p>
+<pre><code class="language-css">.element {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+</code></pre>
+<h3>6.shape-outside:</h3>
+<p>Shape-outside 允许文本环绕不规则形状的元素，为文本布局和设计开辟了新的可能性。</p>
+<pre><code class="language-css">.element {
+  float: left;
+  width: 200px;
+  height: 200px;
+  shape-outside: circle(50%);
+}
+</code></pre>
+<h3>7.图像渲染：</h3>
+<p>此属性控制图像在浏览器中的渲染方式，提供优化图像质量和渲染速度的选项。</p>
+<pre><code class="language-css">img {
+  image-rendering: pixelated;
+}
+</code></pre>
+<h3>8.overscroll-behavior:</h3>
+<p>过度滚动行为确定用户过度滚动元素时的行为，允许开发人员进一步自定义滚动体验。</p>
+<pre><code class="language-css">.element {
+  overscroll-behavior: contain;
+}
+</code></pre>
+<h3>9.user-select:</h3>
+<p>user-select 控制用户是否可以选择元素内的文本，从而更好地控制用户交互和界面设计。</p>
+<pre><code class="language-css">.element {
+  user-select: none;
+}
+</code></pre>
+<h3>10.text-align-last:</h3>
+<p>Text-align-last 指定块或行的最后一行（强制换行符之前）如何在其容器内对齐。</p>
+<pre><code class="language-css">.element {
+  text-align: justify;
+  text-align-last: center;
+}
+</code></pre>
+<h3>11.column-span:</h3>
+<p>Column-span 允许元素在多列布局中跨越多个列，从而有助于创建复杂且动态的布局。</p>
+<pre><code class="language-css">.element {
+  column-span: all;
+}
+</code></pre>
+<h3>12.counter-increment:</h3>
+<p>计数器递增增加一个或多个计数器，提供一种动态对元素进行编号或基于计数器值生成内容的方法。</p>
+<pre><code class="language-css">ol {
+  counter-reset: section;
+}
+</code></pre>
+<pre><code class="language-css">li::before {
+  content: counter(section) &quot;.&quot;;
+  counter-increment: section;
+}
+</code></pre>
+<h3>13.object-fit:</h3>
+<p>Object-fit 指定如何调整元素内容的大小以适合其容器、保留纵横比并控制溢出行为。</p>
+<pre><code class="language-css">img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+</code></pre>
+<h3>14.mask-image:</h3>
+<p>mask-image 应用图像来选择性地遮盖或显示元素内容的部分内容，从而实现复杂且具有视觉吸引力的设计。</p>
+<pre><code class="language-css">.element {
+  mask-image: url(&quot;mask.png&quot;);
+}
+</code></pre>
+<h3>15.overscroll-behavior-block:</h3>
+<p>Overscroll-behavior-block 确定用户垂直滚动块级元素时的行为，从而提供对滚动交互的精细控制。</p>
+<pre><code class="language-css">.element {
+  overscroll-behavior-block: none;
+}
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/220.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1720872401065" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="17881" width="200" height="200"><path d="M134.528 307.072l18.218667 26.282667-18.218667-26.282667zM407.04 117.888l-18.218667-26.282667 18.218667 26.282667z m209.834667 0l18.218666-26.282667-18.218666 26.282667z m272.554666 189.184l-18.218666 26.282667 18.218666-26.282667zM120.32 479.786667l-22.101333 23.125333 22.101333-23.125333z m783.36 0l-22.101333-23.168 22.101333 23.168zM426.666667 736a32 32 0 0 0 0 64v-64z m170.666666 64a32 32 0 0 0 0-64v64z m93.013334 106.666667H333.653333v64h356.693334v-64zM152.746667 333.354667L425.386667 144.213333l-36.48-52.565333-272.64 189.184 36.522666 52.565333zM598.656 144.213333l272.597333 189.184 36.48-52.565333-272.597333-189.184-36.48 52.565333z m238.08 416.170667v208.128h64v-208.128h-64zM187.264 768.469333v-208.128h-64v208.128h64z m0-208.128a143.36 143.36 0 0 0-44.885333-103.68l-44.16 46.250667c16.213333 15.488 25.045333 36.181333 25.045333 57.429333h64z m694.314667-103.68a143.36 143.36 0 0 0-44.842667 103.68h64c0-21.248 8.832-41.941333 25.045333-57.429333l-44.202666-46.293333zM425.386667 144.128a153.301333 153.301333 0 0 1 173.312 0l36.48-52.565333a217.301333 217.301333 0 0 0-246.272 0l36.48 52.565333zM333.610667 906.666667c-82.218667 0-146.346667-63.274667-146.346667-138.24h-64c0 113.066667 95.616 202.24 210.346667 202.24v-64z m356.736 64c114.773333 0 210.346667-89.173333 210.346666-202.24h-64c0 74.965333-64.085333 138.24-146.346666 138.24v64z m180.906666-637.312c42.922667 29.781333 47.36 87.936 10.325334 123.306666l44.202666 46.250667c66.730667-63.658667 57.685333-169.557333-18.048-222.122667l-36.48 52.565334zM116.266667 280.789333C40.533333 333.354667 31.488 439.253333 98.218667 502.912l44.16-46.293333c-36.992-35.328-32.554667-93.44 10.368-123.264l-36.48-52.565334zM426.666667 800h170.666666v-64h-170.666666v64z" p-id="17882" fill="#ffffff"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
