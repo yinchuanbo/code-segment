@@ -80,7 +80,7 @@ li {
   color: #fff;
   text-decoration: none;
   transition: 0.5s;
-}
+} 
 
 .container li a:hover {
   text-decoration: underline;

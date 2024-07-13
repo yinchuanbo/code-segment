@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>前端项目如何部署上线</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>前端项目如何部署上线</h2>
+                    <p>2024-07-13 17:52:10 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>以前大部分中小型公司前端部署比较简单，通过脚手架命令 <code>npm run build</code> 打包前端代码，生成 dist 文件夹；将 dist 文件夹丢给后端开发人员集成到后端工程代码中一起发布。现在前后端分离的项目中，前端项目单独部署。利用 nginx 起一个 web 服务器，将 dist 文件夹放到指定路径，配置 nginx 访问路径，对于请求接口使用 proxy 代理进行转发，解决跨域问题。比较规范的大公司，前端部署会采用 <code>CI/CD</code>，Jenkins 进行自动化部署。如果代码使用 gitLab 管理，使用 <code>CI/CD</code> 部署会更加简单。本文主要介绍 <code>CI/CD</code> 自动化部署方案。</p>
+<h2>持续集成持续部署(CI/CD)</h2>
+<p>CI/CD 是一种软件开发实践，它将软件开发过程自动化，以提高效率和质量。CI/CD 代表 &quot;持续集成&quot;（Continuous Integration）和 &quot;持续部署&quot;（Continuous Deployment）。</p>
+<p><strong>持续集成（CI）：</strong></p>
+<ul>
+<li><p>开发者频繁地将代码变更合并到主分支。</p>
+</li>
+<li><p>每次代码变更后，自动化的构建和测试流程会运行，确保代码变更不会破坏现有的功能。</p>
+</li>
+<li><p>这有助于快速发现和修复错误，减少集成问题。</p>
+</li>
+</ul>
+<p><strong>持续部署（CD）：</strong></p>
+<ul>
+<li><p>自动化地将代码变更部署到生产环境。</p>
+</li>
+<li><p>这要求高度的自动化测试和监控，以确保部署的代码是稳定的。</p>
+</li>
+</ul>
+<p>CI/CD 流程通常涉及以下工具和步骤：</p>
+<ol>
+<li><p>版本控制系统：如 Git，用于管理代码变更。</p>
+</li>
+<li><p>构建工具：如 Maven、Gradle、Jenkins 等，用于自动化构建过程。</p>
+</li>
+<li><p>自动化测试：确保代码变更不会引入新的错误。</p>
+</li>
+<li><p>部署工具：如 Ansible、Chef、Puppet 等，用于自动化部署过程。</p>
+</li>
+<li><p>监控和日志：监控应用的性能和健康状态，记录日志以便于问题追踪。</p>
+</li>
+</ol>
+<p>CI/CD 流程可以帮助团队提高软件交付的速度和质量，减少人为错误，加快问题解决的速度。开发人员只需将代码提交到版本库，剩下项目构建、测试、部署都交给工具完成。</p>
+<img src="./imgs/217/01.png" />
+
+<h2>GitLab 安装配置</h2>
+<p>GitLab 提供了持续集成 (CI/CD) 系统来管理部署项目。GitLab 是一个用于仓库管理系统的开源项目，使用 Git 作为代码管理工具，并在此基础上搭建起来的 Web 服务。企业用于搭建自己的私有代码托管服务。</p>
+<p>官方网站: <a href="https://about.gitlab.com/">https://about.gitlab.com/</a></p>
+<img src="./imgs/217/02.png" />
+
+<ol>
+<li>使用官方 gitLab</li>
+</ol>
+<p>进入官网注册、登录使用,</p>
+<p>缺点：代码部署在别人服务器不安全。</p>
+<img src="./imgs/217/03.png" />
+
+<ol start="2">
+<li>自己服务器安装 gitLab</li>
+</ol>
+<p>部署 GitLab 的实例要求至少使用 2 核 CPU 和 4GiB 的内存</p>
+<ul>
+<li>centos 安装 GitLab 软件包</li>
+</ul>
+<pre><code class="language-bash">curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+sudo yum install gitlab-ce
+</code></pre>
+<img src="./imgs/217/04.png" />
+
+<ul>
+<li>初始化 GitLab 配置</li>
+</ul>
+<pre><code class="language-bash">sudo gitlab-ctl reconfigure
+</code></pre>
+<ul>
+<li>启动 gitlab 服务</li>
+</ul>
+<pre><code class="language-bash">gitlab-ctl start
+</code></pre>
+<ul>
+<li>停止 gitlab 服务</li>
+</ul>
+<pre><code class="language-bash">gitlab-ctl stop
+</code></pre>
+<ol start="3">
+<li>配置 gitlab 中文支持</li>
+</ol>
+<img src="./imgs/217/05.png" />
+
+<img src="./imgs/217/06.png" />
+
+<img src="./imgs/217/07.png" />
+
+<ol start="4">
+<li>GitLab Runner</li>
+</ol>
+<p>GitLab Runner 是一个开源项目，用于运行您的作业并将结果发送回 GitLab。它与 GitLab CI 一起使用，GitLab CI 是 GitLab 随附的开源持续集成服务，用于协调作业。</p>
+<p><strong>工作原理:</strong></p>
+<img src="./imgs/217/08.png" />
+
+<p>从上面图片中可以看到，具体的流程是：</p>
+<ul>
+<li><p>Runner 向/api/v4/runners 发送 POST 请求，请求里带有注册 Token</p>
+</li>
+<li><p>注册成功后返回 runner_token</p>
+</li>
+<li><p>Runner 通过循环向/api/v4/rquest 发送 POST 请求，请求里带上 runner_token</p>
+</li>
+<li><p>认证通过后接口返回带有任务信息的 payload 和任务相关的 job_token</p>
+</li>
+<li><p>然后将任务信息发送给执行器，执行器使用 job_token 来</p>
+</li>
+<li><p>克隆所需的代码</p>
+</li>
+<li><p>下载配置或组件</p>
+</li>
+<li><p>执行器执行完成后，返回任务输出和任务状态信息</p>
+</li>
+<li><p>Runner 向 GitLab 返回任务输出、任务状态以及 job_token</p>
+</li>
+</ul>
+<p><strong>runner 配置:</strong></p>
+<img src="./imgs/217/09.png" />
+
+<img src="./imgs/217/10.png" />
+
+<img src="./imgs/217/11.png" />
+
+<img src="./imgs/217/12.png" />
+
+<p>启动 runner</p>
+<img src="./imgs/217/13.png" />
+
+<h2>CI/CD 配置</h2>
+<p><strong>Gitlab CI/CD 运行机制</strong></p>
+<p><code>.gitlab-ci.yml</code> 配置文件用于指定 CI/CD 构建部署逻辑，比如 <code>npm install、build、ssh</code> 部署等。
+运行 <code>.gitlab-ci.yml</code> 部署脚本所使用的机器</p>
+<ol>
+<li><p>Gitlab 自有的 <code>Shared runners</code>（默认），可免费使用，会有使用时长限制，构建部署过程运行在 Gitlab 提供的云服务器上。可以用于所有 group 和 project，每个 CI/CD Job 都运行在一个隔离、独立的虚拟机上。</p>
+</li>
+<li><p>自定义 runner（Project runners、Group runners） ，在自己的服务器上安装 <code>gitlab runner</code> 程序，指定用这个 runner 来执行 <code>.gitlab-ci.yml</code> 部署构建流程。</p>
+</li>
+</ol>
+<img src="./imgs/217/14.png" />
+
+<p><strong>汇智在线项目</strong></p>
+<ol>
+<li>gitlab-ci.yml 文件示例</li>
+</ol>
+<pre><code class="language-yml"># 自动构建部署
+before_script:
+  - echo &quot;🐈 持续集成开始&quot;
+
+after_script:
+  - echo &quot;🐈 持续集成完成&quot;
+
+image: node:14
+
+stages:
+  - install
+  - build
+  - deploy-prod
+  - deploy-dev
+
+cache: # 缓存
+  paths:
+    - node_modules
+
+# 安装依赖包1
+install-job:
+  stage: install
+  script:
+    - npm install
+
+# 构建项目
+build-job:
+  stage: build
+  script:
+    - npm run build
+  artifacts: # 制品目录
+    paths:
+      - dist
+
+# 部署项目
+deploy-job:
+  stage: deploy-prod
+  tags:
+    - debug-huizhi
+  script:
+    - echo &quot;🚚 部署正式环境&quot;
+    - sshpass -p $PASSWORD ssh $CUSTOM_USERNAME@$CUSTOM_IP &quot;rm -rf /www/wwwroot/$CUSTOM_IP/huizhi&quot;
+    - sshpass -p $PASSWORD scp -r ./dist $CUSTOM_USERNAME@$CUSTOM_IP:/www/wwwroot/$CUSTOM_IP/huizhi
+  when: manual
+  only:
+    - main
+
+deploy-job-test:
+  stage: deploy-dev
+  tags:
+    - debug-huizhi
+  script:
+    - echo &quot;🚚 部署测试环境&quot;
+    - sshpass -p 123 ssh root@192.168.0.104 &quot;rm -rf /www/wwwroot/www.warmtel.com/huizhi&quot;
+    - sshpass -p 123 scp -r -P 22 ./dist root@192.168.0.104:/www/wwwroot/www.warmtel.com/huizhi
+  only:
+    - test
+</code></pre>
+<ol start="2">
+<li>gitLab 部署运行</li>
+</ol>
+<img src="./imgs/217/15.png" />
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/216.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    Home
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
