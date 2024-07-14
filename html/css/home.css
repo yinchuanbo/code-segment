@@ -92,6 +92,7 @@ li {
   color: #fff;
   text-decoration: none;
   transition: 0.5s;
+  line-height: 1.5;
 }
 
 .container li a:hover {

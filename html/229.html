@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>虚拟 DOM</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>虚拟 DOM</h2>
+                    <p>2024-07-14 14:29:04 · YinHao</p>
+                  </div>
+                  <div class="container-main"><img src="./imgs/229/01.png" />
+
+<h2>真实 DOM</h2>
+<blockquote>
+<p>DOM（Document Object Model，文档对象模型）是一个编程接口，用于表示和操作 HTML 文档。</p>
+</blockquote>
+<p>DOM 将 html 文档的结构化内容（如标签和属性）转换成一个由对象（节点）组成的树状结构，其中每个节点代表文档中的一个元素。</p>
+<p><strong>html 文档</strong></p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;DOM节点&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;img src=&quot;xx.jpg&quot; alt=&quot;xx&quot; /&gt;
+    &lt;h1&gt;喜欢的水果&lt;/h1&gt;
+    &lt;p&gt;DOM应用&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>树型结构</strong></p>
+<img src="./imgs/229/02.png" />
+
+<p><strong>DOM 操作</strong></p>
+<p>我们对 DOM 的操作，一般包含操作 DOM 节点内容、操作 DOM 样式、操作 DOM 属性、操作 DOM 事件，还有 DOM 节点的创建、删除、修改、查询、遍历等操作。</p>
+<p>下面是一个完整的示例，演示了如何创建一个按钮，添加点击事件，并在点击时更改页面上的文本内容：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;title&gt;DOM Manipulation Example&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p id=&quot;text&quot;&gt;Initial text.&lt;/p&gt;
+    &lt;button id=&quot;changeTextBtn&quot;&gt;Change Text&lt;/button&gt;
+
+    &lt;script&gt;
+      // 获取元素
+      var textElement = document.getElementById(&quot;text&quot;);
+      var button = document.getElementById(&quot;changeTextBtn&quot;);
+
+      // 创建新的文本内容
+      var newText = &quot;Text has been changed!&quot;;
+
+      // 添加事件监听器
+      button.addEventListener(&quot;click&quot;, function () {
+        // 修改元素的文本内容
+        textElement.textContent = newText;
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>在这个示例中，我们首先通过 ID 获取了文本元素和按钮元素。然后，我们为按钮添加了一个点击事件监听器，当按钮被点击时，文本元素的内容会被更改为新的文本内容。</p>
+<p><strong>浏览器渲染</strong></p>
+<p>当我们打开浏览器执行代码时，浏览器渲染引擎，会先解析 HTML 然后生成 DOM 树，与此同时，渲染引擎也会用 CSS 解析器解析 CSS 文档构建 CSSOM 树。接下来，DOM 树和 CSSOM 树关联起来构成渲染树（RenderTree）然后浏览器按照渲染树进行布局（Layout），最后一步通过绘制显示出整个页面。</p>
+<img src="./imgs/229/03.png" />
+
+<p><strong>重排重绘</strong></p>
+<p><strong>重绘:</strong> CSS 样式改变(例如：visibility，背景色的改变)，浏览器需要根据新的属性进行重新绘制。</p>
+<p><strong>重排:</strong> 我们对 DOM 的修改引发了 DOM 几何元素的变化，渲染树需要重新计算，重新生成布局，重新排列元素。</p>
+<p>单单改变元素的外观，肯定不会引起网页重新生成布局，但当浏览器完成重排之后，将会重新绘制受到此次重排影响的部分。比如改变元素高度，这个元素乃至周边 dom 都需要重新绘制。重绘不一定导致重排，但重排一定会导致重绘。</p>
+<p>频繁的重排重绘对浏览器性能影响较大，严重时甚至会出现页面卡顿现象。这句很重要。</p>
+<h3>虚拟 DOM</h3>
+<p>我们知道，操作真实 DOM 节点后，浏览器渲染引擎会将结果经过重排、重绘过程显示出来呈现给用户。频繁的重排重绘对浏览器性能影响较大。</p>
+<p>在现代大型 web 应用程序开发中，频繁操作 DOM 的情况经常发生，为了提高性能，现代前端框架都引入了虚拟 DOM 技术，优化 web 程序性能。</p>
+<p><strong>虚拟 DOM 介绍</strong></p>
+<p>虚拟 DOM（Virtual DOM）是一个编程概念，主要用于提高 Web 应用程序的渲染性能。它是由 Facebook 开发的 React 库中的一个关键特性，但这个概念也被其他前端框架和库所采用。</p>
+<p><code>虚拟 DOM 的基本概念：</code></p>
+<ol>
+<li><p>轻量级对象：虚拟 DOM 是一个 JavaScript 对象，它代表了一个真实的 DOM 节点，但它并不是实际的 DOM 节点。它是一个轻量级的 JavaScript 对象，可以快速地创建和操作。</p>
+</li>
+<li><p>树形结构：就像实际的 DOM 一样，虚拟 DOM 也是一个树形结构，每个节点可以有子节点。</p>
+</li>
+<li><p>状态快照：当状态发生变化时，React 会创建一个新的虚拟 DOM 树，这个树是当前状态的快照。</p>
+</li>
+<li><p>差异比较（Diffing）：React 通过比较新旧虚拟 DOM 树来确定实际 DOM 中哪些部分需要更新。这个过程称为差异比较或 Diff 算法。</p>
+</li>
+<li><p>高效更新：通过仅更新变化的部分，React 可以避免不必要的 DOM 操作，从而提高性能。</p>
+</li>
+</ol>
+<p><code>虚拟 DOM 的工作流程：</code></p>
+<ol>
+<li><p>状态改变：当组件的状态或者属性发生变化时，React 会触发重新渲染。</p>
+</li>
+<li><p>生成新虚拟 DOM：React 会根据新的数据生成一个新的虚拟 DOM 树。</p>
+</li>
+<li><p>差异比较：React 会将新的虚拟 DOM 树与旧的虚拟 DOM 树进行比较，找出差异。</p>
+</li>
+<li><p>最小化 DOM 操作：React 会计算出最小的更新量，然后对实际的 DOM 进行更新。</p>
+</li>
+<li><p>渲染更新：最后，React 会将计算出需要更新的部分应用到实际的 DOM 上，完成渲染。</p>
+</li>
+</ol>
+<p><code>虚拟 DOM 的优点：</code></p>
+<ul>
+<li><p>性能优化：通过减少直接操作 DOM 的次数，可以显著提高应用的性能。</p>
+</li>
+<li><p>跨平台：虚拟 DOM 使得 React 可以运行在不同的平台上，如 Web、移动应用和桌面应用。</p>
+</li>
+<li><p>易于调试：由于虚拟 DOM 是 JavaScript 对象，开发者可以更容易地在开发工具中查看和调试组件树。</p>
+</li>
+</ul>
+<p>虚拟 DOM 是现代 Web 开发中一个非常强大和有用的工具，它帮助开发者构建快速、高效且易于维护的 Web 应用程序。</p>
+<p>简单理解：<strong>虚拟 dom 本质上就是一个普通的 JS 对象，用于描述视图的界面结构，将真实 DOM 节点用 js 对象构造出来。</strong></p>
+<ul>
+<li>一个真实的 DOM</li>
+</ul>
+<img src="./imgs/229/04.png" />
+
+<ul>
+<li>js 模拟出来的虚拟 dom 对象</li>
+</ul>
+<img src="./imgs/229/05.png" />
+
+<p><strong>React 虚拟 DOM 示例</strong></p>
+<p>虚拟 DOM（Virtual DOM）是一个 JavaScript 对象，它模拟了实际的 DOM 节构。以下是使用 React 来创建一个简单虚拟 DOM 的示例：</p>
+<pre><code class="language-js">// 假设我们有一个简单的组件，它是一个函数组件
+function MyComponent(props) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{props.title}&lt;/h1&gt;
+      &lt;p&gt;{props.text}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// 创建一个组件实例，并将props传递给它
+const element = (
+  &lt;MyComponent title=&quot;Hello Virtual DOM&quot; text=&quot;This is a simple example.&quot; /&gt;
+);
+
+// React会将这个组件实例转换为一个虚拟DOM对象
+// 这个虚拟DOM对象是一个轻量级的JavaScript对象，不是实际的DOM元素
+
+// 假设我们使用React的渲染函数来将虚拟DOM渲染到实际的DOM中
+// 这个过程通常在React的内部进行，以下是模拟这个过程的伪代码
+function render(element) {
+  const virtualDOM = {
+    type: &quot;div&quot;,
+    props: {
+      children: [
+        {
+          type: &quot;h1&quot;,
+          props: {
+            children: &quot;Hello Virtual DOM&quot;,
+          },
+        },
+        {
+          type: &quot;p&quot;,
+          props: {
+            children: &quot;This is a simple example.&quot;,
+          },
+        },
+      ],
+    },
+  };
+
+  // 将虚拟DOM转换为实际的DOM节点
+  function createDOM(virtualNode) {
+    // 根据虚拟DOM的类型创建DOM元素
+    const element = document.createElement(virtualNode.type);
+    // 设置元素的属性
+    Object.keys(virtualNode.props).forEach((prop) =&gt; {
+      if (prop !== &quot;children&quot;) {
+        element[prop] = virtualNode.props[prop];
+      }
+    });
+    // 递归创建子节点
+    if (virtualNode.props.children) {
+      virtualNode.props.children.forEach((child) =&gt; {
+        element.appendChild(createDOM(child));
+      });
+    }
+    return element;
+  }
+
+  // 使用createDOM函数创建实际的DOM节点
+  const domElement = createDOM(virtualDOM);
+
+  // 将创建的DOM元素插入到页面中
+  document.body.appendChild(domElement);
+}
+
+// 调用render函数，将虚拟DOM渲染到页面中
+render(element);
+</code></pre>
+<p>在这个示例中，我们定义了一个简单的函数组件 MyComponent，它接受 title 和 text 作为 props，并返回一个包含 h1 和 p 标签的 div 元素。然后，我们创建了一个组件实例 element，并将 props 传递给它。</p>
+<p>React 内部会将这个组件实例转换为一个虚拟 DOM 对象，这个对象是一个轻量级的 JavaScript 对象，它模拟了实际的 DOM 节构。然后，React 会使用一个类似于 createDOM 的函数来将虚拟 DOM 转换为实际的 DOM 节点，并将其插入到页面中。</p>
+<p>请注意，这个示例是一个简化的版本，用于说明虚拟 DOM 的概念。在实际的 React 应用中，虚拟 DOM 的创建、比较和更新是由 React 的内部机制自动处理的，开发者不需要手动编写这些代码。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/228.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/230.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1720872401065" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="17881" width="200" height="200"><path d="M134.528 307.072l18.218667 26.282667-18.218667-26.282667zM407.04 117.888l-18.218667-26.282667 18.218667 26.282667z m209.834667 0l18.218666-26.282667-18.218666 26.282667z m272.554666 189.184l-18.218666 26.282667 18.218666-26.282667zM120.32 479.786667l-22.101333 23.125333 22.101333-23.125333z m783.36 0l-22.101333-23.168 22.101333 23.168zM426.666667 736a32 32 0 0 0 0 64v-64z m170.666666 64a32 32 0 0 0 0-64v64z m93.013334 106.666667H333.653333v64h356.693334v-64zM152.746667 333.354667L425.386667 144.213333l-36.48-52.565333-272.64 189.184 36.522666 52.565333zM598.656 144.213333l272.597333 189.184 36.48-52.565333-272.597333-189.184-36.48 52.565333z m238.08 416.170667v208.128h64v-208.128h-64zM187.264 768.469333v-208.128h-64v208.128h64z m0-208.128a143.36 143.36 0 0 0-44.885333-103.68l-44.16 46.250667c16.213333 15.488 25.045333 36.181333 25.045333 57.429333h64z m694.314667-103.68a143.36 143.36 0 0 0-44.842667 103.68h64c0-21.248 8.832-41.941333 25.045333-57.429333l-44.202666-46.293333zM425.386667 144.128a153.301333 153.301333 0 0 1 173.312 0l36.48-52.565333a217.301333 217.301333 0 0 0-246.272 0l36.48 52.565333zM333.610667 906.666667c-82.218667 0-146.346667-63.274667-146.346667-138.24h-64c0 113.066667 95.616 202.24 210.346667 202.24v-64z m356.736 64c114.773333 0 210.346667-89.173333 210.346666-202.24h-64c0 74.965333-64.085333 138.24-146.346666 138.24v64z m180.906666-637.312c42.922667 29.781333 47.36 87.936 10.325334 123.306666l44.202666 46.250667c66.730667-63.658667 57.685333-169.557333-18.048-222.122667l-36.48 52.565334zM116.266667 280.789333C40.533333 333.354667 31.488 439.253333 98.218667 502.912l44.16-46.293333c-36.992-35.328-32.554667-93.44 10.368-123.264l-36.48-52.565334zM426.666667 800h170.666666v-64h-170.666666v64z" p-id="17882" fill="#ffffff"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
