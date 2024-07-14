@@ -2,7 +2,7 @@
 @import "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap";
 
 :root {
-  --color01: #597445;
+  --color01: #658147;
   --color02: #fff;
   --fs01: 17px;
   --ff: "hack";
@@ -28,6 +28,7 @@ body {
   /* overflow: hidden; */
   text-shadow: none;
   padding-top: 30px;
+  background-image: url("https://www.transparenttextures.com/patterns/60-lines.png");
 }
 
 ::-webkit-scrollbar {
@@ -82,7 +83,7 @@ h4 {
 .container-header h2 {
   font-size: 30px;
   margin-bottom: 40px;
-  text-shadow: 0 .075em rgba(0, 0, 0, .25);
+  text-shadow: 0 0.075em rgba(0, 0, 0, 0.25);
 }
 
 .container-header span {

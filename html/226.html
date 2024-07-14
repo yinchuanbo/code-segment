@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>axios.CancelToken 取消重复请求</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>axios.CancelToken 取消重复请求</h2>
+                    <p>2024-07-14 10:40:43 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>基本用法</h2>
+<p>axios 其实内置了一个取消重复请求的方法：axios.CancelToken，我们可以利用 axios.CancelToken 来取消重复的请求，爆好用！</p>
+<p>首先，我们要知道，aixos 有一个 config 的配置项，取消请求就是在这里面配置的。</p>
+<pre><code class="language-html">&lt;template&gt;
+  &lt;div&gt;
+    &lt;button @click=&quot;fetchData&quot;&gt;请求&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+  import { ref } from &quot;vue&quot;;
+  import axios from &quot;axios&quot;;
+
+  let cancelTokenSource = null;
+
+  function fetchData() {
+    if (cancelTokenSource) {
+      cancelTokenSource.cancel(&quot;取消上次请求&quot;);
+      cancelTokenSource = null;
+    }
+    cancelTokenSource = axios.CancelToken.source();
+
+    axios
+      .get(&quot;http://api/gcshi&quot;, { cancelToken: cancelTokenSource.token }) //
+      .then((response) =&gt; {
+        laoding.value = fasle;
+      });
+  }
+&lt;/script&gt;
+</code></pre>
+<p>我们测试下，如下图：可以看到，重复的请求会直接被终止掉！</p>
+<img src="./imgs/226/01.gif" />
+
+<h2>CancelToken 官网示例</h2>
+<blockquote>
+<p>官网使用方法传送门：<a href="https://www.axios-http.cn/docs/cancellation">https://www.axios-http.cn/docs/cancellation</a></p>
+</blockquote>
+<pre><code class="language-js">const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+axios
+  .get(&quot;/user/12345&quot;, {
+    cancelToken: source.token,
+  })
+  .catch(function (thrown) {
+    if (axios.isCancel(thrown)) {
+      console.log(&quot;Request canceled&quot;, thrown.message);
+    } else {
+      // 处理错误
+    }
+  });
+
+axios.post(
+  &quot;/user/12345&quot;,
+  {
+    name: &quot;new name&quot;,
+  },
+  {
+    cancelToken: source.token,
+  }
+);
+
+// 取消请求（message 参数是可选的）
+source.cancel(&quot;Operation canceled by the user.&quot;);
+</code></pre>
+<p>也可以通过传递一个 executor 函数到 CancelToken 的构造函数来创建一个 cancel token：</p>
+<pre><code class="language-js">const CancelToken = axios.CancelToken;
+let cancel;
+
+axios.get(&quot;/user/12345&quot;, {
+  cancelToken: new CancelToken(function executor(c) {
+    // executor 函数接收一个 cancel 函数作为参数
+    cancel = c;
+  }),
+});
+
+// 取消请求
+cancel();
+</code></pre>
+<p>注意: 可以使用同一个 cancel token 或 signal 取消多个请求。</p>
+<p>在过渡期间，您可以使用这两种取消 API，即使是针对同一个请求：</p>
+<pre><code class="language-js">const controller = new AbortController();
+
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+axios
+  .get(&quot;/user/12345&quot;, {
+    cancelToken: source.token,
+    signal: controller.signal,
+  })
+  .catch(function (thrown) {
+    if (axios.isCancel(thrown)) {
+      console.log(&quot;Request canceled&quot;, thrown.message);
+    } else {
+      // 处理错误
+    }
+  });
+
+axios.post(
+  &quot;/user/12345&quot;,
+  {
+    name: &quot;new name&quot;,
+  },
+  {
+    cancelToken: source.token,
+  }
+);
+
+// 取消请求 (message 参数是可选的)
+source.cancel(&quot;Operation canceled by the user.&quot;);
+// 或
+controller.abort(); // 不支持 message 参
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/225.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1720872401065" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="17881" width="200" height="200"><path d="M134.528 307.072l18.218667 26.282667-18.218667-26.282667zM407.04 117.888l-18.218667-26.282667 18.218667 26.282667z m209.834667 0l18.218666-26.282667-18.218666 26.282667z m272.554666 189.184l-18.218666 26.282667 18.218666-26.282667zM120.32 479.786667l-22.101333 23.125333 22.101333-23.125333z m783.36 0l-22.101333-23.168 22.101333 23.168zM426.666667 736a32 32 0 0 0 0 64v-64z m170.666666 64a32 32 0 0 0 0-64v64z m93.013334 106.666667H333.653333v64h356.693334v-64zM152.746667 333.354667L425.386667 144.213333l-36.48-52.565333-272.64 189.184 36.522666 52.565333zM598.656 144.213333l272.597333 189.184 36.48-52.565333-272.597333-189.184-36.48 52.565333z m238.08 416.170667v208.128h64v-208.128h-64zM187.264 768.469333v-208.128h-64v208.128h64z m0-208.128a143.36 143.36 0 0 0-44.885333-103.68l-44.16 46.250667c16.213333 15.488 25.045333 36.181333 25.045333 57.429333h64z m694.314667-103.68a143.36 143.36 0 0 0-44.842667 103.68h64c0-21.248 8.832-41.941333 25.045333-57.429333l-44.202666-46.293333zM425.386667 144.128a153.301333 153.301333 0 0 1 173.312 0l36.48-52.565333a217.301333 217.301333 0 0 0-246.272 0l36.48 52.565333zM333.610667 906.666667c-82.218667 0-146.346667-63.274667-146.346667-138.24h-64c0 113.066667 95.616 202.24 210.346667 202.24v-64z m356.736 64c114.773333 0 210.346667-89.173333 210.346666-202.24h-64c0 74.965333-64.085333 138.24-146.346666 138.24v64z m180.906666-637.312c42.922667 29.781333 47.36 87.936 10.325334 123.306666l44.202666 46.250667c66.730667-63.658667 57.685333-169.557333-18.048-222.122667l-36.48 52.565334zM116.266667 280.789333C40.533333 333.354667 31.488 439.253333 98.218667 502.912l44.16-46.293333c-36.992-35.328-32.554667-93.44 10.368-123.264l-36.48-52.565334zM426.666667 800h170.666666v-64h-170.666666v64z" p-id="17882" fill="#ffffff"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
