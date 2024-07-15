@@ -184,16 +184,26 @@ a:not(.token) {
   color: #fff;
   text-decoration: none;
   position: relative;
+  transition: 0.5s;
 }
 
 a:not(.token)::before {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -2px;
+  bottom: calc(50% - 2px);
   width: 100%;
   height: 2px;
-  background-color: #ff0;
+  background-color: #00f;
+}
+
+a:not(.token):hover {
+  color: #00f;
+  transition: 0.5s;
+}
+
+a:not(.token):hover::before {
+  content: none;
 }
 
 .toolbar-item + .toolbar-item {
@@ -337,4 +347,38 @@ table tbody tr td {
 
 table tbody tr {
   border-bottom: 1px solid #fff;
+}
+
+ul > li {
+  list-style: none;
+  padding-left: 20px;
+  position: relative;
+  line-height: 2;
+}
+
+ol {
+  list-style: decimal;
+}
+
+ol > li {
+  margin-left: 33px;
+  margin-top: 20px;
+  line-height: 2;
+}
+
+ol > li::marker {
+  color: #fff;
+  float: left;
+  font-weight: 600;
+}
+
+ul > li::before {
+  content: "";
+  position: absolute;
+  top: 12.5px;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  background-color: #fff;
+  border-radius: 100%;
 }
