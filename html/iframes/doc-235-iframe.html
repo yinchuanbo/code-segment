@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">body {
+  --pi: 3.14159265358979;
+  --cylinder-width: 100vw;
+  --face-count: 50;
+  --face-deg: (360deg / var(--face-count));
+  --face-width: calc(var(--cylinder-width) / var(--face-count));
+  --face-shift: calc(var(--cylinder-width) / var(--pi) / 2);
+  text-align: center; }
+
+@keyframes spin {
+  to {
+    transform: rotateY(-360deg); } }
+
+.holder {
+  transform-style: preserve-3d;
+  transform: rotateX(-35deg); }
+
+.cylinder {
+  position: relative;
+  height: 20vw;
+  width: var(--cylinder-width);
+  transform-style: preserve-3d;
+  animation: spin 5s infinite linear; }
+
+.face {
+  position: absolute;
+  background-color: #487df8;
+  opacity: 0.7;
+  height: 100%;
+  width: var(--face-width);
+  top: 50%;
+  left: 50%;
+  transform: rotateY(calc(var(--face-deg) * var(--index))) translateZ(calc(var(--face-shift) - -6px)); }
+
+.face:nth-child(1) {
+  background-color: orange; }
+</style>
+              </head>
+              <body>
+                <div class="holder">
+  <div class="cylinder"></div>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">const cylinderEl = document.querySelector(".cylinder");
+for (let i = 0; i < 50; i++) {
+  cylinderEl.innerHTML += `
+        <div class="face" style="--index: ${i};">${i}</div>`;
+}
+</script>
+              </body>
+            </html>
+            
