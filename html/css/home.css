@@ -71,9 +71,10 @@ body {
 
 .container ul {
   display: grid;
-  grid-template-columns: repeat(2, 500px);
+  grid-template-columns: repeat(3, 1fr);
   place-content: center;
   gap: 40px 60px;
+  padding: 0 80px;
 }
 
 li {
