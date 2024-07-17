@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>20 个值得收藏点赞的 ts 代码段</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>20 个值得收藏点赞的 ts 代码段</h2>
+                    <p>2024-07-17 10:21:26 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>Exclude 类型</h2>
+<h3>使用方式</h3>
+<p>该类型从一个类型 T 当中剔除一个类型 U。使用如下所示:</p>
+<pre><code class="language-ts">type ExcludeA = string | boolean | number;
+type ExcludeB = string;
+type ExcludeC = Exclude&lt;ExcludeA, ExcludeB&gt;; // boolean | number;
+type ExcludeD = string | number;
+type ExcludeE = Exclude&lt;ExcludeD, number&gt;; // string
+type ExcludeF = Exclude&lt;ExcludeD, string | number&gt;; // never
+</code></pre>
+<h3>实现原理</h3>
+<p>ts 中使用 extends 关键字来做判断，该关键字相当于 js 的全等，因此使用这个关键字即可实现这个类型。</p>
+<ul>
+<li>使用 extends 关键字判断类型 T 是否继承类型 U，是则返回 never,否则返回 T。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Exclude&lt;T, U&gt; = T extends U ? never : T;
+</code></pre>
+<h2>Extract 类型</h2>
+<h3>使用方式</h3>
+<p>该类型从一个类型 T 当中提取一个类型 U。使用如下所示:</p>
+<pre><code class="language-ts">type ExtractA = string | boolean | number;
+type ExtractB = string;
+type ExtractC = Extract&lt;ExtractA, ExtractB&gt;; // string;
+
+type ExtractD = string | number;
+type ExtractE = Extract&lt;ExtractD, number&gt;; // number
+
+type ExtractF = Extract&lt;ExtractD, string | number&gt;; // string | number
+type ExtractG = Extract&lt;ExtractA, string &amp; number&gt;; // never
+</code></pre>
+<h3>实现原理</h3>
+<p>该类型实现原理与 Exclude 相反。</p>
+<ul>
+<li>使用 extends 关键字判断类型 T 是否继承类型 U，是则返回 T，否则返回 never。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Exclude&lt;T, U&gt; = T extends U ? T : never;
+</code></pre>
+<h2>NonNullable 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个类型 T 当中排出 null 和 undefined 类型。使用如下所示:</p>
+<pre><code class="language-ts">type NonNullableA = null | undefined | string;
+type NonNullableB = NonNullable&lt;NonNullableA&gt;; // string
+</code></pre>
+<h3>实现原理</h3>
+<p>&amp; 操作符在 ts 中用于取并集。</p>
+<ul>
+<li>使用 &amp; 将类型 T 与空对象联合，从而排除 undefined 和 null 类型。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type NonNullable&lt;T&gt; = T &amp; {};
+</code></pre>
+<h2>InferArrayItem 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个类型数组提取数组元素的类型。使用如下所示:</p>
+<pre><code class="language-ts">type InferString = InferArrayItem&lt;string[]&gt;; // string;
+type InferStringOrNumber = InferArrayItem&lt;string | number[]&gt;; // string | number;
+</code></pre>
+<h3>实现原理</h3>
+<p>在 ts 中可以使用 infer 关键字推断一个类型。</p>
+<ul>
+<li>使用 infer 关键字推断数组 T 的元素类型，如果 T 继承数组 R 类型，则返回 R，否则返回 T。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type InferArrayItem&lt;T&gt; = T extends (infer R)[] ? R : T;
+</code></pre>
+<h2>Pick 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于根据已知接口属性而从一个接口类型中提取出新的接口类型。使用如下所示:</p>
+<pre><code class="language-ts">interface PickTodo {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+type PickTodoPreview = Pick&lt;PickTodo, &quot;title&quot; | &quot;completed&quot;&gt;; // { title:string;completed: boolean; }
+</code></pre>
+<h3>实现原理</h3>
+<p>在 ts 中使用 in 操作符来判断一个属性是否属于接口类型的属性，使用 keyof 关键字用于提取接口类型的属性。</p>
+<ul>
+<li>使用 keyof 获取类型 T 的属性名，组合成联合类型（类似 string | boolean），然后让 K 继承。</li>
+<li>使用 in 操作符判断属性类型是否在 K 中，如果是就返回<code>T[K]</code>，也就是属性值。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Pick&lt;T, K extends keyof T&gt; = {
+  [R in K]: T[K];
+};
+</code></pre>
+<h2>Readonly 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于将一个接口类型的所有属性变成只读。使用如下所示:</p>
+<pre><code class="language-ts">interface ReadonlyTodo {
+  title: string;
+  description: string;
+}
+
+const todo: Readonly&lt;ReadonlyTodo&gt; = {
+  title: &quot;Hey&quot;,
+  description: &quot;foobar&quot;,
+};
+
+// todo.title = &quot;Hello&quot; // Error: cannot reassign a readonly property
+// todo.description = &quot;barFoo&quot; // Error: cannot reassign a readonly property
+</code></pre>
+<h3>实现原理</h3>
+<p>readonly 关键字用于将属性变成只读。</p>
+<ul>
+<li>使用 keyof 获取类型 T 的属性名，组合成联合类型（类似 string | boolean），并设置属性名和属性值。</li>
+<li>使用 readonly 关键字让属性名只读。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Readonly&lt;T&gt; = {
+  readonly [R in keyof T]: T[R];
+};
+</code></pre>
+<h2>TupleToObject 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个类型元组中提取元素拼接成接口类型。使用如下所示:</p>
+<pre><code class="language-ts">const tuple = [&quot;tesla&quot;, &quot;model 3&quot;, &quot;model X&quot;, &quot;model Y&quot;] as const;
+
+type result = TupleToObject&lt;typeof tuple&gt;; // { &#39;tesla&#39;: &#39;tesla&#39;, &#39;model 3&#39;: &#39;model 3&#39;, &#39;model X&#39;: &#39;model X&#39;, &#39;model Y&#39;: &#39;model Y&#39;}
+</code></pre>
+<h3>实现原理</h3>
+<p>PropertyKey 表示接口属性。</p>
+<ul>
+<li>使用 PropertyKey 获取数组 T 的数组项值的只读类型。</li>
+<li>读取数组 T 的类型作为属性名和属性值。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type PropertyKey = string | number | symbol;
+type TupleToObject&lt;T extends Readonly PropertyKey []&gt; = {
+    [R in T[number]]: R
+}
+</code></pre>
+<h2>FirstArray 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个数组类型中提取数组第一项。使用如下所示:</p>
+<pre><code class="language-ts">type arr1 = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
+type arr2 = [3, 2, 1];
+
+type head1 = FirstArray&lt;arr1&gt;; // expected to be &#39;a&#39;
+type head2 = FirstArray&lt;arr2&gt;; // expected to be 3
+</code></pre>
+<h3>实现原理</h3>
+<p>实现方式有很多种，可以使用 length 来判断是否是空数组，或者直接 extends 空数组，也可以使用 infer 关键字来推断数组元素。</p>
+<ul>
+<li>数组 T 继承任意数组，如果数组 T 继承空数组，则返回 never,否则返回数组第一项。</li>
+<li>数组 T 继承任意数组，如果数组 T 的长度属性为 0，则返回 never,否则返回数组第一项。</li>
+<li>数组 T 继承任意数组，如果数组 T 继承任意推断的数组，则返回一项,否则返回 never。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type FirstArray&lt;T extends any[]&gt; = T extends [] ? never : T[0];
+// type FirstArray&lt;T extends any []&gt; = T[&#39;length&#39;] extends 0 ? never : T[0];
+// type FirstArray&lt;T extends any []&gt; = T extends [infer A,...infer rest] ? A : never;
+</code></pre>
+<h2>Awaited 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个 Promise 类型中读取完成状态的的返回值。使用如下所示:</p>
+<pre><code class="language-ts">type ExampleType = Promise&lt;string&gt;;
+type Result = Awaited&lt;ExampleType&gt;; // string
+</code></pre>
+<h3>实现原理</h3>
+<p>掌握 ts 中的递归，结合 extends 和 infer 关键字即可实现该类型。</p>
+<ul>
+<li>类型 T 是否继承 null | undefined,这是一个特殊情况，需要考虑。</li>
+<li>类型 T 是否继承自包含有 then 方法的对象，then 方法的第一个参数推断是存在的，其它参数用不到，所以推断为_。</li>
+<li>类型 F 是否含有第一个参数，如果含有则递归的返回第一个参数，否则返回 never。</li>
+<li>最后返回类型 T。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Awaited&lt;T&gt; = T extends null | undefined
+  ? T
+  : T extends object &amp; { then(onFulfilled: infer F, ...args: infer _): any }
+  ? F extends (value: infer V, ...args: infer _) =&gt; any
+    ? Awaited&lt;V&gt;
+    : never
+  : T;
+</code></pre>
+<h2>If 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于 ts 中的条件判断。使用如下所示:</p>
+<pre><code class="language-ts">type A = If&lt;true, &quot;a&quot;, &quot;b&quot;&gt;; // &#39;a&#39;
+type B = If&lt;false, &quot;a&quot;, &quot;b&quot;&gt;; // &#39;b&#39;
+</code></pre>
+<h3>实现原理</h3>
+<p>需要注意的就是该类型的实现有 3 个参数，第一个参数用作条件判断，第二个参数用作为 true 时的返回值，第三个参数用作为 false 的返回值。</p>
+<ul>
+<li>类型 C 继承 boolean,判断如果 C 是继承 true,则返回类型 T，否则返回类型 F。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type If&lt;C extends boolean, T, F&gt; = C extends true ? T : F;
+</code></pre>
+<h2>Concat 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于将 2 个数组合并成一个数组。使用如下所示:</p>
+<pre><code class="language-ts">type ConcatRes1 = Concat&lt;[1], [2]&gt;; // [1, 2]
+type ConcatRes2 = Concat&lt;[string], [number]&gt;; // [string, number]
+</code></pre>
+<h3>实现原理</h3>
+<p>展开运算符合并两个数组类型。</p>
+<ul>
+<li>类型 T 和类型 U 都继承只读数组类型,使用展开运算符将两者合并。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Concat&lt;T extends readonly unknown[], U extends readonly unknown[]&gt; = [
+  ...T,
+  ...U
+];
+</code></pre>
+<h2>ArrayIncludes 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个数组类型中判断是否存在某个类型。使用如下所示:</p>
+<pre><code class="language-ts">type isPillarMen1 = ArrayIncludes&lt;
+  [&quot;Kars&quot;, &quot;Esidisi&quot;, &quot;Wamuu&quot;, &quot;Santana&quot;],
+  &quot;Dio&quot;
+&gt;; // `false`
+type isPillarMen2 = ArrayIncludes&lt;[string, number, boolean, null], string&gt;; // `true`
+</code></pre>
+<h3>实现原理</h3>
+<p>这有点像 js 数组的 includes 方法了。</p>
+<ul>
+<li>类型 T 继承任意数组。</li>
+<li>从类型 T 中读取值并写成一个对象，对象的属性名就是数组的每一项值，而属性值就是 true，然后根据 U 属性读取对象值。</li>
+<li>判断从对象中读取出来的值是否等于 true，是就返回 true，否则返回 false。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type ArrayIncludes&lt;T extends readonly any[], U&gt; = {
+  [R in T[number]]: true;
+}[U] extends true
+  ? true
+  : false;
+</code></pre>
+<h2>Push 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于往一个数组类型中添加类型，类似 js 数组的 push 方法。使用如下所示:</p>
+<pre><code class="language-ts">type PushRes1 = Push&lt;[1, 2], &quot;3&quot;&gt;; // [1, 2, &#39;3&#39;]
+type PushRes2 = Push&lt;[number, boolean], string&gt;; // [number, boolean, string]
+</code></pre>
+<h3>实现原理</h3>
+<p>还是展开运算符的用法。</p>
+<ul>
+<li>类型 T 继承未知的数组。</li>
+<li>使用展开运算法展开 T,并且与 U 合并，返回这个合并后的数组。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Push&lt;T extends unknown[], U&gt; = [...T, U];
+</code></pre>
+<h2>Unshift 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于往一个数组类型中添加类型，类似 js 数组的 unshift 方法。使用如下所示:</p>
+<pre><code class="language-ts">type UnshiftRes1 = Unshift&lt;[1, 2], 0&gt;; // [0, 1, 2]
+type UnshiftRes2 = Unshift&lt;[number, string], boolean&gt;; // [boolean, number, string]
+</code></pre>
+<h3>实现原理</h3>
+<p>还是展开运算符的用法。</p>
+<ul>
+<li>类型 T 继承未知的数组。</li>
+<li>使用展开运算法展开 T,并且与 U 合并，返回这个合并后的数组。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Unshift&lt;T extends unknown[], U&gt; = [U, ...T];
+</code></pre>
+<h2>Parameters 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于获取一个函数的参数类型。使用如下所示:</p>
+<pre><code class="language-ts">const foo = (arg1: string, arg2: number): void =&gt; {};
+type fooFunctionParamsType = Parameters&lt;typeof foo&gt;; // [arg1: string, arg2: number]
+</code></pre>
+<h3>实现原理</h3>
+<p>infer 关键字的使用。</p>
+<ul>
+<li>类型 T 继承任意函数。</li>
+<li>使用 infer 推导函数参数，推导成功则返回，否则返回任意值。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Parameters&lt;T extends (...args: any[]) =&gt; any&gt; = T extends (
+  ...args: infer A
+) =&gt; any
+  ? A
+  : never;
+</code></pre>
+<h2>ReturnType 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于获取一个函数的返回值。使用如下所示:</p>
+<pre><code class="language-ts">const fn = (v: boolean) =&gt; {
+  if (v) return 1;
+  else return 2;
+};
+type a = ReturnType&lt;typeof fn&gt;; // should be &quot;1 | 2&quot;
+</code></pre>
+<h3>实现原理</h3>
+<p>infer 关键字的使用。</p>
+<ul>
+<li>类型 T 继承任意函数。</li>
+<li>使用 infer 推导函数返回值，推导成功则返回，否则返回 never。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type ReturnType&lt;T extends (...args: any[]) =&gt; any&gt; = T extends (
+  ...args: any[]
+) =&gt; infer A
+  ? A
+  : never;
+</code></pre>
+<h2>Omit 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于从一个接口中删除给定的接口属性。使用如下所示:</p>
+<pre><code class="language-ts">interface Todo {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+type TodoPreview = Omit&lt;Todo, &quot;description&quot; | &quot;title&quot;&gt;;
+
+const todo: TodoPreview = {
+  completed: false,
+};
+</code></pre>
+<h3>实现原理</h3>
+<p>Pick 与 Exclude 的结合使用。</p>
+<ul>
+<li>使用 keyof 提取任意值的 key 属性，然后 K 继承它。</li>
+<li>使用 Pick 挑选排除掉(Exclude)既是 T 的属性又在 K 当中存在的属性。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type Omit&lt;T, K extends keyof any&gt; = Pick&lt;T, Exclude&lt;keyof T, K&gt;&gt;;
+</code></pre>
+<h2>SelectReadonly 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于基于给定属性将接口中的属性设置为只读。使用如下所示:</p>
+<pre><code class="language-ts">interface SelectReadonlyTodo {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+const selectReadonlyTodo: SelectReadonly&lt;
+  SelectReadonlyTodo,
+  &quot;title&quot; | &quot;description&quot;
+&gt; = {
+  title: &quot;Hey&quot;,
+  description: &quot;foobar&quot;,
+  completed: false,
+};
+
+selectReadonlyTodo.title = &quot;Hello&quot;; // Error: cannot reassign a readonly property
+selectReadonlyTodo.description = &quot;barFoo&quot;; // Error: cannot reassign a readonly property
+selectReadonlyTodo.completed = true; // OK
+</code></pre>
+<h3>实现原理</h3>
+<p>可选只读的实现原理如下。</p>
+<ul>
+<li>使用 keyof 提取类型 T 的属性，并使用 K 继承，K 的默认值也是 keyof T。</li>
+<li>属性 R 在 K 中，所以设置为只读，排除 (Exclude)掉 K 里面的属性，keyof T 以外的属性不设置只读，两者进行合并。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type SelectReadonly&lt;T, K extends keyof T = keyof T&gt; = {
+  readonly [R in K]: T[R];
+} &amp; {
+  [R in Exclude&lt;keyof T, K&gt;]: T[R];
+};
+</code></pre>
+<h2>DeepReadonly 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于将接口中所有属性变成只读属性。使用如下所示:</p>
+<pre><code class="language-ts">type DeepReadonlyX = {
+  x: {
+    a: 1;
+    b: &quot;hi&quot;;
+  };
+  y: &quot;hey&quot;;
+};
+
+type DeepReadonlyExpected = {
+  readonly x: {
+    readonly a: 1;
+    readonly b: &quot;hi&quot;;
+  };
+  readonly y: &quot;hey&quot;;
+};
+
+type DeepReadonlyTodo = DeepReadonly&lt;DeepReadonlyX&gt;; // should be same as `DeepReadonlyExpected`
+</code></pre>
+<h3>实现原理</h3>
+<p>递归去设置只读关键字。</p>
+<ul>
+<li>使用 keyof 提取类型 T 的属性，如果属性继承 never，则直接返回 T。</li>
+<li>让 T 的属性只读，并递归 T 属性里面的对象。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type DeepReadonly&lt;T&gt; = keyof T extends never
+  ? T
+  : {
+      readonly [P in keyof T]: DeepReadonly&lt;T[P]&gt;;
+    };
+</code></pre>
+<h2>TupleToUnionArr 类型</h2>
+<h3>使用方式</h3>
+<p>该类型用于将元祖转成联合类型。使用如下所示:</p>
+<pre><code class="language-ts">type TupleToUnionArr = [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;];
+type TupleToUnionTest = TupleToUnion&lt;TupleToUnionArr&gt;; // &#39;1&#39; | &#39;2&#39; | &#39;3&#39;
+</code></pre>
+<h3>实现原理</h3>
+<p>infer 关键字的使用。</p>
+<ul>
+<li>使用 Array 泛型，并使用 infer 推断数组项的类型，如果 T 继承这个类型，则返回推断的类型，否则返回 never。</li>
+</ul>
+<p>代码如下:</p>
+<pre><code class="language-ts">type TupleToUnion&lt;T&gt; = T extends Array&lt;infer I&gt; ? I : never;
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/235.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/237.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
