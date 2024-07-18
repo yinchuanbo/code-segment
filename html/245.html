@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>把 Canvas 放到 WebWorker 中去绘制</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>把 Canvas 放到 WebWorker 中去绘制</h2>
+                    <p>2024-07-18 22:43:06 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h2>前言</h2>
+<p>最近项目中需要绘制一块画布，大致上样子如下，就是绘制一堆人名在 Canvas 上（实际业务比这个复杂）</p>
+<img src="./imgs/245/01.png" />
+
+<p>大致代码如下:</p>
+<img src="./imgs/245/02.png" />
+
+<p>页面肯定不止只有 Canvas 的逻辑，就比如我在绘制画布后，想去计算 1-100 的数字总和</p>
+<img src="./imgs/245/03.png" />
+
+<p>但是最终发现，绘制画布耗费了很多时间，差不多有 1s 的时间，并且堵塞了主进程的代码，导致了我后续的逻辑被堵住了，下图可以看到，我的 computedTotal 结果是在画布绘制完菜执行完的</p>
+<img src="./imgs/245/04.png" />
+
+<p>所以绘制画布的耗时过长，阻塞了后续的同步代码逻辑，这是不合理的，我们需要做优化</p>
+<h2>Web Worker？（离屏 Canvas）</h2>
+<p>我们平时在遇到这类情况的时候，十有八九第一时间都会想到 Web Worker</p>
+<p>但是问题来了：正常来说，Web Worker 中可获取不了 DOM，做不了画布绘制呀</p>
+<p>估计会有人想：那我们可以把 Canvas 的 DOM 节点传入 Web Worker 中吗？</p>
+<p>可以试试</p>
+<p>我们先准备一个 worker.js 来存放 Web Worker 的代码</p>
+<img src="./imgs/245/05.png" />
+
+<p>接着在 index.js 中把 Canvas 的 DOM 节点传过去</p>
+<img src="./imgs/245/06.png" />
+
+<p>发现会报错，因为 postMessage 传数据的时候会进行深拷贝，而 DOM 节点无法被深拷贝</p>
+<img src="./imgs/245/07.png" />
+
+<p>那么传上下文过去可以吗？也可以试试</p>
+<img src="./imgs/245/08.png" />
+
+<p>可以发现，还是不行</p>
+<img src="./imgs/245/09.png" />
+
+<h2>canvas.transferControlToOffscreen</h2>
+<p>不得不说 JavaScript 是真的强大，早就为我们准备好了一个 API ，那就是 transferControlToOffscreen</p>
+<img src="./imgs/245/10.png" />
+
+<p>有了这个 API ，我们就可以把 Canvas 的 DOM 节点以另一种方式传入 Web Worker 了！！！我们也能在 Web Worker 中去进行 Canvas 的绘制，进而优化主线程的代码执行效率！！</p>
+<p>首先改造一下 drawSunshine，现在只需要传入 Canvas DOM，不需要在主线程去做绘制</p>
+<img src="./imgs/245/11.png" />
+
+<p>接着我们在 worker.js 中去接收 DOM 节点，并进行画布绘制</p>
+<img src="./imgs/245/12.png" />
+
+<p>最终可以看到，Canvas 的绘制并不会阻塞后续逻辑的执行</p>
+<img src="./imgs/245/13.png" />
+
+<img src="./imgs/245/14.png" />
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/244.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
