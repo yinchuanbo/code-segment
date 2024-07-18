@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>前端 JS 发起的请求能暂停吗</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>前端 JS 发起的请求能暂停吗</h2>
+                    <p>2024-07-18 11:44:12 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>在讨论前端 JS 发起的请求是否能暂停时，需要明确两个概念：什么状态可以被认为是“暂停”？以及什么是 JS 发起的请求？</p>
+<h3>如何定义暂停？</h3>
+<p>暂停指的是临时停止一个已经开始但尚未完成的过程。这意味着这个过程可以在某个时间点被中断，并在另一个时间点恢复。</p>
+<h3>什么是请求？</h3>
+<p>首先，让我们介绍一下 TCP/IP 网络模型。网络模型从上到下分为应用层、传输层、网络层和网络接口层。</p>
+<img src="./imgs/240/01.webp" />
+
+<p>上图表示，每次网络传输，应用数据都需要通过网络模型逐层打包，然后发送到目的地，就像寄包裹一样。要寄送的物品首先被包装并登记其大小，然后放入箱子并登记目的地，最后装上运输工具送到目的地。</p>
+<p>请求的概念可以理解为客户端通过多次数据网络传输将完整数据发送到服务器，而服务器为特定请求返回的数据可以称为响应。</p>
+<p>理论上，应用层协议可以通过标记数据包序列号来实现暂停机制。然而，TCP 协议不支持这一点。TCP 协议的数据传输是面向流的，数据被视为连续的字节流。客户端发送的数据将被分成多个独立传输的 TCP 段。无法直接控制每个 TCP 段的传输，因此无法实现暂停请求或响应的功能。</p>
+<img src="./imgs/240/02.webp" />
+
+<h3>回答问题</h3>
+<p><strong>如果请求指的是网络模型中的传输，那么自然是不可能暂停的。</strong></p>
+<p>考虑到使用场景——由 JS 发起的请求。因此，可以认为这里的问题指的是在 JS 运行时发起的<code>XMLHttpRequest</code>或<code>fetch</code>请求。由于请求已经发出，问题自然变成响应是否可以暂停。</p>
+<p>我们都知道，上传大文件分片和下载大文件本质上是定义分片顺序，按顺序请求，可以通过中断和记录中断点来实现暂停和恢复。然而，单个请求并没有这样的环境。</p>
+<h3>使用 JS 实现“假暂停”机制</h3>
+<p>虽然我们无法真正实现暂停请求，但我们可以模拟一个假暂停功能。在前端业务场景中，数据在接收到后不会立即显示在客户端。前端开发人员需要先处理这些数据，然后再渲染到界面上。如果我们在发起请求前添加一个控制器，并且在请求返回时该控制器处于暂停状态，则不处理数据。相反，等待控制器恢复后再处理数据。这样我们是否就达到了目标呢？让我们尝试实现它。</p>
+<p>如果我们使用 <code>fetch</code> 发起请求，可以设计一个控制器 <code>Promise</code>，并结合请求使用 <code>Promise.all</code> 封装。当 <code>fetch</code> 完成时，检查控制器是否处于暂停状态；如果没有暂停，<code>直接resolve</code> 控制器并同时 <code>resolve</code> 和抛出 <code>Promise.all</code>。</p>
+<pre><code class="language-ts">function _request() {
+  return new Promise&lt;number&gt;((res) =&gt;
+    setTimeout(() =&gt; {
+      res(123);
+    }, 3000)
+  );
+}
+
+// 原本想用 &quot;class extends Promise&quot; 实现。
+// 问题在于https://github.com/nodejs/node/issues/13678。
+function createPauseControllerPromise() {
+  const result = {
+    isPause: false,
+    resolveWhenResume: false,
+    resolve(value?: any) {},
+    pause() {
+      this.isPause = true;
+    },
+    resume() {
+      if (!this.isPause) return;
+      this.isPause = false;
+      if (this.resolveWhenResume) {
+        this.resolve();
+      }
+    },
+    promise: Promise.resolve(),
+  };
+
+  const promise = new Promise&lt;void&gt;((res) =&gt; {
+    result.resolve = res;
+  });
+
+  result.promise = promise;
+
+  return result;
+}
+
+function requestWithPauseControl&lt;T extends () =&gt; Promise&lt;any&gt;&gt;(request: T) {
+  const controller = createPauseControllerPromise();
+
+  const controlRequest = request().then((data) =&gt; {
+    if (!controller.isPause) controller.resolve();
+    controller.resolveWhenResume = controller.isPause;
+    return data;
+  });
+
+  const result = Promise.all([controlRequest, controller.promise]).then(
+    (data) =&gt; data[0]
+  );
+
+  result.finally(() =&gt; controller.resolve())(result as any).pause =
+    controller.pause.bind(controller);
+  (result as any).resume = controller.resume.bind(controller);
+
+  return result as ReturnType&lt;T&gt; &amp; { pause: () =&gt; void; resume: () =&gt; void };
+}
+</code></pre>
+<h3>使用方法</h3>
+<p>我们可以将调用 <code>_request</code> 替换为调用 <code>requestWithPauseControl(_request)</code> ，并通过返回的<code>pause</code>和 <code>resume</code> 方法控制暂停和恢复。</p>
+<pre><code class="language-ts">const result = requestWithPauseControl(_request).then((data) =&gt; {
+  console.log(data);
+});
+
+if (Math.random() &gt; 0.5) {
+  result.pause();
+}
+
+setTimeout(() =&gt; {
+  result.resume();
+}, 4000);
+</code></pre>
+<h3>执行原理</h3>
+<p>在流程设计上，步骤如下：设计一个控制器，发起请求，在接收到响应后，检查控制器的状态。如果控制器不处于“暂停”状态，则正常返回数据；如果控制器处于“暂停”状态，则将控制器设置为一旦调用 resume 方法就返回数据的状态。</p>
+<p>在代码中，使用 <code>Promise.all</code> 将控制器 Promise 绑定。如果控制器处于暂停状态，<code>Promise.all</code> 不会被释放。然后对应地暴露 <code>pause</code> 方法和 <code>resume</code> 方法供外部使用。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/239.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/241.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

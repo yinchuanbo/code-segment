@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>dialog 标签：绝对改变游戏规则</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>dialog 标签：绝对改变游戏规则</h2>
+                    <p>2024-07-18 13:31:05 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>有了新的 <code>&lt;dialog&gt;</code> 标记，前端开发将从此不同...</p>
+<h2>❌ 之前：</h2>
+<p>看看我创建一个对话框要花费多少功夫 👇。仅 CSS 就有近 20 行：</p>
+<img src="./imgs/243/01.webp" />
+
+<p>这还只是用于对话框功能的 CSS，它看起来仍然非常基本：</p>
+<img src="./imgs/243/01.gif" />
+
+<p>但是，使用新的 <code>&lt;dialog&gt;</code> 标签又如何呢？</p>
+<h2>✅ 现在：</h2>
+<pre><code class="language-html">&lt;button id=&quot;open&quot;&gt;Open&lt;/button&gt;
+&lt;dialog id=&quot;dialog&quot;&gt;
+  ⚡ Lighting strikes the earth 44 times every second! ⚡ 闪电每秒击中地球44次！
+&lt;/dialog&gt;
+</code></pre>
+<p>JS:</p>
+<pre><code class="language-js">const dialog = document.getElementById(&quot;dialog&quot;);
+const open = document.getElementById(&quot;open&quot;);
+
+open.addEventListener(&quot;click&quot;, () =&gt; {
+  dialog.showModal();
+});
+</code></pre>
+<p>我们甚至可以使用 <code>show()</code> 方法来显示非模式对话框--没有背景，干扰较少：</p>
+<pre><code class="language-js">const dialog = document.getElementById(&quot;dialog&quot;);
+const open = document.getElementById(&quot;open&quot;);
+
+open.addEventListener(&quot;click&quot;, () =&gt; {
+  // ✅ show() 方法
+  dialog.show();
+});
+</code></pre>
+<img src="./imgs/243/02.gif" />
+
+<p>对话框一直是强力吸引用户注意力并向其传递信息的有力方式。</p>
+<img src="./imgs/243/02.webp" />
+
+<p>从 Material Design 到 Fluent Design，它一直是每个用户界面设计系统的主打功能。</p>
+<p>但是，即使它们再常见，我们也不得不借助第三方库或创建自定义组件来使用它们。</p>
+<p>其中许多图书馆甚至没有遵循关于可用性和可访问性的官方建议......</p>
+<p>例如：按 Escape 键应该可以解除页面上的对话框，但许多自定义对话框都不会这样做。</p>
+<p>因此， <code>&lt;dialog&gt;</code> 改变了这一切。</p>
+<h4>自动打开对话框</h4>
+<p><code>open</code> 属性使对话框从打开页面的那一刻起就一直处于打开状态：</p>
+<pre><code class="language-html">&lt;dialog id=&quot;dialog&quot; open&gt;
+  长颈鹿比人类更有可能被闪电击中。事实上，它们的可能性是人类的30倍。
+&lt;/dialog&gt;
+</code></pre>
+<h4>自动关闭按钮</h4>
+<p>是的，可以使用标准事件侦听器和 <code>close()</code> 方法添加关闭功能：</p>
+<pre><code class="language-js">const close = document.querySelector(&quot;#dialog .close&quot;);
+close.addEventListener(&quot;click&quot;, () =&gt; {
+  dialog.close();
+});
+</code></pre>
+<p>但是内置的 <code>&lt;dialog&gt;</code> 可以让这一切变得更加简单--无需 JavaScript：</p>
+<pre><code class="language-html">&lt;dialog id=&quot;dialog&quot;&gt;
+  ⚡ 在 codingbeautydev.com 获取基本的编码技能和知识
+  &lt;br /&gt;
+  &lt;form method=&quot;dialog&quot;&gt;
+    &lt;button class=&quot;close&quot;&gt;关闭&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+</code></pre>
+<img src="./imgs/243/03.gif" />
+
+<p>如何正确设计 <code>&lt;dialog&gt;</code> 样式</p>
+<p><code>&lt;dialog&gt;</code> 有一个特殊的 <code>::backdrop</code> 伪元素，用于设计背景墙的样式：</p>
+<pre><code class="language-css">::backdrop {
+  background-image: linear-gradient(
+    45deg,
+    magenta,
+    rebeccapurple,
+    dodgerblue,
+    green
+  );
+  opacity: 0.75;
+}
+</code></pre>
+<img src="./imgs/243/03.webp" />
+
+<p>主要元素的样式简单明了：</p>
+<pre><code class="language-css">dialog {
+  background-color: black;
+  color: white;
+}
+</code></pre>
+<img src="./imgs/243/04.webp" />
+
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/242.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

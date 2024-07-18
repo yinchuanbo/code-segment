@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style">.app {
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.btn76 {
+  width: 64px;
+  height: 64px;
+  background: conic-gradient(from 180deg at 50% 50%, rgba(0, 0, 0, 0.4) 0deg, #ffffff 90deg, rgba(0, 0, 0, 0.4) 181deg, #ffffff 270deg, rgba(0, 0, 0, 0.4) 360deg);
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4) inset, -1px -1px 0 rgba(255, 255, 255, 0.2) inset;
+  outline: 1px dashed rgba(0, 0, 0, 0.2);
+  outline-offset: -6px;
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box; }
+
+.inp76 {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  position: absolute;
+  left: 24px;
+  top: 5px;
+  appearance: none;
+  z-index: 10; }
+
+.btn76:active {
+  transform: scale(0.98); }
+
+.inp76:checked {
+  background: #0dff00;
+  box-shadow: 0px 0px 4px 2px rgba(78, 229, 70, 0.4); }
+</style>
+              </head>
+              <body>
+                <div class="app">
+  <label class="btn76">
+    <input type="checkbox" class="inp76" />
+  </label>
+</div>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview"></script>
+              </body>
+            </html>
+            

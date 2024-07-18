@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模糊背景弹窗</title>
+    <link rel=icon href="./imgs/code.svg" sizes=32x32>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/editor.main.css"/>
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <textarea id="htmlcode-ta" style="display: none">
+&lt;link
+  rel=&#34;stylesheet&#34;
+  href=&#34;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css&#34;
+  integrity=&#34;sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==&#34;
+  crossorigin=&#34;anonymous&#34;
+  referrerpolicy=&#34;no-referrer&#34;
+/&gt;
+&lt;div class=&#34;container&#34;&gt;
+  &lt;h1&gt;Welcome to our website&lt;/h1&gt;
+  &lt;button class=&#34;btn&#34;&gt;Click to join&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class=&#34;popup-container active&#34;&gt;
+  &lt;h4&gt;20% OFF Offer&lt;/h4&gt;
+  &lt;label for=&#34;email&#34;&gt;Your Email&lt;/label&gt;
+  &lt;input
+    type=&#34;email&#34;
+    name=&#34;email&#34;
+    class=&#34;input&#34;
+    placeholder=&#34;Enter Your Email&#34;
+  /&gt;
+  &lt;button class=&#34;popup-btn&#34;&gt;Join&lt;/button&gt;
+  &lt;div class=&#34;close-icon&#34;&gt;
+    &lt;i class=&#34;fas fa-times fa-2x&#34;&gt;&lt;/i&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</textarea
+    >
+    <textarea id="csscode-ta" style="display: none">body {
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+  background: url(&#34;https://images.unsplash.com/photo-1560762484-813fc97650a0?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1074&amp;q=80&#34;);
+  background-size: cover;
+  text-align: center;
+  transition: filter 0.7s;
+}
+
+h1 {
+  font-size: 60px;
+  color: white;
+  font-family: Impact, Haettenschweiler, &#34;Arial Narrow Bold&#34;, sans-serif;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn {
+  padding: 10px 20px;
+  width: 200px;
+  cursor: pointer;
+  background-color: orangered;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+.btn:hover {
+  filter: brightness(0.8);
+}
+
+.active.container {
+  filter: blur(5px) brightness(0.7);
+}
+
+.popup-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  width: 400px;
+  height: 200px;
+  top: 30%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: url(&#34;https://images.unsplash.com/uploads/141103282695035fa1380/95cdfeef?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1730&amp;q=80&#34;);
+  background-size: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  transition: all 0.7s;
+}
+
+h4 {
+  font-size: 30px;
+  margin: 10px 0;
+  font-family: sans-serif;
+  color: blueviolet;
+}
+
+label {
+  color: blueviolet;
+  font-family: sans-serif;
+}
+
+.popup-btn {
+  background-color: orangered;
+  padding: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  border: 2px solid;
+}
+
+.input {
+  border: 2px solid;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 20px;
+  text-align: center;
+}
+
+.input::placeholder {
+  color: lightgray;
+}
+
+.close-icon {
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.close-icon:hover {
+  color: orangered;
+}
+
+.active.popup-container {
+  visibility: hidden;
+  opacity: 0;
+  top: 10%;
+}</textarea>
+    <textarea id="jscode-ta" style="display: none">const containerEl = document.querySelector(&#34;.container&#34;);
+const btnEl = document.querySelector(&#34;.btn&#34;);
+const popupContainerEl = document.querySelector(&#34;.popup-container&#34;);
+const closeIconEl = document.querySelector(&#34;.close-icon&#34;);
+
+btnEl.addEventListener(&#34;click&#34;, () =&gt; {
+  containerEl.classList.add(&#34;active&#34;);
+  popupContainerEl.classList.remove(&#34;active&#34;);
+});
+
+closeIconEl.addEventListener(&#34;click&#34;, () =&gt; {
+  containerEl.classList.remove(&#34;active&#34;);
+  popupContainerEl.classList.add(&#34;active&#34;);
+});</textarea>
+    <div class="editor-home">
+      <!-- <div class="editor-home_iframe"></div> -->
+      <div class="editor-home_code">
+        <div class="editor-home_tabs">
+          <div class="home_tabs__item active">PREVIEW</div>
+          <div class="home_tabs__item">HTML</div>
+          <div class="home_tabs__item">CSS</div>
+          <div class="home_tabs__item">JS</div>
+        </div>
+        <div class="editor-home_contents">
+          <div class="home_content__item active" id="preview">
+            <iframe
+              id="live-preview"
+              src="./iframes/doc-239-iframe.html"
+              width="100%"
+              height="100%"
+              allow="accelerometer *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
+              allowfullscreen="true"
+              allowpaymentrequest="true"
+              allowtransparency="true"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads allow-presentation"
+              class="result-iframe iframe-visual-update"
+              name="codeShow"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="home_content__item" id="htmlcode"></div>
+          <div class="home_content__item" id="csscode"></div>
+          <div class="home_content__item" id="jscode"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/sass.sync.min.js"></script>
+    <script src="./js/loader.min.js"></script>
+    <script src="./js/editor.js"></script>
+  </body>
+</html>

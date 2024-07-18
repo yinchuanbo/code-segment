@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>阻止关闭或刷新浏览器</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>阻止关闭或刷新浏览器</h2>
+                    <p>2024-07-18 11:49:04 · YinHao</p>
+                  </div>
+                  <div class="container-main"><pre><code class="language-js">window.addEventListener(&quot;beforeunload&quot;, function (event) {
+  const confirmationMessage =
+    &quot;确定要离开此页面吗？您所做的更改可能不会被保存。&quot;;
+  event.preventDefault();
+  event.returnValue = confirmationMessage;
+  return confirmationMessage;
+});
+</code></pre>
+<h3>分享原因</h3>
+<p>这段代码展示了如何使用 JavaScript 的 beforeunload 事件来提示用户在关闭或刷新浏览器窗口时确认操作，从而避免意外的数据丢失或操作中断。</p>
+<p>这种方法适用于 未保存的数据（如填写表单或编辑文档）、长时间操作（如文件上传或大规模数据处理）、敏感操作（如在线交易或重要系统设置）等场景。</p>
+<p>项目中用到时直接 CV，但对于用户体验而言，不宜过度使用。</p>
+<h3>代码解析</h3>
+<p>1. <code>window.addEventListener(&#39;beforeunload&#39;, function (event) { ... })</code></p>
+<p>为 window 对象添加一个 beforeunload 事件监听器。</p>
+<p>当用户试图关闭或刷新浏览器窗口时，此事件将被触发。</p>
+<p>2. <code>event.preventDefault();</code></p>
+<p>调用 <code>event.preventDefault()</code> 方法来阻止默认的浏览器行为。</p>
+<p>在大多数情况下，这一步是冗余的，因为 beforeunload 事件默认不会执行任何动作，但这可以确保兼容性。</p>
+<ol start="3">
+<li><code>event.returnValue = confirmationMessage;</code></li>
+</ol>
+<p>设置 <code>event.returnValue</code> 为 <code>confirmationMessage</code> 提示信息。</p>
+<p>这是确保在大多数现代浏览器中显示确认对话框的关键步骤。</p>
+<p>4. <code>return confirmationMessage;</code></p>
+<p>返回 <code>confirmationMessage</code> 提示信息。</p>
+<p>在一些旧版浏览器中，这一步是必要的，以确保显示提示信息。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/240.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/242.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

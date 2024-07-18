@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>如何用 JS 模拟点击事件，简单实现 x, y 坐标点击？</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>如何用 JS 模拟点击事件，简单实现 x, y 坐标点击？</h2>
+                    <p>2024-07-18 11:54:33 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>在前端开发中，有时我们需要模拟点击页面上的某个位置，比如自动化测试或者模拟用户操作。今天，我将一步步带大家实现这个功能，让大家能够轻松理解并应用。</p>
+<h2>什么是 x, y 坐标点击？</h2>
+<p>简单来说，x 和 y 坐标就是页面上的一个点的位置。x 代表水平方向，y 代表垂直方向。我们通过这两个数值可以准确地定位到页面上的某个点，然后在这个点上模拟一次点击，就像用户用鼠标点击一样。</p>
+<h2>如何通过 x, y 坐标模拟点击？</h2>
+<p>我们可以通过 <code>document.elementFromPoint</code> 方法来实现。这个方法会返回指定坐标上的元素，然后我们对这个元素调用 <code>click</code> 方法，就能模拟一次点击。</p>
+<h3>基本实现步骤</h3>
+<p>假设我们有以下 HTML 结构：</p>
+<pre><code class="language-html">&lt;div&gt;hello world&lt;/div&gt;
+</code></pre>
+<p>我们希望点击这个 div 元素，首先可以写以下代码：</p>
+<pre><code class="language-js">// 监听所有点击事件，并在控制台打印被点击的元素
+document.addEventListener(&quot;click&quot;, (e) =&gt; {
+  console.log(e.target);
+});
+
+// 定义我们要点击的坐标
+const x = 10;
+const y = 10;
+
+// 获取指定坐标上的元素，并触发点击事件
+document.elementFromPoint(x, y).click();
+</code></pre>
+<h3>详细解释：</h3>
+<ol>
+<li><strong>监听点击事件</strong>：通过 <code>addEventListener</code> 方法，我们可以监听所有的点击事件，并在控制台打印被点击的元素。</li>
+<li><strong>定义坐标</strong>：我们定义了 x 和 y 坐标，表示页面上的某个点。</li>
+<li><strong>获取元素并点击</strong>：通过 <code>document.elementFromPoint(x, y)</code> 获取该点上的元素，并对其调用 <code>click</code> 方法来模拟点击。</li>
+</ol>
+<h2>使用 MouseEvent 构造函数</h2>
+<p>除了直接调用 <code>click</code> 方法，我们还可以使用 <code>MouseEvent</code> 构造函数来模拟更复杂的点击事件，比如包括点击的位置、是否可以取消等属性。</p>
+<pre><code class="language-js">// 监听所有点击事件，并在控制台打印被点击的元素
+document.addEventListener(&quot;click&quot;, (e) =&gt; {
+  console.log(e.target);
+});
+
+// 定义坐标
+const x = 10;
+const y = 10;
+
+// 创建一个点击事件
+const click = (x, y) =&gt; {
+  const ev = new MouseEvent(&quot;click&quot;, {
+    view: window,
+    bubbles: true,
+    cancelable: true,
+    screenX: x,
+    screenY: y,
+  });
+
+  // 获取指定坐标上的元素
+  const el = document.elementFromPoint(x, y);
+
+  // 分发点击事件
+  el.dispatchEvent(ev);
+};
+
+// 调用点击函数
+click(x, y);
+</code></pre>
+<h3>详细解释：</h3>
+<p><strong>创建点击事件</strong>：我们使用 <code>MouseEvent</code> 构造函数创建一个新的点击事件，并设置点击位置等属性。参数对象中的每个属性都有特定的作用：</p>
+<ul>
+<li><strong>&#39;view&#39;: window</strong>: 事件所关联的窗口对象，通常是 <code>window</code>。</li>
+<li><strong>&#39;bubbles&#39;: true</strong>: 事件是否冒泡。<code>true</code> 表示事件会沿着 DOM 树向上冒泡，触发父元素的事件监听器。</li>
+<li><strong>&#39;cancelable&#39;: true</strong>: 事件是否可以取消。<code>true</code> 表示可以通过 <code>preventDefault</code> 方法取消事件的默认行为。</li>
+<li><strong>&#39;screenX&#39; 和 &#39;screenY&#39;</strong>: 事件发生的屏幕坐标位置，这里我们用传入的 <code>x</code> 和 <code>y</code> 值来设置。</li>
+</ul>
+<p><strong>获取元素并分发事件</strong>：和之前一样，通过 <code>document.elementFromPoint(x, y)</code> 获取元素，然后通过 <code>dispatchEvent</code> 方法分发这个点击事件。</p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/241.html'">← Prev</div>
+                    <div class="nav-next" onclick="location.href='/243.html'">→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
