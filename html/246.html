@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Three.js 第一个 3D 案例</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>Three.js 第一个 3D 案例</h2>
+                    <p>2024-07-24 21:32:13 · YinHao</p>
+                  </div>
+                  <div class="container-main"><img src="./imgs/245/15.png" />
+
+<pre><code class="language-html">&lt;script type=&quot;importmap&quot;&gt;
+  {
+    &quot;imports&quot;: {
+      &quot;three&quot;: &quot;https://unpkg.com/three@0.148.0/build/three.module.js&quot;
+    }
+  }
+&lt;/script&gt;
+&lt;script type=&quot;module&quot; src=&quot;script.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<pre><code class="language-js">import * as THREE from &quot;three&quot;;
+
+// 创建一个三维场景 scene
+const scene = new THREE.Scene();
+
+// 给三维场景添加物体
+// 定义一个长方体， (长、宽、高)
+const geometry = new THREE.BoxGeometry(100, 100, 100);
+
+// 物体的外观，材料
+const material = new THREE.MeshBasicMaterial({
+  color: 0xff0000, // 红色材质
+});
+
+// 创建一个物体，网格模型，
+const mesh = new THREE.Mesh(geometry, material);
+
+// 设置网格模型的位置
+mesh.position.set(0, 10, 0);
+
+// 把网格模型，添加到 3D 场景中
+scene.add(mesh);
+
+// 定义相机输出画布的尺寸（单位：像素 px）
+const width = 800;
+const height = 600;
+
+// 目前页面是看不到效果的，还需要设置相机和渲染器
+
+// 创建一个透视投影相机对象
+const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 2000);
+
+// 设置相机的位置
+camera.position.set(200, 200, 200);
+
+// 相机的视线，观察目标点的坐标
+camera.lookAt(mesh.position);
+
+// 渲染器，实例化一个渲染器对象
+const renderer = new THREE.WebGLRenderer();
+
+renderer.setSize(width, height);
+renderer.render(scene, camera);
+
+document.body.appendChild(renderer.domElement);
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/245.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721009996007" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5956" width="200" height="200"><path d="M1012.80768 376.4736L591.8208 33.24928C569.77408 11.45856 540.88704 0.5632 512 0.5632s-57.77408 10.89536-79.8208 32.69632L11.19232 376.4736a30.48448 30.48448 0 0 0-2.87744 44.52352 31.32416 31.32416 0 0 0 42.63936 2.69312l0.24576-0.2048V921.6c0 56.55552 45.84448 102.4 102.4 102.4h716.8c56.55552 0 102.4-45.84448 102.4-102.4V423.48544l0.24576 0.2048a31.32416 31.32416 0 0 0 42.63936-2.69312 30.48448 30.48448 0 0 0-2.87744-44.52352zM911.36 921.6a40.96 40.96 0 0 1-40.96 40.96H153.6a40.96 40.96 0 0 1-40.96-40.96V373.4016L471.94112 80.46592l2.17088-1.792 1.9968-1.97632A50.75968 50.75968 0 0 1 512 62.0032c13.55776 0 26.29632 5.2224 35.88096 14.6944l2.00704 1.97632 2.17088 1.792L911.36 373.4016V921.6zM289.83296 586.0864c-5.1712-16.6912-20.55168-28.90752-38.95296-28.90752a40.96 40.96 0 0 0 0 81.92c2.63168 0 5.18144-0.29696 7.68-0.77824 51.28192 33.01376 150.04672 84.48 267.35616 84.48 76.02176 0 159.82592-21.76 243.46624-84.09088 1.24928 0.11264 2.4576 0.37888 3.7376 0.37888a40.96 40.96 0 0 0 0-81.92 40.92928 40.92928 0 0 0-39.8336 31.744c-187.51488 140.06272-373.05344 44.29824-443.45344-2.82624z" fill="#ffffff" p-id="5957"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

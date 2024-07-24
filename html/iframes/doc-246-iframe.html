@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>IFRAME</title>
+                <link rel=icon href="../imgs/code.svg" sizes=32x32>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                <link
+                  rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+                />
+                <script src="https://unpkg.com/pagedjs/dist/paged.legacy.polyfill.js"></script>
+                <style>
+                  * {
+                    padding: 0;
+                    margin: 0;
+                    font-family: Montserrat;
+                  }
+                  html,
+                  body {
+                    height: 100%;
+                  }
+                  body {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  }
+                  ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                  }
+                  ::-webkit-scrollbar-thumb {
+                    border-radius: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                  }
+                  ::-webkit-scrollbar-track {
+                    box-shadow: none;
+                    border-radius: 0;
+                    background: transparent;
+                  }
+                </style>
+                <style id="live-preview-style"></style>
+              </head>
+              <body>
+                <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.148.0/build/three.module.js"
+    }
+  }
+</script>
+<script type="module" src="script.js"></script>
+
+                <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+                <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js"></script>
+                <script id="script__preview">import * as THREE from "three";
+
+// 创建一个三维场景 scene
+const scene = new THREE.Scene();
+
+// 给三维场景添加物体
+// 定义一个长方体， (长、宽、高)
+const geometry = new THREE.BoxGeometry(100, 100, 100);
+
+// 物体的外观，材料
+const material = new THREE.MeshBasicMaterial({
+  color: 0xff0000, // 红色材质
+});
+
+// 创建一个物体，网格模型，
+const mesh = new THREE.Mesh(geometry, material);
+
+// 设置网格模型的位置
+mesh.position.set(0, 10, 0);
+
+// 把网格模型，添加到 3D 场景中
+scene.add(mesh);
+
+// 定义相机输出画布的尺寸（单位：像素 px）
+const width = 800;
+const height = 600;
+
+// 目前页面是看不到效果的，还需要设置相机和渲染器
+
+// 创建一个透视投影相机对象
+const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 2000);
+
+// 设置相机的位置
+camera.position.set(200, 200, 200);
+
+// 相机的视线，观察目标点的坐标
+camera.lookAt(mesh.position);
+
+// 渲染器，实例化一个渲染器对象
+const renderer = new THREE.WebGLRenderer();
+
+renderer.setSize(width, height);
+renderer.render(scene, camera);
+
+document.body.appendChild(renderer.domElement);
+</script>
+              </body>
+            </html>
+            
