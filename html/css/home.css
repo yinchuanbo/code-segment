@@ -64,8 +64,8 @@ body {
   /* padding-top: 70px; */
   /* padding-left: calc((100% - 900px) / 2);
   padding-right: calc((100% - 900px) / 2); */
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   margin-top: 50px;
 }
 
@@ -73,14 +73,20 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   place-content: center;
-  gap: 40px 60px;
-  padding: 0 80px;
+  gap: 10px;
+  padding: 0 10px;
 }
 
 li {
   list-style: none;
 }
 
+.container ul li {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 0px;
+}
 /* .container li + li {
   margin-top: 30px;
 } */
@@ -103,7 +109,7 @@ li {
 
 .container li p {
   font-size: 14px;
-  margin-top: 15px;
+  margin-top: 5px;
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
@@ -114,7 +120,7 @@ li {
 
 .preview__click {
   position: absolute;
-  left: -50px;
+  right: 0;
   top: 0;
   width: 40px;
   height: 40px;
