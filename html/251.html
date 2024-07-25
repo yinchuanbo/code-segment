@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>实现抖音 “视频无限滑动“效果</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>实现抖音 “视频无限滑动“效果</h2>
+                    <p>2024-07-25 16:35:17 · YinHao</p>
+                  </div>
+                  <div class="container-main"><h1>最终效果</h1>
+<p>在线预览：<a href="https://dy.ttentau.top/">dy.ttentau.top/</a></p>
+<p>Github 地址：<a href="https://github.com/zyronon/douyin">github.com/zyronon/dou…</a></p>
+<p>源码：<a href="https://github.com/zyronon/douyin/blob/master/src/components/slide/SlideVerticalInfinite.vue">SlideVerticalInfinite.vue</a></p>
+<h1>实现原理</h1>
+<p>无限滑动的原理和虚拟滚动的原理差不多，要保持 <code>SlideList</code> 里面永远只有 <code>N</code> 个 <code>SlideItem</code>，就要在滑动时不断的删除和增加 <code>SlideItem</code>。
+滑动时调整 <code>SlideList</code> 的偏移量 <code>translateY</code> 的值，以及列表里那几个 <code>SlideItem</code> 的 <code>top</code> 值，就可以了</p>
+<p>为什么要调整 <code>SlideList</code> 的偏移量 <code>translateY</code> 的值同时还要调整 <code>SlideItem</code> 的 <code>top</code> 值呢？
+因为 <code>translateY</code> 只是将整个列表移动，如果我们列表里面的元素是固定的，不会变多和减少，那么没关系，只调整　<code>translateY</code> 值就可以了，上滑了几页就减几页的高度，下滑同理</p>
+<p>但是如果整个列表向前移动了一页，同时前面的 <code>SlideItem</code> 也少了一个，，那么最终效果就是移动了两页...因为 <code>塌陷</code> 了一页
+这显然不是我们想要的，所以我们还需要同时调整 <code>SlideItem</code> 的 <code>top</code> 值，加上前面少的 <code>SlideItem</code> 的高度，这样才能显示出正常的内容</p>
+<h1>步骤</h1>
+<h2>定义</h2>
+<hr>
+<p><code>virtualTotal</code>：页面中同时存在多少个 <code>SlideItem</code>，默认为 <code>5</code>。</p>
+<pre><code class="language-js">//页面中同时存在多少个SlideItem
+virtualTotal: {
+  type: Number,
+  default: () =&gt; 5
+},
+</code></pre>
+<p>设置这个值可以让外部组件使用时传入，毕竟每个人的需求不同，有的要求同时存在 <code>10</code> 条，有的要求同时存在 <code>5</code> 条即可。<br>不过同时存在的数量越大，使用体验就越好，即使用户快速滑动，我们依然有时间处理。<br>如果只同时存在 <code>5</code> 条，用户只需要快速滑动两次就到底了(因为屏幕中显示第 <code>3</code> 条，刚开始除外)，我们可能来不及添加新的视频到最后</p>
+<p><code>render</code>：渲染函数，<code>SlideItem</code>内显示什么由<code>render</code>返回值决定</p>
+<pre><code class="language-js">render: {
+  type: Function,
+  default: () =&gt; {
+    return null
+  }
+},
+</code></pre>
+<p>之所以要设定这个值，是因为抖音首页可不只有视频，还有图集、推荐用户、广告等内容，所以我们不能写死显示视频。<br>最好是定义一个方法，外部去实现，我们内部去调用，拿到返回值，添加到 <code>SlideList</code> 中</p>
+<p><code>list</code>：数据列表，外部传入</p>
+<pre><code class="language-js">list: {
+  type: Array,
+  default: () =&gt; {
+    return []
+  }
+},
+</code></pre>
+<p>我们从 <code>list</code> 中取出数据，然后调用并传给 <code>render</code> 函数，将其返回值插入到 <code>SlideList中</code></p>
+<h2>初始化</h2>
+<pre><code class="language-js">watch(
+  () =&gt; props.list,
+  (newVal, oldVal) =&gt; {
+    //新数据长度比老数据长度小，说明是刷新
+    if (newVal.length &lt; oldVal.length) {
+      //从list中取出数据，然后调用并传给render函数，将其返回值插入到SlideList中
+      insertContent();
+    } else {
+      //没数据就直接插入
+      if (oldVal.length === 0) {
+        insertContent();
+      } else {
+        // 走到这里，说明是通过接口加载了下一页的数据，
+        // 为了在用户快速滑动时，无需频繁等待请求接口加载数据，给用户更好的使用体验
+        // 这里额外加载3条数据。所以此刻，html里面有原本的5个加新增的3个，一共8个dom
+        // 用户往下滑动时只删除前面多余的dom，等滑动到临界值（virtualTotal/2+1）时，再去执行新增逻辑
+      }
+    }
+  }
+);
+</code></pre>
+<p>用 <code>watch</code> 监听 <code>list</code> 是因为它一开始不一定有值，通过接口请求之后才有值<br>同时当我们下滑 <code>加载更多</code> 时，也会触发接口请求新的数据，用 <code>watch</code> 可以在有新数据时，多添加几条到 <code>SlideList</code> 的最后面，这样用户快速滑动也不怕了</p>
+<h2>如何滑动</h2>
+<p>这里就不再赘述，参考我的这篇文章：<a href="https://juejin.cn/post/7360512664317018146"><strong>200 行代码实现类似 Swiper.js 的轮播组件</strong></a></p>
+<h2>滑动结束</h2>
+<h3>判断滑动的方向</h3>
+<p>当我们向上滑动时,需要删除最前面的 <code>dom</code> ，然后在最后面添加一个 <code>dom</code><br>下滑时反之</p>
+<pre><code class="language-js">slideTouchEnd(e, state, canNext, (isNext) =&gt; {
+  if (props.list.length &gt; props.virtualTotal) {
+    //手指往上滑(即列表展示下一条视频)
+    if (isNext) {
+      //删除最前面的 `dom` ，然后在最后面添加一个 `dom`
+    } else {
+      //删除最后面的 `dom` ，然后在最前面添加一个 `dom`
+    }
+  }
+});
+</code></pre>
+<h3>手指往上滑(即列表展示下一条视频)</h3>
+<ul>
+<li>首先判断是否要加载更多，快到列表末尾时就要加载更多数据了</li>
+<li>再判断是否符合 <code>腾挪</code> 的条件，即当前位置要大于 <code>half</code>，且小于列表长度减 <code>half</code>。</li>
+<li>在最后面添加一个 <code>dom</code></li>
+<li>删除最前面的 <code>dom</code></li>
+<li>将所有 <code>dom</code> 设置为最新的 <code>top</code> 值(原因前面有讲，因为删除了最前面的 <code>dom</code>，导致塌陷一页，所以要加上删除 <code>dom</code> 的高度)</li>
+</ul>
+<pre><code class="language-js">let half = (props.virtualTotal - 1) / 2;
+
+//删除最前面的 `dom` ，然后在最后面添加一个 `dom`
+if (
+  state.localIndex &gt; props.list.length - props.virtualTotal &amp;&amp;
+  state.localIndex &gt; half
+) {
+  emit(&quot;loadMore&quot;);
+}
+
+//是否符合 `腾挪` 的条件
+if (state.localIndex &gt; half &amp;&amp; state.localIndex &lt; props.list.length - half) {
+  //在最后面添加一个 `dom`
+  let addItemIndex = state.localIndex + half;
+  let res = slideListEl.value.querySelector(
+    `.${itemClassName}[data-index=&#39;${addItemIndex}&#39;]`
+  );
+  if (!res) {
+    slideListEl.value.appendChild(
+      getInsEl(props.list[addItemIndex], addItemIndex)
+    );
+  }
+
+  //删除最前面的 `dom`
+  let index = slideListEl.value
+    .querySelector(`.${itemClassName}:first-child`)
+    .getAttribute(&quot;data-index&quot;);
+  appInsMap.get(Number(index)).unmount();
+
+  slideListEl.value.querySelectorAll(`.${itemClassName}`).forEach((item) =&gt; {
+    _css(item, &quot;top&quot;, (state.localIndex - half) * state.wrapper.height);
+  });
+}
+</code></pre>
+<h3>手指往下滑(即列表展示上一条视频)</h3>
+<p>逻辑和上滑都差不多，不过是反着来而已</p>
+<ul>
+<li>再判断是否符合 <code>腾挪</code> 的条件，和上面反着</li>
+<li>在最前面添加一个 <code>dom</code></li>
+<li>删除最后面的 <code>dom</code></li>
+<li>将所有 <code>dom</code> 设置为最新的 <code>top</code> 值</li>
+</ul>
+<pre><code class="language-js">//删除最后面的 `dom` ，然后在最前面添加一个 `dom`
+if (
+  state.localIndex &gt;= half &amp;&amp;
+  state.localIndex &lt; props.list.length - (half + 1)
+) {
+  let addIndex = state.localIndex - half;
+  if (addIndex &gt;= 0) {
+    let res = slideListEl.value.querySelector(
+      `.${itemClassName}[data-index=&#39;${addIndex}&#39;]`
+    );
+    if (!res) {
+      slideListEl.value.prepend(getInsEl(props.list[addIndex], addIndex));
+    }
+  }
+  let index = slideListEl.value
+    .querySelector(`.${itemClassName}:last-child`)
+    .getAttribute(&quot;data-index&quot;);
+  appInsMap.get(Number(index)).unmount();
+
+  slideListEl.value.querySelectorAll(`.${itemClassName}`).forEach((item) =&gt; {
+    _css(item, &quot;top&quot;, (state.localIndex - half) * state.wrapper.height);
+  });
+}
+</code></pre>
+<h2>其他问题</h2>
+<h3>为什么不直接用 <code>v-for</code>直接生成 <code>SlideItem</code> 呢?</h3>
+<p>如果内容不是视频就可以。要删除或者新增时，直接操作 <code>list</code> 数据源，这样省事多了</p>
+<p>如果内容是视频，修改 <code>list</code> 时，<code>Vue</code> 会快速的替换 <code>dom</code>，正在播放的视频，突然一下从头开始播放了 😅😅😅</p>
+<h3>如何获取 <code>Vue</code> 组件的最终 <code>dom</code></h3>
+<p>有两种方式，各有利弊</p>
+<ul>
+<li>用 <code>Vue</code> 的 <code>render</code> 方法<ul>
+<li>优点：只是渲染一个 <code>VNode</code> 而已，理论上讲内存消耗更少。</li>
+<li>缺点：但我在开发中，用了这个方法，任何修改都会刷新页面，有点难蚌 😅</li>
+</ul>
+</li>
+<li>用 <code>Vue</code> 的 <code>createApp</code> 方法再创建一个 <code>Vue</code> 的实例<ul>
+<li>和上面相反 😅</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js">import {
+  createApp,
+  onMounted,
+  reactive,
+  ref,
+  render as vueRender,
+  watch,
+} from &quot;vue&quot;;
+
+/**
+ * 获取Vue组件渲染之后的dom元素
+ * @param item
+ * @param index
+ * @param play
+ */
+function getInsEl(item, index, play = false) {
+  // console.log(&#39;index&#39;, cloneDeep(item), index, play)
+  let slideVNode = props.render(item, index, play, props.uniqueId);
+  const parent = document.createElement(&quot;div&quot;);
+  //TODO 打包到线上时用这个，这个在开发时任何修改都会刷新页面
+  if (import.meta.env.PROD) {
+    parent.classList.add(&quot;slide-item&quot;);
+    parent.setAttribute(&quot;data-index&quot;, index);
+    //将Vue组件渲染到一个div上
+    vueRender(slideVNode, parent);
+    appInsMap.set(index, {
+      unmount: () =&gt; {
+        vueRender(null, parent);
+        parent.remove();
+      },
+    });
+    return parent;
+  } else {
+    //创建一个新的Vue实例，并挂载到一个div上
+    const app = createApp({
+      render() {
+        return &lt;SlideItem data-index={index}&gt;{slideVNode}&lt;/SlideItem&gt;;
+      },
+    });
+    const ins = app.mount(parent);
+    appInsMap.set(index, app);
+    return ins.$el;
+  }
+}
+</code></pre>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/250.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721891362999" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6098" width="200" height="200"><path d="M249.813333 240.384a85.333333 85.333333 0 0 0-128.768 10.112L30.848 373.333333a42.666667 42.666667 0 0 0 68.736 50.56l48.554667-66.048v344.917334a128 128 0 0 0 128 128h682.666666a42.666667 42.666667 0 1 0 0-85.333334h-682.666666a42.666667 42.666667 0 0 1-42.666667-42.666666V344.192l67.498667 66.773333A42.666667 42.666667 0 0 0 360.96 350.293333L249.813333 240.384z" fill="#ffffff" p-id="6099"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
