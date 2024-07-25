@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Three.js 光源对物体表面影响</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>Three.js 光源对物体表面影响</h2>
+                    <p>2024-07-25 21:58:46 · YinHao</p>
+                  </div>
+                  <div class="container-main"><p>实际生活中物体表面的 <code>明暗</code> 效果是会受到 <code>光照</code> 的影响，比如晚上不开灯，你就看不到物体，灯光比较暗，物体也比较暗。在 three.js 中，咱们用网格模型 <code>Mesh</code> 模拟生活中物体，所以 three.js 中模拟光照 <code>Light</code> 对物体表面的影响，就是模拟光照 <code>Light</code> 对网格模型 <code>Mesh</code> 表面的影响。</p>
+<h2>受光照影响材质</h2>
+<ul>
+<li><p>网格材质</p>
+<ul>
+<li><p>不受光照影响</p>
+<ul>
+<li>基础：MeshBasicMaterial</li>
+</ul>
+</li>
+<li><p>受光照影响</p>
+<ul>
+<li><p>漫反射：MeshLambertMaterial</p>
+</li>
+<li><p>高光：MeshPhongMaterial</p>
+</li>
+<li><p>物理：</p>
+<ul>
+<li><p>MeshStandardMaterial</p>
+</li>
+<li><p>MeshPhysicalMaterial</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>漫反射 MeshLambertMaterial</h3>
+<p>一个立方体、长方体使用 MeshLambertMaterial 材质，不同面和光线夹角不同，立方体不同面就呈现出来不同的明暗效果。</p>
+<pre><code class="language-js">const material = new THREE.MeshLambertMaterial();
+</code></pre>
+<h2>光源介绍</h2>
+<p>Three.js 提供了多种模拟生活中光源的 API，文档中搜索 light 关键词可以看到</p>
+<ul>
+<li><p>光源</p>
+<ul>
+<li><p>环境光: AmbientLight</p>
+</li>
+<li><p>点光源: PointLight</p>
+</li>
+<li><p>聚光灯光源: SpotLight</p>
+</li>
+<li><p>平行光: DirectionalLight</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2>点光源</h2>
+<img src="./imgs/252/01.png" />
+
+<p>点光源 PointLight 可以类比为一个发光点，就像生活中一个灯泡以灯泡为中心向四周发射光线。</p>
+<pre><code class="language-js">// 点光源: 两个参数分别表示光源颜色和光照强度
+// 参数1：0xffffff 是纯白色，表示光源颜色
+// 参数2: 1.0 表示光照强度，可以根据需要调整
+const pointLight = new THREE.PointLight(0xffffff, 1.0);
+</code></pre>
+<p>处理通过 <code>THREE.PointLight</code> 的参数 2 设置光照强度，你可以直接访问光照强度属性 <code>.intensity</code> 设置。</p>
+<pre><code class="language-js">pointLight.intensity = 1.0; // 光照强度
+</code></pre>
+<h3>光源衰减</h3>
+<p>实际生活中点光源，比如一个灯泡，随机距离的改变，光线会衰减，越来越弱，光源衰减属性 <code>.decay</code> 默认是 <code>2.0</code>，如果你不希望衰减可以设置为 <code>0.0</code>。</p>
+<pre><code class="language-js">pointLight.decay = 0.0; // 设置光源不随距离衰减
+</code></pre>
+<p>你可以对不同初始光照强度，传播同样距离明暗差异</p>
+<pre><code class="language-js">pointLight.intensity = 10000.0; // 光照强度
+pointLight.intensity = 50000.0; // 光照强度
+</code></pre>
+<h3>光源位置</h3>
+<p>你把点光源想象为一个电灯泡，你在 3D 空间中，放的位置不同，模型的渲染效果就不一样。</p>
+<p>注意光源位置尺寸大小：如果你希望光源照在模型的外表面，那你就需要把光源放在模型的外面。</p>
+<pre><code class="language-js">// 点光源位置
+pointLight.position.set(400, 0, 0);
+</code></pre>
+<h3>光源添加到场景</h3>
+<p>光源和网格模型 Mesh 对应一样是三维场景的一部分，自然需要添加到三维场景中才能起作用。</p>
+<pre><code class="language-js">scene.add(pointLight); // 点光源添加到场景中
+</code></pre>
+<h2>代码：</h2>
+<pre><code class="language-js">import * as THREE from &quot;three&quot;;
+const scene = new THREE.Scene();
+const geometry = new THREE.BoxGeometry(50, 50, 50);
+// 01 替换材质
+const material = new THREE.MeshLambertMaterial({
+  color: 0x00ffff,
+  transparent: true,
+  opacity: 0.5,
+});
+const mesh = new THREE.Mesh(geometry, material);
+mesh.position.set(0, 10, 0);
+scene.add(mesh);
+const axesHelper = new THREE.AxesHelper(100);
+scene.add(axesHelper);
+
+// 02 创建一个光源对象 - 点光源
+const pointLight = new THREE.PointLight(0xffffff, 1.0);
+// pointLight.intensity = 2.0 // 另一种设置方式
+pointLight.decay = 0.0; // 禁用衰减，不随距离衰减
+pointLight.position.set(400, 600, 300);
+scene.add(pointLight);
+
+const width = 800;
+const height = 600;
+const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 3000);
+camera.position.set(200, 200, 200);
+camera.lookAt(0, 0, 0);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(width, height);
+renderer.render(scene, camera);
+document.body.appendChild(renderer.domElement);
+</code></pre>
+<h2>效果：</h2>
+<img src="./imgs/252/02.png" />
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/251.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721891362999" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6098" width="200" height="200"><path d="M249.813333 240.384a85.333333 85.333333 0 0 0-128.768 10.112L30.848 373.333333a42.666667 42.666667 0 0 0 68.736 50.56l48.554667-66.048v344.917334a128 128 0 0 0 128 128h682.666666a42.666667 42.666667 0 1 0 0-85.333334h-682.666666a42.666667 42.666667 0 0 1-42.666667-42.666666V344.192l67.498667 66.773333A42.666667 42.666667 0 0 0 360.96 350.293333L249.813333 240.384z" fill="#ffffff" p-id="6099"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            

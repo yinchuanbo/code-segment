@@ -182,19 +182,9 @@ blockquote::before {
 
 a:not(.token) {
   color: #fff;
-  text-decoration: none;
+  /* text-decoration: none; */
   position: relative;
   transition: 0.5s;
-}
-
-a:not(.token)::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: calc(50% - 2px);
-  width: 100%;
-  height: 2px;
-  background-color: #00f;
 }
 
 a:not(.token):hover {
@@ -216,6 +206,11 @@ a:not(.token):hover::before {
   transform: translateY(-50%);
   right: calc((100% - 900px) / 2 - 200px);
   gap: 20px;
+}
+
+ul li p, ol li p {
+  margin-bottom: 20px;
+
 }
 
 .home {

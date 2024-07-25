@@ -69,6 +69,11 @@ body {
   margin-top: 50px;
 }
 
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
 .container ul {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
