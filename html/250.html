@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Rxjs 强大的异步编程解决方案</title>
+                <link rel=icon href="./imgs/code.svg" sizes=32x32>
+                <link rel="stylesheet" href="./css/prism.css">
+                <link rel="stylesheet" type="text/css" href="./css/style.css" />
+              </head>
+              <body>
+                <div class="container">
+                  <div class="container-header">
+                    <span onclick="location.href='/'"></span>
+                    <h2>Rxjs 强大的异步编程解决方案</h2>
+                    <p>2024-07-25 16:04:36 · YinHao</p>
+                  </div>
+                  <div class="container-main"><img src="./imgs/250/01.awebp" />
+
+<p>RxJS 是一个库，它通过使用 observable 序列来编写异步和基于事件的程序。它提供了一个核心类型  <a href="https://cn.rx.js.org/manual/overview.html#observable">Observable</a>，附属类型 (Observer、 Schedulers、 Subjects) 和受 [Array#extras] 启发的操作符 (map、filter、reduce、every, 等等)，这些数组操作符可以把异步事件作为集合来处理。</p>
+<h2>1. Rxjs 的概念介绍</h2>
+<h3>Observable</h3>
+<p>Observable 是 RxJS 的核心。一个 Observable 代表一个可调用的未来值或事件的集合。创建 Observable 后，它并不会立即执行，而是等待被订阅。只有当 Observable 被一个 Observer 订阅后，它才开始发射数据。</p>
+<h3>Observer</h3>
+<p>Observer 是一个对象，包含了一些回调函数，这些函数定义了如何处理 Observable 发出的数据。Observer 的三个主要回调函数分别是：<code>next</code>、<code>error</code>和<code>complete</code>。</p>
+<pre><code class="language-js">const observer = {
+  next: (x) =&gt; console.log(&quot;Observer got a next value: &quot; + x),
+  error: (err) =&gt; console.error(&quot;Observer got an error: &quot; + err),
+  complete: () =&gt; console.log(&quot;Observer got a complete notification&quot;),
+};
+</code></pre>
+<h3>Subscription</h3>
+<p>Subscription 是表示可清理资源的对象，通常是 Observable 的执行。当你订阅一个 Observable 时，你会得到一个 Subscription 对象。你可以调用它的<code>unsubscribe()</code>方法取消订阅，停止 Observable 发射数据。</p>
+<h3>Operators</h3>
+<p>Operators 是方法，允许你以声明式的方式处理集合。操作符可以被链式调用，每一个操作符都会接收一个 Observable，并返回一个新的 Observable，这允许操作符被组合使用。</p>
+<h3>Subject</h3>
+<p>Subject 是一种特殊类型的 Observable，它允许将值多播到多个 Observer。普通的 Observable 是单播的（每个订阅的 Observer 拥有 Observable 独立的执行）。</p>
+<h2>基本使用</h2>
+<h3>安装</h3>
+<p>首先，你需要安装 RxJS 库：</p>
+<pre><code class="language-sh">npm install rxjs
+# yarn add rxjs
+</code></pre>
+<h3>简单使用</h3>
+<p>假设有一个输入框，你希望根据用户的输入实时获取搜索结果。你可以创建一个 Observable 来监听输入框的<code>input</code>事件。</p>
+<pre><code class="language-js">import { fromEvent } from &quot;rxjs&quot;;
+import { map, debounceTime } from &quot;rxjs/operators&quot;;
+
+export default {
+  mounted() {
+    const input = document.querySelector(&quot;#searchInput&quot;);
+    const input$ = fromEvent(input, &quot;input&quot;).pipe(
+      debounceTime(300),
+      map((event) =&gt; event.target.value)
+      // 这里可以继续加入更多的操作符处理数据
+    );
+    input$.subscribe((value) =&gt; {
+      console.log(`Searching for ${value}`);
+      // 可以在这里调用API，根据value来获取数据
+    });
+  },
+};
+</code></pre>
+<h2>如何创建一个 Observable</h2>
+<h3>1. 使用<code>new Observable()</code>构造函数</h3>
+<pre><code class="language-js">import { Observable } from &quot;rxjs&quot;;
+
+const observable = new Observable((subscriber) =&gt; {
+  subscriber.next(&quot;Hello&quot;);
+  subscriber.complete();
+});
+
+observable.subscribe(observer);
+</code></pre>
+<h3>2. 使用创建操作符<code>of</code></h3>
+<p><code>of</code>可以将一些列的值转换成 Observable。</p>
+<pre><code class="language-js">import { of } from &quot;rxjs&quot;;
+
+const observable = of(1, 2, 3);
+observable.subscribe(observer);
+</code></pre>
+<h3>3. 使用创建操作符<code>from</code></h3>
+<p><code>from</code>可以将类数组、可迭代对象、Promise 等转换成 Observable。</p>
+<pre><code class="language-js">import { from } from &#39;rxjs&#39;;
+
+const array = [1, 2, 3];
+const observable = from(array);
+
+// 将Promise转化为Observable
+const promise = Promise.resolve(true);
+const observable$ = from(promise);
+observable$.subscribe(res =&gt; {
+    console.log(res); // true
+)
+
+// 也可以将Observable转化为Promise
+const array2 = [1, 2, 3];
+const observable2$ = from(array);
+const promiseInstance = observable2$.toPromise();
+promiseInstance.then(res =&gt; {
+    console.log(res)
+}
+</code></pre>
+<h3>4. 使用<code>fromEvent</code>创建 Observable</h3>
+<p><code>fromEvent</code>可以将 DOM 事件转换成 Observable。</p>
+<pre><code class="language-js">import { fromEvent } from &quot;rxjs&quot;;
+
+const button = document.querySelector(&quot;button&quot;);
+const observable = fromEvent(button, &quot;click&quot;);
+</code></pre>
+<h2>操作符</h2>
+<h3>什么是操作符？</h3>
+<p>操作符是 Observable 类型上的<strong>方法</strong>，比如  <code>.map(...)</code>、<code>.filter(...)</code>、<code>.merge(...)</code>，等等。当操作符被调用时，它们不会<strong>改变</strong>已经存在的 Observable 实例。相反，它们返回一个<strong>新的</strong> Observable ，它的 subscription 逻辑基于第一个 Observable 。</p>
+<blockquote>
+<p>操作符是函数，它基于当前的 Observable 创建一个新的 Observable。这是一个无副作用的操作：前面的 Observable 保持不变。 好比是内置的工具函数，有点类似于 lodash。</p>
+</blockquote>
+<p>操作符本质上是一个纯函数 (pure function)，它接收一个 Observable 作为输入，并生成一个新的 Observable 作为输出。订阅输出 Observable 同样会订阅输入 Observable 。在下面的示例中，我们创建一个自定义操作符函数，它将从输入 Observable 接收的每个值都乘以 10：</p>
+<pre><code class="language-js">function multiplyByTen(input) {
+  var output = Observable.create(function subscribe(observer) {
+    input.subscribe({
+      next: (v) =&gt; observer.next(10 * v),
+      error: (err) =&gt; observer.error(err),
+      complete: () =&gt; observer.complete(),
+    });
+  });
+  return output;
+}
+
+var input = Observable.from([1, 2, 3, 4]);
+var output = multiplyByTen(input);
+output.subscribe((x) =&gt; console.log(x));
+</code></pre>
+<p>输出</p>
+<pre><code class="language-js">//10
+//20
+//30
+//40
+</code></pre>
+<h3>操作符的基本使用</h3>
+<ol>
+<li>使用<code>map</code>操作符将每个值加倍</li>
+</ol>
+<pre><code class="language-js">import { from } from &quot;rxjs&quot;;
+import { map } from &quot;rxjs/operators&quot;;
+
+const numbers = from([1, 2, 3, 4, 5]);
+const doubled = numbers.pipe(map((value) =&gt; value * 2));
+doubled.subscribe((x) =&gt; console.log(x));
+// 输出: 2, 4, 6, 8, 10
+</code></pre>
+<ol start="2">
+<li>使用 filter 操作符过滤偶数值</li>
+</ol>
+<pre><code class="language-js">import { from } from &quot;rxjs&quot;;
+import { filter } from &quot;rxjs/operators&quot;;
+
+const numbers = from([1, 2, 3, 4, 5]);
+const evens = numbers.pipe(filter((value) =&gt; value % 2 === 0));
+evens.subscribe((x) =&gt; console.log(x));
+// 输出: 2, 4
+</code></pre>
+<h3>操作符的分类</h3>
+<p>操作符按照分类有几十上百种，不过我们不用全部理解，学习常用的就够用了。 操作符有着不同的用途，它们可作如下分类：创建、转换、过滤、组合、错误处理、工具，等等。在下面的列表中，你可以按分类组织好的所有操作符。</p>
+<h3>创建操作符</h3>
+<ul>
+<li><code>ajax</code></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-bindCallback" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-bindCallback"><code>bindCallback</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-bindNodeCallback" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-bindNodeCallback"><code>bindNodeCallback</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-create" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-create"><code>create</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-defer" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-defer"><code>defer</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-empty" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-empty"><code>empty</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-from" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-from"><code>from</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-fromEvent" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-fromEvent"><code>fromEvent</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-fromEventPattern" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-fromEventPattern"><code>fromEventPattern</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-fromPromise" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-fromPromise"><code>fromPromise</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-generate" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-generate"><code>generate</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-interval" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-interval"><code>interval</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-never" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-never"><code>never</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-of" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-of"><code>of</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-repeat" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-repeat"><code>repeat</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-repeatWhen" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-repeatWhen"><code>repeatWhen</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-range" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-range"><code>range</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-throw" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-throw"><code>throw</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-timer" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-timer"><code>timer</code></a></li>
+</ul>
+<h3>转换操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-buffer" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-buffer"><code>buffer</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-bufferCount" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-bufferCount"><code>bufferCount</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-bufferTime" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-bufferTime"><code>bufferTime</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-bufferToggle" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-bufferToggle"><code>bufferToggle</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-bufferWhen" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-bufferWhen"><code>bufferWhen</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-concatMap" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-concatMap"><code>concatMap</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-concatMapTo" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-concatMapTo"><code>concatMapTo</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-exhaustMap" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-exhaustMap"><code>exhaustMap</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-expand" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-expand"><code>expand</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-groupBy" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-groupBy"><code>groupBy</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-map" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-map"><code>map</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-mapTo" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-mapTo"><code>mapTo</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-mergeMap" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-mergeMap"><code>mergeMap</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-mergeMapTo" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-mergeMapTo"><code>mergeMapTo</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-mergeScan" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-mergeScan"><code>mergeScan</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-pairwise" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-pairwise"><code>pairwise</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-partition" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-partition"><code>partition</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-pluck" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-pluck"><code>pluck</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-scan" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-scan"><code>scan</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-switchMap" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-switchMap"><code>switchMap</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-switchMapTo" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-switchMapTo"><code>switchMapTo</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-window" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-window"><code>window</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-windowCount" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-windowCount"><code>windowCount</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-windowTime" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-windowTime"><code>windowTime</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-windowToggle" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-windowToggle"><code>windowToggle</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-windowWhen" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-windowWhen"><code>windowWhen</code></a></li>
+</ul>
+<h3>过滤操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-debounce" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-debounce"><code>debounce</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-debounceTime" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-debounceTime"><code>debounceTime</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-distinct" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-distinct"><code>distinct</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-distinctKey" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-distinctKey"><code>distinctKey</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-distinctUntilChanged" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-distinctUntilChanged"><code>distinctUntilChanged</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-distinctUntilKeyChanged" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-distinctUntilKeyChanged"><code>distinctUntilKeyChanged</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-elementAt" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-elementAt"><code>elementAt</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-filter" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-filter"><code>filter</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-first" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-first"><code>first</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-ignoreElements" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-ignoreElements"><code>ignoreElements</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-audit" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-audit"><code>audit</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-auditTime" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-auditTime"><code>auditTime</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-last" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-last"><code>last</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-sample" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-sample"><code>sample</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-sampleTime" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-sampleTime"><code>sampleTime</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-single" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-single"><code>single</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-skip" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-skip"><code>skip</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-skipLast" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-skipLast"><code>skipLast</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-skipUntil" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-skipUntil"><code>skipUntil</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-skipWhile" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-skipWhile"><code>skipWhile</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-take" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-take"><code>take</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-takeLast" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-takeLast"><code>takeLast</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-takeUntil" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-takeUntil"><code>takeUntil</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-takeWhile" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-takeWhile"><code>takeWhile</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-throttle" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-throttle"><code>throttle</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-throttleTime" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-throttleTime"><code>throttleTime</code></a></li>
+</ul>
+<h3>组合操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-combineAll" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-combineAll"><code>combineAll</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-combineLatest" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-combineLatest"><code>combineLatest</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-concat" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-concat"><code>concat</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-concatAll" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-concatAll"><code>concatAll</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-exhaust" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-exhaust"><code>exhaust</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-forkJoin" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-forkJoin"><code>forkJoin</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-merge" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-merge"><code>merge</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-mergeAll" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-mergeAll"><code>mergeAll</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-race" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-race"><code>race</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-startWith" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-startWith"><code>startWith</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-switch" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-switch"><code>switch</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-withLatestFrom" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-withLatestFrom"><code>withLatestFrom</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23static-method-zip" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#static-method-zip"><code>zip</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-zipAll" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-zipAll"><code>zipAll</code></a></li>
+</ul>
+<h3>多播操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-cache" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-cache"><code>cache</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-multicast" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-multicast"><code>multicast</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-publish" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-publish"><code>publish</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-publishBehavior" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-publishBehavior"><code>publishBehavior</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-publishLast" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-publishLast"><code>publishLast</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-publishReplay" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-publishReplay"><code>publishReplay</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-share" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-share"><code>share</code></a></li>
+</ul>
+<h3>错误处理操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-catch" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-catch"><code>catch</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-retry" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-retry"><code>retry</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-retryWhen" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-retryWhen"><code>retryWhen</code></a></li>
+</ul>
+<h3>工具操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-do" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-do"><code>do</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-delay" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-delay"><code>delay</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-delayWhen" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-delayWhen"><code>delayWhen</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-dematerialize" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-dematerialize"><code>dematerialize</code></a></li>
+<li><code>finally</code></li>
+<li><code>let</code></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-materialize" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-materialize"><code>materialize</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-observeOn" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-observeOn"><code>observeOn</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-subscribeOn" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-subscribeOn"><code>subscribeOn</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-timeInterval" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-timeInterval"><code>timeInterval</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-timestamp" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-timestamp"><code>timestamp</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-timeout" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-timeout"><code>timeout</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-timeoutWith" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-timeoutWith"><code>timeoutWith</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-toArray" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-toArray"><code>toArray</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-toPromise" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-toPromise"><code>toPromise</code></a></li>
+</ul>
+<h3>条件和布尔操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-defaultIfEmpty" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-defaultIfEmpty"><code>defaultIfEmpty</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-every" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-every"><code>every</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-find" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-find"><code>find</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-findIndex" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-findIndex"><code>findIndex</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-isEmpty" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-isEmpty"><code>isEmpty</code></a></li>
+</ul>
+<h3>数学和聚合操作符</h3>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-count" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-count"><code>count</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-max" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-max"><code>max</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-min" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-min"><code>min</code></a></li>
+<li><a href="https://link.juejin.cn/?target=https%3A%2F%2Fcn.rx.js.org%2Fclass%2Fes6%2FObservable.js~Observable.html%23instance-method-reduce" title="https://cn.rx.js.org/class/es6/Observable.js~Observable.html#instance-method-reduce"><code>reduce</code></a></li>
+</ul>
+<h2>使用 Rxjs 解决开发中常见的场景</h2>
+<ol>
+<li>输入框的防抖</li>
+</ol>
+<p>防抖是指在一段连续时间内，只执行一次事件。常用于输入框搜索，避免频繁发送请求。</p>
+<pre><code class="language-js">import { fromEvent } from &quot;rxjs&quot;;
+import { debounceTime, map } from &quot;rxjs/operators&quot;;
+
+const input = document.querySelector(&quot;#searchInput&quot;);
+const input$ = fromEvent(input, &quot;input&quot;).pipe(
+  debounceTime(300),
+  map((event) =&gt; event.target.value)
+);
+
+input$.subscribe((value) =&gt; {
+  console.log(`Searching for ${value}`);
+  // 发送搜索请求
+});
+</code></pre>
+<ol start="2">
+<li>按钮的节流</li>
+</ol>
+<pre><code class="language-js">import { fromEvent } from &quot;rxjs&quot;;
+import { throttleTime, map } from &quot;rxjs/operators&quot;;
+
+const button = document.querySelector(&quot;#myButton&quot;);
+const buttonClicks = fromEvent(button, &quot;click&quot;).pipe(throttleTime(1000));
+
+buttonClicks.subscribe(() =&gt; console.log(&quot;Button clicked with throttle!&quot;));
+</code></pre>
+<ol start="3">
+<li>接口请求失败重试</li>
+</ol>
+<p>在与 API 交互时，网络或服务问题可能导致请求失败。使用 retry 操作符可以自动重试请求。</p>
+<pre><code class="language-js">import { ajax } from &quot;rxjs/ajax&quot;;
+import { retry, catchError } from &quot;rxjs/operators&quot;;
+
+const apiData = ajax(&quot;/api/data&quot;).pipe(
+  retry(3), // 重试3次
+  catchError((error) =&gt; of(error))
+);
+
+apiData.subscribe((data) =&gt; console.log(&quot;Data: &quot;, data));
+</code></pre>
+<ol start="5">
+<li>操作符组合</li>
+</ol>
+<p>考虑以下场景：通过接口获取到应用列表，过滤掉未发布的应用，然后根据每一条数据的 key，从后端获取到 clientId。</p>
+<pre><code class="language-js">// 请求参数
+const params = {
+    filterText: &#39;&#39;,
+    modelType: &#39;APP&#39;,
+    appModelId: &#39;&#39;
+}
+// 分页
+const pageLink = new PageLink(10, 0);
+// 接口请求
+this.backendHttpService.queryAppDesignModels(pageLink, params)
+.pipe( // 管道
+    // map 过滤掉未发布的应用，也可以直接用filter操作符
+    map(appinfos =&gt; {
+    appinfos.data = appinfos.data.filter(item =&gt; item.state !== &#39;UNDEPLOY&#39;);
+    return appinfos;
+    }),
+    // switchMap 将源 Observable 的每个值映射到一个新的 Observable
+    switchMap(apps =&gt; from(apps.data)),
+    // concatMap `concatMap` 会按照源 Observable 发出值的顺序订阅和发出这些映射的 Observable
+    concatMap((arr: { key: string }) =&gt; this.ucService.getClientUUID(arr.key)),
+    // 拿到后端返回数据
+    map((appinfos) =&gt; appinfos.clientId),
+    // 将请求接口获得的数据转化为数组
+    toArray(),
+    // tap 无副作用的操作符，可以用来做其他的事情、调试等
+    tap(res =&gt;{
+        this.clientIdArr = res;
+        console.log(res); // clientId数组
+    },
+    // 过滤掉假值
+    map((appinfos) =&gt; appinfos.filter(Boolean)),
+)
+.subscribe({
+    next: (appList) =&gt; {
+    console.log(appList)
+    }
+})
+</code></pre>
+<p>通过这些示例，我们可以看到 Rxjs 在处理异步和事件驱动编程时的强大能力。它提供了一种更加声明式和可组合的方式来处理复杂的异步逻辑，使得我们的代码更加清晰和可维护。由第五条示例可以看出，操作非常强大，灵活组合可以实现非常复杂的场景，这是 Promise 所不能比拟的，老铁们赶紧用起来。</p>
+<p>Rxjs 的中文文档：<a href="https://cn.rx.js.org/manual/overview.html">cn.rx.js.org/manual/over…</a></p>
+</div>
+                  <div class="nav">
+                    <div class="nav-prev" onclick="location.href='/249.html'">← Prev</div>
+                    <div class="nav-next" style='opacity: 0.5;pointer-events: none;'>→ Next</div>
+                  </div>
+                  <div class="home" onclick="location.href='/'">
+                    <svg t="1721891362999" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6098" width="200" height="200"><path d="M249.813333 240.384a85.333333 85.333333 0 0 0-128.768 10.112L30.848 373.333333a42.666667 42.666667 0 0 0 68.736 50.56l48.554667-66.048v344.917334a128 128 0 0 0 128 128h682.666666a42.666667 42.666667 0 1 0 0-85.333334h-682.666666a42.666667 42.666667 0 0 1-42.666667-42.666666V344.192l67.498667 66.773333A42.666667 42.666667 0 0 0 360.96 350.293333L249.813333 240.384z" fill="#ffffff" p-id="6099"></path></svg>
+                  </div>
+                </div>
+                <script src="./js/prism.min.js"></script>
+                <script src="./js/script.js"></script>
+              </body>
+            </html>
+            
